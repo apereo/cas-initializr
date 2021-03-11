@@ -1,0 +1,100 @@
+plugins {
+    id "org.springframework.boot" version "${springBootVersion}"
+    id "io.spring.dependency-management" version "${gradleDependencyManagementPluginVersion}"
+    id "io.freefair.lombok" version "${gradleFreeFairPluginVersion}"
+    id "java-library"
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    jcenter()
+    maven {
+        url "https://oss.sonatype.org/content/repositories/snapshots"
+        mavenContent { snapshotsOnly() }
+    }
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "io.spring.initializr:initializr-bom:${springInitializrVersion}"
+    }
+}
+
+springBoot {
+    buildInfo()
+    mainClass = "org.apereo.cas.CasInitializrApplication"
+}
+
+dependencies {
+
+    implementation "org.jooq:jool:0.9.14"
+    implementation "com.github.vladimir-bukhtoyarov:bucket4j-core:4.10.0"
+    implementation "com.github.spullara.mustache.java:compiler:0.9.6"
+    implementation "org.springframework.boot:spring-boot-starter-web"
+
+    implementation "io.spring.initializr:initializr-web"
+    implementation "io.spring.initializr:initializr-actuator"
+    implementation "io.spring.initializr:initializr-generator-spring"
+    implementation "io.spring.initializr:initializr-generator"
+    implementation "io.spring.initializr:initializr-generator"
+
+    implementation "org.apereo.cas:cas-server-core-configuration-metadata-repository:${casVersion}"
+    implementation "org.apereo.cas:cas-server-core-api-configuration-model:${casVersion}"
+
+    runtime "org.springframework.boot:spring-boot-starter-tomcat"
+}
+
+bootBuildImage {
+    imageName = "apereo/cas-initializr:${casVersion}"
+}
+
+bootJar {
+    archiveName "app.jar"
+    baseName "app"
+}
+
+bootRun {
+    def list = []
+    list.add("-Xrunjdwp:transport=dt_socket,address=5005,server=y,suspend=n")
+
+    jvmArgs = list
+
+    def appArgList = []
+    args = appArgList
+}
+
+
+processResources {
+    filesMatching(['**/*.yml', '**/*.properties', '**/*.md', '**/*.mustache']) {
+        filter org.apache.tools.ant.filters.ReplaceTokens, tokens: [
+                "javaVersion"                            : project.sourceCompatibility,
+
+                "casVersion"                             : project.property("casVersion"),
+                "casMgmtVersion"                         : project.property("casMgmtVersion"),
+                "casMgmtCasVersion"                      : project.property("casMgmtCasVersion"),
+                "version"                                : project.property("version"),
+                "springBootVersion"                      : project.property("springBootVersion"),
+                "casMgmtSpringBootVersion"               : project.property("casMgmtSpringBootVersion"),
+                "gradleDependencyManagementPluginVersion": project.property("gradleDependencyManagementPluginVersion"),
+                "gradleFreeFairPluginVersion"            : project.property("gradleFreeFairPluginVersion"),
+                "gradleDownloadTaskPluginVersion"        : project.property("gradleDownloadTaskPluginVersion"),
+                "tomcatVersion"                          : project.property("tomcatVersion"),
+                "jibVersion"                             : project.property("jibVersion")
+                
+        ]
+    }
+}
+
+task copyWrapper(type: Copy) {
+    from "../gradle/wrapper"
+    into "src/main/resources/common/gradle/wrapper"
+}
+
+task copyWrapperExecutables(type: Copy) {
+    from "../gradlew", "../gradlew.bat"
+    into "src/main/resources/common/gradle/exec"
+}
+
+rootProject.tasks["wrapper"].finalizedBy([copyWrapper, copyWrapperExecutables]) 
+build.dependsOn([copyWrapper, copyWrapperExecutables])

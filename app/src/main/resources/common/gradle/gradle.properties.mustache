@@ -1,0 +1,69 @@
+{{#managementServer}}
+# The version of this overlay project
+version={{casMgmtVersion}}
+
+# CAS Management version
+casmgmt.version={{casMgmtVersion}}
+
+# CAS server version
+cas.version=@casMgmtCasVersion@
+springBootVersion=@casMgmtSpringBootVersion@
+{{/managementServer}}
+
+{{^managementServer}}
+# The version of this overlay project
+version={{casVersion}}
+
+#CAS server version
+cas.version={{casVersion}}
+springBootVersion={{springBootVersion}}
+{{/managementServer}}
+
+group={{groupId}}
+artifactId={{buildSystemId}}
+sourceCompatibility={{javaVersion}}
+targetCompatibility={{javaVersion}}
+
+gradleFreeFairPluginVersion=@gradleFreeFairPluginVersion@
+gradleDependencyManagementPluginVersion=@gradleDependencyManagementPluginVersion@
+
+# Used to build docker images
+jibVersion=@jibVersion@
+
+# Specify the coordinates of the container image to build via jib
+containerImageOrg=apereo
+containerImageName={{containerImageName}}
+
+baseDockerImage=adoptopenjdk/openjdk11:alpine-jre
+allowInsecureRegistries=false
+
+# Include launch script for executable WAR artifact
+# Setting this to true allows the final web application
+# to be fully executable on its own
+executable=false
+
+{{#appServer}}
+# Use -tomcat, -jetty, -undertow for deployment to other embedded containers
+# if the overlay application supports or provides the chosen type.
+# You should set this to blank if you want to deploy to an external container.
+# and want to set up, download and manage the container (i.e. Apache Tomcat) yourself.
+appServer={{appServer}}
+{{/appServer}}
+
+# Settings to generate keystore
+# used by the build to assist with creating
+# self-signed certificates for https endpoints
+certDir=/etc/cas
+serverKeystore=thekeystore
+exportedServerCert=cas.crt
+storeType=PKCS12
+
+{{#casServer}}
+# Location of the downloaded CAS Shell JAR
+shellDir=build/libs
+ivyVersion=2.4.0
+gradleDownloadTaskVersion=@gradleDownloadTaskPluginVersion@
+
+# Control the version of the embedded Apache Tomcat server
+tomcatVersion=@tomcatVersion@
+{{/casServer}}
