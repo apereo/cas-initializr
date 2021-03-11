@@ -13,9 +13,9 @@ env:
 
 on:
   push:
-    branches: [ heroku-casinit  ]
+    branches: [ master  ]
   pull_request:
-    branches: [ heroku-casinit  ]
+    branches: [ master  ]
 
 ##########################################################################
 
