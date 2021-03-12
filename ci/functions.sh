@@ -1,12 +1,13 @@
 #!/bin/bash
 
 function downloadTomcat() {
-  tomcatVersion="9.0.43"
+  tomcatVersion="9.0.44"
   tomcatVersionTag="v${tomcatVersion}"
   tomcatUrl="https://downloads.apache.org/tomcat/tomcat-9/${tomcatVersionTag}/bin/apache-tomcat-${tomcatVersion}.zip"
 
   export CATALINA_HOME=./apache-tomcat-${tomcatVersion}
   rm -Rf ${CATALINA_HOME} > /dev/null 2>&1
+  echo "Downloading Apache Tomcat from ${tomcatUrl}"
   wget --no-check-certificate ${tomcatUrl} > /dev/null 2>&1
   unzip apache-tomcat-${tomcatVersion}.zip > /dev/null 2>&1
   chmod +x ${CATALINA_HOME}/bin/*.sh > /dev/null 2>&1
