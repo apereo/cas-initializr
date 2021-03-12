@@ -14,21 +14,21 @@ kill -9 $pid
 echo "Building CAS Spring Boot Admin Server Overlay"
 ./gradlew clean build --no-daemon
 
-# java -jar build/libs/app.war --server.ssl.enabled=false --spring.security.user.password=password --spring.security.user.name=casuser &
-# pid=$!
-# sleep 5
+java -jar build/libs/app.war --server.ssl.enabled=false --spring.security.user.password=password --spring.security.user.name=casuser &
+pid=$!
+sleep 5
 
-# echo "Launched CAS with pid ${pid}. Waiting for server to come online..."
-# until curl -u casuser:password -k -L --output /dev/null --silent --fail http://localhost:8444/; do
-#     echo -n '.'
-#     sleep 5
-# done
-# echo -e "\n\nReady!"
-# kill -9 $pid
+echo "Launched CAS with pid ${pid}. Waiting for server to come online..."
+until curl -u casuser:password -k -L --output /dev/null --silent --fail http://localhost:8444/; do
+    echo -n '.'
+    sleep 5
+done
+echo -e "\n\nReady!"
+kill -9 $pid
 
-# echo "Building Docker image with Jib"
-# chmod -R 777 ./*.sh >/dev/null 2>&1
-# ./gradlew jibDockerBuild
+echo "Building Docker image with Jib"
+chmod -R 777 ./*.sh >/dev/null 2>&1
+./gradlew jibDockerBuild
 
 downloadTomcat
 mv build/libs/app.war ${CATALINA_HOME}/webapps/app.war
