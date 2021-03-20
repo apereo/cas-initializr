@@ -3,12 +3,25 @@ server:
   ssl:
     enabled: false
 debug: false
+
 management:
+  security:
+    enabled: false
+  server:
+    port: ${MGMT_PORT:8081}
+    address: ${MGMT_ADDRESS:127.0.0.1}
+  endpoints:
+    enabled-by-default: false
+    web:
+      exposure:
+        include: 'info,health,shutdown'
   endpoint:
     info:
       enabled: true
     health:
       enabled: true
+    shutdown:
+      enabled: ${SHUTDOWN_ENABLED:true}
 
 logging:
   level:
@@ -708,6 +721,8 @@ initializr:
           artifactId: cas-server-support-cassandra-authentication
           description: Apereo CAS Apache Cassandra Authentication Support
           bom: cas-bom
+          aliases:
+            - cassandraauth
         - name: cas-server-support-cassandra-core
           id: support-cassandra-core
           groupId: org.apereo.cas
@@ -720,12 +735,16 @@ initializr:
           artifactId: cas-server-support-cassandra-service-registry
           description: Apereo CAS Cassandra Service Registry
           bom: cas-bom
+          aliases:
+            - cassandrasvc
         - name: cas-server-support-cassandra-ticket-registry
           id: support-cassandra-ticket-registry
           groupId: org.apereo.cas
           artifactId: cas-server-support-cassandra-ticket-registry
           description: Apereo CAS Cassandra Ticket Registry
           bom: cas-bom
+          aliases:
+            - cassandra
         - name: cas-server-support-cloud-directory-authentication
           id: support-cloud-directory-authentication
           groupId: org.apereo.cas
@@ -886,6 +905,8 @@ initializr:
           artifactId: cas-server-support-couchbase-authentication
           description: Apereo CAS Couchbase Authentication Support
           bom: cas-bom
+          aliases:
+            - couchbasesauth
         - name: cas-server-support-couchbase-core
           id: support-couchbase-core
           groupId: org.apereo.cas
@@ -898,12 +919,16 @@ initializr:
           artifactId: cas-server-support-couchbase-service-registry
           description: Apereo CAS Couchbase Service Registry
           bom: cas-bom
+          aliases:
+            - couchbasesvc
         - name: cas-server-support-couchbase-ticket-registry
           id: support-couchbase-ticket-registry
           groupId: org.apereo.cas
           artifactId: cas-server-support-couchbase-ticket-registry
           description: Apereo CAS Couchbase Ticket Registry
           bom: cas-bom
+          aliases:
+            - couchbase
         - name: cas-server-support-couchdb-authentication
           id: support-couchdb-authentication
           groupId: org.apereo.cas
@@ -974,12 +999,16 @@ initializr:
           artifactId: cas-server-support-dynamodb-service-registry
           description: Apereo CAS DynamoDb Service Registry
           bom: cas-bom
+          aliaeses:
+            - dyanamodbsvc
         - name: cas-server-support-dynamodb-ticket-registry
           id: support-dynamodb-ticket-registry
           groupId: org.apereo.cas
           artifactId: cas-server-support-dynamodb-ticket-registry
           description: Apereo CAS DynamoDb Ticket Registry
           bom: cas-bom
+          aliaeses:
+            - dyanamodb
         - name: cas-server-support-ehcache-monitor
           id: support-ehcache-monitor
           groupId: org.apereo.cas
@@ -1028,6 +1057,8 @@ initializr:
           artifactId: cas-server-support-events-dynamodb
           description: Apereo CAS DynamoDb Events
           bom: cas-bom
+          aliaeses:
+            - dyanamodbevents
         - name: cas-server-support-events-influxdb
           id: support-events-influxdb
           groupId: org.apereo.cas
@@ -1524,6 +1555,9 @@ initializr:
           artifactId: cas-server-support-mongo-ticket-registry
           description: Apereo CAS MongoDB Ticket Registry
           bom: cas-bom
+          aliases:
+            - mongo
+            - mongodb
         - name: cas-server-support-notifications-fcm
           id: support-notifications-fcm
           groupId: org.apereo.cas
@@ -1810,6 +1844,8 @@ initializr:
           artifactId: cas-server-support-redis-authentication
           description: Apereo CAS Redis Authentication
           bom: cas-bom
+          aliases:
+            - redisauth
         - name: cas-server-support-redis-core
           id: support-redis-core
           groupId: org.apereo.cas
@@ -1822,12 +1858,16 @@ initializr:
           artifactId: cas-server-support-redis-service-registry
           description: Apereo CAS Redis Service Registry Support
           bom: cas-bom
+          aliases:
+            - redissvc
         - name: cas-server-support-redis-ticket-registry
           id: support-redis-ticket-registry
           groupId: org.apereo.cas
           artifactId: cas-server-support-redis-ticket-registry
           description: Apereo CAS Redis Ticket Registry
           bom: cas-bom
+          aliases:
+            - redis
         - name: cas-server-support-reports
           id: support-reports
           groupId: org.apereo.cas
@@ -1856,6 +1896,8 @@ initializr:
           artifactId: cas-server-support-rest-authentication
           description: Apereo CAS Rest Authentication Support
           bom: cas-bom
+          aliases:
+            - restauth
         - name: cas-server-support-rest-core
           id: support-rest-core
           groupId: org.apereo.cas
@@ -1868,24 +1910,32 @@ initializr:
           artifactId: cas-server-support-rest-service-registry
           description: Apereo CAS RESTful Service Registry
           bom: cas-bom
+          aliases:
+            - restsvc
         - name: cas-server-support-rest-services
           id: support-rest-services
           groupId: org.apereo.cas
           artifactId: cas-server-support-rest-services
           description: Apereo CAS Services REST Implementation
           bom: cas-bom
+          aliases:
+            - restservices
         - name: cas-server-support-rest-tokens
           id: support-rest-tokens
           groupId: org.apereo.cas
           artifactId: cas-server-support-rest-tokens
           description: Apereo CAS REST JWT Tickets Implementation
           bom: cas-bom
+          aliases:
+            - resttokens
         - name: cas-server-support-rest-x509
           id: support-rest-x509
           groupId: org.apereo.cas
           artifactId: cas-server-support-rest-x509
           description: Apereo CAS X509 REST Implementation
           bom: cas-bom
+          aliases:
+            - restx509
         - name: cas-server-support-saml
           id: support-saml
           groupId: org.apereo.cas

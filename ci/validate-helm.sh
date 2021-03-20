@@ -15,7 +15,7 @@ function buildAndImportImage() {
   if [[ ! -z $dependencies ]]; then
     postdata="${postdata}&dependencies=${dependencies}"
   fi
-  # create project dir from initializer with support boot admin, metrics, and git service registry
+  # create project dir from Initializr with support boot admin, metrics, and git service registry
   echo "Creating overlay of type: ${type} with dependencies: ${dependencies} in folder $(pwd)"
   echo "Running: curl http://localhost:8080/starter.tgz -d $postdata"
   curl http://localhost:8080/starter.tgz -d $postdata | tar -xzf -
@@ -34,7 +34,6 @@ if [[ ! -f app/build/libs/app.jar || "$1" == "clean" ]]; then
 fi
 echo "Running casinit"
 java -jar app/build/libs/app.jar &
-pid=$!
 sleep 30
 
 buildAndImportImage cas-overlay core,bootadmin,metrics,gitsvc,jsonsvc
@@ -43,8 +42,7 @@ buildAndImportImage cas-config-server-overlay
 buildAndImportImage cas-discovery-server-overlay
 buildAndImportImage cas-management-overlay
 
-echo Killing initializer pid $pid
-kill -9 $pid &> /dev/null
+curl -X POST http://localhost:8081/actuator/shutdown 2> /dev/null || true
 
 cd tmp/cas-overlay
 imageTag=$(./gradlew casVersion --q)
