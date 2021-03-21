@@ -1,11 +1,11 @@
-# CAS Initializer
+# CAS Initializr
 
 CAS Initializr provides a build system and an API to dynamically generate 
-CAS overlays. The project is a based on [Spring Initializer](https://github.com/spring-io/initializr).
+CAS overlays. The project is a based on [Spring Initializr](https://github.com/spring-io/initializr).
 
 ## Build
 
-You will need JDK 11 to run the CAS Initializer locally.
+You will need JDK 11 to run the CAS Initializr locally.
 
 ```bash
 ./gradlew clean build
@@ -19,7 +19,7 @@ Generate a Docker image from the build:
 
 ## Run
 
-CAS Initializer is a Spring Boot application and can be run using the following command:
+CAS Initializr is a Spring Boot application and can be run using the following command:
 
 ```bash
 ./gradlew :app:bootRun
