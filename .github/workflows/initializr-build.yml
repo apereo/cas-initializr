@@ -187,4 +187,6 @@ jobs:
           version: ${{ env.HELM_CURRENT }}
         id: install
       - name: Validate Helm Chart
-        run: ./ci/validate-helm.sh
+        run: |
+          ./ci/validate-helm-build-images.sh
+          ./ci/validate-helm.sh

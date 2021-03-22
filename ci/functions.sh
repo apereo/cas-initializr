@@ -27,3 +27,19 @@ function publishDockerImage() {
     echo -e "\nNo credentials are defined to publish Docker image\n"
   fi
 }
+
+function stopInitializr() {
+  curl -X POST http://localhost:8081/actuator/shutdown 2> /dev/null || true
+}
+
+function waitForInitializr() {
+  local ctr=0
+  until $(curl --output /dev/null --silent --head --fail http://localhost:8081/actuator/health); do
+    ((ctr=ctr + 1))
+    sleep 3
+    if [[ $ctr -gt 30 ]] ; then
+      echo "Initializr didn't start up before timeout"
+      break
+    fi
+  done
+}
