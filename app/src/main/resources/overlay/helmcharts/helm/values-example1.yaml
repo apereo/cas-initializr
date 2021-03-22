@@ -26,6 +26,35 @@ casServerContainer:
             clone-directory: "{{- .Values.gitsvcCloneDirectory -}}"
             root-directory: "{{- .Values.gitsvcRootDirectory -}}"
       #eof
+    application-redis.yaml: |-
+      ---
+      #helm repo add bitnami https://charts.bitnami.com/bitnami
+      #helm install cas-server-redis bitnami/redis --set usePassword=false --set sentinel.enabled=true --set sentinel.usePassword=false 
+      cas:
+        ticket:
+          registry:
+            redis:
+              enabled: true
+              database: 0
+              host: 'cas-server-redis'
+              pool:
+                test-on-borrow: true
+              read-from: 'UPSTREAMPREFERRED'
+              crypto:
+                enabled: false
+              timeout: 5000
+              port: 6379
+              password: ' '
+              cluster:
+                nodes:
+                  - host: 'cas-server-redis-headless'
+                    port: 6379
+                password: ' '
+              sentinel:
+                master: 'mymaster'
+                node: 'cas-server-redis-headless:26379'
+      # eof
+
 
 gitsvcRepoUrl: 'https://github.com/apereo/cas.git' # need smaller repo with services
 gitsvcBranchesToClone: 'master'
