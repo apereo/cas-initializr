@@ -1,48 +1,8 @@
 #!/bin/bash
 
+source ./ci/functions.sh
+
 set -e
-
-function buildAndImportImage() {
-  local type=${1:-cas-overlay}
-  local dependencies=${2:-""}
-  if [[ -d tmp/$type ]] ; then
-    rm -rf tmp/$type
-  fi
-  mkdir -p tmp/$type
-  cd tmp/$type
-
-  local postdata=type=$type
-  if [[ ! -z $dependencies ]]; then
-    postdata="${postdata}&dependencies=${dependencies}"
-  fi
-  # create project dir from Initializr with support boot admin, metrics, and git service registry
-  echo "Creating overlay of type: ${type} with dependencies: ${dependencies} in folder $(pwd)"
-  echo "Running: curl http://localhost:8080/starter.tgz -d $postdata"
-  curl http://localhost:8080/starter.tgz -d $postdata | tar -xzf -
-  echo
-  echo "Building War and Jib Docker Image for ${type}"
-  ./gradlew clean build jibBuildTar --refresh-dependencies
-
-  echo "Loading ${type} image into k3s"
-  sudo k3s ctr images import build/jib-image.tar
-  cd ../..
-}
-
-if [[ ! -f app/build/libs/app.jar || "$1" == "clean" ]]; then
-  echo "Building casinit"
-  ./gradlew clean build
-fi
-echo "Running casinit"
-java -jar app/build/libs/app.jar &
-sleep 30
-
-buildAndImportImage cas-overlay core,bootadmin,metrics,gitsvc,jsonsvc
-buildAndImportImage cas-bootadmin-server-overlay
-buildAndImportImage cas-config-server-overlay
-buildAndImportImage cas-discovery-server-overlay
-buildAndImportImage cas-management-overlay
-
-curl -X POST http://localhost:8081/actuator/shutdown 2> /dev/null || true
 
 cd tmp/cas-overlay
 imageTag=$(./gradlew casVersion --q)
@@ -84,33 +44,45 @@ export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
 echo Lint check on cas-server helm chart
 helm lint cas-server
 
-# k3s comes with Traefik so we could try using that instead at some point
-echo "Installing ingress controller and waiting for it to start"
-helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-kubectl create namespace ingress-nginx || true
-# install with some options that we don't necessarily need here but may be important in some deployments
-# proxy-buffer-size is needed for nginx to handle large OIDC related headers and avoids 502 error from nginx
-# use-forwarded-headers is needed if your ingress controller is behind another proxy, should be false if not behind another proxy
-# enable-underscores-in-headers is important if you are trying to use a header with an underscore from another proxy
-helm upgrade --install --namespace ingress-nginx ingress-nginx ingress-nginx/ingress-nginx \
-  --set controller.config.enable-underscores-in-headers=true \
-  --set controller.config.use-forwarded-headers=true \
-  --set controller.config.proxy-buffer-size=16k
+set +e
+helm list -n ingress-nginx | grep ingress
+if [[ $? -ne 0 ]]; then
+  set -e
+  # k3s comes with Traefik so we could try using that instead at some point
+  echo "Installing ingress controller and waiting for it to start"
+  helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 
-kubectl wait --namespace ingress-nginx \
-  --for condition=ready pod \
-  --selector=app.kubernetes.io/component=controller \
-  --timeout=120s
+  kubectl create namespace ingress-nginx || true
+  # install with some options that we don't necessarily need here but may be important in some deployments
+  # proxy-buffer-size is needed for nginx to handle large OIDC related headers and avoids 502 error from nginx
+  # use-forwarded-headers is needed if your ingress controller is behind another proxy, should be false if not behind another proxy
+  # enable-underscores-in-headers is important if you are trying to use a header with an underscore from another proxy
+  helm upgrade --install --namespace ingress-nginx ingress-nginx ingress-nginx/ingress-nginx \
+    --set controller.config.enable-underscores-in-headers= \
+    --set controller.config.use-forwarded-headers= \
+    --set controller.config.proxy-buffer-size=16k \
+    --set "controller.extraArgs.enable-ssl-passthrough="
+
+
+  kubectl wait --namespace ingress-nginx \
+    --for condition=ready pod \
+    --selector=app.kubernetes.io/component=controller \
+    --timeout=120s
+fi
+set -e
 
 echo "Deleting cas-server helm chart if it already exists"
 helm delete cas-server --namespace $NAMESPACE || true
+# make sure everything is gone
+sleep 5
+
 
 echo "Install cas-server helm chart"
 echo "Using local jib image imported into k3s"
 helm upgrade --install cas-server --namespace $NAMESPACE --set image.pullPolicy=Never --set bootadminimage.pullPolicy=Never --set mgmtimage.pullPolicy=Never --set image.tag="${imageTag}" ./cas-server
 
 # make sure resources are created before waiting on their status
-sleep 30
+sleep 35
 
 set +e
 echo "Waiting for startup $(date)"
