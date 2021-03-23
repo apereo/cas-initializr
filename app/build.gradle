@@ -42,7 +42,7 @@ dependencies {
     implementation "org.apereo.cas:cas-server-core-configuration-metadata-repository:${casVersion}"
     implementation "org.apereo.cas:cas-server-core-api-configuration-model:${casVersion}"
 
-    runtime "org.springframework.boot:spring-boot-starter-tomcat"
+    runtimeOnly "org.springframework.boot:spring-boot-starter-tomcat"
 }
 
 bootBuildImage {
