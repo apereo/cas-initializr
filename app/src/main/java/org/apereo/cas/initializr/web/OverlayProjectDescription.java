@@ -6,12 +6,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 
-/**
- * This is {@link OverlayProjectDescription}.
- *
- * @author Misagh Moayyed
- * @since 6.4.0
- */
 @Getter
 @Setter
 public class OverlayProjectDescription extends MutableProjectDescription {
