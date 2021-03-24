@@ -1,9 +1,5 @@
 package org.apereo.cas.initializr.config;
 
-import io.spring.initializr.generator.project.ProjectGenerationConfiguration;
-import io.spring.initializr.generator.project.contributor.ProjectContributor;
-import io.spring.initializr.metadata.InitializrMetadataProvider;
-import io.spring.initializr.web.support.InitializrMetadataUpdateStrategy;
 import org.apereo.cas.initializr.contrib.ApplicationYamlPropertiesContributor;
 import org.apereo.cas.initializr.contrib.ChainingMultipleResourcesProjectContributor;
 import org.apereo.cas.initializr.contrib.ChainingSingleResourceProjectContributor;
@@ -21,6 +17,11 @@ import org.apereo.cas.initializr.contrib.gradle.OverlayGradleSettingsContributor
 import org.apereo.cas.initializr.info.DependencyAliasesInfoContributor;
 import org.apereo.cas.initializr.metadata.CasOverlayInitializrMetadataUpdateStrategy;
 import org.apereo.cas.initializr.rate.RateLimitInterceptor;
+
+import io.spring.initializr.generator.project.ProjectGenerationConfiguration;
+import io.spring.initializr.generator.project.contributor.ProjectContributor;
+import io.spring.initializr.metadata.InitializrMetadataProvider;
+import io.spring.initializr.web.support.InitializrMetadataUpdateStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ConfigurableApplicationContext;
