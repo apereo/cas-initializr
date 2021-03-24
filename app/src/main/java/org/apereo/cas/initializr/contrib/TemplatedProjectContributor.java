@@ -13,6 +13,8 @@ import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.commons.lang.StringUtils;
+
+import org.apereo.cas.initializr.web.OverlayProjectDescription;
 import org.apereo.cas.overlay.bootadminserver.buildsystem.CasSpringBootAdminServerOverlayBuildSystem;
 import org.apereo.cas.overlay.casmgmt.buildsystem.CasManagementOverlayBuildSystem;
 import org.apereo.cas.overlay.casserver.buildsystem.CasOverlayBuildSystem;
@@ -97,8 +99,7 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         val mf = new DefaultMustacheFactory();
         val mustache = mf.compile(new InputStreamReader(resource.getInputStream()), resource.getFilename());
         try (val writer = new StringWriter()) {
-            val project = applicationContext.getBean(ProjectDescription.class);
-
+            val project = applicationContext.getBean(OverlayProjectDescription.class);
             val templateVariables = prepareProjectTemplateVariables(project);
             val model = contributeInternal(project);
             if (model instanceof Map) {
@@ -109,16 +110,17 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         }
     }
 
-    protected Map<String, Object> prepareProjectTemplateVariables(final ProjectDescription project) {
+    protected Map<String, Object> prepareProjectTemplateVariables(final OverlayProjectDescription project) {
         val provider = applicationContext.getBean(InitializrMetadataProvider.class);
 
         val templateVariables = new HashMap<>(provider.get().defaults());
         var configuration = provider.get().getConfiguration();
         var boms = configuration.getEnv().getBoms();
 
-        templateVariables.put("casVersion", boms.get("cas-bom").getVersion());
         templateVariables.put("casMgmtVersion", boms.get("cas-mgmt-bom").getVersion());
-        templateVariables.put("springBootVersion", templateVariables.get("bootVersion"));
+        
+        templateVariables.put("casVersion", project.resolveCasVersion(boms.get("cas-bom")));
+        templateVariables.put("springBootVersion", project.getPlatformVersion().toString());
 
         val type = project.getBuildSystem().id();
         templateVariables.put("buildSystemId", type);
