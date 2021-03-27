@@ -35,17 +35,39 @@ The service will be available on `http://localhost:8080`.
 
 ## Generating a project
 
-Generate a vanilla CAS overlay:
+#### Generate a vanilla CAS overlay:
 
 ```bash
 curl http://localhost:8080/starter.zip -o cas.zip
 ```
 
-Generate a CAS overlay package as a compressed tarball 
-that contains indicated modules/dependencies selected by their identifier:
+#### Generate a CAS overlay package as a compressed tarball that contains indicated modules/dependencies selected by their identifier:
 
 ```bash
 curl http://localhost:8080/starter.tgz -d dependencies=core | tar -xzvf -
+```
+
+#### Generate a CAS overlay for a specific version:
+
+```bash
+curl http://localhost:8080/starter.tgz -d "dependencies=core,oidc&casVersion=6.3.3" | tar  -xzvf -
+```
+
+#### Generate overlay projects for other CAS related applications:
+
+```bash
+curl http://localhost:8080/starter.tgz -d "type=cas-management-overlay" | tar  -xzvf -
+```
+Type can be one of:
+  - `cas-overlay` (default)
+  - `cas-bootadmin-server-overlay` 
+  - `cas-config-server-overlay`
+  - `cas-discovery-server-overlay`
+  - `cas-management-overlay`
+
+#### Generate a CAS Overlay using latest cas-initializr deployed on heroku.com:
+```bash
+curl https://casinit.herokuapp.com/starter.tgz -d "dependencies=core,bootadmin,metrics,gitsvc,jsonsvc,redis" | tar  -xzvf -
 ```
 
 ## Dependency List
