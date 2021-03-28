@@ -44,6 +44,9 @@ jobs:
   validate-cas-overlay:
     needs: [build]
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        cas-version: [6.3.3, 6.4.0-RC2, 6.4.0-SNAPSHOT]
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK
@@ -56,7 +59,7 @@ jobs:
         with:
           name: binary-artifacts
       - name: Validate Overlay
-        run: ./ci/validate-cas-overlay.sh
+        run: ./ci/validate-cas-overlay.sh ${{ matrix.cas-version }}
   validate-cas-mgmt-overlay:
     needs: [build]
     runs-on: ubuntu-latest
