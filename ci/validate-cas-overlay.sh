@@ -1,7 +1,7 @@
 #!/bin/bash
 
 CAS_VERSION=${1:-6.4.0-SNAPSHOT}
-CAS_VERSION=${2:-2.4.2}
+BOOT_VERSION=${2:-2.4.2}
 
 source ./ci/functions.sh
 

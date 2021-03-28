@@ -28,7 +28,7 @@ CAS Initializr is a Spring Boot application and can be run using the following c
 Or run the Docker image:
 
 ```bash  
-imageTag=(`./gradlew casVersion --q`) && docker run --rm -p 8080:8080 -t apereo/cas-initializr:$imageTag 
+imageTag=(`./gradlew casersion --q`) && docker run --rm -p 8080:8080 -t apereo/cas-initializr:$imageTag 
 ```
 
 The service will be available on `http://localhost:8080`.
@@ -49,8 +49,10 @@ curl http://localhost:8080/starter.tgz -d dependencies=core | tar -xzvf -
 
 #### Generate a CAS overlay for a specific version:
 
+Must specify the appropriate spring boot version for the specified casVersion.
+
 ```bash
-curl http://localhost:8080/starter.tgz -d "dependencies=core,oidc&casVersion=6.3.3" | tar  -xzvf -
+curl http://localhost:8080/starter.tgz -d "dependencies=core,oidc&casVersion=6.3.3&bootVersion=2.3.7.RELEASE" | tar  -xzvf -
 ```
 
 #### Generate overlay projects for other CAS related applications:
