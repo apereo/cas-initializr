@@ -46,7 +46,10 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        cas-version: [6.3.3, 6.4.0-RC2, 6.4.0-SNAPSHOT]
+        cfg:
+          - { casVersion: 6.3.3, bootVersion: 2.3.7.RELEASE }
+          - { casVersion: 6.4.0-RC2, bootVersion: 2.4.2 }
+          - { casVersion: 6.4.0-SNAPSHOT, bootVersion: 2.4.2 }
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK
@@ -59,7 +62,7 @@ jobs:
         with:
           name: binary-artifacts
       - name: Validate Overlay
-        run: ./ci/validate-cas-overlay.sh ${{ matrix.cas-version }}
+        run: ./ci/validate-cas-overlay.sh ${{ matrix.cfg.casVersion }} ${{ matrix.cfg.bootVersion }}
   validate-cas-mgmt-overlay:
     needs: [build]
     runs-on: ubuntu-latest
