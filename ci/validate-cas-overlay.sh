@@ -1,5 +1,8 @@
 #!/bin/bash
 
+CAS_VERSION=${1:-6.4.0-SNAPSHOT}
+BOOT_VERSION=${2:-2.4.4}
+
 source ./ci/functions.sh
 
 java -jar app/build/libs/app.jar &
@@ -7,7 +10,7 @@ pid=$!
 sleep 15
 mkdir tmp
 cd tmp
-curl http://localhost:8080/starter.tgz | tar -xzvf -
+curl http://localhost:8080/starter.tgz -d "casVersion=${CAS_VERSION}&bootVersion=${BOOT_VERSION}" | tar -xzvf -
 kill -9 $pid
 
 ./gradlew clean build

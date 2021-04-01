@@ -43,6 +43,8 @@ dependencies {
     implementation "org.apereo.cas:cas-server-core-api-configuration-model:${casVersion}"
 
     runtimeOnly "org.springframework.boot:spring-boot-starter-tomcat"
+
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 }
 
 bootBuildImage {
@@ -63,7 +65,6 @@ bootRun {
     def appArgList = []
     args = appArgList
 }
-
 
 processResources {
     filesMatching(['**/*.yml', '**/*.properties', '**/*.md', '**/*.mustache']) {

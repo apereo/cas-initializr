@@ -12,3 +12,5 @@ io.spring.initializr.generator.buildsystem.BuildSystemFactory=\
   org.apereo.cas.overlay.configserver.buildsystem.CasConfigServerOverlayBuildSystemFactory,\
   org.apereo.cas.overlay.discoveryserver.buildsystem.CasDiscoveryServerOverlayBuildSystemFactory,\
   org.apereo.cas.overlay.bootadminserver.buildsystem.CasSpringBootAdminServerOverlayBuildSystemFactory
+
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=org.apereo.cas.initializr.config.CasCustomInitializrConfiguration

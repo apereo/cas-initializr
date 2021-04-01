@@ -14,7 +14,7 @@ management:
     enabled-by-default: false
     web:
       exposure:
-        include: 'info,health,shutdown'
+        include: 'info,health,shutdown,supportedVersions'
   endpoint:
     info:
       enabled: true
@@ -22,6 +22,8 @@ management:
       enabled: true
     shutdown:
       enabled: ${SHUTDOWN_ENABLED:true}
+    supportedVersions:
+      enabled: true
 
 logging:
   level:
@@ -32,6 +34,15 @@ logging:
 spring:
   main:
     allow-bean-definition-overriding: true
+
+cas-initializr:
+  supported-versions:
+    - cas-version: 6.3.3
+      boot-version: 2.3.7.RELEASE
+    - cas-version: @casVersion@
+      boot-version: @springBootVersion@
+    - cas-version: 6.4.0-SNAPSHOT
+      boot-version: 2.4.4
 
 initializr:
   name:

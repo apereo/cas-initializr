@@ -49,8 +49,10 @@ curl http://localhost:8080/starter.tgz -d dependencies=core | tar -xzvf -
 
 #### Generate a CAS overlay for a specific version:
 
+Must specify the appropriate spring boot version for the specified casVersion.
+
 ```bash
-curl http://localhost:8080/starter.tgz -d "dependencies=core,oidc&casVersion=6.3.3" | tar  -xzvf -
+curl http://localhost:8080/starter.tgz -d "dependencies=core,oidc&casVersion=6.3.3&bootVersion=2.3.7.RELEASE" | tar  -xzvf -
 ```
 
 #### Generate overlay projects for other CAS related applications:

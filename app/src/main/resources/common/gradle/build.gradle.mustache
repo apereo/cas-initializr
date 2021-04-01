@@ -9,6 +9,12 @@ buildscript {
         mavenLocal()
         mavenCentral()
         gradlePluginPortal()
+        {{#casServer}}
+        maven {
+            url 'https://oss.sonatype.org/content/repositories/snapshots'
+            mavenContent { snapshotsOnly() }
+        }
+        {{/casServer}}
     }
     dependencies {
         classpath "org.springframework.boot:spring-boot-gradle-plugin:${project.springBootVersion}"
