@@ -13,7 +13,9 @@ env:
 
 on:
   push:
-    branches: [ verstiontest ]
+    branches: [ master  ]
+  pull_request:
+    branches: [ master  ]
 
 ##########################################################################
 
