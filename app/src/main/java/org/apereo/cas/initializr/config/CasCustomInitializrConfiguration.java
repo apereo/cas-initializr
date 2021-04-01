@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Bean;
 
 /**
  * Custom configuration that might be used by CI or UI, but not for initializr arguments.
+ * @author Hal Deadman
  */
 @EnableConfigurationProperties(CasCustomInitializrConfiguration.class)
 @ConfigurationProperties(value = "cas-initializr")

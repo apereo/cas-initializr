@@ -4,7 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Information about versions of CAS supported by the cas initializr.
+ * Information about versions of CAS supported by the CAS Initializr.
+ * @author Hal Deadman
  */
 @Getter
 @Setter
