@@ -1,7 +1,10 @@
 #!/bin/bash
 
+DEFAULT_CAS_VERSION=6.4.0-SNAPSHOT
+DEFAULT_BOOT_VERSION=2.4.4
+
 function downloadTomcat() {
-  tomcatVersion="9.0.44"
+  tomcatVersion="9.0.45"
   tomcatVersionTag="v${tomcatVersion}"
   tomcatUrl="https://downloads.apache.org/tomcat/tomcat-9/${tomcatVersionTag}/bin/apache-tomcat-${tomcatVersion}.zip"
 
@@ -42,4 +45,13 @@ function waitForInitializr() {
       break
     fi
   done
+}
+
+# Temporary fix due to issue with 6.4.0-RC3
+function standAloneCasConfig() {
+  APPNAME=${1:-application}
+  sudo mkdir -p $CATALINA_HOME/lib/config && sudo chmod 777 $CATALINA_HOME/lib/config
+  cat <<EOF > $CATALINA_HOME/lib/config/${APPNAME}.properties
+spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+EOF
 }

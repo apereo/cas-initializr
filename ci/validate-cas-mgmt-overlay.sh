@@ -2,13 +2,16 @@
 
 source ./ci/functions.sh
 
+CAS_VERSION=${1:-$DEFAULT_CAS_VERSION}
+BOOT_VERSION=${2:-$DEFAULT_BOOT_VERSION}
+
 java -jar app/build/libs/app.jar &
 pid=$!
 sleep 15
 rm -Rf tmp &> /dev/null
 mkdir tmp
 cd tmp
-curl http://localhost:8080/starter.tgz -d type=cas-management-overlay -d dependencies="jpasvc" | tar -xzvf -
+curl http://localhost:8080/starter.tgz -d casVersion=${CAS_VERSION} -d bootVersion=${BOOT_VERSION} -d type=cas-management-overlay -d dependencies="jpasvc" | tar -xzvf -
 kill -9 $pid
 
 echo "Building CAS Mgmt Overlay"

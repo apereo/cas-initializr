@@ -5,7 +5,9 @@ env:
   GRADLE_OPTS: "-Xms512m -Xmx6048m -Xss128m -XX:ReservedCodeCacheSize=512m -server -XX:+UseG1GC"
   TERM: xterm-256color
   JDK_CURRENT: 11.0.10
-  HELM_CURRENT: v3.5.2
+  HELM_CURRENT: v3.5.3
+  HELM_CAS_VERSION: 6.4.0-SNAPSHOT
+  HELM_BOOT_VERSION: 2.4.4
   DOCKER_USER: ${{ secrets.DOCKER_USER }}
   DOCKER_PWD: ${{ secrets.DOCKER_PWD }}
 
@@ -94,8 +96,11 @@ jobs:
       - name: Validate Overlay
         run: ./ci/validate-cas-overlay.sh ${{ matrix.versions.casVersion }} ${{ matrix.versions.bootVersion }}
   validate-cas-mgmt-overlay:
-    needs: [build]
+    needs: [supported-versions]
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        versions: ${{fromJSON(needs.supported-versions.outputs.supported-versions)}}
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK
@@ -110,10 +115,13 @@ jobs:
       # - name: Setup tmate session
       #   uses: mxschmitt/action-tmate@v3
       - name: Validate Overlay
-        run: ./ci/validate-cas-mgmt-overlay.sh
+        run: ./ci/validate-cas-mgmt-overlay.sh ${{ matrix.versions.casVersion }} ${{ matrix.versions.bootVersion }}
   validate-cas-configserver-overlay:
-    needs: [build]
+    needs: [supported-versions]
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        versions: ${{fromJSON(needs.supported-versions.outputs.supported-versions)}}
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK
@@ -128,10 +136,13 @@ jobs:
       # - name: Setup tmate session
       #   uses: mxschmitt/action-tmate@v3
       - name: Validate Overlay
-        run: ./ci/validate-cas-configserver-overlay.sh
+        run: ./ci/validate-cas-configserver-overlay.sh ${{ matrix.versions.casVersion }} ${{ matrix.versions.bootVersion }}
   validate-cas-discoveryserver-overlay:
-    needs: [build]
+    needs: [supported-versions]
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        versions: ${{fromJSON(needs.supported-versions.outputs.supported-versions)}}
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK
@@ -144,10 +155,13 @@ jobs:
         with:
           name: binary-artifacts
       - name: Validate Overlay
-        run: ./ci/validate-cas-discoveryserver-overlay.sh
+        run: ./ci/validate-cas-discoveryserver-overlay.sh ${{ matrix.versions.casVersion }} ${{ matrix.versions.bootVersion }}
   validate-cas-bootadminserver-overlay:
-    needs: [build]
+    needs: [supported-versions]
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        versions: ${{fromJSON(needs.supported-versions.outputs.supported-versions)}}
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK
@@ -160,7 +174,7 @@ jobs:
         with:
           name: binary-artifacts
       - name: Validate Overlay
-        run: ./ci/validate-cas-bootadminserver-overlay.sh
+        run: ./ci/validate-cas-bootadminserver-overlay.sh ${{ matrix.versions.casVersion }} ${{ matrix.versions.bootVersion }}
   publish:
     needs: [build]
     runs-on: ubuntu-latest
@@ -222,7 +236,13 @@ jobs:
         with:
           version: ${{ env.HELM_CURRENT }}
         id: install
+#      - name: Setup tmate session if timeout waiting for pods to start
+#        uses: mxschmitt/action-tmate@v3
       - name: Validate Helm Chart
         run: |
-          ./ci/validate-helm-build-images.sh
+          ./ci/validate-helm-build-images.sh $HELM_CAS_VERSION $HELM_BOOT_VERSION
           ./ci/validate-helm.sh
+#      - name: Setup tmate session
+#        if: ${{ failure() }}
+#        uses: mxschmitt/action-tmate@v3
+#        timeout-minutes: 10

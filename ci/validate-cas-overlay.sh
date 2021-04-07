@@ -1,9 +1,9 @@
 #!/bin/bash
 
-CAS_VERSION=${1:-6.4.0-SNAPSHOT}
-BOOT_VERSION=${2:-2.4.4}
-
 source ./ci/functions.sh
+
+CAS_VERSION=${1:-$DEFAULT_CAS_VERSION}
+BOOT_VERSION=${2:-$DEFAULT_BOOT_VERSION}
 
 java -jar app/build/libs/app.jar &
 pid=$!
