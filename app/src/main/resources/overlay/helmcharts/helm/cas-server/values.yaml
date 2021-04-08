@@ -60,8 +60,8 @@ casServerContainer:
 
     ## Memory settings: If these aren't defined, java will calc values automatically, but requires setting limits on pod
     ## so it doesn't base heap size on host memory
-    maxHeapOpt: -Xmx2G
-    newHeapOpt: -Xms600M
+    maxHeapOpt: '-Xmx2G'
+    newHeapOpt: '-Xms600M'
     debugEnabled: true
     debugSuspend: "n" # could be n or y, must quote or yaml changes to boolean
   warPath: 'app.war'
@@ -107,6 +107,9 @@ casServerContainer:
   readinessInitialDelaySeconds: 45
   livenessInitialDelaySeconds: 120
 
+  ## Extra init containers to add to the statefulset
+  ##
+  initContainers: []
 
   ## An array to add extra env vars
   ## For example:

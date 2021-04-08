@@ -2,13 +2,16 @@
 
 source ./ci/functions.sh
 
+CAS_VERSION=${1:-$DEFAULT_CAS_VERSION}
+BOOT_VERSION=${2:-$DEFAULT_BOOT_VERSION}
+
 java -jar app/build/libs/app.jar &
 pid=$!
 sleep 15
 rm -Rf tmp &> /dev/null
 mkdir tmp
 cd tmp
-curl http://localhost:8080/starter.tgz -d type=cas-bootadmin-server-overlay | tar -xzvf -
+curl http://localhost:8080/starter.tgz -d casVersion=${CAS_VERSION} -d bootVersion=${BOOT_VERSION} -d type=cas-bootadmin-server-overlay | tar -xzvf -
 kill -9 $pid
 
 echo "Building CAS Spring Boot Admin Server Overlay"
@@ -35,6 +38,8 @@ mv build/libs/app.war ${CATALINA_HOME}/webapps/app.war
 
 export SPRING_SECURITY_USER_PASSWORD=password
 export SPRING_SECURITY_USER_NAME=casuser
+
+standAloneCasConfig
 
 ${CATALINA_HOME}/bin/startup.sh & >/dev/null 2>&1
 pid=$!
