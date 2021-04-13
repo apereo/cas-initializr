@@ -24,7 +24,7 @@ pid=$!
 sleep 5
 echo "Launched CAS with pid ${pid}. Waiting for server to come online..."
 echo "Waiting for server to come online..."
-until curl -k -L --fail http://localhost:8443/cas-management; do
+until curl -k -L --fail https://localhost:8443/cas-management; do
     echo -n '.'
     sleep 5
 done
