@@ -96,11 +96,8 @@ jobs:
       - name: Validate Overlay
         run: ./ci/validate-cas-overlay.sh ${{ matrix.versions.casVersion }} ${{ matrix.versions.bootVersion }}
   validate-cas-mgmt-overlay:
-    needs: [supported-versions]
+    needs: [build]
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        versions: ${{fromJSON(needs.supported-versions.outputs.supported-versions)}}
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK
@@ -115,7 +112,7 @@ jobs:
       # - name: Setup tmate session
       #   uses: mxschmitt/action-tmate@v3
       - name: Validate Overlay
-        run: ./ci/validate-cas-mgmt-overlay.sh ${{ matrix.versions.casVersion }} ${{ matrix.versions.bootVersion }}
+        run: ./ci/validate-cas-mgmt-overlay.sh 6.3.3-SNAPSHOT 2.3.7.RELEASE
   validate-cas-configserver-overlay:
     needs: [supported-versions]
     runs-on: ubuntu-latest
