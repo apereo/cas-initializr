@@ -19,14 +19,16 @@ echo "Building CAS Mgmt Overlay"
 
 echo "Launching CAS Mgmt Overlay"
 touch ./users.json
-java -jar build/libs/app.war --server.port=8081 --spring.profiles.active=none --mgmt.user-properties-file=file:${PWD}/users.json --server.ssl.enabled=false &
+java -jar build/libs/app.war --mgmt.cas-sso=false --mgmt.authz-ip-regex=.+ \
+    --server.port=8081 --spring.profiles.active=none --mgmt.user-properties-file=file:${PWD}/users.json \
+    --server.ssl.enabled=false &
 pid=$!
-sleep 5
+sleep 10
 echo "Launched CAS with pid ${pid}. Waiting for server to come online..."
 echo "Waiting for server to come online..."
 until curl -k -L --fail http://localhost:8081/cas-management; do
     echo -n '.'
-    sleep 5
+    sleep 10
 done
 echo -e "\n\nReady!"
 kill -9 $pid
@@ -42,6 +44,9 @@ downloadTomcat
 mv build/libs/app.war ${CATALINA_HOME}/webapps/app.war
 
 export MGMT_USER-PROPERTIES-FILE=file:${PWD}/users.json
+export MGMT_CAS-SSO=false
+export MGMT.AUTHZ-IP-REGEX=.+
+
 ${CATALINA_HOME}/bin/startup.sh & >/dev/null 2>&1
 pid=$!
 sleep 30
