@@ -17,16 +17,25 @@ kill -9 $pid
 echo "Building CAS Mgmt Overlay"
 ./gradlew clean build --no-daemon
 
+dname="${dname:-CN=cas.example.org,OU=Example,OU=Org,C=US}"
+subjectAltName="${subjectAltName:-dns:example.org,dns:localhost,ip:127.0.0.1}"
+keystore=./keystore.jks
+echo -e "\nGenerating keystore ${keystore} for CAS with DN=${dname}, SAN=${subjectAltName} ..."
+[ -f "${keystore}" ] && sudo rm "${keystore}"
+sudo keytool -genkey -noprompt -alias cas -keyalg RSA -keypass changeit -storepass changeit \
+    -keystore "${keystore}" -dname "${dname}" -ext SAN="${subjectAltName}"
+[ -f "${keystore}" ] && echo "Created ${keystore}"
+
 echo "Launching CAS Mgmt Overlay"
 touch ./users.json
 java -jar build/libs/app.war --mgmt.cas-sso=false --mgmt.authz-ip-regex=.+ \
     --server.port=8081 --spring.profiles.active=none --mgmt.user-properties-file=file:${PWD}/users.json \
-    --server.ssl.enabled=false &
+    --server.ssl.key-store=${keystore} &
 pid=$!
 sleep 10
 echo "Launched CAS with pid ${pid}. Waiting for server to come online..."
 echo "Waiting for server to come online..."
-until curl -k -L --fail http://localhost:8081/cas-management; do
+until curl -k -L --fail https://localhost:8081/cas-management; do
     echo -n '.'
     sleep 10
 done

@@ -8,6 +8,8 @@ env:
   HELM_CURRENT: v3.5.3
   HELM_CAS_VERSION: 6.4.0-SNAPSHOT
   HELM_BOOT_VERSION: 2.4.4
+  CAS_MGMT_VERSION: 6.3.3-SNAPSHOT
+  CAS_MGMT_SPRING_BOOT_VERSION: 2.3.7.RELEASE
   DOCKER_USER: ${{ secrets.DOCKER_USER }}
   DOCKER_PWD: ${{ secrets.DOCKER_PWD }}
 
@@ -109,10 +111,10 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: binary-artifacts
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
+      # - name: Setup tmate session
+      #   uses: mxschmitt/action-tmate@v3
       - name: Validate Overlay
-        run: ./ci/validate-cas-mgmt-overlay.sh 6.3.3-SNAPSHOT 2.3.7.RELEASE
+        run: ./ci/validate-cas-mgmt-overlay.sh ${{ env.CAS_MGMT_VERSION }} ${{ env.CAS_MGMT_SPRING_BOOT_VERSION }}
   validate-cas-configserver-overlay:
     needs: [supported-versions]
     runs-on: ubuntu-latest
