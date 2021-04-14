@@ -52,17 +52,13 @@ echo "Building Docker image with Jib"
 downloadTomcat
 mv build/libs/app.war ${CATALINA_HOME}/webapps/app.war
 
-export MGMT_USER-PROPERTIES-FILE=file:${PWD}/users.json
-export MGMT_CAS-SSO=false
-export MGMT.AUTHZ-IP-REGEX=.+
-
 ${CATALINA_HOME}/bin/startup.sh & >/dev/null 2>&1
 pid=$!
 sleep 30
 rc=`curl -L -k -u casuser:password -o /dev/null --connect-timeout 60 -s  -I -w "%{http_code}" http://localhost:8080/app`
 ${CATALINA_HOME}/bin/shutdown.sh & >/dev/null 2>&1
 kill -9 $pid
-if [ "$rc" == 200 ]; then
+if [ "$rc" == 302 ]; then
     echo "Deployed the web application successfully."
 else
     echo "Failed to deploy the web application with status $rc."
