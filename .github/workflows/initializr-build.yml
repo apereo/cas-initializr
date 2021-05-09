@@ -8,6 +8,8 @@ env:
   HELM_CURRENT: v3.5.3
   HELM_CAS_VERSION: 6.4.0-SNAPSHOT
   HELM_BOOT_VERSION: 2.4.5
+  CAS_MGMT_VERSION: 6.3.3-SNAPSHOT
+  CAS_MGMT_SPRING_BOOT_VERSION: 2.3.7.RELEASE
   DOCKER_USER: ${{ secrets.DOCKER_USER }}
   DOCKER_PWD: ${{ secrets.DOCKER_PWD }}
 
@@ -96,11 +98,8 @@ jobs:
       - name: Validate Overlay
         run: ./ci/validate-cas-overlay.sh ${{ matrix.versions.casVersion }} ${{ matrix.versions.bootVersion }}
   validate-cas-mgmt-overlay:
-    needs: [supported-versions]
+    needs: [build]
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        versions: ${{fromJSON(needs.supported-versions.outputs.supported-versions)}}
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK
@@ -115,7 +114,7 @@ jobs:
       # - name: Setup tmate session
       #   uses: mxschmitt/action-tmate@v3
       - name: Validate Overlay
-        run: ./ci/validate-cas-mgmt-overlay.sh ${{ matrix.versions.casVersion }} ${{ matrix.versions.bootVersion }}
+        run: ./ci/validate-cas-mgmt-overlay.sh ${{ env.CAS_MGMT_VERSION }} ${{ env.CAS_MGMT_SPRING_BOOT_VERSION }}
   validate-cas-configserver-overlay:
     needs: [supported-versions]
     runs-on: ubuntu-latest
