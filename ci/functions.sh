@@ -11,7 +11,7 @@ function getProperty {
 }
 
 function downloadTomcat() {
-  tomcatVersion=getProperty "tomcatVersion" "./gradle.properties"
+  tomcatVersion=$(getProperty "tomcatVersion" "./gradle.properties")
   tomcatVersionTag="v${tomcatVersion}"
   tomcatUrl="https://downloads.apache.org/tomcat/tomcat-9/${tomcatVersionTag}/bin/apache-tomcat-${tomcatVersion}.zip"
 
