@@ -4,6 +4,7 @@ DEFAULT_CAS_VERSION=6.4.0-SNAPSHOT
 DEFAULT_BOOT_VERSION=2.4.4
 
 CI_DIR="`dirname \"$0\"`"
+CI_ABS_PATH=$(cd $CI_DIR; pwd)
 
 function getProperty {
    local PROP_KEY=$1
@@ -13,7 +14,7 @@ function getProperty {
 }
 
 function downloadTomcat() {
-  tomcatVersion=$(getProperty tomcatVersion $CI_DIR/../gradle.properties)
+  tomcatVersion=$(getProperty tomcatVersion $CI_ABS_PATH/../gradle.properties)
   tomcatVersionTag="v${tomcatVersion}"
   tomcatUrl="https://downloads.apache.org/tomcat/tomcat-9/${tomcatVersionTag}/bin/apache-tomcat-${tomcatVersion}.zip"
 
