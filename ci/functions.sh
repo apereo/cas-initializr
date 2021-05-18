@@ -4,17 +4,22 @@ DEFAULT_CAS_VERSION=6.4.0-SNAPSHOT
 DEFAULT_BOOT_VERSION=2.4.4
 
 function getProperty {
-   PROP_KEY=$1
-   PROPERTY_FILE=$2
+   local PROP_KEY=$1
+   local PROPERTY_FILE=$2
    if [[ ! -f $PROPERTY_FILE ]]; then
      echo -n "$PROPERTY_FILE not found"
    fi
-   PROP_VALUE=`cat $PROPERTY_FILE | grep "$PROP_KEY" | cut -d'=' -f2`
-   echo -n $PROP_VALUE
+   local PROP_VALUE=`cat $PROPERTY_FILE | grep "$PROP_KEY" | cut -d'=' -f2`
+   echo -n "$PROP_VALUE"
 }
 
 function downloadTomcat() {
-  tomcatVersion=$(getProperty tomcatVersion ./gradle.properties)
+  tomcatVersion=$(getProperty tomcatVersion gradle.properties)
+  if [[ -z "$tomcatVersion" ]] ; then
+    echo "Unable to parse tomcat version"
+  else
+    echo "Downloading Apache Tomcat version ${$tomcatVersion}"
+  fi
   tomcatVersionTag="v${tomcatVersion}"
   tomcatUrl="https://downloads.apache.org/tomcat/tomcat-9/${tomcatVersionTag}/bin/apache-tomcat-${tomcatVersion}.zip"
 
