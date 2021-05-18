@@ -3,8 +3,15 @@
 DEFAULT_CAS_VERSION=6.4.0-SNAPSHOT
 DEFAULT_BOOT_VERSION=2.4.4
 
+function getProperty {
+   PROP_KEY=$1
+   PROPERTY_FILE=$2
+   PROP_VALUE=`cat $PROPERTY_FILE | grep "$PROP_KEY" | cut -d'=' -f2`
+   echo $PROP_VALUE
+}
+
 function downloadTomcat() {
-  source ./gradle.properties
+  tomcatVersion=getProperty("tomcatVersion", "./gradle.properties")
   tomcatVersionTag="v${tomcatVersion}"
   tomcatUrl="https://downloads.apache.org/tomcat/tomcat-9/${tomcatVersionTag}/bin/apache-tomcat-${tomcatVersion}.zip"
 
