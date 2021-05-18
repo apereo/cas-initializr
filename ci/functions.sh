@@ -6,6 +6,9 @@ DEFAULT_BOOT_VERSION=2.4.4
 function getProperty {
    PROP_KEY=$1
    PROPERTY_FILE=$2
+   if [[ ! -f $PROPERTY_FILE ]]; then
+     echo "$PROPERTY_FILE not found"
+   fi
    PROP_VALUE=`cat $PROPERTY_FILE | grep "$PROP_KEY" | cut -d'=' -f2`
    echo $PROP_VALUE
 }
