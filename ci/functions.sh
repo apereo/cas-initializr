@@ -4,7 +4,7 @@ DEFAULT_CAS_VERSION=6.4.0-SNAPSHOT
 DEFAULT_BOOT_VERSION=2.4.4
 
 function downloadTomcat() {
-  tomcatVersion="9.0.45"
+  source ../gradle.properties
   tomcatVersionTag="v${tomcatVersion}"
   tomcatUrl="https://downloads.apache.org/tomcat/tomcat-9/${tomcatVersionTag}/bin/apache-tomcat-${tomcatVersion}.zip"
 
