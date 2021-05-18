@@ -7,14 +7,14 @@ function getProperty {
    PROP_KEY=$1
    PROPERTY_FILE=$2
    if [[ ! -f $PROPERTY_FILE ]]; then
-     echo "$PROPERTY_FILE not found"
+     echo -n "$PROPERTY_FILE not found"
    fi
    PROP_VALUE=`cat $PROPERTY_FILE | grep "$PROP_KEY" | cut -d'=' -f2`
-   echo $PROP_VALUE
+   echo -n $PROP_VALUE
 }
 
 function downloadTomcat() {
-  tomcatVersion=$(getProperty "tomcatVersion" "./gradle.properties")
+  tomcatVersion=$(getProperty tomcatVersion ./gradle.properties)
   tomcatVersionTag="v${tomcatVersion}"
   tomcatUrl="https://downloads.apache.org/tomcat/tomcat-9/${tomcatVersionTag}/bin/apache-tomcat-${tomcatVersion}.zip"
 
