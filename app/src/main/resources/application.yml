@@ -37,12 +37,12 @@ spring:
 
 cas-initializr:
   supported-versions:
-    - cas-version: 6.3.3
+    - cas-version: 6.3.4
       boot-version: 2.3.7.RELEASE
     - cas-version: @casVersion@
       boot-version: @springBootVersion@
     - cas-version: 6.4.0-SNAPSHOT
-      boot-version: 2.4.5
+      boot-version: 2.5.0
 
 initializr:
   name:
