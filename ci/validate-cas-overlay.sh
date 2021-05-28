@@ -42,8 +42,12 @@ done
 echo -e "\n\nReady!"
 kill -9 $pid
 
-echo "Building Docker image with Jib"
 chmod -R 777 ./*.sh >/dev/null 2>&1
+
+echo "Building Docker image with Spring Boot"
+./gradlew bootBuildImage
+
+echo "Building Docker image with Jib"
 ./gradlew jibDockerBuild
 
 publishDockerImage

@@ -11,3 +11,8 @@ task casVersion(description: "Display current CAS version") {
     }
 }
 
+task springBootVersion(description: "Display current Spring Boot version") {
+    doLast {
+        println rootProject.springBootVersion
+    }
+}

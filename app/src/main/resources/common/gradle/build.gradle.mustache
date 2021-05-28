@@ -160,6 +160,12 @@ task casVersion(group: "CAS", description: "Display the current CAS version") {
     }
 }
 
+task springBootVersion(description: "Display current Spring Boot version") {
+    doLast {
+        println rootProject.springBootVersion
+    }
+}
+
 task containerImageCoords(group: "CAS", description: "Display the coordinates for the container image") {
     doFirst {
          println "${project.'containerImageOrg'}/${project.'containerImageName'}:${project.version}"
