@@ -494,6 +494,7 @@ dependencies {
     {{#casServer}}
     implementation "org.apereo.cas:cas-server-core-api-configuration-model"
     implementation "org.apereo.cas:cas-server-webapp-init"
+
     if (project.hasProperty("casModules")) {
         def dependencies = project.getProperty("casModules").split(",")
         dependencies.each {
@@ -522,6 +523,7 @@ dependencies {
     compileOnly "org.apereo.cas:cas-server-webapp-init-eureka-server"
     {{/discoveryServer}}
     
+    developmentOnly "org.springframework.boot:spring-boot-devtools"
 }
 
 bootWar {
@@ -535,7 +537,6 @@ bootWar {
 
     archiveName "app.war"
     baseName "app"
-    excludeDevtools = false
 
     entryCompression = ZipEntryCompression.STORED
 
