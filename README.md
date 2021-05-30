@@ -1,7 +1,7 @@
 # CAS Initializr
 
 CAS Initializr provides a build system and an API to dynamically generate 
-CAS overlays. The project is a based on [Spring Initializr](https://github.com/spring-io/initializr).
+CAS overlays. The project is based on [Spring Initializr](https://github.com/spring-io/initializr).
 
 ## Build
 
