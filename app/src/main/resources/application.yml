@@ -9,7 +9,6 @@ management:
     enabled: false
   server:
     port: ${MGMT_PORT:8081}
-    address: ${MGMT_ADDRESS:}
   endpoints:
     enabled-by-default: false
     web:
