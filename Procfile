@@ -1,1 +1,1 @@
-web:    java $JAVA_OPTS -jar app/build/libs/app.jar -DMGMT_PORT=$PORT
+web:    java $JAVA_OPTS -jar app/build/libs/app.jar --MGMT_PORT=$PORT
