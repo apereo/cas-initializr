@@ -245,7 +245,7 @@ apply plugin: "de.undercouch.download"
 def tomcatDirectory = "${buildDir}/apache-tomcat-${tomcatVersion}"
 project.ext."tomcatDirectory" = tomcatDirectory
 
-def explodedDir = "${buildDir}/cas"
+def explodedDir = "${buildDir}/app"
 def explodedResourcesDir = "${buildDir}/cas-resources"
 
 def resourcesJarName = "cas-server-webapp-resources"
@@ -258,7 +258,7 @@ task unzip(type: Copy, group: "CAS", description: "Explodes the CAS archive and 
 
     from zipTree("${explodedDir}/WEB-INF/lib/${resourcesJarName}-${project.'cas.version'}.jar")
     into explodedResourcesDir
-    
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     doLast {
         println "Exploded WAR resources into ${explodedResourcesDir}"
     }

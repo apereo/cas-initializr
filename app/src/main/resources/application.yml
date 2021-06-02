@@ -9,6 +9,11 @@ management:
     enabled: false
   server:
     port: ${MGMT_PORT:8081}
+    # Mgmt server address cannot be specified if
+    # the server port and the management server port
+    # are the same. This needs to be modified manually
+    # or controlled using a runtime system setting.
+    # address: ${MGMT_ADDRESS:}
   endpoints:
     enabled-by-default: false
     web:
