@@ -8,7 +8,7 @@ management:
   security:
     enabled: false
   server:
-    port: ${MGMT_PORT:8081}
+    port: ${MGMT_PORT:${PORT:8081}}
     # Mgmt server address cannot be specified if
     # the server port and the management server port
     # are the same. This needs to be modified manually

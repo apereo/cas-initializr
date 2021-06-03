@@ -24,6 +24,7 @@ import io.spring.initializr.metadata.InitializrMetadataProvider;
 import io.spring.initializr.web.support.InitializrMetadataUpdateStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.actuate.info.InfoContributor;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -34,12 +35,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class CasInitializrConfiguration {
     @Autowired
     private ConfigurableApplicationContext applicationContext;
-
-    @Autowired
-    @Bean
-    public DependencyAliasesInfoContributor dependencyAliasesInfoContributor(final InitializrMetadataProvider provider) {
-        return new DependencyAliasesInfoContributor(provider);
-    }
 
     @Bean
     public ProjectContributor projectLicenseContributor() {

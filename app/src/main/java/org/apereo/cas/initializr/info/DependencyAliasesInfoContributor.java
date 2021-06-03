@@ -13,7 +13,7 @@ public class DependencyAliasesInfoContributor implements InfoContributor {
 
     @Override
     public void contribute(final Info.Builder builder) {
-        Map<String, Object> details = new LinkedHashMap<>();
+        var details = new LinkedHashMap<>();
         metadataProvider.get().getDependencies().getAll()
             .stream()
             .filter(dependency -> !dependency.getAliases().isEmpty())
