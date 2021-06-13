@@ -39,8 +39,6 @@ mv build/libs/app.war ${CATALINA_HOME}/webapps/app.war
 export SPRING_SECURITY_USER_PASSWORD=password
 export SPRING_SECURITY_USER_NAME=casuser
 
-standAloneCasConfig
-
 ${CATALINA_HOME}/bin/startup.sh & >/dev/null 2>&1
 pid=$!
 sleep 30
