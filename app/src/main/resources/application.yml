@@ -46,7 +46,7 @@ cas-initializr:
     - cas-version: @casVersion@
       boot-version: @springBootVersion@
     - cas-version: 6.4.0-SNAPSHOT
-      boot-version: 2.5.1
+      boot-version: 2.5.2
 
 initializr:
   name:
