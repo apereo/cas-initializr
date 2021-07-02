@@ -42,6 +42,10 @@ dependencies {
     implementation "org.apereo.cas:cas-server-core-configuration-metadata-repository:${casVersion}"
     implementation "org.apereo.cas:cas-server-core-api-configuration-model:${casVersion}"
 
+    // temporarily added for CAS 6.4.0-RC5 to override snapshot dependency
+    implementation "org.apereo.service.persondir:person-directory-impl:2.0.9"
+    implementation "org.apereo.service.persondir:person-directory-api:2.0.9"
+
     runtimeOnly "org.springframework.boot:spring-boot-starter-tomcat"
 
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
