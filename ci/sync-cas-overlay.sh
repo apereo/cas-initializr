@@ -18,8 +18,9 @@ curl http://localhost:8080/starter.tgz \
   -d "casVersion=${CAS_VERSION}&bootVersion=${BOOT_VERSION}" | tar -xzvf -
 kill -9 $pid
 
-echo "Cloning CAS overlay repository..."
-git clone --depth 1 https://${GH_TOKEN}@github.com/apereo/cas-overlay-template $PWD/overlay-repo
+echo "Cloning CAS overlay repository branch ${BRANCH}..."
+git clone --single-branch --branch ${BRANCH} \
+  https://${GH_TOKEN}@github.com/apereo/cas-overlay-template $PWD/overlay-repo
 
 echo "Moving .git directory into generated overlay"
 mv $PWD/overlay-repo/.git ./initializr
@@ -39,7 +40,7 @@ git commit -am "Sync"
 git status
 
 echo "Pushing changes to branch ${BRANCH}"
-git push --set-upstream origin ${BRANCH}
+git push --set-upstream origin ${BRANCH} --force
 
 echo "Done"
 
