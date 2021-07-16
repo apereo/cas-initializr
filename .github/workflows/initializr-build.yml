@@ -4,8 +4,8 @@ env:
   JAVA_OPTS: "-Xms512m -Xmx6048m -Xss128m -XX:ReservedCodeCacheSize=512m -server -XX:+UseG1GC"
   GRADLE_OPTS: "-Xms512m -Xmx6048m -Xss128m -XX:ReservedCodeCacheSize=512m -server -XX:+UseG1GC"
   TERM: xterm-256color
-  JDK_CURRENT: 11.0.10
-  HELM_CURRENT: v3.5.3
+  JDK_CURRENT: 11.0.11
+  HELM_CURRENT: v3.6.3
   HELM_CAS_VERSION: 6.4.0-SNAPSHOT
   HELM_BOOT_VERSION: 2.5.2
   CAS_MGMT_VERSION: 6.3.3
