@@ -19,11 +19,11 @@ curl http://localhost:8080/starter.tgz \
 kill -9 $pid
 
 echo "Cloning CAS overlay repository..."
-git clone --depth 1 https://${GH_TOKEN}@github.com/apereo/cas-overlay-template $PWD/overlay
-rm -Rf $PWD/overlay/*.*
-mv $PWD/initializr/* $PWD/overlay
+git clone --depth 1 https://${GH_TOKEN}@github.com/apereo/cas-overlay-template $PWD/overlay-repo
+rm -Rf $PWD/overlay-repo/*.*
+mv $PWD/initializr/* $PWD/overlay-repo
 
-cd $PWD/overlay
+cd $PWD/overlay-repo
 ls
 git status
 
