@@ -133,10 +133,13 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v1
         with:
+          if: ${{ matrix.versions.type == 'cas-mgmt' }}
           java-version: ${{ env.JDK_CURRENT }}
       - name: Initialize
+        if: ${{ matrix.versions.type == 'cas-mgmt' }}
         run: chmod -R 777 ./ci/*.sh
       - uses: actions/download-artifact@v2
+        if: ${{ matrix.versions.type == 'cas-mgmt' }}
         with:
           name: binary-artifacts
       # - name: Setup tmate session
@@ -153,12 +156,14 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK
+        if: ${{ matrix.versions.type == 'cas' }}
         uses: actions/setup-java@v1
         with:
           java-version: ${{ env.JDK_CURRENT }}
       - name: Initialize
         run: chmod -R 777 ./ci/*.sh
       - uses: actions/download-artifact@v2
+        if: ${{ matrix.versions.type == 'cas' }}
         with:
           name: binary-artifacts
       # - name: Setup tmate session
@@ -174,13 +179,17 @@ jobs:
         versions: ${{fromJSON(needs.supported-versions.outputs.supported-versions)}}
     steps:
       - uses: actions/checkout@v2
+        if: ${{ matrix.versions.type == 'cas' }}
       - name: Set up JDK
+        if: ${{ matrix.versions.type == 'cas' }}
         uses: actions/setup-java@v1
         with:
           java-version: ${{ env.JDK_CURRENT }}
       - name: Initialize
+        if: ${{ matrix.versions.type == 'cas' }}
         run: chmod -R 777 ./ci/*.sh
       - uses: actions/download-artifact@v2
+        if: ${{ matrix.versions.type == 'cas' }}
         with:
           name: binary-artifacts
       - name: Validate Overlay
@@ -194,13 +203,17 @@ jobs:
         versions: ${{fromJSON(needs.supported-versions.outputs.supported-versions)}}
     steps:
       - uses: actions/checkout@v2
+        if: ${{ matrix.versions.type == 'cas' }}
       - name: Set up JDK
+        if: ${{ matrix.versions.type == 'cas' }}
         uses: actions/setup-java@v1
         with:
           java-version: ${{ env.JDK_CURRENT }}
       - name: Initialize
+        if: ${{ matrix.versions.type == 'cas' }}
         run: chmod -R 777 ./ci/*.sh
       - uses: actions/download-artifact@v2
+        if: ${{ matrix.versions.type == 'cas' }}
         with:
           name: binary-artifacts
       - name: Validate Overlay
