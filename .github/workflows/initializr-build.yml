@@ -183,7 +183,6 @@ jobs:
       matrix:
         versions: ${{fromJSON(needs.supported-versions.outputs.supported-versions)}}
     name: Validate Discovery ${{ matrix.versions.version }}
-    if: ${{ matrix.versions.type == 'cas' }}
     steps:
       - uses: actions/checkout@v2
         if: ${{ matrix.versions.type == 'cas' }}
