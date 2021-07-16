@@ -50,6 +50,9 @@ git commit -am "Sync"
 git status
 
 echo "Pushing changes to branch ${BRANCH}"
+git remote -v
+git remote rm origin
+git remote add origin https://${GH_TOKEN}@github.com/apereo/cas-overlay-template
 git push --set-upstream origin ${BRANCH} --force
 
 echo "Done"
