@@ -83,19 +83,19 @@ jobs:
     strategy:
       matrix:
         versions: ${{fromJSON(needs.supported-versions.outputs.supported-versions)}}
-    name: Sync CAS ${{ matrix.versions.casVersion }} Branch ${{ matrix.versions.branch }}
+    name: Sync CAS ${{ matrix.versions.version }} Branch ${{ matrix.versions.branch }}
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK
-        if: ${{ github.event_name == 'push' }}
+        if: ${{ matrix.versions.sync == true && matrix.versions.type == 'cas' && github.event_name == 'push' && env.GH_TOKEN != null }}
         uses: actions/setup-java@v1
         with:
           java-version: ${{ env.JDK_CURRENT }}
       - name: Initialize
-        if: ${{ github.event_name == 'push' }}
+        if: ${{ matrix.versions.sync == true && matrix.versions.type == 'cas' && github.event_name == 'push' && env.GH_TOKEN != null }}
         run: chmod -R 777 ./ci/*.sh
       - uses: actions/download-artifact@v2
-        if: ${{ github.event_name == 'push' }}
+        if: ${{ matrix.versions.sync == true && matrix.versions.type == 'cas' && github.event_name == 'push' && env.GH_TOKEN != null }}
         with:
           name: binary-artifacts
       - name: Sync Overlay

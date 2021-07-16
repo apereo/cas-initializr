@@ -18,4 +18,6 @@ public class SupportedVersion {
     private boolean sync;
 
     private String branch;
+
+    private String type;
 }

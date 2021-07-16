@@ -41,8 +41,8 @@ spring:
 
 cas-initializr:
   supported-versions:
-    - version: 6.3.5
-      boot-version: 2.3.7.RELEASE
+    - version: @casMgmtVersion@
+      boot-version: @casMgmtSpringBootVersion@
       sync: true
       branch: 6.3
       type: cas-mgmt
