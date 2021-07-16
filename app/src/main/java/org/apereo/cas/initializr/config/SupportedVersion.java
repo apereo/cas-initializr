@@ -15,4 +15,7 @@ public class SupportedVersion {
 
     private String bootVersion;
 
+    private boolean sync;
+
+    private String branch;
 }

@@ -12,6 +12,7 @@ env:
   CAS_MGMT_SPRING_BOOT_VERSION: 2.3.7.RELEASE
   DOCKER_USER: ${{ secrets.DOCKER_USER }}
   DOCKER_PWD: ${{ secrets.DOCKER_PWD }}
+  GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
 ##########################################################################
 
@@ -78,8 +79,9 @@ jobs:
           . ./ci/functions.sh
           stopInitializr
   ##########################################################################
-  validate-cas-overlay:
+  sync-cas-overlay:
     needs: [supported-versions]
+    if: ${{ github.event_name == 'push' && env.GH_TOKEN != null}}
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -95,153 +97,7 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: binary-artifacts
-      - name: Validate Overlay
-        run: ./ci/validate-cas-overlay.sh ${{ matrix.versions.casVersion }} ${{ matrix.versions.bootVersion }}
-  validate-cas-mgmt-overlay:
-    needs: [build]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up JDK
-        uses: actions/setup-java@v1
-        with:
-          java-version: ${{ env.JDK_CURRENT }}
-      - name: Initialize
-        run: chmod -R 777 ./ci/*.sh
-      - uses: actions/download-artifact@v2
-        with:
-          name: binary-artifacts
-      # - name: Setup tmate session
-      #   uses: mxschmitt/action-tmate@v3
-      - name: Validate Overlay
-        run: ./ci/validate-cas-mgmt-overlay.sh ${{ env.CAS_MGMT_VERSION }} ${{ env.CAS_MGMT_SPRING_BOOT_VERSION }}
-  validate-cas-configserver-overlay:
-    needs: [supported-versions]
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        versions: ${{fromJSON(needs.supported-versions.outputs.supported-versions)}}
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up JDK
-        uses: actions/setup-java@v1
-        with:
-          java-version: ${{ env.JDK_CURRENT }}
-      - name: Initialize
-        run: chmod -R 777 ./ci/*.sh
-      - uses: actions/download-artifact@v2
-        with:
-          name: binary-artifacts
-      # - name: Setup tmate session
-      #   uses: mxschmitt/action-tmate@v3
-      - name: Validate Overlay
-        run: ./ci/validate-cas-configserver-overlay.sh ${{ matrix.versions.casVersion }} ${{ matrix.versions.bootVersion }}
-  validate-cas-discoveryserver-overlay:
-    needs: [supported-versions]
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        versions: ${{fromJSON(needs.supported-versions.outputs.supported-versions)}}
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up JDK
-        uses: actions/setup-java@v1
-        with:
-          java-version: ${{ env.JDK_CURRENT }}
-      - name: Initialize
-        run: chmod -R 777 ./ci/*.sh
-      - uses: actions/download-artifact@v2
-        with:
-          name: binary-artifacts
-      - name: Validate Overlay
-        run: ./ci/validate-cas-discoveryserver-overlay.sh ${{ matrix.versions.casVersion }} ${{ matrix.versions.bootVersion }}
-  validate-cas-bootadminserver-overlay:
-    needs: [supported-versions]
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        versions: ${{fromJSON(needs.supported-versions.outputs.supported-versions)}}
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up JDK
-        uses: actions/setup-java@v1
-        with:
-          java-version: ${{ env.JDK_CURRENT }}
-      - name: Initialize
-        run: chmod -R 777 ./ci/*.sh
-      - uses: actions/download-artifact@v2
-        with:
-          name: binary-artifacts
-      - name: Validate Overlay
-        run: ./ci/validate-cas-bootadminserver-overlay.sh ${{ matrix.versions.casVersion }} ${{ matrix.versions.bootVersion }}
-  publish:
-    needs: [build]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up JDK
-        uses: actions/setup-java@v1
-        with:
-          java-version: ${{ env.JDK_CURRENT }}
-      - name: Initialize
-        run: chmod -R 777 ./ci/*.sh
-      - uses: actions/download-artifact@v2
-        with:
-          name: binary-artifacts
-      - name: Build Docker Image
-        run: ./gradlew bootBuildImage
-      - name: Publish Docker Image
-        if: ${{ github.event_name == 'push' && env.DOCKER_USER != null && env.DOCKER_PWD != null }}
-        run: |
-          echo "${DOCKER_PWD}" | docker login --username "$DOCKER_USER" --password-stdin
-          imageTag=(`./gradlew casVersion --q`)
-          echo "Pushing Docker image with tag $imageTag"
-          docker push apereo/cas-initializr:"$imageTag"
-  helm:
-    needs: [build]
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        k3s-version: [v1.20.2, v1.19.7, v1.18.15, v1.17.17] # v1.16.15
-    env:
-      GOPATH: /home/runner/go
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Set up JDK
-        uses: actions/setup-java@v1
-        with:
-          java-version: ${{ env.JDK_CURRENT }}
-      - uses: actions/download-artifact@v2
-        with:
-          name: binary-artifacts
-      - name: Install K3S
-        env:
-          INSTALL_K3S_VERSION: ${{ matrix.k3s-version }}+k3s1
-          INSTALL_K3S_EXEC: "--disable=traefik" # using ingress-nginx
-        run: |
-          set -x
-          curl -sfL https://get.k3s.io | sh -
-          sudo chmod -R a+rw /etc/rancher/k3s
-          sudo mkdir -p $HOME/.kube && sudo chown -R runner $HOME/.kube
-          sudo k3s kubectl config view --raw > $HOME/.kube/config
-          sudo chown runner $HOME/.kube/config
-          kubectl version
-      - name: Add /usr/local/bin to PATH
-        run: |
-          echo "/usr/local/bin" >> $GITHUB_PATH
-      - name: Install helm
-        uses: azure/setup-helm@v1
-        with:
-          version: ${{ env.HELM_CURRENT }}
-        id: install
-#      - name: Setup tmate session if timeout waiting for pods to start
-#        uses: mxschmitt/action-tmate@v3
-      - name: Validate Helm Chart
-        run: |
-          ./ci/validate-helm-build-images.sh $HELM_CAS_VERSION $HELM_BOOT_VERSION
-          ./ci/validate-helm.sh
-#      - name: Setup tmate session
-#        if: ${{ failure() }}
-#        uses: mxschmitt/action-tmate@v3
-#        timeout-minutes: 10
+      - name: Sync Overlay
+        if: ${{ matrix.versions.sync == "true" }}
+        run: ./ci/validate-cas-overlay.sh ${{ matrix.versions.casVersion }} ${{ matrix.versions.bootVersion }} ${{ matrix.versions.branch }}
+  ##########################################################################

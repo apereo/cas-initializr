@@ -67,11 +67,17 @@ bootRun {
 }
 
 processResources {
+    println "CAS version is " + project.property("casVersion")
+    def casBranch = project.property("casVersion").toString().split("\\.")
+    def casBranchName = casBranch[0] + "." + casBranch[1]
+    println "CAS branch is ${casBranchName}"
+
     filesMatching(['**/*.yml', '**/*.properties', '**/*.md', '**/*.mustache']) {
         filter org.apache.tools.ant.filters.ReplaceTokens, tokens: [
                 "javaVersion"                            : project.sourceCompatibility,
 
                 "casVersion"                             : project.property("casVersion"),
+                "casBranch"                              : casBranchName,
                 "casMgmtVersion"                         : project.property("casMgmtVersion"),
                 "casMgmtCasVersion"                      : project.property("casMgmtCasVersion"),
                 "version"                                : project.property("version"),

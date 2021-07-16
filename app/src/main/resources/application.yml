@@ -43,11 +43,17 @@ cas-initializr:
   supported-versions:
     - cas-version: 6.3.5
       boot-version: 2.3.7.RELEASE
+      sync: true
+      branch: 6.3.x
     - cas-version: @casVersion@
       boot-version: @springBootVersion@
+      branch: @casBranch@
+      sync: true
     - cas-version: 6.4.0-SNAPSHOT
       boot-version: 2.5.2
-
+      sync: true
+      branch: master
+      
 initializr:
   name:
     value: cas
