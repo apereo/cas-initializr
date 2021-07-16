@@ -86,6 +86,7 @@ jobs:
     name: Sync CAS ${{ matrix.versions.version }} Branch ${{ matrix.versions.branch }}
     steps:
       - uses: actions/checkout@v2
+        if: ${{ matrix.versions.sync == true && matrix.versions.type == 'cas' && github.event_name == 'push' && env.GH_TOKEN != null }}
       - name: Set up JDK
         if: ${{ matrix.versions.sync == true && matrix.versions.type == 'cas' && github.event_name == 'push' && env.GH_TOKEN != null }}
         uses: actions/setup-java@v1
@@ -166,6 +167,7 @@ jobs:
         with:
           java-version: ${{ env.JDK_CURRENT }}
       - name: Initialize
+        if: ${{ matrix.versions.type == 'cas' }}
         run: chmod -R 777 ./ci/*.sh
       - uses: actions/download-artifact@v2
         if: ${{ matrix.versions.type == 'cas' }}
