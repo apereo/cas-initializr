@@ -12,7 +12,7 @@ sleep 15
 mkdir tmp
 cd tmp
 
-echo "Building CAS overlay ${CAS_VERSION} with Spring Boot ${BOOT_VERSION} for branch ${BRANCH}"
+echo "Building Overlay ${CAS_VERSION} with Spring Boot ${BOOT_VERSION} for branch ${BRANCH}"
 curl http://localhost:8080/starter.tgz \
   -d baseDir=initializr \
   -d "casVersion=${CAS_VERSION}&bootVersion=${BOOT_VERSION}" | tar -xzvf -
