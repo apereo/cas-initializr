@@ -48,7 +48,7 @@ jobs:
           path: ./**/build/libs/*.*
   ##########################################################################
   supported-versions:
-#    needs: [build]
+    needs: [build]
     runs-on: ubuntu-latest
     outputs:
       supported-versions: ${{ steps.get-supported-versions.outputs.supported-versions }}
