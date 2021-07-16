@@ -85,7 +85,7 @@ jobs:
     strategy:
       matrix:
         versions: ${{fromJSON(needs.supported-versions.outputs.supported-versions)}}
-    name: CAS ${{ matrix.versions.casVersion }} Branch ${{ matrix.versions.branch }}
+    name: Sync CAS ${{ matrix.versions.casVersion }} Branch ${{ matrix.versions.branch }}
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK

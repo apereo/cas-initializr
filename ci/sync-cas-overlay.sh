@@ -20,10 +20,11 @@ kill -9 $pid
 
 echo "Cloning CAS overlay repository..."
 git clone --depth 1 https://${GH_TOKEN}@github.com/apereo/cas-overlay-template $PWD/overlay-repo
-mv $PWD/overlay-repo/.git initializr
+mv $PWD/overlay-repo/.git ./initializr
 rm -Rf $PWD/overlay-repo
 cd $PWD/overlay-repo
-ls
+git config user.email "cas@apereo.org"
+git config user.name "CAS"
 git status
 git add --all
 git commit -S -am "Sync"
