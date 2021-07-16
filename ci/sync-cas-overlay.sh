@@ -38,4 +38,9 @@ git add --all
 git commit -am "Sync"
 git status
 
+echo "Pushing changes to branch ${BRANCH}"
+git push --set-upstream origin ${BRANCH}
+
+echo "Done"
+
 exit 1
