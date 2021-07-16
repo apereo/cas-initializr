@@ -50,11 +50,10 @@ git commit -am "Sync"
 git status
 
 echo "Pushing changes to branch ${BRANCH}"
-git remote -v
-git remote rm origin
-git remote add origin https://${GH_TOKEN}@github.com/apereo/cas-overlay-template
 git push --set-upstream origin ${BRANCH} --force
-
+if [ $? -ne 0 ] ; then
+  echo "Could not successfully push changes to the repository branch"
+  exit 1
+fi
 echo "Done"
-
-exit 1
+exit 0
