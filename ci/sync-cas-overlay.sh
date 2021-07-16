@@ -19,6 +19,12 @@ curl http://localhost:8080/starter.tgz \
 kill -9 $pid
 
 echo "Cloning CAS overlay repository branch ${BRANCH}..."
+
+if [ -z "$GH_TOKEN" ] ; then
+  echo -e "\nNo GitHub token is defined."
+  exit 1
+fi
+
 git clone --single-branch --branch ${BRANCH} \
   https://${GH_TOKEN}@github.com/apereo/cas-overlay-template /tmp/overlay-repo
 if [ $? -ne 0 ] ; then
