@@ -52,11 +52,11 @@ echo "Checking repository status..."
 git status
 
 echo "Updating project README"
-warning="# WARNING<br /> "
-warning="${warning}******************************************************<br /> "
+warning="# IMPORTANT NOTE<br/><br/>"
+warning="${warning}<br/>******************************************************<br/><br/>"
 warning="${warning}This repository is always automatically generated from the CAS Initializr.<br /> "
-warning="${warning}To learn more, please visit the [CAS documentation](https://apereo.github.io/cas).<br /> "
-warning="${warning}******************************************************<br /> "
+warning="${warning}To learn more, please visit the [CAS documentation](https://apereo.github.io/cas)."
+warning="${warning}<br/>******************************************************<br/>"
 text=$(echo "${warning}"; cat README.md)
 echo "Updating project README with warning..."
 echo "${text}"

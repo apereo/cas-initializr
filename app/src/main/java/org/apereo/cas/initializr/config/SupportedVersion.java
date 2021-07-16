@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 public class SupportedVersion {
 
-    private String casVersion;
+    private String version;
 
     private String bootVersion;
 
