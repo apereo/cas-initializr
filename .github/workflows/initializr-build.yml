@@ -108,6 +108,7 @@ jobs:
     strategy:
       matrix:
         versions: ${{fromJSON(needs.supported-versions.outputs.supported-versions)}}
+    name: Validate CAS ${{ matrix.versions.version }} Branch ${{ matrix.versions.branch }}
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK
@@ -128,12 +129,14 @@ jobs:
     strategy:
       matrix:
         versions: ${{fromJSON(needs.supported-versions.outputs.supported-versions)}}
+    name: Validate CAS Mgmt ${{ matrix.versions.version }} Branch ${{ matrix.versions.branch }}
     steps:
       - uses: actions/checkout@v2
+        if: ${{ matrix.versions.type == 'cas-mgmt' }}
       - name: Set up JDK
         uses: actions/setup-java@v1
+        if: ${{ matrix.versions.type == 'cas-mgmt' }}
         with:
-          if: ${{ matrix.versions.type == 'cas-mgmt' }}
           java-version: ${{ env.JDK_CURRENT }}
       - name: Initialize
         if: ${{ matrix.versions.type == 'cas-mgmt' }}
@@ -153,8 +156,10 @@ jobs:
     strategy:
       matrix:
         versions: ${{fromJSON(needs.supported-versions.outputs.supported-versions)}}
+    name: Validate Config Server ${{ matrix.versions.version }} Branch ${{ matrix.versions.branch }}
     steps:
       - uses: actions/checkout@v2
+        if: ${{ matrix.versions.type == 'cas' }}
       - name: Set up JDK
         if: ${{ matrix.versions.type == 'cas' }}
         uses: actions/setup-java@v1
@@ -177,6 +182,7 @@ jobs:
     strategy:
       matrix:
         versions: ${{fromJSON(needs.supported-versions.outputs.supported-versions)}}
+    name: Validate Discovery ${{ matrix.versions.version }} Branch ${{ matrix.versions.branch }}
     steps:
       - uses: actions/checkout@v2
         if: ${{ matrix.versions.type == 'cas' }}
@@ -201,6 +207,7 @@ jobs:
     strategy:
       matrix:
         versions: ${{fromJSON(needs.supported-versions.outputs.supported-versions)}}
+    name: Validate BootAdmin Server ${{ matrix.versions.version }} Branch ${{ matrix.versions.branch }}
     steps:
       - uses: actions/checkout@v2
         if: ${{ matrix.versions.type == 'cas' }}
