@@ -20,11 +20,15 @@ kill -9 $pid
 
 echo "Cloning CAS overlay repository branch ${BRANCH}..."
 git clone --single-branch --branch ${BRANCH} \
-  https://${GH_TOKEN}@github.com/apereo/cas-overlay-template $PWD/overlay-repo
+  https://${GH_TOKEN}@github.com/apereo/cas-overlay-template /tmp/overlay-repo
+if [ $? -ne 0 ] ; then
+  echo "Could not successfully clone the repository branch"
+  exit 1
+fi
 
 echo "Moving .git directory into generated overlay"
-mv $PWD/overlay-repo/.git ./initializr
-rm -Rf $PWD/overlay-repo
+mv /tmp/overlay-repo/.git ./initializr
+rm -Rf /tmp/overlay-repo
 
 echo "Configuring git..."
 cd ./initializr && pwd
