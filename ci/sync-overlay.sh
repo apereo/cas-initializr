@@ -5,6 +5,7 @@ source ./ci/functions.sh
 CAS_VERSION=${1:-$DEFAULT_CAS_VERSION}
 BOOT_VERSION=${2:-$DEFAULT_BOOT_VERSION}
 BRANCH=${3:-master}
+TYPE=${4:-cas-overlay}
 
 java -jar app/build/libs/app.jar &
 pid=$!
@@ -12,21 +13,27 @@ sleep 15
 mkdir tmp
 cd tmp
 
-echo "Building Overlay ${CAS_VERSION} with Spring Boot ${BOOT_VERSION} for branch ${BRANCH}"
+case "${TYPE}" in
+   cas-overlay)
+     repoName="cas-overlay-template"
+     ;;
+esac
+
+echo "Building Overlay ${TYPE}:${CAS_VERSION} with Spring Boot ${BOOT_VERSION} for branch ${BRANCH}"
 curl http://localhost:8080/starter.tgz \
   -d baseDir=initializr \
+  -d type=${TYPE}
   -d "casVersion=${CAS_VERSION}&bootVersion=${BOOT_VERSION}" | tar -xzvf -
 kill -9 $pid
-
-echo "Cloning CAS overlay repository branch ${BRANCH}..."
 
 if [ -z "$GH_TOKEN" ] ; then
   echo -e "\nNo GitHub token is defined."
   exit 1
 fi
 
+echo "Cloning overlay repository branch ${BRANCH}..."
 git clone --single-branch --branch ${BRANCH} \
-  https://${GH_TOKEN}@github.com/apereo/cas-overlay-template /tmp/overlay-repo
+  https://${GH_TOKEN}@github.com/apereo/${repoName} /tmp/overlay-repo
 if [ $? -ne 0 ] ; then
   echo "Could not successfully clone the repository branch"
   exit 1
@@ -46,11 +53,13 @@ git status
 
 echo "Updating project README"
 warning="# WARNING \n"
-warning="******************************************************\n"
+warning="${warning}******************************************************\n"
 warning="${warning}This repository is always automatically generated from the CAS Initializr.\n"
 warning="${warning}To learn more, please visit the [CAS documentation](https://apereo.github.io/cas).\n\n"
-warning="******************************************************\n"
+warning="${warning}******************************************************\n"
 text=$(echo "${warning}"; cat README.md)
+echo "Updating project README with warning..."
+echo "${text}"
 echo "${text}" > README.md
 
 echo "Committing changes..."
