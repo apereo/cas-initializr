@@ -108,7 +108,7 @@ jobs:
     strategy:
       matrix:
         versions: ${{fromJSON(needs.supported-versions.outputs.supported-versions)}}
-    name: Validate CAS ${{ matrix.versions.version }} Branch ${{ matrix.versions.branch }}
+    name: Validate CAS ${{ matrix.versions.version }}
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK
@@ -129,7 +129,7 @@ jobs:
     strategy:
       matrix:
         versions: ${{fromJSON(needs.supported-versions.outputs.supported-versions)}}
-    name: Validate CAS Mgmt ${{ matrix.versions.version }} Branch ${{ matrix.versions.branch }}
+    name: Validate CAS Mgmt ${{ matrix.versions.version }}
     steps:
       - uses: actions/checkout@v2
         if: ${{ matrix.versions.type == 'cas-mgmt' }}
@@ -156,7 +156,7 @@ jobs:
     strategy:
       matrix:
         versions: ${{fromJSON(needs.supported-versions.outputs.supported-versions)}}
-    name: Validate Config Server ${{ matrix.versions.version }} Branch ${{ matrix.versions.branch }}
+    name: Validate Config Server ${{ matrix.versions.version }}
     steps:
       - uses: actions/checkout@v2
         if: ${{ matrix.versions.type == 'cas' }}
@@ -182,7 +182,8 @@ jobs:
     strategy:
       matrix:
         versions: ${{fromJSON(needs.supported-versions.outputs.supported-versions)}}
-    name: Validate Discovery ${{ matrix.versions.version }} Branch ${{ matrix.versions.branch }}
+    name: Validate Discovery ${{ matrix.versions.version }}
+    if: ${{ matrix.versions.type == 'cas' }}
     steps:
       - uses: actions/checkout@v2
         if: ${{ matrix.versions.type == 'cas' }}
@@ -207,7 +208,7 @@ jobs:
     strategy:
       matrix:
         versions: ${{fromJSON(needs.supported-versions.outputs.supported-versions)}}
-    name: Validate BootAdmin Server ${{ matrix.versions.version }} Branch ${{ matrix.versions.branch }}
+    name: Validate BootAdmin Server ${{ matrix.versions.version }}
     steps:
       - uses: actions/checkout@v2
         if: ${{ matrix.versions.type == 'cas' }}
