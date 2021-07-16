@@ -26,5 +26,6 @@ mv $PWD/initializr/* $PWD/overlay
 cd $PWD/overlay
 ls
 git status
-  
 
+
+exit 1
