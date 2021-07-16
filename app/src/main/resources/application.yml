@@ -44,7 +44,7 @@ cas-initializr:
     - cas-version: 6.3.5
       boot-version: 2.3.7.RELEASE
       sync: true
-      branch: 6.3.x
+      branch: 6.3
     - cas-version: @casVersion@
       boot-version: @springBootVersion@
       branch: @casBranch@
