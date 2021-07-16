@@ -81,7 +81,6 @@ jobs:
   ##########################################################################
   sync-cas-overlay:
     needs: [supported-versions]
-    if: ${{ github.event_name == 'push' && env.GH_TOKEN != null}}
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -89,15 +88,18 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK
+        if: ${{ github.event_name == 'push' }}
         uses: actions/setup-java@v1
         with:
           java-version: ${{ env.JDK_CURRENT }}
       - name: Initialize
+        if: ${{ github.event_name == 'push' }}
         run: chmod -R 777 ./ci/*.sh
       - uses: actions/download-artifact@v2
+        if: ${{ github.event_name == 'push' }}
         with:
           name: binary-artifacts
       - name: Sync Overlay
-        if: ${{ matrix.versions.sync == "true" }}
-        run: ./ci/validate-cas-overlay.sh ${{ matrix.versions.casVersion }} ${{ matrix.versions.bootVersion }} ${{ matrix.versions.branch }}
+        if: ${{ matrix.versions.sync == "true" and github.event_name == 'push' && env.GH_TOKEN != null }}
+        run: ./ci/sync-cas-overlay.sh ${{ matrix.versions.casVersion }} ${{ matrix.versions.bootVersion }} ${{ matrix.versions.branch }}
   ##########################################################################
