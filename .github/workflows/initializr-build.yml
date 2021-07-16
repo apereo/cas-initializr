@@ -100,6 +100,6 @@ jobs:
         with:
           name: binary-artifacts
       - name: Sync Overlay
-        if: ${{ matrix.versions.sync == "true" and github.event_name == 'push' && env.GH_TOKEN != null }}
+        if: ${{ matrix.versions.sync == 'true' and github.event_name == 'push' && env.GH_TOKEN != null }}
         run: ./ci/sync-cas-overlay.sh ${{ matrix.versions.casVersion }} ${{ matrix.versions.bootVersion }} ${{ matrix.versions.branch }}
   ##########################################################################
