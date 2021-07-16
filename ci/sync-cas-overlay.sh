@@ -44,9 +44,18 @@ git config user.name "CAS"
 echo "Checking repository status..."
 git status
 
+echo "Updating project README"
+warning="# WARNING \n"
+warning="******************************************************\n"
+warning="${warning}This repository is always automatically generated from the CAS Initializr.\n"
+warning="${warning}To learn more, please visit the [CAS documentation](https://apereo.github.io/cas).\n\n"
+warning="******************************************************\n"
+text=$(echo "${warning}"; cat README.md)
+echo "${text}" > README.md
+
 echo "Committing changes..."
 git add --all
-git commit -am "Sync"
+git commit -am "Synced repository from CAS Initializr"
 git status
 
 echo "Pushing changes to branch ${BRANCH}"
