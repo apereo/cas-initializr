@@ -87,11 +87,13 @@ processResources {
                 "javaVersion"                            : project.sourceCompatibility,
 
                 "casVersion"                             : project.property("casVersion"),
+                "casLatestVersion"                       : project.property("casLatestVersion"),
                 "casBranch"                              : casBranchName,
                 "casMgmtVersion"                         : project.property("casMgmtVersion"),
                 "casMgmtCasVersion"                      : project.property("casMgmtCasVersion"),
                 "version"                                : project.property("version"),
                 "springBootVersion"                      : project.property("springBootVersion"),
+                "springBootLatestVersion"                : project.property("springBootLatestVersion"),
                 "casMgmtSpringBootVersion"               : project.property("casMgmtSpringBootVersion"),
                 "gradleDependencyManagementPluginVersion": project.property("gradleDependencyManagementPluginVersion"),
                 "gradleFreeFairPluginVersion"            : project.property("gradleFreeFairPluginVersion"),
@@ -118,6 +120,14 @@ supportedTypes.forEach({ type ->
         }
     }
 })
+
+task latestVersions(description: "Display supported versions", dependsOn: build) {
+    doLast {
+        def results = [version: project.property("casLatestVersion"),
+                       'boot-version': project.property("springBootLatestVersion")]
+        println(groovy.json.JsonOutput.toJson(results))
+    }
+}
 
 task copyWrapper(type: Copy) {
     from "../gradle/wrapper"

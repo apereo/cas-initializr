@@ -54,10 +54,10 @@ cas-initializr:
     - version: @casVersion@
       boot-version: @springBootVersion@
       branch: @casBranch@
-      sync: false
+      sync: true
       type: cas
-    - version: 6.4.0-SNAPSHOT
-      boot-version: 2.5.2
+    - version: @casLatestVersion@
+      boot-version: @springBootLatestVersion@
       sync: true
       branch: master
       type: cas
