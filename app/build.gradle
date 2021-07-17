@@ -76,23 +76,27 @@ bootRun {
     args = appArgList
 }
 
-processResources {
-    logger.info "CAS version is " + project.property("casVersion")
-    def casBranch = project.property("casVersion").toString().split("\\.")
-    def casBranchName = casBranch[0] + "." + casBranch[1]
-    logger.info "CAS branch is ${casBranchName}"
+def getBranchName(String version) {
+    def casBranch = version.split("\\.")
+    return casBranch[0] + "." + casBranch[1]
+}
 
+processResources {
     filesMatching(['**/*.yml', '**/*.properties', '**/*.md', '**/*.mustache']) {
         filter org.apache.tools.ant.filters.ReplaceTokens, tokens: [
                 "javaVersion"                            : project.sourceCompatibility,
 
                 "casVersion"                             : project.property("casVersion"),
+                "casMaintenanceVersion"                  : project.property("casMaintenanceVersion"),
+                "casMaintenanceBranch"                   : getBranchName(project.property("casMaintenanceVersion").toString()),
                 "casLatestVersion"                       : project.property("casLatestVersion"),
-                "casBranch"                              : casBranchName,
+                "casBranch"                              : getBranchName(project.property("casVersion").toString()),
                 "casMgmtVersion"                         : project.property("casMgmtVersion"),
+                "casMgmtBranch"                          : getBranchName(project.property("casMgmtVersion").toString()),
                 "casMgmtCasVersion"                      : project.property("casMgmtCasVersion"),
                 "version"                                : project.property("version"),
                 "springBootVersion"                      : project.property("springBootVersion"),
+                "casMaintenanceSpringBootVersion"        : project.property("casMaintenanceSpringBootVersion"),
                 "springBootLatestVersion"                : project.property("springBootLatestVersion"),
                 "casMgmtSpringBootVersion"               : project.property("casMgmtSpringBootVersion"),
                 "gradleDependencyManagementPluginVersion": project.property("gradleDependencyManagementPluginVersion"),

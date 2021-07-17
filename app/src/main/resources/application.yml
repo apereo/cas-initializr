@@ -44,12 +44,12 @@ cas-initializr:
     - version: @casMgmtVersion@
       boot-version: @casMgmtSpringBootVersion@
       sync: true
-      branch: 6.3
+      branch: @casMgmtBranch@
       type: cas-mgmt
-    - version: 6.3.5
-      boot-version: 2.3.7.RELEASE
+    - version: @casMaintenanceVersion@
+      boot-version: @casMaintenanceSpringBootVersion@
       sync: true
-      branch: 6.3
+      branch: @casMaintenanceBranch@
       type: cas
     - version: @casVersion@
       boot-version: @springBootVersion@
