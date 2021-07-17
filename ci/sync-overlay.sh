@@ -17,7 +17,7 @@ case "${TYPE}" in
    cas-overlay)
      repoName="cas-overlay-template"
      ;;
-  cas-mgmt-overlay)
+  cas-management-overlay)
      repoName="cas-management-overlay"
      ;;
 esac
@@ -34,19 +34,11 @@ if [ -z "$GH_TOKEN" ] ; then
   exit 1
 fi
 
-echo "Cloning overlay repository branch ${BRANCH}..."
-git clone --single-branch https://${GH_TOKEN}@github.com/apereo/${repoName} /tmp/overlay-repo
-if [ $? -ne 0 ] ; then
-  echo "Could not successfully clone the repository branch"
-  exit 1
-fi
-
-echo "Moving .git directory into generated overlay"
-mv /tmp/overlay-repo/.git ./initializr
-rm -Rf /tmp/overlay-repo
-
-echo "Configuring git..."
+echo "Configuring git for repository ${repoName}..."
 cd ./initializr && pwd
+git init
+echo "Adding remote origin for repository ${repoName}..."
+git remote add origin https://${GH_TOKEN}@github.com/apereo/"${repoName}"
 git config user.email "cas@apereo.org"
 git config user.name "CAS"
 
@@ -64,7 +56,6 @@ warning="${warning}To learn more, please visit the [CAS documentation](https://a
 warning="${warning}<br/>******************************************************<br/>"
 text=$(echo "${warning}"; cat README.md)
 echo "Updating project README with warning..."
-echo "${text}"
 echo "${text}" > README.md
 
 echo "Committing changes..."
