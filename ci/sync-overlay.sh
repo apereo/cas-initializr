@@ -38,9 +38,6 @@ if [ $? -ne 0 ] ; then
   exit 1
 fi
 
-echo "Checking out branch ${BRANCH}"
-git checkout -b ${BRANCH}
-
 echo "Moving .git directory into generated overlay"
 mv /tmp/overlay-repo/.git ./initializr
 rm -Rf /tmp/overlay-repo
@@ -49,6 +46,13 @@ echo "Configuring git..."
 cd ./initializr && pwd
 git config user.email "cas@apereo.org"
 git config user.name "CAS"
+
+echo "Checking out branch ${BRANCH}"
+git checkout -b ${BRANCH}
+if [ $? -ne 0 ] ; then
+  echo "Could not successfully check out the repository branch"
+  exit 1
+fi
 
 echo "Checking repository status..."
 git status
