@@ -65,6 +65,7 @@ jobs:
         run: echo "::set-output name=supported-versions::$(./gradlew --no-daemon -q latestVersions)]}"
   ##########################################################################
   supported-versions-cas:
+    if: ${{ false }}
     needs: [ build ]
     runs-on: ubuntu-latest
     outputs:
@@ -86,6 +87,7 @@ jobs:
         run: echo "::set-output name=supported-versions::$(./gradlew --no-daemon -q versions-cas)]}"
   ##########################################################################
   supported-versions-cas-mgmt:
+    if: ${{ false }}
     needs: [ build ]
     runs-on: ubuntu-latest
     outputs:
@@ -107,6 +109,7 @@ jobs:
         run: echo "::set-output name=supported-versions::$(./gradlew --no-daemon -q versions-cas-mgmt)]}"
   ##########################################################################
   sync-cas-overlay:
+    if: ${{ false }}
     needs: [ supported-versions-cas ]
     runs-on: ubuntu-latest
     strategy:
@@ -133,6 +136,7 @@ jobs:
         run: ./ci/sync-overlay.sh ${{ matrix.versions.version }} ${{ matrix.versions.boot-version }} ${{ matrix.versions.branch }} cas-overlay
   ##########################################################################
   validate-cas-overlay:
+    if: ${{ false }}
     needs: [ supported-versions-cas ]
     runs-on: ubuntu-latest
     strategy:
@@ -153,6 +157,7 @@ jobs:
       - name: Validate Overlay
         run: ./ci/validate-cas-overlay.sh ${{ matrix.versions.version }} ${{ matrix.versions.boot-version }}
   validate-cas-mgmt-overlay:
+    if: ${{ false }}
     needs: [ supported-versions-cas-mgmt ]
     runs-on: ubuntu-latest
     strategy:
@@ -175,6 +180,7 @@ jobs:
       - name: Validate Overlay
         run: ./ci/validate-cas-mgmt-overlay.sh ${{ matrix.versions.version }} ${{ matrix.versions.boot-version }}
   validate-cas-configserver-overlay:
+    if: ${{ false }}
     needs: [ supported-versions-cas ]
     runs-on: ubuntu-latest
     strategy:
@@ -198,6 +204,7 @@ jobs:
         run: ./ci/validate-cas-configserver-overlay.sh ${{ matrix.versions.version }} ${{ matrix.versions.boot-version }}
   validate-cas-discoveryserver-overlay:
     needs: [ supported-versions-cas ]
+    if: ${{ false }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -263,7 +270,7 @@ jobs:
   helm:
     needs: [ latest-versions-cas ]
     runs-on: ubuntu-latest
-    if: ${{ false }}
+#    if: ${{ false }}
     strategy:
       matrix:
         k3s-version: [ v1.21.2, v1.20.2, v1.19.7, v1.18.15, v1.17.17 ] # v1.16.15
