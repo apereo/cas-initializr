@@ -111,7 +111,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        versions: ${{fromJSON(needs.supported-versions-cas.outputs.supported-versions)}}
+        versions: ${{fromJSON(needs.supported-versions-cas-mgmt.outputs.supported-versions)}}
     name: Sync CAS Mgmt Server ${{ matrix.versions.version }} Branch ${{ matrix.versions.branch }}
     steps:
       - uses: actions/checkout@v2
