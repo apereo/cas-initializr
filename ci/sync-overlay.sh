@@ -32,12 +32,14 @@ if [ -z "$GH_TOKEN" ] ; then
 fi
 
 echo "Cloning overlay repository branch ${BRANCH}..."
-git clone --single-branch --branch ${BRANCH} \
-  https://${GH_TOKEN}@github.com/apereo/${repoName} /tmp/overlay-repo
+git clone --single-branch https://${GH_TOKEN}@github.com/apereo/${repoName} /tmp/overlay-repo
 if [ $? -ne 0 ] ; then
   echo "Could not successfully clone the repository branch"
   exit 1
 fi
+
+echo "Checking out branch ${BRANCH}"
+git checkout -b ${BRANCH}
 
 echo "Moving .git directory into generated overlay"
 mv /tmp/overlay-repo/.git ./initializr
