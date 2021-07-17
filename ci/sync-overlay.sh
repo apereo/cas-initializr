@@ -17,6 +17,9 @@ case "${TYPE}" in
    cas-overlay)
      repoName="cas-overlay-template"
      ;;
+  cas-mgmt-overlay)
+     repoName="cas-management-overlay"
+     ;;
 esac
 
 echo "Building Overlay ${TYPE}:${CAS_VERSION} with Spring Boot ${BOOT_VERSION} for branch ${BRANCH}"
