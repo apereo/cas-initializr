@@ -8,6 +8,8 @@ BOOT_VERSION=${2:-$DEFAULT_BOOT_VERSION}
 # set BUILD_IMAGES to something other than yes to skip image buildings
 BUILD_IMAGES=${BUILD_IMAGES:-yes}
 
+echo "Validating HELM build images for CAS ${CAS_VERSION} and Spring Boot ${BOOT_VERSION}..."
+
 # pass clean as first arg if you want to build new intializr
 if [[ $1 == "clean" ]] ; then
   CLEAN=clean
