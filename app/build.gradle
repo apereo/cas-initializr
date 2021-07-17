@@ -105,7 +105,9 @@ processResources {
 
 def supportedTypes = ["cas", "cas-mgmt"]
 supportedTypes.forEach({ type ->
-    project.tasks.create(name: "versions-${type}", description: "Display supported versions") {
+    project.tasks.create(name: "versions-${type}",
+                         description: "Display supported versions",
+                         dependsOn: build) {
         doLast {
             def yaml = new org.yaml.snakeyaml.Yaml()
             def file = file("${buildDir}/resources/main/application.yml")

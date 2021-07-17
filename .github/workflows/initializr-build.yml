@@ -220,6 +220,7 @@ jobs:
   publish:
     needs: [ build ]
     runs-on: ubuntu-latest
+    if: ${{ false }}
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK
@@ -243,6 +244,7 @@ jobs:
   helm:
     needs: [ build ]
     runs-on: ubuntu-latest
+    if: ${{ false }}
     strategy:
       matrix:
         k3s-version: [ v1.21.2, v1.20.2, v1.19.7, v1.18.15, v1.17.17 ] # v1.16.15
