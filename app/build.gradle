@@ -1,3 +1,12 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.yaml:snakeyaml:1.29"
+    }
+}
+
 plugins {
     id "org.springframework.boot" version "${springBootVersion}"
     id "io.spring.dependency-management" version "${gradleDependencyManagementPluginVersion}"
@@ -8,7 +17,6 @@ plugins {
 repositories {
     mavenLocal()
     mavenCentral()
-    jcenter()
     maven {
         url "https://oss.sonatype.org/content/repositories/snapshots"
         mavenContent { snapshotsOnly() }
@@ -23,8 +31,10 @@ dependencyManagement {
 
 springBoot {
     buildInfo()
-    mainClass = "org.apereo.cas.CasInitializrApplication"
+    mainClass.set("org.apereo.cas.CasInitializrApplication")
 }
+
+
 
 dependencies {
 
@@ -92,6 +102,20 @@ processResources {
         ]
     }
 }
+
+def supportedTypes = ["cas", "cas-mgmt"]
+supportedTypes.forEach({ type ->
+    project.tasks.create(name: "versions-${type}", description: "Display supported versions") {
+        doLast {
+            def yaml = new org.yaml.snakeyaml.Yaml()
+            def file = file("${buildDir}/resources/main/application.yml")
+            def config = yaml.load(file.newInputStream())
+            def supportedVersions = config.'cas-initializr'.'supported-versions'
+            def results = supportedVersions.findAll { ver -> ver.type == type }
+            println(groovy.json.JsonOutput.toJson(results))
+        }
+    }
+})
 
 task copyWrapper(type: Copy) {
     from "../gradle/wrapper"
