@@ -48,11 +48,7 @@ git config user.email "cas@apereo.org"
 git config user.name "CAS"
 
 echo "Checking out branch ${BRANCH}"
-git switch -c ${BRANCH}
-if [ $? -ne 0 ] ; then
-  echo "Could not successfully check out the repository branch"
-  exit 1
-fi
+git switch ${BRANCH} 2>/dev/null || git switch -c ${BRANCH};
 
 echo "Checking repository status..."
 git status
