@@ -304,7 +304,7 @@ jobs:
       - name: Validate Helm Chart
         env:
           HELM_CAS_VERSION: "${{ fromJSON(needs.latest-versions-cas.outputs.supported-versions).version }}"
-          HELM_BOOT_VERSION: "${{ fromJSON(needs.latest-versions-cas.outputs.supported-versions).'boot-version' }}"
+          HELM_BOOT_VERSION: "${{ fromJSON(needs.latest-versions-cas.outputs.supported-versions).boot-version }}"
         run: |
           ./ci/validate-helm-build-images.sh $HELM_CAS_VERSION $HELM_BOOT_VERSION
           ./ci/validate-helm.sh
