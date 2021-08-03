@@ -6,7 +6,7 @@ import static org.gradle.internal.logging.text.StyledTextOutput.Style
 
 buildscript {
     repositories {
-        if (Boolean.valueOf(project.usePrivateRepo)) {
+        if (project.privateRepoUrl) {
           maven {
             url project.privateRepoUrl
             credentials {
@@ -42,7 +42,7 @@ buildscript {
 }
 
 repositories {
-    if (Boolean.valueOf(project.usePrivateRepo)) {
+    if (project.privateRepoUrl) {
       maven {
         url project.privateRepoUrl
         credentials {
