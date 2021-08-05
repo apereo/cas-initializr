@@ -4,6 +4,7 @@ import org.apereo.cas.initializr.contrib.ApplicationYamlPropertiesContributor;
 import org.apereo.cas.initializr.contrib.ChainingMultipleResourcesProjectContributor;
 import org.apereo.cas.initializr.contrib.ChainingSingleResourceProjectContributor;
 import org.apereo.cas.initializr.contrib.IgnoreRulesContributor;
+import org.apereo.cas.initializr.contrib.OverlayLombokConfigContributor;
 import org.apereo.cas.initializr.contrib.OverlayOverrideConfigurationContributor;
 import org.apereo.cas.initializr.contrib.OverlaySpringFactoriesContributor;
 import org.apereo.cas.initializr.contrib.OverlayWebXmlContributor;
@@ -39,6 +40,11 @@ public class CasInitializrConfiguration {
     @Bean
     public ProjectContributor projectLicenseContributor() {
         return new ProjectLicenseContributor();
+    }
+
+    @Bean
+    public ProjectContributor overlayLombokConfigContributor() {
+        return new OverlayLombokConfigContributor(applicationContext);
     }
 
     @Bean
