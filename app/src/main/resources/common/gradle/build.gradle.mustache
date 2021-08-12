@@ -328,7 +328,7 @@ task debugShell(group: "Shell", description: "Run the CAS shell with debug optio
 }
 
 task listTemplateViews(group: "CAS", description: "List all CAS views") {
-    dependsOn unzipWAR
+    dependsOn unzip
 
     doFirst {
         fileTree(explodedResourcesDir).matching {
@@ -374,7 +374,7 @@ task exportConfigMetadata(group: "CAS", description: "Export collection of CAS p
 }
 
 task getResource(group: "CAS", description: "Fetch a CAS resource and move it into the overlay") {
-    dependsOn unzipWAR
+    dependsOn unzip
 
     doFirst {
         def resourceName = project.getProperty("resourceName")
