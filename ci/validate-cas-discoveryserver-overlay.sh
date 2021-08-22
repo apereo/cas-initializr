@@ -11,15 +11,14 @@ sleep 15
 rm -Rf tmp &> /dev/null
 mkdir tmp
 cd tmp
-curl http://localhost:8080/starter.tgz -d casVersion=${CAS_VERSION} \
-  -d bootVersion=${BOOT_VERSION} -d type=cas-discovery-server-overlay | tar -xzvf -
+curl http://localhost:8080/starter.tgz -d casVersion=${CAS_VERSION} -d bootVersion=${BOOT_VERSION} -d type=cas-discovery-server-overlay | tar -xzvf -
 kill -9 $pid
 
 echo "Building CAS Config Server Overlay"
 ./gradlew clean build --no-daemon
 
 echo "Launched CAS with pid ${pid}. Waiting for server to come online..."
-java -jar build/libs/casdiscoveryserver.war --server.ssl.enabled=false \
+java -jar build/libs/casconfigserver.war --server.ssl.enabled=false \
   --spring.security.user.password=password --spring.security.user.name=casuser &
 pid=$!
 sleep 5
@@ -36,7 +35,7 @@ chmod -R 777 ./*.sh >/dev/null 2>&1
 ./gradlew jibDockerBuild
 
 downloadTomcat
-mv build/libs/app.war ${CATALINA_HOME}/webapps/app.war
+mv build/libs/casdiscoveryserver.war ${CATALINA_HOME}/webapps/app.war
 
 export SPRING_SECURITY_USER_PASSWORD=password
 export SPRING_SECURITY_USER_NAME=casuser

@@ -15,7 +15,7 @@ kill -9 $pid
 
 ./gradlew clean build
 downloadTomcat
-mv build/libs/app.war ${CATALINA_HOME}/webapps/cas.war
+mv build/libs/cas.war ${CATALINA_HOME}/webapps/cas.war
 
 ${CATALINA_HOME}/bin/startup.sh & >/dev/null 2>&1
 pid=$!

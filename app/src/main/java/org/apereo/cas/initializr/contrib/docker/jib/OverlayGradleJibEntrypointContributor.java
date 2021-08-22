@@ -10,7 +10,7 @@ public class OverlayGradleJibEntrypointContributor extends TemplatedProjectContr
     public static final String ENTRYPOINT_SCRIPT_PATH = "src/main/jib/docker/entrypoint.sh";
 
     public OverlayGradleJibEntrypointContributor(final ApplicationContext applicationContext) {
-        super(applicationContext, ENTRYPOINT_SCRIPT_PATH, "classpath:common/jib/entrypoint.sh");
+        super(applicationContext, ENTRYPOINT_SCRIPT_PATH, "classpath:common/jib/entrypoint.sh.mustache");
     }
 
     @Override
@@ -19,5 +19,4 @@ public class OverlayGradleJibEntrypointContributor extends TemplatedProjectContr
         var output = projectRoot.resolve(ENTRYPOINT_SCRIPT_PATH);
         output.toFile().setExecutable(true);
     }
-
 }

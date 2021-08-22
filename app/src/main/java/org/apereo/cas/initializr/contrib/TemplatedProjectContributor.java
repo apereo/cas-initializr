@@ -133,18 +133,23 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         }
         if (type.equalsIgnoreCase(CasManagementOverlayBuildSystem.ID)) {
             templateVariables.put("managementServer", Boolean.TRUE);
+            templateVariables.put("appName", "cas-management");
         }
         if (type.equalsIgnoreCase(CasOverlayBuildSystem.ID)) {
             templateVariables.put("casServer", Boolean.TRUE);
+            templateVariables.put("appName", "cas");
         }
         if (type.equalsIgnoreCase(CasSpringBootAdminServerOverlayBuildSystem.ID)) {
             templateVariables.put("springBootAdminServer", Boolean.TRUE);
+            templateVariables.put("appName", "casbootadminserver");
         }
         if (type.equalsIgnoreCase(CasConfigServerOverlayBuildSystem.ID)) {
             templateVariables.put("configServer", Boolean.TRUE);
+            templateVariables.put("appName", "casconfigserver");
         }
         if (type.equalsIgnoreCase(CasDiscoveryServerOverlayBuildSystem.ID)) {
             templateVariables.put("discoveryServer", Boolean.TRUE);
+            templateVariables.put("appName", "casdiscoveryserver");
         }
 
         templateVariables.putAll(getVariables());
