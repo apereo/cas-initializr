@@ -26,7 +26,7 @@ RUN cd / \
     && mkdir -p /etc/cas/services \
     && mkdir -p cas-management-overlay;
 
-COPY --from=management-overlay cas-management-overlay/build/libs/app.war cas-management-overlay/
+COPY --from=management-overlay cas-management-overlay/build/libs/cas-management.war cas-management-overlay/
 COPY etc/cas/ /etc/cas/
 COPY etc/cas/config/ /etc/cas/config/
 #COPY etc/cas/services/ /etc/cas/services/
@@ -36,4 +36,4 @@ EXPOSE 8080 8443
 ENV PATH $PATH:$JAVA_HOME/bin:.
 
 WORKDIR cas-management-overlay
-ENTRYPOINT ["java", "-server", "-noverify", "-Xmx2048M", "-jar", "app.war"]
+ENTRYPOINT ["java", "-server", "-noverify", "-Xmx2048M", "-jar", "cas-management.war"]

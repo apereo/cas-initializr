@@ -28,7 +28,7 @@ sudo keytool -genkey -noprompt -alias cas -keyalg RSA -keypass changeit -storepa
 
 echo "Launching CAS Mgmt Overlay"
 touch ./users.json
-java -jar build/libs/app.war --mgmt.cas-sso=false --mgmt.authz-ip-regex=.+ \
+java -jar build/libs/cas-management.war --mgmt.cas-sso=false --mgmt.authz-ip-regex=.+ \
     --server.port=8081 --spring.profiles.active=none --mgmt.user-properties-file=file:${PWD}/users.json \
     --server.ssl.key-store=${keystore} &
 pid=$!
@@ -50,7 +50,7 @@ echo "Building Docker image with Jib"
 ./gradlew jibDockerBuild
 
 downloadTomcat
-mv build/libs/app.war ${CATALINA_HOME}/webapps/app.war
+mv build/libs/cas-management.war ${CATALINA_HOME}/webapps/app.war
 
 ${CATALINA_HOME}/bin/startup.sh & >/dev/null 2>&1
 pid=$!

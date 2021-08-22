@@ -18,7 +18,8 @@ echo "Building CAS Config Server Overlay"
 ./gradlew clean build --no-daemon
 
 echo "Launched CAS with pid ${pid}. Waiting for server to come online..."
-java -jar build/libs/app.war --server.ssl.enabled=false --spring.security.user.password=password --spring.security.user.name=casuser &
+java -jar build/libs/casconfigserver.war --server.ssl.enabled=false \
+  --spring.security.user.password=password --spring.security.user.name=casuser &
 pid=$!
 sleep 5
 
@@ -34,7 +35,7 @@ chmod -R 777 ./*.sh >/dev/null 2>&1
 ./gradlew jibDockerBuild
 
 downloadTomcat
-mv build/libs/app.war ${CATALINA_HOME}/webapps/app.war
+mv build/libs/casconfigserver.war ${CATALINA_HOME}/webapps/app.war
 
 export SPRING_SECURITY_USER_PASSWORD=password
 export SPRING_SECURITY_USER_NAME=casuser

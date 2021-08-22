@@ -27,8 +27,8 @@ sudo keytool -genkey -noprompt -alias cas -keyalg RSA -keypass changeit -storepa
                   -keystore "${keystore}" -dname "${dname}" -ext SAN="${subjectAltName}"
 [ -f "${keystore}" ] && echo "Created ${keystore}"
 
-
-java -jar build/libs/app.war --server.ssl.enabled=false --spring.security.user.password=password --spring.security.user.name=casuser &
+java -jar build/libs/casconfigserver.war --server.ssl.enabled=false \
+  --spring.security.user.password=password --spring.security.user.name=casuser &
 pid=$!
 sleep 5
 
@@ -45,7 +45,7 @@ chmod -R 777 ./*.sh >/dev/null 2>&1
 ./gradlew jibDockerBuild
 
 downloadTomcat
-mv build/libs/app.war ${CATALINA_HOME}/webapps/app.war
+mv build/libs/casconfigserver.war ${CATALINA_HOME}/webapps/app.war
 
 export SPRING_SECURITY_USER_PASSWORD=password
 export SPRING_SECURITY_USER_NAME=casuser
