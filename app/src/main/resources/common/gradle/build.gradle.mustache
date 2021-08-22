@@ -53,7 +53,6 @@ repositories {
     }
     mavenLocal()
     mavenCentral()
-    jcenter()
     maven { url 'https://oss.sonatype.org/content/repositories/releases' }
     maven {
         url 'https://oss.sonatype.org/content/repositories/snapshots'
@@ -105,7 +104,7 @@ task run(group: "build", description: "Run the CAS web application in embedded c
         javaexec {
             main = "-jar"
             jvmArgs = casRunArgs
-            args = ["build/libs/app.war"]
+            args = ["build/libs/{{appName}}.war"]
             systemProperties = System.properties
             logger.info "Started ${commandLine}"
         }
@@ -140,7 +139,7 @@ task debug(group: "CAS", description: "Debug the CAS web application in embedded
             main = "-jar"
             jvmArgs = casArgs
             debug = true
-            args = ["build/libs/app.war"]
+            args = ["build/libs/{{appName}}.war"]
             systemProperties = System.properties
             logger.info "Started ${commandLine}"
         }
@@ -234,7 +233,7 @@ task createKeystore(group: "CAS", description: "Create CAS keystore") {
 
 task unzipWAR(type: Copy, group: "CAS", description: "Explodes the CAS web application archive") {
     dependsOn 'build'
-    from zipTree("build/libs/app.war")
+    from zipTree("build/libs/{{appName}}.war")
     into "${buildDir}/app"
     doLast {
         println "Unzipped WAR into ${buildDir}/app"
@@ -560,8 +559,8 @@ bootWar {
         logger.info "WAR artifact is not marked as an executable"
     }
 
-    archiveName "app.war"
-    baseName "app"
+    archiveName "{{appName}}.war"
+    baseName "{{appName}}"
 
     entryCompression = ZipEntryCompression.STORED
 

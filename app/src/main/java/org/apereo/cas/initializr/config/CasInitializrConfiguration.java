@@ -15,17 +15,16 @@ import org.apereo.cas.initializr.contrib.docker.jib.OverlayGradleJibEntrypointCo
 import org.apereo.cas.initializr.contrib.gradle.GradleWrapperConfigurationContributor;
 import org.apereo.cas.initializr.contrib.gradle.GradleWrapperExecutablesContributor;
 import org.apereo.cas.initializr.contrib.gradle.OverlayGradleSettingsContributor;
-import org.apereo.cas.initializr.info.DependencyAliasesInfoContributor;
+import org.apereo.cas.initializr.contrib.heroku.HerokuProcFileContributor;
+import org.apereo.cas.initializr.contrib.heroku.HerokuSystemPropertiesFileContributor;
 import org.apereo.cas.initializr.metadata.CasOverlayInitializrMetadataUpdateStrategy;
 import org.apereo.cas.initializr.rate.RateLimitInterceptor;
 
 import io.spring.initializr.generator.project.ProjectGenerationConfiguration;
 import io.spring.initializr.generator.project.contributor.ProjectContributor;
-import io.spring.initializr.metadata.InitializrMetadataProvider;
 import io.spring.initializr.web.support.InitializrMetadataUpdateStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.actuate.info.InfoContributor;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -55,6 +54,14 @@ public class CasInitializrConfiguration {
     @Bean
     public ProjectContributor applicationYamlPropertiesContributor() {
         return new ApplicationYamlPropertiesContributor();
+    }
+
+    @Bean
+    public ChainingSingleResourceProjectContributor herokuContributor() {
+        var chain = new ChainingSingleResourceProjectContributor();
+        chain.addContributor(new HerokuProcFileContributor(applicationContext));
+        chain.addContributor(new HerokuSystemPropertiesFileContributor(applicationContext));
+        return chain;
     }
 
     @Bean
