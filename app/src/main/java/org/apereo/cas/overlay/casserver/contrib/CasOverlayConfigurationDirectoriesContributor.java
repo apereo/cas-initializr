@@ -8,7 +8,7 @@ import java.nio.file.Path;
 
 public class CasOverlayConfigurationDirectoriesContributor implements ProjectContributor {
     private static void createDirectory(final Path projectRoot, final String path) throws IOException {
-        val output = projectRoot.resolve(path);
+        var output = projectRoot.resolve(path);
         Files.createDirectories(output);
     }
 

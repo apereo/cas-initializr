@@ -1,5 +1,7 @@
 package org.apereo.cas.initializr.web.generator;
 
+import org.apereo.cas.initializr.web.OverlayProjectDescription;
+
 import io.spring.initializr.generator.project.ProjectAssetGenerator;
 import io.spring.initializr.generator.project.ProjectDescription;
 import io.spring.initializr.generator.project.ProjectDirectoryFactory;
@@ -23,7 +25,7 @@ import java.util.stream.Collectors;
 public class CasInitializrProjectAssetGenerator implements ProjectAssetGenerator<Path> {
     private final ProjectDirectoryFactory projectDirectoryFactory;
 
-    public CasInitializrProjectAssetGenerator(ProjectDirectoryFactory projectDirectoryFactory) {
+    public CasInitializrProjectAssetGenerator(final ProjectDirectoryFactory projectDirectoryFactory) {
         this.projectDirectoryFactory = projectDirectoryFactory;
     }
 
@@ -31,7 +33,7 @@ public class CasInitializrProjectAssetGenerator implements ProjectAssetGenerator
         this(null);
     }
 
-    private static Path resolveProjectDirectory(Path rootDir, ProjectDescription description) {
+    private static Path resolveProjectDirectory(final Path rootDir, final OverlayProjectDescription description) {
         if (description.getBaseDirectory() != null) {
             return rootDir.resolve(description.getBaseDirectory());
         }
@@ -65,7 +67,7 @@ public class CasInitializrProjectAssetGenerator implements ProjectAssetGenerator
     @Override
     public Path generate(final ProjectGenerationContext context) throws IOException {
         try {
-            var description = context.getBean(ProjectDescription.class);
+            var description = context.getBean(OverlayProjectDescription.class);
             var projectRoot = resolveProjectDirectoryFactory(context).createProjectDirectory(description);
             var projectDirectory = initializerProjectDirectory(projectRoot, description);
             var contributors = context.getBeanProvider(ProjectContributor.class).orderedStream().collect(Collectors.toList());
@@ -79,12 +81,12 @@ public class CasInitializrProjectAssetGenerator implements ProjectAssetGenerator
         }
     }
 
-    private ProjectDirectoryFactory resolveProjectDirectoryFactory(ProjectGenerationContext context) {
+    private ProjectDirectoryFactory resolveProjectDirectoryFactory(final ProjectGenerationContext context) {
         return this.projectDirectoryFactory != null ? this.projectDirectoryFactory
             : context.getBean(ProjectDirectoryFactory.class);
     }
 
-    private Path initializerProjectDirectory(Path rootDir, ProjectDescription description) throws Exception {
+    private static Path initializerProjectDirectory(final Path rootDir, final OverlayProjectDescription description) throws Exception {
         var projectDirectory = resolveProjectDirectory(rootDir, description);
         Files.createDirectories(projectDirectory);
         return projectDirectory;

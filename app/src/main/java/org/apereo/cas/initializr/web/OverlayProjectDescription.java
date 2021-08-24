@@ -11,10 +11,6 @@ import org.apache.commons.lang3.StringUtils;
 public class OverlayProjectDescription extends MutableProjectDescription {
     private String casVersion;
 
-    public OverlayProjectDescription(final MutableProjectDescription source) {
-        super(source);
-    }
-
     public String resolveCasVersion(final BillOfMaterials billOfMaterials) {
         return StringUtils.defaultIfBlank(this.casVersion, billOfMaterials.getVersion());
     }

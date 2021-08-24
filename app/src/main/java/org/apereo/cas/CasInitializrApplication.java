@@ -1,15 +1,13 @@
 package org.apereo.cas;
 
-import org.apereo.cas.initializr.web.generator.CasInitializrProjectAssetGenerator;
-import org.apereo.cas.initializr.web.generator.CasInitializrProjectGenerationInvoker;
 import org.apereo.cas.initializr.rate.RateLimitInterceptor;
 import org.apereo.cas.initializr.web.OverlayProjectGenerationController;
 import org.apereo.cas.initializr.web.OverlayProjectRequestToDescriptionConverter;
+import org.apereo.cas.initializr.web.generator.CasInitializrProjectAssetGenerator;
+import org.apereo.cas.initializr.web.generator.CasInitializrProjectGenerationInvoker;
 
-import io.spring.initializr.generator.project.ProjectAssetGenerator;
 import io.spring.initializr.metadata.InitializrMetadataProvider;
 import io.spring.initializr.web.project.DefaultProjectRequestPlatformVersionTransformer;
-import io.spring.initializr.web.project.DefaultProjectRequestToDescriptionConverter;
 import io.spring.initializr.web.project.ProjectRequestPlatformVersionTransformer;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +19,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-import java.nio.file.Path;
 
 /**
  * {@code @ProjectGenerationConfiguration}-annotated types should not be
@@ -38,18 +34,12 @@ public class CasInitializrApplication {
     }
 
     @Bean
-    public ProjectAssetGenerator<Path> overlayProjectAssetGenerator() {
-        return new CasInitializrProjectAssetGenerator();
-    }
-
-    @Bean
-    public OverlayProjectGenerationController projectGenerationController(InitializrMetadataProvider metadataProvider,
-                                                                          ApplicationContext applicationContext,
-                                                                          ObjectProvider<ProjectRequestPlatformVersionTransformer> platformVersionTransformer) {
-        var defaultConverter = new DefaultProjectRequestToDescriptionConverter(platformVersionTransformer
-            .getIfAvailable(DefaultProjectRequestPlatformVersionTransformer::new));
-        var converter = new OverlayProjectRequestToDescriptionConverter(defaultConverter);
-        var invoker = new CasInitializrProjectGenerationInvoker(applicationContext, converter, overlayProjectAssetGenerator());
+    public OverlayProjectGenerationController projectGenerationController(final InitializrMetadataProvider metadataProvider,
+                                                                          final ApplicationContext applicationContext,
+                                                                          final ObjectProvider<ProjectRequestPlatformVersionTransformer> platformVersionTransformer) {
+        var transformer = platformVersionTransformer.getIfAvailable(DefaultProjectRequestPlatformVersionTransformer::new);
+        var converter = new OverlayProjectRequestToDescriptionConverter(transformer);
+        var invoker = new CasInitializrProjectGenerationInvoker(applicationContext, converter, new CasInitializrProjectAssetGenerator());
         return new OverlayProjectGenerationController(metadataProvider, invoker);
     }
 

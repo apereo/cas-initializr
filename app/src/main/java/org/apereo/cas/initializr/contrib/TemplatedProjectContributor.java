@@ -62,8 +62,8 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         return builder.build().toString();
     }
 
-    private static void handleApplicationServerType(ProjectDescription project, Map<String, Object> defaults) {
-        val dependencies = project.getRequestedDependencies();
+    private static void handleApplicationServerType(final ProjectDescription project, final Map<String, Object> defaults) {
+        var dependencies = project.getRequestedDependencies();
         var appServer = "-tomcat";
         if (dependencies.containsKey("webapp-jetty")) {
             appServer = "-jetty";
@@ -73,14 +73,14 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         defaults.put("appServer", appServer);
     }
 
-    protected static void createTemplateFile(Path output, String template) throws IOException {
+    protected static void createTemplateFile(final Path output, final String template) throws IOException {
         FileCopyUtils.copy(new BufferedInputStream(new ByteArrayInputStream(template.getBytes(StandardCharsets.UTF_8))),
                 Files.newOutputStream(output, StandardOpenOption.APPEND));
     }
 
     @Override
     public void contribute(final Path projectRoot) throws IOException {
-        val output = projectRoot.resolve(relativePath);
+        var output = projectRoot.resolve(relativePath);
         if (!Files.exists(output)) {
             Files.createDirectories(output.getParent());
             Files.createFile(output);
@@ -95,13 +95,13 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
     }
 
     protected String renderTemplateFromResource(final String resourcePattern) throws IOException {
-        val resource = resolver.getResource(resourcePattern);
-        val mf = new DefaultMustacheFactory();
-        val mustache = mf.compile(new InputStreamReader(resource.getInputStream()), resource.getFilename());
-        try (val writer = new StringWriter()) {
-            val project = applicationContext.getBean(OverlayProjectDescription.class);
-            val templateVariables = prepareProjectTemplateVariables(project);
-            val model = contributeInternal(project);
+        var resource = resolver.getResource(resourcePattern);
+        var mf = new DefaultMustacheFactory();
+        var mustache = mf.compile(new InputStreamReader(resource.getInputStream()), resource.getFilename());
+        try (var writer = new StringWriter()) {
+            var project = applicationContext.getBean(OverlayProjectDescription.class);
+            var templateVariables = prepareProjectTemplateVariables(project);
+            var model = contributeInternal(project);
             if (model instanceof Map) {
                 ((Map<String, Object>) model).putAll(templateVariables);
             }
@@ -111,9 +111,9 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
     }
 
     protected Map<String, Object> prepareProjectTemplateVariables(final OverlayProjectDescription project) {
-        val provider = applicationContext.getBean(InitializrMetadataProvider.class);
+        var provider = applicationContext.getBean(InitializrMetadataProvider.class);
 
-        val templateVariables = new HashMap<>(provider.get().defaults());
+        var templateVariables = new HashMap<>(provider.get().defaults());
         var configuration = provider.get().getConfiguration();
         var boms = configuration.getEnv().getBoms();
 
@@ -122,7 +122,7 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         templateVariables.put("casVersion", project.resolveCasVersion(boms.get("cas-bom")));
         templateVariables.put("springBootVersion", project.getPlatformVersion().toString());
 
-        val type = project.getBuildSystem().id();
+        var type = project.getBuildSystem().id();
         templateVariables.put("buildSystemId", type);
         templateVariables.put("containerImageName", StringUtils.remove(type, "-overlay"));
 
@@ -162,8 +162,8 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         return this;
     }
 
-    protected List<CasDependency> handleProjectRequestedDependencies(final ProjectDescription project) {
-        val dependencies = project.getRequestedDependencies()
+    protected static List<CasDependency> handleProjectRequestedDependencies(final ProjectDescription project) {
+        var dependencies = project.getRequestedDependencies()
                 .values()
                 .stream()
                 .filter(dep -> !CasOverlayGradleBuild.WEBAPP_ARTIFACTS.contains(dep.getArtifactId()))
@@ -173,7 +173,7 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         return dependencies;
     }
 
-    protected Object contributeInternal(ProjectDescription project) {
+    protected Object contributeInternal(final ProjectDescription project) {
         return new HashMap<>();
     }
 

@@ -69,10 +69,10 @@ public class CasOverlayProjectGenerationConfiguration {
     }
 
     @Bean
-    public CasOverlayGradleBuild gradleBuild(ObjectProvider<BuildCustomizer<CasOverlayGradleBuild>> buildCustomizers,
-                                             ObjectProvider<BuildItemResolver> buildItemResolver) {
+    public CasOverlayGradleBuild gradleBuild(final ObjectProvider<BuildCustomizer<CasOverlayGradleBuild>> buildCustomizers,
+                                             final ObjectProvider<BuildItemResolver> buildItemResolver) {
         var build = new CasOverlayGradleBuild(buildItemResolver.getIfAvailable());
-        val customizers = buildCustomizers.orderedStream().collect(Collectors.toList());
+        var customizers = buildCustomizers.orderedStream().collect(Collectors.toList());
         customizers.forEach(c -> c.customize(build));
         return build;
     }

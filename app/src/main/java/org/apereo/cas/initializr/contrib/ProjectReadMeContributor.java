@@ -30,9 +30,9 @@ public class ProjectReadMeContributor extends TemplatedProjectContributor {
         if (appendFromResource == null) {
             return template;
         }
-        try (val writer = new StringWriter()) {
+        try (var writer = new StringWriter()) {
             writer.write(template);
-            val appendTemplate = renderTemplateFromResource(this.appendFromResource);
+            var appendTemplate = renderTemplateFromResource(this.appendFromResource);
             writer.write(appendTemplate);
             return writer.toString();
         }

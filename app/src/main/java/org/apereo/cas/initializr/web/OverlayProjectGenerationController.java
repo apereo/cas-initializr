@@ -16,7 +16,7 @@ public class OverlayProjectGenerationController extends ProjectGenerationControl
 
     @Override
     public OverlayProjectRequest projectRequest(final Map<String, String> headers) {
-        OverlayProjectRequest request = new OverlayProjectRequest();
+        var request = new OverlayProjectRequest();
         request.getParameters().putAll(headers);
         request.initialize(getMetadata());
         return request;

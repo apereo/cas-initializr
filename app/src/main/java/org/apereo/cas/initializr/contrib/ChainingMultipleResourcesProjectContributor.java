@@ -12,7 +12,7 @@ import java.util.List;
 public class ChainingMultipleResourcesProjectContributor implements ProjectContributor {
     private final List<MultipleResourcesProjectContributor> contributors = new ArrayList<>();
 
-    public void addContributor(MultipleResourcesProjectContributor c) {
+    public void addContributor(final MultipleResourcesProjectContributor c) {
         contributors.add(c);
     }
 

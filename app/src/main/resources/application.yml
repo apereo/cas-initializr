@@ -33,7 +33,7 @@ logging:
   level:
     org:
       apereo:
-        cas: debug
+        cas: info
 
 spring:
   main:
@@ -186,6 +186,8 @@ initializr:
         groupId: org.apereo.cas
         artifactId: cas-mgmt-support-bom
         version: @casMgmtVersion@
+    platform:
+      compatibility-range: @casMaintenanceVersion@
   dependencies:
     - name: api
       content:
