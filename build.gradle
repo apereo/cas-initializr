@@ -1,0 +1,18 @@
+allprojects {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+}
+
+task casVersion(description: "Display current CAS version") {
+    doLast {
+        println rootProject.casVersion
+    }
+}
+
+task springBootVersion(description: "Display current Spring Boot version") {
+    doLast {
+        println rootProject.springBootVersion
+    }
+}

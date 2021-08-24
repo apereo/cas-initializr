@@ -1,0 +1,18 @@
+pull_request_rules:
+- name: automatic merge by renovate
+  conditions:
+    - status-success=build
+    - status-success=validate-cas-overlay
+    - status-success=validate-cas-mgmt-overlay
+    - status-success=validate-cas-configserver-overlay
+    - status-success=validate-cas-discoveryserver-overlay
+    - status-success=validate-cas-bootadmin-overlay
+    - status-success=publish
+    - base=master
+    - author=renovate
+    - label=dependencies
+  actions:
+    merge:
+      method: merge
+      strict: false
+    delete_head_branch:
