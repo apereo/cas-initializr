@@ -7,7 +7,7 @@ public class OverlayGradleJibContributor extends SingleResourceProjectContributo
         this("classpath:common/jib/jib.gradle");
     }
 
-    private OverlayGradleJibContributor(String resourcePattern) {
+    private OverlayGradleJibContributor(final String resourcePattern) {
         super("gradle/jib.gradle", resourcePattern);
     }
 }

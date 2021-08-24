@@ -14,7 +14,7 @@ public class ChainingSingleResourceProjectContributor implements ProjectContribu
 
     private int order = Ordered.LOWEST_PRECEDENCE;
 
-    public void addContributor(ProjectContributor c) {
+    public void addContributor(final ProjectContributor c) {
         contributors.add(c);
     }
 

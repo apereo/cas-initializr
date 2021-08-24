@@ -43,10 +43,10 @@ public class CasDiscoveryServerOverlayProjectGenerationConfiguration {
     }
 
     @Bean
-    public CasDiscoveryServerOverlayGradleBuild gradleBuild(ObjectProvider<BuildCustomizer<CasDiscoveryServerOverlayGradleBuild>> buildCustomizers,
-                                                            ObjectProvider<BuildItemResolver> buildItemResolver) {
+    public CasDiscoveryServerOverlayGradleBuild gradleBuild(final ObjectProvider<BuildCustomizer<CasDiscoveryServerOverlayGradleBuild>> buildCustomizers,
+                                                            final ObjectProvider<BuildItemResolver> buildItemResolver) {
         var build = new CasDiscoveryServerOverlayGradleBuild(buildItemResolver.getIfAvailable());
-        val customizers = buildCustomizers.orderedStream().collect(Collectors.toList());
+        var customizers = buildCustomizers.orderedStream().collect(Collectors.toList());
         customizers.forEach(c -> c.customize(build));
         return build;
     }
