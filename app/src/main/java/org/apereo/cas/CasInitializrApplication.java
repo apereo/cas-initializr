@@ -43,8 +43,7 @@ public class CasInitializrApplication {
         var invoker = new CasInitializrProjectGenerationInvoker(applicationContext, converter, new CasInitializrProjectAssetGenerator());
         return new OverlayProjectGenerationController(metadataProvider, invoker);
     }
-
-    @Bean
+    
     public CasInitializrEventListener casInitializrEventListener() {
         return new CasInitializrEventListener();
     }
