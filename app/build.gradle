@@ -34,13 +34,12 @@ springBoot {
     mainClass.set("org.apereo.cas.CasInitializrApplication")
 }
 
-
-
 dependencies {
-
     implementation "org.jooq:jool:0.9.14"
+    implementation "org.eclipse.jgit:org.eclipse.jgit:5.12.0.202106070339-r"
     implementation "com.github.vladimir-bukhtoyarov:bucket4j-core:6.2.0"
     implementation "com.github.spullara.mustache.java:compiler:0.9.10"
+    
     implementation "org.springframework.boot:spring-boot-starter-web"
 
     implementation "io.spring.initializr:initializr-web"

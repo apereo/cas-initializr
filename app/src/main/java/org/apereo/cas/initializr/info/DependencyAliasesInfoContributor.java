@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.actuate.info.Info;
 import org.springframework.boot.actuate.info.InfoContributor;
 import java.util.LinkedHashMap;
-import java.util.Map;
 
 @RequiredArgsConstructor
 public class DependencyAliasesInfoContributor implements InfoContributor {

@@ -8,7 +8,6 @@ import org.apereo.cas.initializr.contrib.OverlayLombokConfigContributor;
 import org.apereo.cas.initializr.contrib.OverlayOverrideConfigurationContributor;
 import org.apereo.cas.initializr.contrib.OverlaySpringFactoriesContributor;
 import org.apereo.cas.initializr.contrib.OverlayWebXmlContributor;
-import org.apereo.cas.initializr.contrib.ProjectAssetsUndoContributor;
 import org.apereo.cas.initializr.contrib.ProjectLicenseContributor;
 import org.apereo.cas.initializr.contrib.docker.jib.OverlayGradleJibContributor;
 import org.apereo.cas.initializr.contrib.docker.jib.OverlayGradleJibEntrypointContributor;
@@ -18,18 +17,13 @@ import org.apereo.cas.initializr.contrib.gradle.OverlayGradleSettingsContributor
 import org.apereo.cas.initializr.contrib.heroku.HerokuProcFileContributor;
 import org.apereo.cas.initializr.contrib.heroku.HerokuSystemPropertiesFileContributor;
 import org.apereo.cas.initializr.metadata.CasOverlayInitializrMetadataUpdateStrategy;
-import org.apereo.cas.initializr.rate.RateLimitInterceptor;
 
 import io.spring.initializr.generator.project.ProjectGenerationConfiguration;
 import io.spring.initializr.generator.project.contributor.ProjectContributor;
 import io.spring.initializr.web.support.InitializrMetadataUpdateStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.web.servlet.HandlerInterceptor;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @ProjectGenerationConfiguration
 public class CasInitializrConfiguration {
@@ -99,26 +93,5 @@ public class CasInitializrConfiguration {
     @Bean
     public InitializrMetadataUpdateStrategy initializrMetadataUpdateStrategy() {
         return new CasOverlayInitializrMetadataUpdateStrategy();
-    }
-
-    @Bean
-    public ProjectContributor projectAssetsUndoContributor() {
-        return new ProjectAssetsUndoContributor();
-    }
-
-    @Bean
-    public HandlerInterceptor rateLimitInterceptor() {
-        return new RateLimitInterceptor();
-    }
-
-    @Bean
-    @Autowired
-    public WebMvcConfigurer rateLimitingWebMvcConfigurer(@Qualifier("rateLimitInterceptor") final HandlerInterceptor rateLimitInterceptor) {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addInterceptors(final InterceptorRegistry registry) {
-                registry.addInterceptor(rateLimitInterceptor).addPathPatterns("/**");
-            }
-        };
     }
 }
