@@ -7,7 +7,7 @@ BOOT_VERSION=${2:-$DEFAULT_BOOT_VERSION}
 
 java -jar app/build/libs/app.jar &
 pid=$!
-sleep 15
+sleep 30
 rm -Rf tmp &> /dev/null
 mkdir tmp
 cd tmp

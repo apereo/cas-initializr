@@ -7,7 +7,7 @@ BOOT_VERSION=${2:-$DEFAULT_BOOT_VERSION}
 
 java -jar app/build/libs/app.jar &
 pid=$!
-sleep 15
+sleep 30
 mkdir tmp
 cd tmp
 curl http://localhost:8080/starter.tgz -d "casVersion=${CAS_VERSION}&bootVersion=${BOOT_VERSION}" | tar -xzvf -
