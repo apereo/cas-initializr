@@ -99,11 +99,11 @@ public class OverlayProjectRequestToDescriptionConverter implements ProjectReque
         return description;
     }
 
-    public void convert(final OverlayProjectRequest request, final MutableProjectDescription description, final InitializrMetadata metadata) {
+    public void convert(final OverlayProjectRequest request, final OverlayProjectDescription description, final InitializrMetadata metadata) {
         validate(request, metadata);
-        var platformVersion = getPlatformVersion(request, metadata);
-        var resolvedDependencies = getResolvedDependencies(request, platformVersion, metadata);
-        validateDependencyRange(platformVersion, resolvedDependencies);
+        var casVersion = getCasPlatformVersion(request, metadata);
+        var resolvedDependencies = getResolvedDependencies(request, casVersion, metadata);
+        validateDependencyRange(casVersion, resolvedDependencies);
 
         description.setApplicationName(request.getApplicationName());
         description.setArtifactId(request.getArtifactId());
@@ -115,8 +115,11 @@ public class OverlayProjectRequestToDescriptionConverter implements ProjectReque
         description.setName(request.getName());
         description.setPackageName(request.getPackageName());
         description.setPackaging(Packaging.forId(request.getPackaging()));
-        description.setPlatformVersion(platformVersion);
+        description.setPlatformVersion(getSpringBootPlatformVersion(request, metadata));
         description.setVersion(request.getVersion());
+        description.setCasVersion(casVersion.toString());
+        description.setSpringBootVersion(getSpringBootPlatformVersion(request, metadata).toString());
+
         resolvedDependencies.forEach(dependency -> description.addDependency(dependency.getId(),
             MetadataBuildItemMapper.toDependency(dependency)));
     }
@@ -130,7 +133,7 @@ public class OverlayProjectRequestToDescriptionConverter implements ProjectReque
     }
 
     private void validatePlatformVersion(final OverlayProjectRequest request, final InitializrMetadata metadata) {
-        var platformVersion = getPlatformVersion(request, metadata);
+        var platformVersion = getCasPlatformVersion(request, metadata);
         var platform = metadata.getConfiguration().getEnv().getPlatform();
         if (platformVersion != null && !platform.isCompatibleVersion(platformVersion)) {
             throw new InvalidProjectRequestException("Invalid version '" + platformVersion
@@ -138,7 +141,14 @@ public class OverlayProjectRequestToDescriptionConverter implements ProjectReque
         }
     }
 
-    private Version getPlatformVersion(final OverlayProjectRequest request, final InitializrMetadata metadata) {
+    private Version getCasPlatformVersion(final OverlayProjectRequest request, final InitializrMetadata metadata) {
+        var versionText = request.getCasVersion() != null ? request.getCasVersion()
+            : metadata.getConfiguration().getEnv().getBoms().get("cas-bom").getVersion();
+        var version = Version.parse(versionText);
+        return this.platformVersionTransformer.transform(version, metadata);
+    }
+
+    private Version getSpringBootPlatformVersion(final OverlayProjectRequest request, final InitializrMetadata metadata) {
         var versionText = request.getCasVersion() != null ? request.getCasVersion()
             : metadata.getConfiguration().getEnv().getBoms().get("cas-bom").getVersion();
         var version = Version.parse(versionText);
