@@ -1,5 +1,6 @@
 package org.apereo.cas;
 
+import org.apereo.cas.initializr.event.CasInitializrEventListener;
 import org.apereo.cas.initializr.rate.RateLimitInterceptor;
 import org.apereo.cas.initializr.web.OverlayProjectGenerationController;
 import org.apereo.cas.initializr.web.OverlayProjectRequestToDescriptionConverter;
@@ -43,7 +44,10 @@ public class CasInitializrApplication {
         return new OverlayProjectGenerationController(metadataProvider, invoker);
     }
 
-
+    @Bean
+    public CasInitializrEventListener casInitializrEventListener() {
+        return new CasInitializrEventListener();
+    }
     @Bean
     public HandlerInterceptor rateLimitInterceptor() {
         return new RateLimitInterceptor();

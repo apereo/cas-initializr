@@ -102,6 +102,7 @@ processResources {
                 "gradleFreeFairPluginVersion"            : project.property("gradleFreeFairPluginVersion"),
                 "gradleDownloadTaskPluginVersion"        : project.property("gradleDownloadTaskPluginVersion"),
                 "tomcatVersion"                          : project.property("tomcatVersion"),
+                "casPlatformMinimumVersion"              : project.property("casPlatformMinimumVersion"),
                 "jibVersion"                             : project.property("jibVersion")
                 
         ]

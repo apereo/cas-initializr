@@ -34,6 +34,9 @@ logging:
     org:
       apereo:
         cas: info
+    io:
+      spring:
+        initializr: warn
 
 spring:
   main:
@@ -187,7 +190,7 @@ initializr:
         artifactId: cas-mgmt-support-bom
         version: @casMgmtVersion@
     platform:
-      compatibility-range: @casMaintenanceVersion@
+      compatibility-range: @casPlatformMinimumVersion@
   dependencies:
     - name: api
       content:
