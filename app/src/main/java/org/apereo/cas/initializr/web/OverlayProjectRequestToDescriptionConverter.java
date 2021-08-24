@@ -149,8 +149,8 @@ public class OverlayProjectRequestToDescriptionConverter implements ProjectReque
     }
 
     private Version getSpringBootPlatformVersion(final OverlayProjectRequest request, final InitializrMetadata metadata) {
-        var versionText = request.getCasVersion() != null ? request.getCasVersion()
-            : metadata.getConfiguration().getEnv().getBoms().get("cas-bom").getVersion();
+        var versionText = request.getBootVersion() != null ? request.getBootVersion()
+            : metadata.getBootVersions().getDefault().getId();
         var version = Version.parse(versionText);
         return this.platformVersionTransformer.transform(version, metadata);
     }
