@@ -15,7 +15,7 @@ curl http://localhost:8080/starter.tgz -d casVersion=${CAS_VERSION} \
   -d bootVersion=${BOOT_VERSION} -d type=cas-discovery-server-overlay | tar -xzvf -
 kill -9 $pid
 
-echo "Building CAS Config Server Overlay"
+echo "Building CAS Discovery Server Overlay"
 ./gradlew clean build --no-daemon
 
 echo "Launched CAS with pid ${pid}. Waiting for server to come online..."

@@ -7,11 +7,12 @@ BOOT_VERSION=${2:-$DEFAULT_BOOT_VERSION}
 
 java -jar app/build/libs/app.jar &
 pid=$!
-sleep 15
+sleep 25
 rm -Rf tmp &> /dev/null
 mkdir tmp
 cd tmp
-curl http://localhost:8080/starter.tgz -d casVersion=${CAS_VERSION} -d bootVersion=${BOOT_VERSION} -d type=cas-config-server-overlay | tar -xzvf -
+curl http://localhost:8080/starter.tgz -d casVersion=${CAS_VERSION} \
+  -d bootVersion=${BOOT_VERSION} -d type=cas-config-server-overlay | tar -xzvf -
 kill -9 $pid
 
 echo "Building CAS Config Server Overlay"
