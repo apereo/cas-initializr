@@ -1163,6 +1163,13 @@ initializr:
           artifactId: cas-server-support-gauth-ldap
           description: Apereo CAS Google Authenticator LDAP
           bom: cas-bom
+        - name: cas-server-support-gauth-dynamodb
+          id: support-gauth-dynamodb
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-gauth-dynamodb
+          description: Apereo CAS Google Authenticator DynamoDb
+          bom: cas-bom
+          compatibilityRange: 6.5.0-SNAPSHOT
         - name: cas-server-support-gauth-mongo
           id: support-gauth-mongo
           groupId: org.apereo.cas
@@ -2225,6 +2232,15 @@ initializr:
           bom: cas-bom
           aliases:
             - clickatell
+        - name: cas-server-support-sms-smsmode
+          id: support-sms-smsmode
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-sms-smsmode
+          description: Apereo CAS SmsMode SMS Support
+          bom: cas-bom
+          compatibilityRange: 6.5.0-SNAPSHOT
+          aliases:
+            - smsmode
         - name: cas-server-support-sms-nexmo
           id: support-sms-nexmo
           groupId: org.apereo.cas
