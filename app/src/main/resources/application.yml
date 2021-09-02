@@ -1287,6 +1287,13 @@ initializr:
           artifactId: cas-server-support-hazelcast-discovery-azure
           description: Apereo CAS Hazelcast Discovery Azure Support
           bom: cas-bom
+        - name: cas-server-support-hazelcast-discovery-zookeeper
+          id: support-hazelcast-discovery-zookeeper
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-hazelcast-discovery-zookeeper
+          description: Apereo CAS Hazelcast Discovery with Apache Zookeeper Support
+          bom: cas-bom
+          compatibilityRange: 6.5.0-SNAPSHOT
         - name: cas-server-support-hazelcast-discovery-jclouds
           id: support-hazelcast-discovery-jclouds
           groupId: org.apereo.cas
