@@ -144,13 +144,19 @@ public class OverlayProjectRequestToDescriptionConverter implements ProjectReque
     private Version getCasPlatformVersion(final OverlayProjectRequest request, final InitializrMetadata metadata) {
         var versionText = request.getCasVersion() != null ? request.getCasVersion()
             : metadata.getConfiguration().getEnv().getBoms().get("cas-bom").getVersion();
-        var version = Version.parse(versionText);
+        if (versionText.matches("\\d.\\d.\\d.\\d")) {
+            versionText = versionText.substring(0, versionText.lastIndexOf('.'));
+        }
+        var version = Version.safeParse(versionText);
         return this.platformVersionTransformer.transform(version, metadata);
     }
 
     private Version getSpringBootPlatformVersion(final OverlayProjectRequest request, final InitializrMetadata metadata) {
         var versionText = request.getBootVersion() != null ? request.getBootVersion()
             : metadata.getBootVersions().getDefault().getId();
+        if (versionText.matches("\\d.\\d.\\d.\\d")) {
+            versionText = versionText.substring(0, versionText.lastIndexOf('.'));
+        }
         var version = Version.parse(versionText);
         return this.platformVersionTransformer.transform(version, metadata);
     }
