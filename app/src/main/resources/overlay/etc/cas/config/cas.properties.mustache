@@ -5,12 +5,12 @@ logging.config=file:/etc/cas/config/log4j2.xml
 
 # cas.authn.accept.enabled=false
 
-{{#properties}}
+{{#model.properties}}
 # Required: {{required}}
 # Type: {{{type}}}
 # Owner: {{owner}}
 # Module: {{module}}
-# {{{description}}}
+# Description: {{#comment}}{{{description}}}{{/comment}}
 # {{name}}: {{defaultValue}}
 {{#deprecationLevel}}
 # Deprecation Level: {{deprecationLevel}}
@@ -22,4 +22,4 @@ logging.config=file:/etc/cas/config/log4j2.xml
 # Deprecation Replacement: {{deprecationReplacement}}
 {{/deprecationReplacement}}
 
-{{/properties}}
+{{/model.properties}}

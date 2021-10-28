@@ -41,6 +41,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -104,9 +105,14 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         try (var writer = new StringWriter()) {
             var project = applicationContext.getBean(OverlayProjectDescription.class);
             var templateVariables = prepareProjectTemplateVariables(project);
+            Function<String, String> comment = input -> input.replace("\n", "\n#   ").replace("\r", "");
+            templateVariables.put("comment", comment);
             var model = contributeInternal(project);
             if (model instanceof Map) {
                 ((Map<String, Object>) model).putAll(templateVariables);
+            } else {
+                templateVariables.put("model", model);
+                model = templateVariables;
             }
             mustache.execute(writer, model).flush();
             return writer.toString();
@@ -121,7 +127,7 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         var boms = configuration.getEnv().getBoms();
 
         templateVariables.put("casMgmtVersion", boms.get("cas-mgmt-bom").getVersion());
-        
+
         templateVariables.put("casVersion", project.resolveCasVersion(boms.get("cas-bom")));
         templateVariables.put("springBootVersion", project.getSpringBootVersion());
 

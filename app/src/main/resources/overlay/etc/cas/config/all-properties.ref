@@ -2,7 +2,7 @@
 # Reference: All Properties
 ############################################################
 # This file contains a catalog of all properties
-# that are not owned/controlled by CAS.
+# that are not owned/controlled by CAS (version {{casVersion}}).
 #
 # Each property definition is annotated with:
 #   - Description
@@ -17,12 +17,12 @@
 # to upgrade headaches, maintenance nightmares and premature aging.
 ###############################################################################################################
 
-{{#properties}}
+{{#model.properties}}
 {{#owner}}
 # Owner: {{owner}}
 {{/owner}}
 # Type: {{{type}}}
-# {{{description}}}
+# Description: {{#comment}}{{{description}}}{{/comment}}
 # {{name}}: {{defaultValue}}
 {{#deprecationLevel}}
 # Deprecation Level: {{deprecationLevel}}
@@ -34,4 +34,4 @@
 # Deprecation Replacement: {{deprecationReplacement}}
 {{/deprecationReplacement}}
 
-{{/properties}}
+{{/model.properties}}
