@@ -125,11 +125,18 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         templateVariables.put("casVersion", project.resolveCasVersion(boms.get("cas-bom")));
         templateVariables.put("springBootVersion", project.getSpringBootVersion());
 
+        if (project.getSpringBootVersion().startsWith("2.6")) {
+            templateVariables.put("mainClass", Boolean.TRUE);
+        } else {
+            templateVariables.put("mainClassName", Boolean.TRUE);
+        }
+
         var type = project.getBuildSystem().id();
         templateVariables.put("buildSystemId", type);
         templateVariables.put("containerImageName", StringUtils.remove(type, "-overlay"));
 
         templateVariables.put("initializrUrl", generateAppUrl());
+
         if (type.equalsIgnoreCase(CasOverlayBuildSystem.ID) || type.equalsIgnoreCase(CasManagementOverlayBuildSystem.ID)) {
             handleApplicationServerType(project, templateVariables);
             templateVariables.put("hasDockerFile", Boolean.TRUE);
