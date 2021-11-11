@@ -479,23 +479,23 @@ springBoot {
     buildInfo()
 
     {{#casServer}}
-    mainClassName = "org.apereo.cas.web.CasWebApplication"
+    mainClass = "org.apereo.cas.web.CasWebApplication"
     {{/casServer}}
 
     {{#springBootAdminServer}}
-    mainClassName = "org.apereo.cas.CasSpringBootAdminServerWebApplication"
+    mainClass = "org.apereo.cas.CasSpringBootAdminServerWebApplication"
     {{/springBootAdminServer}}
 
     {{#configServer}}
-    mainClassName = "org.apereo.cas.CasConfigurationServerWebApplication"
+    mainClass = "org.apereo.cas.CasConfigurationServerWebApplication"
     {{/configServer}}
 
     {{#managementServer}}
-    mainClassName = "org.apereo.cas.mgmt.web.CasManagementWebApplication"
+    mainClass = "org.apereo.cas.mgmt.web.CasManagementWebApplication"
     {{/managementServer}}
 
     {{#discoveryServer}}
-    mainClassName = "org.apereo.cas.CasEurekaServerWebApplication"
+    mainClass = "org.apereo.cas.CasEurekaServerWebApplication"
     {{/discoveryServer}}
 }
 
