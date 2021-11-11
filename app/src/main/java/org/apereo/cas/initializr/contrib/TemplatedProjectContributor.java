@@ -126,9 +126,9 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         templateVariables.put("springBootVersion", project.getSpringBootVersion());
 
         if (project.getSpringBootVersion().startsWith("2.6")) {
-            templateVariables.put("mainClass", Boolean.TRUE);
+            templateVariables.put("mainClass", "mainClass");
         } else {
-            templateVariables.put("mainClassName", Boolean.TRUE);
+            templateVariables.put("mainClass", "mainClassName");
         }
 
         var type = project.getBuildSystem().id();
