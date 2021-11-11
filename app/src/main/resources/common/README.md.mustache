@@ -110,7 +110,7 @@ On a successful deployment via the following methods, the server will be availab
 Run the server web application as an executable WAR.
 
 ```bash
-java -jar build/libs/app.war 
+java -jar build/libs/{{appName}}.war
 ```
 
 Or via:
@@ -128,7 +128,7 @@ Debug the CAS web application as an executable WAR:
 Or via:
 
 ```bash
-java -Xdebug -Xrunjdwp:transport=dt_socket,address=5000,server=y,suspend=y -jar build/libs/app.war 
+java -Xdebug -Xrunjdwp:transport=dt_socket,address=5000,server=y,suspend=y -jar build/libs/{{appName}}.war
 ```
 
 Run the CAS web application as a *standalone* executable WAR:
@@ -174,3 +174,4 @@ docker-compose build
 ```
 
 {{/hasDockerFile}}
+

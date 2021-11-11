@@ -43,10 +43,10 @@ public class CasSpringBootAdminServerOverlayProjectGenerationConfiguration {
     }
 
     @Bean
-    public CasSpringBootAdminServerOverlayGradleBuild gradleBuild(ObjectProvider<BuildCustomizer<CasSpringBootAdminServerOverlayGradleBuild>> buildCustomizers,
-                                                                  ObjectProvider<BuildItemResolver> buildItemResolver) {
+    public CasSpringBootAdminServerOverlayGradleBuild gradleBuild(final ObjectProvider<BuildCustomizer<CasSpringBootAdminServerOverlayGradleBuild>> buildCustomizers,
+                                                                  final ObjectProvider<BuildItemResolver> buildItemResolver) {
         var build = new CasSpringBootAdminServerOverlayGradleBuild(buildItemResolver.getIfAvailable());
-        val customizers = buildCustomizers.orderedStream().collect(Collectors.toList());
+        var customizers = buildCustomizers.orderedStream().collect(Collectors.toList());
         customizers.forEach(c -> c.customize(build));
         return build;
     }

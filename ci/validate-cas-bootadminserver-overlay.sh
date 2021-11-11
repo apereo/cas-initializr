@@ -7,7 +7,7 @@ BOOT_VERSION=${2:-$DEFAULT_BOOT_VERSION}
 
 java -jar app/build/libs/app.jar &
 pid=$!
-sleep 15
+sleep 30
 rm -Rf tmp &> /dev/null
 mkdir tmp
 cd tmp
@@ -17,7 +17,8 @@ kill -9 $pid
 echo "Building CAS Spring Boot Admin Server Overlay"
 ./gradlew clean build --no-daemon
 
-java -jar build/libs/app.war --server.ssl.enabled=false --spring.security.user.password=password --spring.security.user.name=casuser &
+java -jar build/libs/casbootadminserver.war --server.ssl.enabled=false \
+  --spring.security.user.password=password --spring.security.user.name=casuser &
 pid=$!
 sleep 5
 
@@ -34,12 +35,10 @@ chmod -R 777 ./*.sh >/dev/null 2>&1
 ./gradlew jibDockerBuild
 
 downloadTomcat
-mv build/libs/app.war ${CATALINA_HOME}/webapps/app.war
+mv build/libs/casbootadminserver.war ${CATALINA_HOME}/webapps/app.war
 
 export SPRING_SECURITY_USER_PASSWORD=password
 export SPRING_SECURITY_USER_NAME=casuser
-
-standAloneCasConfig
 
 ${CATALINA_HOME}/bin/startup.sh & >/dev/null 2>&1
 pid=$!

@@ -4,22 +4,19 @@ env:
   JAVA_OPTS: "-Xms512m -Xmx6048m -Xss128m -XX:ReservedCodeCacheSize=512m -server -XX:+UseG1GC"
   GRADLE_OPTS: "-Xms512m -Xmx6048m -Xss128m -XX:ReservedCodeCacheSize=512m -server -XX:+UseG1GC"
   TERM: xterm-256color
-  JDK_CURRENT: 11.0.10
-  HELM_CURRENT: v3.5.3
-  HELM_CAS_VERSION: 6.4.0-SNAPSHOT
-  HELM_BOOT_VERSION: 2.5.0
-  CAS_MGMT_VERSION: 6.3.3-SNAPSHOT
-  CAS_MGMT_SPRING_BOOT_VERSION: 2.3.7.RELEASE
+  JDK_CURRENT: 11.0.11
+  HELM_CURRENT: v3.6.3
   DOCKER_USER: ${{ secrets.DOCKER_USER }}
   DOCKER_PWD: ${{ secrets.DOCKER_PWD }}
+  GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
 ##########################################################################
 
 on:
   push:
-    branches: [ master  ]
+    branches: [ master ]
   pull_request:
-    branches: [ master  ]
+    branches: [ master ]
 
 ##########################################################################
 
@@ -46,8 +43,8 @@ jobs:
           name: binary-artifacts
           path: ./**/build/libs/*.*
   ##########################################################################
-  supported-versions:
-    needs: [build]
+  latest-versions-cas:
+    needs: [ build ]
     runs-on: ubuntu-latest
     outputs:
       supported-versions: ${{ steps.get-supported-versions.outputs.supported-versions }}
@@ -60,30 +57,114 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: binary-artifacts
-      - id: run-initializr
-        name: Run Initializer to get supported versions
-        run: |
-          . ./ci/functions.sh
-          java -jar app/build/libs/app.jar &
-          waitForInitializr
       - id: print-supported-versions
         name: Print supported versions
-        run: curl -q http://localhost:8081/actuator/supportedVersions | jq .
+        run: ./gradlew --no-daemon -q latestVersions | jq
       - id: get-supported-versions
         name: Get supported versions for matrix
-        run: echo "::set-output name=supported-versions::$(curl -q http://localhost:8081/actuator/supportedVersions)]}"
-      - id: stop-initializr
-        name: Stop Initializr
-        run: |
-          . ./ci/functions.sh
-          stopInitializr
+        run: echo "::set-output name=supported-versions::$(./gradlew --no-daemon -q latestVersions)]}"
+  ##########################################################################
+  supported-versions-cas:
+    needs: [ build ]
+    runs-on: ubuntu-latest
+    outputs:
+      supported-versions: ${{ steps.get-supported-versions.outputs.supported-versions }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: ${{ env.JDK_CURRENT }}
+      - uses: actions/download-artifact@v2
+        with:
+          name: binary-artifacts
+      - id: print-supported-versions
+        name: Print supported versions
+        run: ./gradlew --no-daemon -q versions-cas | jq
+      - id: get-supported-versions
+        name: Get supported versions for matrix
+        run: echo "::set-output name=supported-versions::$(./gradlew --no-daemon -q versions-cas)]}"
+  ##########################################################################
+  supported-versions-cas-mgmt:
+    needs: [ build ]
+    runs-on: ubuntu-latest
+    outputs:
+      supported-versions: ${{ steps.get-supported-versions.outputs.supported-versions }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: ${{ env.JDK_CURRENT }}
+      - uses: actions/download-artifact@v2
+        with:
+          name: binary-artifacts
+      - id: print-supported-versions
+        name: Print supported versions
+        run: ./gradlew --no-daemon -q versions-cas-mgmt | jq
+      - id: get-supported-versions
+        name: Get supported versions for matrix
+        run: echo "::set-output name=supported-versions::$(./gradlew --no-daemon -q versions-cas-mgmt)]}"
+  ##########################################################################
+  sync-cas-mgmt-overlay:
+    needs: [ supported-versions-cas-mgmt ]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        versions: ${{fromJSON(needs.supported-versions-cas-mgmt.outputs.supported-versions)}}
+    name: Sync CAS Mgmt Server ${{ matrix.versions.version }} Branch ${{ matrix.versions.branch }}
+    steps:
+      - uses: actions/checkout@v2
+        if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
+      - name: Set up JDK
+        if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
+        uses: actions/setup-java@v1
+        with:
+          java-version: ${{ env.JDK_CURRENT }}
+      - name: Initialize
+        if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
+        run: chmod -R 777 ./ci/*.sh
+      - uses: actions/download-artifact@v2
+        if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
+        with:
+          name: binary-artifacts
+      - name: Sync Overlay
+        if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
+        run: ./ci/sync-overlay.sh ${{ matrix.versions.version }} ${{ matrix.versions.boot-version }} ${{ matrix.versions.branch }} cas-management-overlay
+  ##########################################################################
+  sync-cas-overlay:
+    needs: [ supported-versions-cas ]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        versions: ${{fromJSON(needs.supported-versions-cas.outputs.supported-versions)}}
+    name: Sync CAS Server ${{ matrix.versions.version }} Branch ${{ matrix.versions.branch }}
+    steps:
+      - uses: actions/checkout@v2
+        if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
+      - name: Set up JDK
+        if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
+        uses: actions/setup-java@v1
+        with:
+          java-version: ${{ env.JDK_CURRENT }}
+      - name: Initialize
+        if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
+        run: chmod -R 777 ./ci/*.sh
+      - uses: actions/download-artifact@v2
+        if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
+        with:
+          name: binary-artifacts
+      - name: Sync Overlay
+        if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
+        run: ./ci/sync-overlay.sh ${{ matrix.versions.version }} ${{ matrix.versions.boot-version }} ${{ matrix.versions.branch }} cas-overlay
   ##########################################################################
   validate-cas-overlay:
-    needs: [supported-versions]
+    needs: [ supported-versions-cas ]
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        versions: ${{fromJSON(needs.supported-versions.outputs.supported-versions)}}
+        versions: ${{fromJSON(needs.supported-versions-cas.outputs.supported-versions)}}
+    name: Validate CAS Server ${{ matrix.versions.version }}
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK
@@ -96,10 +177,14 @@ jobs:
         with:
           name: binary-artifacts
       - name: Validate Overlay
-        run: ./ci/validate-cas-overlay.sh ${{ matrix.versions.casVersion }} ${{ matrix.versions.bootVersion }}
+        run: ./ci/validate-cas-overlay.sh ${{ matrix.versions.version }} ${{ matrix.versions.boot-version }}
   validate-cas-mgmt-overlay:
-    needs: [build]
+    needs: [ supported-versions-cas-mgmt ]
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        versions: ${{fromJSON(needs.supported-versions-cas-mgmt.outputs.supported-versions)}}
+    name: Validate CAS Mgmt ${{ matrix.versions.version }}
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK
@@ -114,13 +199,14 @@ jobs:
       # - name: Setup tmate session
       #   uses: mxschmitt/action-tmate@v3
       - name: Validate Overlay
-        run: ./ci/validate-cas-mgmt-overlay.sh ${{ env.CAS_MGMT_VERSION }} ${{ env.CAS_MGMT_SPRING_BOOT_VERSION }}
+        run: ./ci/validate-cas-mgmt-overlay.sh ${{ matrix.versions.version }} ${{ matrix.versions.boot-version }}
   validate-cas-configserver-overlay:
-    needs: [supported-versions]
+    needs: [ supported-versions-cas ]
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        versions: ${{fromJSON(needs.supported-versions.outputs.supported-versions)}}
+        versions: ${{fromJSON(needs.supported-versions-cas.outputs.supported-versions)}}
+    name: Validate Config Server ${{ matrix.versions.version }}
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK
@@ -135,13 +221,14 @@ jobs:
       # - name: Setup tmate session
       #   uses: mxschmitt/action-tmate@v3
       - name: Validate Overlay
-        run: ./ci/validate-cas-configserver-overlay.sh ${{ matrix.versions.casVersion }} ${{ matrix.versions.bootVersion }}
+        run: ./ci/validate-cas-configserver-overlay.sh ${{ matrix.versions.version }} ${{ matrix.versions.boot-version }}
   validate-cas-discoveryserver-overlay:
-    needs: [supported-versions]
+    needs: [ supported-versions-cas ]
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        versions: ${{fromJSON(needs.supported-versions.outputs.supported-versions)}}
+        versions: ${{fromJSON(needs.supported-versions-cas.outputs.supported-versions)}}
+    name: Validate Discovery Server ${{ matrix.versions.version }}
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK
@@ -154,13 +241,14 @@ jobs:
         with:
           name: binary-artifacts
       - name: Validate Overlay
-        run: ./ci/validate-cas-discoveryserver-overlay.sh ${{ matrix.versions.casVersion }} ${{ matrix.versions.bootVersion }}
+        run: ./ci/validate-cas-discoveryserver-overlay.sh ${{ matrix.versions.version }} ${{ matrix.versions.boot-version }}
   validate-cas-bootadminserver-overlay:
-    needs: [supported-versions]
+    needs: [ supported-versions-cas ]
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        versions: ${{fromJSON(needs.supported-versions.outputs.supported-versions)}}
+        versions: ${{fromJSON(needs.supported-versions-cas.outputs.supported-versions)}}
+    name: Validate BootAdmin Server ${{ matrix.versions.version }}
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK
@@ -173,9 +261,9 @@ jobs:
         with:
           name: binary-artifacts
       - name: Validate Overlay
-        run: ./ci/validate-cas-bootadminserver-overlay.sh ${{ matrix.versions.casVersion }} ${{ matrix.versions.bootVersion }}
+        run: ./ci/validate-cas-bootadminserver-overlay.sh ${{ matrix.versions.version }} ${{ matrix.versions.boot-version }}
   publish:
-    needs: [build]
+    needs: [ build ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -198,11 +286,11 @@ jobs:
           echo "Pushing Docker image with tag $imageTag"
           docker push apereo/cas-initializr:"$imageTag"
   helm:
-    needs: [build]
+    needs: [ latest-versions-cas ]
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        k3s-version: [v1.20.2, v1.19.7, v1.18.15, v1.17.17] # v1.16.15
+        k3s-version: [ v1.21.4, v1.20.2 ] # v1.19.7, v1.18.15, v1.17.17 v1.16.15
     env:
       GOPATH: /home/runner/go
     steps:
@@ -235,9 +323,12 @@ jobs:
         with:
           version: ${{ env.HELM_CURRENT }}
         id: install
-#      - name: Setup tmate session if timeout waiting for pods to start
-#        uses: mxschmitt/action-tmate@v3
+      #      - name: Setup tmate session if timeout waiting for pods to start
+      #        uses: mxschmitt/action-tmate@v3
       - name: Validate Helm Chart
+        env:
+          HELM_CAS_VERSION: "${{ fromJSON(needs.latest-versions-cas.outputs.supported-versions).version }}"
+          HELM_BOOT_VERSION: "${{ fromJSON(needs.latest-versions-cas.outputs.supported-versions).boot-version }}"
         run: |
           ./ci/validate-helm-build-images.sh $HELM_CAS_VERSION $HELM_BOOT_VERSION
           ./ci/validate-helm.sh

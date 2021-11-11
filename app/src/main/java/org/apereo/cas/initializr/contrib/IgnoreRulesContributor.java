@@ -22,12 +22,12 @@ public class IgnoreRulesContributor implements ProjectContributor {
 
     private void createFile(final Path projectRoot, final String relativePath,
                             final String resourcePattern) throws IOException {
-        Path output = projectRoot.resolve(relativePath);
+        var output = projectRoot.resolve(relativePath);
         if (!Files.exists(output)) {
             Files.createDirectories(output.getParent());
             Files.createFile(output);
         }
-        Resource resource = this.resolver.getResource(resourcePattern);
+        var resource = this.resolver.getResource(resourcePattern);
         FileCopyUtils.copy(resource.getInputStream(), Files.newOutputStream(output, StandardOpenOption.APPEND));
     }
 

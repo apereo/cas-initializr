@@ -6,4 +6,5 @@ tmp
 *.orig
 **/target
 **/bin
-
+.project
+.classpath

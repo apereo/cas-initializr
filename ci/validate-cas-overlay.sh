@@ -7,7 +7,7 @@ BOOT_VERSION=${2:-$DEFAULT_BOOT_VERSION}
 
 java -jar app/build/libs/app.jar &
 pid=$!
-sleep 15
+sleep 30
 mkdir tmp
 cd tmp
 curl http://localhost:8080/starter.tgz -d "casVersion=${CAS_VERSION}&bootVersion=${BOOT_VERSION}" | tar -xzvf -
@@ -15,7 +15,7 @@ kill -9 $pid
 
 ./gradlew clean build
 downloadTomcat
-mv build/libs/app.war ${CATALINA_HOME}/webapps/cas.war
+mv build/libs/cas.war ${CATALINA_HOME}/webapps/cas.war
 
 ${CATALINA_HOME}/bin/startup.sh & >/dev/null 2>&1
 pid=$!

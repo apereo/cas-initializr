@@ -11,8 +11,13 @@ import lombok.Setter;
 @Setter
 public class SupportedVersion {
 
-    private String casVersion;
+    private String version;
 
     private String bootVersion;
 
+    private boolean sync;
+
+    private String branch;
+
+    private String type;
 }

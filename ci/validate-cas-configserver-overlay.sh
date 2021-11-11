@@ -7,11 +7,12 @@ BOOT_VERSION=${2:-$DEFAULT_BOOT_VERSION}
 
 java -jar app/build/libs/app.jar &
 pid=$!
-sleep 15
+sleep 25
 rm -Rf tmp &> /dev/null
 mkdir tmp
 cd tmp
-curl http://localhost:8080/starter.tgz -d casVersion=${CAS_VERSION} -d bootVersion=${BOOT_VERSION} -d type=cas-config-server-overlay | tar -xzvf -
+curl http://localhost:8080/starter.tgz -d casVersion=${CAS_VERSION} \
+  -d bootVersion=${BOOT_VERSION} -d type=cas-config-server-overlay | tar -xzvf -
 kill -9 $pid
 
 echo "Building CAS Config Server Overlay"
@@ -27,8 +28,8 @@ sudo keytool -genkey -noprompt -alias cas -keyalg RSA -keypass changeit -storepa
                   -keystore "${keystore}" -dname "${dname}" -ext SAN="${subjectAltName}"
 [ -f "${keystore}" ] && echo "Created ${keystore}"
 
-
-java -jar build/libs/app.war --server.ssl.enabled=false --spring.security.user.password=password --spring.security.user.name=casuser &
+java -jar build/libs/casconfigserver.war --server.ssl.enabled=false \
+  --spring.security.user.password=password --spring.security.user.name=casuser &
 pid=$!
 sleep 5
 
@@ -45,12 +46,10 @@ chmod -R 777 ./*.sh >/dev/null 2>&1
 ./gradlew jibDockerBuild
 
 downloadTomcat
-mv build/libs/app.war ${CATALINA_HOME}/webapps/app.war
+mv build/libs/casconfigserver.war ${CATALINA_HOME}/webapps/app.war
 
 export SPRING_SECURITY_USER_PASSWORD=password
 export SPRING_SECURITY_USER_NAME=casuser
-
-standAloneCasConfig
 
 ${CATALINA_HOME}/bin/startup.sh & >/dev/null 2>&1
 pid=$!

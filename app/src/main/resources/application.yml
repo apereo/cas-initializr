@@ -8,7 +8,7 @@ management:
   security:
     enabled: false
   server:
-    port: ${MGMT_PORT:8081}
+    port: ${MGMT_PORT:${PORT:8081}}
     # Mgmt server address cannot be specified if
     # the server port and the management server port
     # are the same. This needs to be modified manually
@@ -33,7 +33,10 @@ logging:
   level:
     org:
       apereo:
-        cas: debug
+        cas: info
+    io:
+      spring:
+        initializr: warn
 
 spring:
   main:
@@ -41,13 +44,27 @@ spring:
 
 cas-initializr:
   supported-versions:
-    - cas-version: 6.3.4
-      boot-version: 2.3.7.RELEASE
-    - cas-version: @casVersion@
+    - version: @casMgmtVersion@
+      boot-version: @casMgmtSpringBootVersion@
+      sync: true
+      branch: @casMgmtBranch@
+      type: cas-mgmt
+    - version: @casMaintenanceVersion@
+      boot-version: @casMaintenanceSpringBootVersion@
+      sync: true
+      branch: @casMaintenanceBranch@
+      type: cas
+    - version: @casVersion@
       boot-version: @springBootVersion@
-    - cas-version: 6.4.0-SNAPSHOT
-      boot-version: 2.5.0
-
+      branch: @casBranch@
+      sync: true
+      type: cas
+    - version: @casLatestVersion@
+      boot-version: @springBootLatestVersion@
+      sync: true
+      branch: master
+      type: cas
+      
 initializr:
   name:
     value: cas
@@ -172,6 +189,8 @@ initializr:
         groupId: org.apereo.cas
         artifactId: cas-mgmt-support-bom
         version: @casMgmtVersion@
+    platform:
+      compatibility-range: @casPlatformMinimumVersion@
   dependencies:
     - name: api
       content:
@@ -1144,6 +1163,13 @@ initializr:
           artifactId: cas-server-support-gauth-ldap
           description: Apereo CAS Google Authenticator LDAP
           bom: cas-bom
+        - name: cas-server-support-gauth-dynamodb
+          id: support-gauth-dynamodb
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-gauth-dynamodb
+          description: Apereo CAS Google Authenticator DynamoDb
+          bom: cas-bom
+          compatibilityRange: 6.5.0-SNAPSHOT
         - name: cas-server-support-gauth-mongo
           id: support-gauth-mongo
           groupId: org.apereo.cas
@@ -1261,6 +1287,13 @@ initializr:
           artifactId: cas-server-support-hazelcast-discovery-azure
           description: Apereo CAS Hazelcast Discovery Azure Support
           bom: cas-bom
+        - name: cas-server-support-hazelcast-discovery-zookeeper
+          id: support-hazelcast-discovery-zookeeper
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-hazelcast-discovery-zookeeper
+          description: Apereo CAS Hazelcast Discovery with Apache Zookeeper Support
+          bom: cas-bom
+          compatibilityRange: 6.5.0-SNAPSHOT
         - name: cas-server-support-hazelcast-discovery-jclouds
           id: support-hazelcast-discovery-jclouds
           groupId: org.apereo.cas
@@ -2206,6 +2239,15 @@ initializr:
           bom: cas-bom
           aliases:
             - clickatell
+        - name: cas-server-support-sms-smsmode
+          id: support-sms-smsmode
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-sms-smsmode
+          description: Apereo CAS SmsMode SMS Support
+          bom: cas-bom
+          compatibilityRange: 6.5.0-SNAPSHOT
+          aliases:
+            - smsmode
         - name: cas-server-support-sms-nexmo
           id: support-sms-nexmo
           groupId: org.apereo.cas

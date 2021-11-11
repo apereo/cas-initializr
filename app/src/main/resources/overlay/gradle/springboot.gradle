@@ -20,6 +20,7 @@ dependencies {
 
     bootRunConfig "org.apereo.cas:cas-server-support-thymeleaf:${project.'cas.version'}"
     bootRunConfig "org.apereo.cas:cas-server-support-validation:${project.'cas.version'}"
+    bootRunConfig "org.apereo.cas:cas-server-support-person-directory:${project.'cas.version'}"
 
     bootRunConfig "org.apereo.cas:cas-server-webapp-resources:${project.'cas.version'}"
     bootRunConfig "org.apereo.cas:cas-server-webapp-config:${project.'cas.version'}"
