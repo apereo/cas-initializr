@@ -27,9 +27,6 @@ buildscript {
         maven {
             url "https://repo.spring.io/milestone"
             mavenContent { releasesOnly() }
-            content {
-                includeGroupByRegex "org.springframework.*"
-            }
         }
     }
     dependencies {
@@ -69,10 +66,6 @@ repositories {
     maven {
         url "https://repo.spring.io/milestone"
         mavenContent { releasesOnly() }
-        content {
-            includeGroupByRegex "org.springframework.*"
-            includeGroupByRegex "io.micrometer.*"
-        }
     }
 }
 
