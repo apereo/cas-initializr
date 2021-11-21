@@ -52,6 +52,7 @@ echo "Updating project README"
 warning="# IMPORTANT NOTE<br/>"
 warning="${warning}******************************************************<br/>"
 warning="${warning}This repository is always automatically generated from the CAS Initializr. "
+warning="${warning}Do NOT submit pull requests here as the change-set will be overwritten on the next sync."
 warning="${warning}To learn more, please visit the [CAS documentation](https://apereo.github.io/cas)."
 warning="${warning}<br/>******************************************************<br/>"
 text=$(echo "${warning}"; cat README.md)
