@@ -3,7 +3,6 @@ package org.apereo.cas.initializr.web;
 import io.spring.initializr.generator.buildsystem.BuildSystem;
 import io.spring.initializr.generator.language.Language;
 import io.spring.initializr.generator.packaging.Packaging;
-import io.spring.initializr.generator.project.MutableProjectDescription;
 import io.spring.initializr.generator.project.ProjectDescription;
 import io.spring.initializr.generator.version.Version;
 import io.spring.initializr.metadata.Dependency;
@@ -92,14 +91,21 @@ public class OverlayProjectRequestToDescriptionConverter implements ProjectReque
         }).collect(Collectors.toList());
     }
 
+    private static String determineCasVersion(final OverlayProjectRequest request, final InitializrMetadata metadata) {
+        return request.getCasVersion() != null ? request.getCasVersion()
+            : metadata.getConfiguration().getEnv().getBoms().get("cas-bom").getVersion();
+    }
+
     @Override
     public ProjectDescription convert(final OverlayProjectRequest request, final InitializrMetadata metadata) {
         var description = new OverlayProjectDescription();
         convert(request, description, metadata);
+        description.setCasVersion(determineCasVersion(request, metadata));
         return description;
     }
 
-    public void convert(final OverlayProjectRequest request, final OverlayProjectDescription description, final InitializrMetadata metadata) {
+    public void convert(final OverlayProjectRequest request, final OverlayProjectDescription description,
+                        final InitializrMetadata metadata) {
         validate(request, metadata);
         var casVersion = getCasPlatformVersion(request, metadata);
         var resolvedDependencies = getResolvedDependencies(request, casVersion, metadata);
@@ -137,13 +143,12 @@ public class OverlayProjectRequestToDescriptionConverter implements ProjectReque
         var platform = metadata.getConfiguration().getEnv().getPlatform();
         if (platformVersion != null && !platform.isCompatibleVersion(platformVersion)) {
             throw new InvalidProjectRequestException("Invalid version '" + platformVersion
-                + "', Compatibility range is " + platform.determineCompatibilityRangeRequirement());
+                                                     + "', Compatibility range is " + platform.determineCompatibilityRangeRequirement());
         }
     }
 
     private Version getCasPlatformVersion(final OverlayProjectRequest request, final InitializrMetadata metadata) {
-        var versionText = request.getCasVersion() != null ? request.getCasVersion()
-            : metadata.getConfiguration().getEnv().getBoms().get("cas-bom").getVersion();
+        var versionText = determineCasVersion(request, metadata);
         if (versionText.matches("\\d.\\d.\\d.\\d")) {
             versionText = versionText.substring(0, versionText.lastIndexOf('.'));
         }
