@@ -12,8 +12,6 @@ import org.apereo.cas.initializr.contrib.gradle.OverlayGradleBuildContributor;
 import org.apereo.cas.initializr.contrib.gradle.OverlayGradlePropertiesContributor;
 import org.apereo.cas.overlay.casserver.buildsystem.CasOverlayBuildSystem;
 import org.apereo.cas.overlay.casserver.buildsystem.CasOverlayGradleBuild;
-import org.apereo.cas.overlay.casserver.contrib.CasOverlayAllReferencePropertiesContributor;
-import org.apereo.cas.overlay.casserver.contrib.CasOverlayCasReferencePropertiesContributor;
 import org.apereo.cas.overlay.casserver.contrib.CasOverlayConfigurationDirectoriesContributor;
 import org.apereo.cas.overlay.casserver.contrib.CasOverlayConfigurationPropertiesContributor;
 import org.apereo.cas.overlay.casserver.contrib.CasOverlayLoggingConfigurationContributor;
@@ -47,8 +45,6 @@ public class CasOverlayProjectGenerationConfiguration {
     @Bean
     public ChainingSingleResourceProjectContributor casOverlayGradleConfigurationContributor() {
         var chain = new ChainingSingleResourceProjectContributor();
-        chain.addContributor(new CasOverlayAllReferencePropertiesContributor(applicationContext));
-        chain.addContributor(new CasOverlayCasReferencePropertiesContributor(applicationContext));
         chain.addContributor(new OverlayGradleBuildContributor(applicationContext));
         chain.addContributor(new CasOverlayConfigurationDirectoriesContributor());
         chain.addContributor(new CasOverlayGradleSpringBootContributor());
