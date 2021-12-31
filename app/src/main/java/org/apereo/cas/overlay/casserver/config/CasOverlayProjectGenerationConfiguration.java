@@ -19,11 +19,14 @@ import org.apereo.cas.overlay.casserver.contrib.docker.CasOverlayDockerContribut
 import org.apereo.cas.overlay.casserver.contrib.gradle.CasOverlayGradleSpringBootContributor;
 import org.apereo.cas.overlay.casserver.contrib.helm.CasOverlayHelmContributor;
 import org.apereo.cas.overlay.casserver.customize.DefaultDependenciesBuildCustomizer;
+
+import org.apache.commons.text.WordUtils;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 
+import java.util.Properties;
 import java.util.stream.Collectors;
 
 @ProjectGenerationConfiguration
@@ -78,4 +81,9 @@ public class CasOverlayProjectGenerationConfiguration {
         return new DefaultDependenciesBuildCustomizer(applicationContext);
     }
 
+    public static void main(String[] args) {
+        String txt = "# The order of this attribute repository in the chain of repositories. Can be used to explicitly position this source in chain and affects merging strategies.";
+
+        System.out.println(WordUtils.wrap(txt, 70, "\n# ", true));
+    }
 }

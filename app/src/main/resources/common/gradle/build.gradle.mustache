@@ -352,11 +352,15 @@ task listTemplateViews(group: "CAS", description: "List all CAS views") {
 task exportConfigMetadata(group: "CAS", description: "Export collection of CAS properties") {
     doLast {
         def file = new File(project.rootDir, 'config-metadata.properties')
+        def queryType = ConfigurationMetadataCatalogQuery.QueryTypes.CAS
+        if (project.hasProperty("queryType")) {
+            queryType = ConfigurationMetadataCatalogQuery.QueryTypes.valueOf(project.findProperty("queryType"))
+        }
         file.withWriter('utf-8') { writer ->
             def props = CasConfigurationMetadataCatalog.query(
                 ConfigurationMetadataCatalogQuery.builder()
-                        .queryType(ConfigurationMetadataCatalogQuery.QueryTypes.CAS)
-                        .build())
+                    .queryType(queryType)
+                    .build())
                 .properties()
             props.each { property ->
                 writer.writeLine("# Type: ${property.type}");
@@ -371,7 +375,11 @@ task exportConfigMetadata(group: "CAS", description: "Export collection of CAS p
                         writer.writeLine("# Replace with: ${property.deprecationReason}")
                     }
                 }
-                writer.writeLine("# ${property.description}");
+                writer.writeLine("#")
+                def description = property.description.replace("\n", "\n# ").replace("\r", "")
+                description = org.apache.commons.text.WordUtils.wrap(description, 70, "\n# ", true)
+                writer.writeLine("# ${description}")
+                writer.writeLine("#")
                 writer.writeLine("# ${property.name}: ${property.defaultValue}")
                 writer.writeLine("")
             }
