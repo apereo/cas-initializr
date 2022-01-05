@@ -21,7 +21,7 @@ if [ $ENTRYPOINT_DEBUG == "true" ]; then
     echo -e "\nListing CAS configuration under /etc/cas..."
     ls -R /etc/cas
   fi
-  echo -e "\nRemote debugger configured on port ${JVM_DEBUG_PORT} with suspend=${JVM_DEBUG_SUSPEND}: ${}JVM_DEBUG}"
+  echo -e "\nRemote debugger configured on port ${JVM_DEBUG_PORT} with suspend=${JVM_DEBUG_SUSPEND}: ${JVM_DEBUG}"
   echo -e "\nJava args: ${JVM_MEM_OPTS} ${JVM_EXTRA_OPTS}"
 fi
 
