@@ -30,6 +30,19 @@ else
     exit 1
 fi
 
+echo "Running CAS Overlay as an executable WAR file"
+./gradlew clean build -Pexecutable=true
+./build/libs/cas.war --spring.profiles.active=none --server.ssl.enabled=false --server.port=8090 &
+pid=$!
+sleep 15
+echo "Launched executable CAS with pid ${pid}. Waiting for CAS server to come online..."
+until curl -k -L --output /dev/null --silent --fail http://localhost:8090/cas/login; do
+   echo -n '.'
+   sleep 5
+done
+echo -e "\n\nReady!"
+kill -9 $pid
+
 echo "Running CAS Overlay with bootRun"
 ./gradlew clean build bootRun -Dserver.ssl.enabled=false -Dserver.port=8090 &
 pid=$!
