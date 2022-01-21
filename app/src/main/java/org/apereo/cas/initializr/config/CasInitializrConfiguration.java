@@ -4,6 +4,7 @@ import org.apereo.cas.initializr.contrib.ApplicationYamlPropertiesContributor;
 import org.apereo.cas.initializr.contrib.ChainingMultipleResourcesProjectContributor;
 import org.apereo.cas.initializr.contrib.ChainingSingleResourceProjectContributor;
 import org.apereo.cas.initializr.contrib.IgnoreRulesContributor;
+import org.apereo.cas.initializr.contrib.LocalEtcCasDirectoryContributor;
 import org.apereo.cas.initializr.contrib.OverlayLombokConfigContributor;
 import org.apereo.cas.initializr.contrib.OverlayOverrideConfigurationContributor;
 import org.apereo.cas.initializr.contrib.OverlaySpringFactoriesContributor;
@@ -17,17 +18,13 @@ import org.apereo.cas.initializr.contrib.gradle.OverlayGradleSettingsContributor
 import org.apereo.cas.initializr.contrib.heroku.HerokuProcFileContributor;
 import org.apereo.cas.initializr.contrib.heroku.HerokuSystemPropertiesFileContributor;
 import org.apereo.cas.initializr.metadata.CasOverlayInitializrMetadataUpdateStrategy;
-import org.apereo.cas.initializr.web.generator.CasInitializrProjectAssetGenerator;
 
-import io.spring.initializr.generator.project.ProjectAssetGenerator;
 import io.spring.initializr.generator.project.ProjectGenerationConfiguration;
 import io.spring.initializr.generator.project.contributor.ProjectContributor;
 import io.spring.initializr.web.support.InitializrMetadataUpdateStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
-
-import java.nio.file.Path;
 
 @ProjectGenerationConfiguration
 public class CasInitializrConfiguration {
@@ -91,6 +88,7 @@ public class CasInitializrConfiguration {
         var chain = new ChainingSingleResourceProjectContributor();
         chain.addContributor(new OverlayGradleJibContributor());
         chain.addContributor(new OverlayGradleJibEntrypointContributor(applicationContext));
+        chain.addContributor(new LocalEtcCasDirectoryContributor());
         return chain;
     }
 
