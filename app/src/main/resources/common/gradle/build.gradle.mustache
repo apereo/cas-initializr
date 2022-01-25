@@ -103,6 +103,7 @@ configurations.all {
 
 war {
     entryCompression = ZipEntryCompression.STORED
+    enabled = false
 }
 
 task run(group: "build", description: "Run the CAS web application in embedded container mode") {
