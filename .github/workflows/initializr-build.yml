@@ -4,7 +4,7 @@ env:
   JAVA_OPTS: "-Xms512m -Xmx6048m -Xss128m -XX:ReservedCodeCacheSize=512m -server -XX:+UseG1GC"
   GRADLE_OPTS: "-Xms512m -Xmx6048m -Xss128m -XX:ReservedCodeCacheSize=512m -server -XX:+UseG1GC"
   TERM: xterm-256color
-  JDK_CURRENT: 11.0.13
+  JDK_CURRENT: 11.0.14
   HELM_CURRENT: v3.6.3
   DOCKER_USER: ${{ secrets.DOCKER_USER }}
   DOCKER_PWD: ${{ secrets.DOCKER_PWD }}
@@ -36,6 +36,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: ${{ env.JDK_CURRENT }}
+          distribution: 'temurin'
       - name: Build Initializr
         run: ./gradlew --build-cache --configure-on-demand --no-daemon clean build -x test -x javadoc -x check --parallel
       - uses: actions/upload-artifact@v2
@@ -54,6 +55,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: ${{ env.JDK_CURRENT }}
+          distribution: 'temurin'
       - uses: actions/download-artifact@v2
         with:
           name: binary-artifacts
@@ -75,6 +77,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: ${{ env.JDK_CURRENT }}
+          distribution: 'temurin'
       - uses: actions/download-artifact@v2
         with:
           name: binary-artifacts
@@ -96,6 +99,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: ${{ env.JDK_CURRENT }}
+          distribution: 'temurin'
       - uses: actions/download-artifact@v2
         with:
           name: binary-artifacts
@@ -121,6 +125,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: ${{ env.JDK_CURRENT }}
+          distribution: 'temurin'
       - name: Initialize
         if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
         run: chmod -R 777 ./ci/*.sh
@@ -147,6 +152,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: ${{ env.JDK_CURRENT }}
+          distribution: 'temurin'
       - name: Initialize
         if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
         run: chmod -R 777 ./ci/*.sh
@@ -171,6 +177,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: ${{ env.JDK_CURRENT }}
+          distribution: 'temurin'
       - name: Initialize
         run: chmod -R 777 ./ci/*.sh
       - uses: actions/download-artifact@v2
@@ -191,6 +198,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: ${{ env.JDK_CURRENT }}
+          distribution: 'temurin'
       - name: Initialize
         run: chmod -R 777 ./ci/*.sh
       - uses: actions/download-artifact@v2
@@ -213,6 +221,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: ${{ env.JDK_CURRENT }}
+          distribution: 'temurin'
       - name: Initialize
         run: chmod -R 777 ./ci/*.sh
       - uses: actions/download-artifact@v2
@@ -235,6 +244,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: ${{ env.JDK_CURRENT }}
+          distribution: 'temurin'
       - name: Initialize
         run: chmod -R 777 ./ci/*.sh
       - uses: actions/download-artifact@v2
@@ -255,6 +265,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: ${{ env.JDK_CURRENT }}
+          distribution: 'temurin'
       - name: Initialize
         run: chmod -R 777 ./ci/*.sh
       - uses: actions/download-artifact@v2
@@ -271,6 +282,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: ${{ env.JDK_CURRENT }}
+          distribution: 'temurin'
       - name: Initialize
         run: chmod -R 777 ./ci/*.sh
       - uses: actions/download-artifact@v2
@@ -300,6 +312,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: ${{ env.JDK_CURRENT }}
+          distribution: 'temurin'
       - uses: actions/download-artifact@v2
         with:
           name: binary-artifacts
