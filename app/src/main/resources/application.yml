@@ -64,7 +64,7 @@ cas-initializr:
       sync: true
       branch: master
       type: cas
-      
+
 initializr:
   name:
     value: cas

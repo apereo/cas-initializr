@@ -1,10 +1,17 @@
 package org.apereo.cas.initializr.contrib;
 
+import org.apereo.cas.initializr.web.OverlayProjectDescription;
+import org.apereo.cas.overlay.bootadminserver.buildsystem.CasSpringBootAdminServerOverlayBuildSystem;
+import org.apereo.cas.overlay.casmgmt.buildsystem.CasManagementOverlayBuildSystem;
+import org.apereo.cas.overlay.casserver.buildsystem.CasOverlayBuildSystem;
+import org.apereo.cas.overlay.casserver.buildsystem.CasOverlayGradleBuild;
+import org.apereo.cas.overlay.configserver.buildsystem.CasConfigServerOverlayBuildSystem;
+import org.apereo.cas.overlay.discoveryserver.buildsystem.CasDiscoveryServerOverlayBuildSystem;
+
 import com.github.mustachejava.DefaultMustacheFactory;
 import io.spring.initializr.generator.project.ProjectDescription;
 import io.spring.initializr.generator.project.contributor.ProjectContributor;
 import io.spring.initializr.generator.version.Version;
-import io.spring.initializr.metadata.InitializrMetadata;
 import io.spring.initializr.metadata.InitializrMetadataProvider;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,17 +20,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 import org.apache.commons.lang.StringUtils;
-
-import org.apereo.cas.initializr.web.OverlayProjectDescription;
-import org.apereo.cas.initializr.web.OverlayProjectRequest;
-import org.apereo.cas.overlay.bootadminserver.buildsystem.CasSpringBootAdminServerOverlayBuildSystem;
-import org.apereo.cas.overlay.casmgmt.buildsystem.CasManagementOverlayBuildSystem;
-import org.apereo.cas.overlay.casserver.buildsystem.CasOverlayBuildSystem;
-import org.apereo.cas.overlay.casserver.buildsystem.CasOverlayGradleBuild;
-import org.apereo.cas.overlay.configserver.buildsystem.CasConfigServerOverlayBuildSystem;
-import org.apereo.cas.overlay.discoveryserver.buildsystem.CasDiscoveryServerOverlayBuildSystem;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.util.FileCopyUtils;
@@ -119,10 +116,11 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         var templateVariables = new HashMap<>(provider.get().defaults());
         var configuration = provider.get().getConfiguration();
         var boms = configuration.getEnv().getBoms();
-
-        templateVariables.put("casMgmtVersion", boms.get("cas-mgmt-bom").getVersion());
         
-        templateVariables.put("casVersion", project.resolveCasVersion(boms.get("cas-bom")));
+        templateVariables.put("casMgmtVersion", boms.get("cas-mgmt-bom").getVersion());
+
+        var casVersion = project.resolveCasVersion(boms.get("cas-bom"));
+        templateVariables.put("casVersion", casVersion);
         templateVariables.put("springBootVersion", project.getSpringBootVersion());
 
         if (project.getSpringBootVersion().startsWith("2.6")) {
@@ -162,6 +160,10 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
             templateVariables.put("appName", "casdiscoveryserver");
         }
 
+        var bomCapableVersion = Version.safeParse("6.5.0");
+        var currentCasProject = Version.safeParse(project.getCasVersion());
+
+        templateVariables.put("springDependencyMgmt", currentCasProject.compareTo(bomCapableVersion) < 0);
         templateVariables.putAll(getVariables());
         templateVariables.put("dependencies", handleProjectRequestedDependencies(project));
         return templateVariables;
