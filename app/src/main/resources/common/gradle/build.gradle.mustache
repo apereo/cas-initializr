@@ -69,7 +69,9 @@ repositories {
     }
 }
 
+{{#springDependencyMgmt}}
 apply plugin: "io.spring.dependency-management"
+{{/springDependencyMgmt}}
 apply plugin: "io.freefair.war-overlay"
 apply plugin: "war"
 apply plugin: "org.springframework.boot"
@@ -80,6 +82,7 @@ apply from: rootProject.file("gradle/springboot.gradle")
 {{/casServer}}
 apply from: rootProject.file("gradle/jib.gradle")
 
+{{#springDependencyMgmt}}
 dependencyManagement {
     imports {
         {{#managementServer}}
@@ -88,6 +91,7 @@ dependencyManagement {
         mavenBom "org.apereo.cas:cas-server-support-bom:${project.'cas.version'}"
     }
 }
+{{/springDependencyMgmt}}
 
 configurations.all {
     resolutionStrategy {
@@ -479,26 +483,11 @@ cas.standard.js.file=/themes/${theme}/js/cas.js
 
 springBoot {
     buildInfo()
-
-    {{#casServer}}
-    {{mainClass}} = "org.apereo.cas.web.CasWebApplication"
-    {{/casServer}}
-
-    {{#springBootAdminServer}}
-    {{mainClass}} = "org.apereo.cas.CasSpringBootAdminServerWebApplication"
-    {{/springBootAdminServer}}
-
-    {{#configServer}}
-    {{mainClass}} = "org.apereo.cas.CasConfigurationServerWebApplication"
-    {{/configServer}}
-
-    {{#managementServer}}
-    mainClassName = "org.apereo.cas.mgmt.web.CasManagementWebApplication"
-    {{/managementServer}}
-
-    {{#discoveryServer}}
-    {{mainClass}} = "org.apereo.cas.CasEurekaServerWebApplication"
-    {{/discoveryServer}}
+    {{#casServer}}{{mainClass}} = "org.apereo.cas.web.CasWebApplication"{{/casServer}}
+    {{#springBootAdminServer}}{{mainClass}} = "org.apereo.cas.CasSpringBootAdminServerWebApplication"{{/springBootAdminServer}}
+    {{#configServer}}{{mainClass}} = "org.apereo.cas.CasConfigurationServerWebApplication"{{/configServer}}
+    {{#managementServer}}mainClassName = "org.apereo.cas.mgmt.web.CasManagementWebApplication"{{/managementServer}}
+    {{#discoveryServer}}{{mainClass}} = "org.apereo.cas.CasEurekaServerWebApplication"{{/discoveryServer}}
 }
 
 sourceSets {
@@ -519,8 +508,20 @@ bootBuildImage {
     imageName = "${project.'containerImageOrg'}/${project.'containerImageName'}:${project.version}"
 }
 
-
 dependencies {
+    {{^springDependencyMgmt}}
+    /**
+    * Do NOT modify the lines below or else you will risk breaking dependency management.
+    */
+    {{#managementServer}}
+    implementation enforcedPlatform("org.apereo.cas:cas-mgmt-support-bom:${project.'casmgmt.version'}")
+    {{/managementServer}}
+    {{^managementServer}}
+    implementation enforcedPlatform("org.apereo.cas:cas-server-support-bom:${project.'cas.version'}")
+    {{/managementServer}}
+    implementation platform(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES)
+    {{/springDependencyMgmt}}
+
     /**
      * CAS dependencies and modules may be listed here.
      *
@@ -564,7 +565,7 @@ dependencies {
     compileOnly "org.apereo.cas:cas-server-webapp-init-eureka-server"
     {{/discoveryServer}}
     
-    developmentOnly "org.springframework.boot:spring-boot-devtools"
+    developmentOnly "org.springframework.boot:spring-boot-devtools:${project.springBootVersion}"
 }
 
 bootWar {
