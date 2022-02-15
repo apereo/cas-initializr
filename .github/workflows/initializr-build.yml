@@ -1,11 +1,8 @@
-name: Initializr
+name: Initializr Build
 
 env:
-  JAVA_OPTS: "-Xms512m -Xmx6048m -Xss128m -XX:ReservedCodeCacheSize=512m -server -XX:+UseG1GC"
-  GRADLE_OPTS: "-Xms512m -Xmx6048m -Xss128m -XX:ReservedCodeCacheSize=512m -server -XX:+UseG1GC"
   TERM: xterm-256color
   JDK_CURRENT: 11.0.14
-  HELM_CURRENT: v3.6.3
   DOCKER_USER: ${{ secrets.DOCKER_USER }}
   DOCKER_PWD: ${{ secrets.DOCKER_PWD }}
   GH_TOKEN: ${{ secrets.GH_TOKEN }}
@@ -297,54 +294,6 @@ jobs:
           imageTag=(`./gradlew casVersion --q`)
           echo "Pushing Docker image with tag $imageTag"
           docker push apereo/cas-initializr:"$imageTag"
-  helm:
-    needs: [ latest-versions-cas ]
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        k3s-version: [ v1.22.5,v1.21.4 ] # v1.20.2,v1.19.7, v1.18.15, v1.17.17 v1.16.15
-    env:
-      GOPATH: /home/runner/go
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Set up JDK
-        uses: actions/setup-java@v2
-        with:
-          java-version: ${{ env.JDK_CURRENT }}
-          distribution: 'temurin'
-      - uses: actions/download-artifact@v2
-        with:
-          name: binary-artifacts
-      - name: Install K3S
-        env:
-          INSTALL_K3S_VERSION: ${{ matrix.k3s-version }}+k3s1
-          INSTALL_K3S_EXEC: "--disable=traefik" # using ingress-nginx
-        run: |
-          set -x
-          curl -sfL https://get.k3s.io | sh -
-          sudo chmod -R a+rw /etc/rancher/k3s
-          sudo mkdir -p $HOME/.kube && sudo chown -R runner $HOME/.kube
-          sudo k3s kubectl config view --raw > $HOME/.kube/config
-          sudo chown runner $HOME/.kube/config
-          kubectl version
-      - name: Add /usr/local/bin to PATH
-        run: |
-          echo "/usr/local/bin" >> $GITHUB_PATH
-      - name: Install helm
-        uses: azure/setup-helm@v1
-        with:
-          version: ${{ env.HELM_CURRENT }}
-        id: install
-      #      - name: Setup tmate session if timeout waiting for pods to start
-      #        uses: mxschmitt/action-tmate@v3
-      - name: Validate Helm Chart
-        env:
-          HELM_CAS_VERSION: "${{ fromJSON(needs.latest-versions-cas.outputs.supported-versions).version }}"
-          HELM_BOOT_VERSION: "${{ fromJSON(needs.latest-versions-cas.outputs.supported-versions).boot-version }}"
-        run: |
-          ./ci/validate-helm-build-images.sh $HELM_CAS_VERSION $HELM_BOOT_VERSION
-          ./ci/validate-helm.sh
 #      - name: Setup tmate session
 #        if: ${{ failure() }}
 #        uses: mxschmitt/action-tmate@v3
