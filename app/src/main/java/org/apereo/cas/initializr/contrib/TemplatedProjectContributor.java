@@ -1,6 +1,7 @@
 package org.apereo.cas.initializr.contrib;
 
 import org.apereo.cas.initializr.web.OverlayProjectDescription;
+import org.apereo.cas.initializr.web.VersionUtils;
 import org.apereo.cas.overlay.bootadminserver.buildsystem.CasSpringBootAdminServerOverlayBuildSystem;
 import org.apereo.cas.overlay.casmgmt.buildsystem.CasManagementOverlayBuildSystem;
 import org.apereo.cas.overlay.casserver.buildsystem.CasOverlayBuildSystem;
@@ -11,7 +12,6 @@ import org.apereo.cas.overlay.discoveryserver.buildsystem.CasDiscoveryServerOver
 import com.github.mustachejava.DefaultMustacheFactory;
 import io.spring.initializr.generator.project.ProjectDescription;
 import io.spring.initializr.generator.project.contributor.ProjectContributor;
-import io.spring.initializr.generator.version.Version;
 import io.spring.initializr.metadata.InitializrMetadataProvider;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -75,7 +75,18 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
 
     protected static void createTemplateFile(final Path output, final String template) throws IOException {
         FileCopyUtils.copy(new BufferedInputStream(new ByteArrayInputStream(template.getBytes(StandardCharsets.UTF_8))),
-                Files.newOutputStream(output, StandardOpenOption.APPEND));
+            Files.newOutputStream(output, StandardOpenOption.APPEND));
+    }
+
+    protected static List<CasDependency> handleProjectRequestedDependencies(final ProjectDescription project) {
+        var dependencies = project.getRequestedDependencies()
+            .values()
+            .stream()
+            .filter(dep -> !CasOverlayGradleBuild.WEBAPP_ARTIFACTS.contains(dep.getArtifactId()))
+            .map(dep -> new CasDependency(dep.getGroupId(), dep.getArtifactId()))
+            .collect(Collectors.toList());
+        log.debug("Requested overlay dependencies: {}", dependencies);
+        return dependencies;
     }
 
     @Override
@@ -116,7 +127,7 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         var templateVariables = new HashMap<>(provider.get().defaults());
         var configuration = provider.get().getConfiguration();
         var boms = configuration.getEnv().getBoms();
-        
+
         templateVariables.put("casMgmtVersion", boms.get("cas-mgmt-bom").getVersion());
 
         var casVersion = project.resolveCasVersion(boms.get("cas-bom"));
@@ -160,24 +171,13 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
             templateVariables.put("appName", "casdiscoveryserver");
         }
 
-        var bomCapableVersion = Version.safeParse("6.5.0");
-        var currentCasProject = Version.safeParse(project.getCasVersion());
-
+        var bomCapableVersion = VersionUtils.parse("6.5.0");
+        var currentCasProject = VersionUtils.parse(project.getCasVersion());
         templateVariables.put("springDependencyMgmt", currentCasProject.compareTo(bomCapableVersion) < 0);
+
         templateVariables.putAll(getVariables());
         templateVariables.put("dependencies", handleProjectRequestedDependencies(project));
         return templateVariables;
-    }
-
-    protected static List<CasDependency> handleProjectRequestedDependencies(final ProjectDescription project) {
-        var dependencies = project.getRequestedDependencies()
-                .values()
-                .stream()
-                .filter(dep -> !CasOverlayGradleBuild.WEBAPP_ARTIFACTS.contains(dep.getArtifactId()))
-                .map(dep -> new CasDependency(dep.getGroupId(), dep.getArtifactId()))
-                .collect(Collectors.toList());
-        log.debug("Requested overlay dependencies: {}", dependencies);
-        return dependencies;
     }
 
     protected Object contributeInternal(final ProjectDescription project) {
