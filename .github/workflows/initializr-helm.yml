@@ -3,11 +3,14 @@ name: Initializr Helm Charts
 env:
   TERM: xterm-256color
   HELM_CURRENT: v3.6.3
-  JDK_CURRENT: 11.0.14
+  JDK_CURRENT: 11
+  JDK_DISTRO: 'temurin'
 
 ##########################################################################
 
 on:
+  push:
+    branches: [ pr-* ]
   schedule:
     - cron: "0 0 * * 5"
 
@@ -22,9 +25,25 @@ jobs:
         with:
           access_token: ${{ github.token }}
   ##########################################################################
-  latest-versions-cas:
-    needs: [ build ]
+  build:
     runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          java-version: ${{ env.JDK_CURRENT }}
+          distribution: ${{ env.JDK_DISTRO }}
+      - name: Build Initializr
+        run: ./gradlew --build-cache --configure-on-demand --no-daemon clean build -x test -x javadoc -x check --parallel
+      - uses: actions/upload-artifact@v2
+        with:
+          name: binary-artifacts
+          path: ./**/build/libs/*.*
+  ##########################################################################
+  latest-versions-cas:
+    runs-on: ubuntu-latest
+    needs: [ build ]
     outputs:
       supported-versions: ${{ steps.get-supported-versions.outputs.supported-versions }}
     steps:
@@ -33,7 +52,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: ${{ env.JDK_CURRENT }}
-          distribution: 'temurin'
+          distribution: ${{ env.JDK_DISTRO }}
       - uses: actions/download-artifact@v2
         with:
           name: binary-artifacts
@@ -45,9 +64,10 @@ jobs:
         run: echo "::set-output name=supported-versions::$(./gradlew --no-daemon -q latestVersions)]}"
   ##########################################################################
   helm:
-    needs: [ latest-versions-cas ]
     runs-on: ubuntu-latest
+    needs: [ latest-versions-cas ]
     strategy:
+      fail-fast: false
       matrix:
         k3s-version: [ v1.22.5,v1.21.4 ]
     env:
@@ -59,14 +79,14 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: ${{ env.JDK_CURRENT }}
-          distribution: 'temurin'
+          distribution: ${{ env.JDK_DISTRO }}
       - uses: actions/download-artifact@v2
         with:
           name: binary-artifacts
       - name: Install K3S
         env:
           INSTALL_K3S_VERSION: ${{ matrix.k3s-version }}+k3s1
-          INSTALL_K3S_EXEC: "--disable=traefik" # using ingress-nginx
+          INSTALL_K3S_EXEC: "--disable=traefik --flannel-backend=host-gw" # using ingress-nginx
         run: |
           set -x
           curl -sfL https://get.k3s.io | sh -
@@ -85,14 +105,10 @@ jobs:
         id: install
       #      - name: Setup tmate session if timeout waiting for pods to start
       #        uses: mxschmitt/action-tmate@v3
-      - name: Validate Helm Chart
+      - name: Build Images for Helm Chart
         env:
           HELM_CAS_VERSION: "${{ fromJSON(needs.latest-versions-cas.outputs.supported-versions).version }}"
           HELM_BOOT_VERSION: "${{ fromJSON(needs.latest-versions-cas.outputs.supported-versions).boot-version }}"
-        run: |
-          ./ci/validate-helm-build-images.sh $HELM_CAS_VERSION $HELM_BOOT_VERSION
-          ./ci/validate-helm.sh
-#      - name: Setup tmate session
-#        if: ${{ failure() }}
-#        uses: mxschmitt/action-tmate@v3
-#        timeout-minutes: 10
+        run: ./ci/validate-helm-build-images.sh $HELM_CAS_VERSION $HELM_BOOT_VERSION
+      - name: Validate Helm Chart
+        run: ./ci/validate-helm.sh

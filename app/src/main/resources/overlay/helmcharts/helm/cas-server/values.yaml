@@ -486,6 +486,7 @@ mgmtContainer:
       mgmt:
         serverName: https://{{ .Values.casMgmtServerName }}
         enableDiscoveryEndpointCall: false # turning off b/c external call to cas requires external DNS, need internal URL
+        inCommonMDQUrl: ''
 
     log4j2.xml: |-
       <?xml version="1.0" encoding="UTF-8" ?>

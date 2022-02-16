@@ -64,7 +64,7 @@ java -jar app/build/libs/app.jar &
 
 waitForInitializr
 
-updateOverlay cas-overlay $CAS_VERSION $BOOT_VERSION core,bootadmin,metrics,gitsvc,jsonsvc,redis
+updateOverlay cas-overlay $CAS_VERSION $BOOT_VERSION core,bootadmin,metrics,gitsvc,jsonsvc
 updateOverlay cas-bootadmin-server-overlay $CAS_VERSION $BOOT_VERSION
 updateOverlay cas-config-server-overlay $CAS_VERSION $BOOT_VERSION
 updateOverlay cas-discovery-server-overlay $CAS_VERSION $BOOT_VERSION
