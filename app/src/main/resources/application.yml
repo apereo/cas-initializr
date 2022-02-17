@@ -304,6 +304,13 @@ initializr:
           bom: cas-bom
     - name: core
       content:
+        - name: cas-server-core-rest-api
+          id: core-rest-api
+          groupId: org.apereo.cas
+          artifactId: cas-server-core-rest-api
+          description: Apereo CAS Core REST API
+          bom: cas-bom
+          compatibilityRange: 6.5.0
         - name: cas-server-core
           id: core
           groupId: org.apereo.cas
@@ -556,6 +563,36 @@ initializr:
           bom: cas-bom
     - name: support
       content:
+        - name: cas-server-support-actions-core
+          id: support-actions-core
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-actions-core
+          description: Apereo CAS Actions Core Support
+          bom: cas-bom
+          compatibilityRange: 6.5.0
+        - name: cas-server-support-account-mgmt-core
+          id: support-account-mgmt-core
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-account-mgmt-core
+          description: Apereo CAS Account Management Support
+          bom: cas-bom
+          compatibilityRange: 6.5.0
+        - name: cas-server-support-account-mgmt-api
+          id: support-account-mgmt-api
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-account-mgmt-api
+          description: Apereo CAS Account Management Support
+          bom: cas-bom
+          compatibilityRange: 6.5.0
+        - name: cas-server-support-account-mgmt
+          id: support-account-mgmt
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-account-mgmt
+          description: Apereo CAS Account Management Support
+          bom: cas-bom
+          compatibilityRange: 6.5.0
+          aliases:
+            - acct-mgmt
         - name: cas-server-support-acceptto-mfa
           id: support-acceptto-mfa
           groupId: org.apereo.cas
@@ -785,6 +822,13 @@ initializr:
           artifactId: cas-server-support-cloud-directory-authentication
           description: Apereo CAS Amazon Cloud Directory Authentication Support
           bom: cas-bom
+        - name: cas-server-support-configuration-cloud-kubernetes
+          id: support-configuration-cloud-kubernetes
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-configuration-cloud-kubernetes
+          description: Apereo CAS Configuration - Cloud Kubernetes
+          bom: cas-bom
+          compatibilityRange: 6.5.0
         - name: cas-server-support-configuration-cloud-amqp
           id: support-configuration-cloud-amqp
           groupId: org.apereo.cas
@@ -869,11 +913,18 @@ initializr:
           artifactId: cas-server-support-consent-core
           description: Apereo CAS Consent Core
           bom: cas-bom
+        - name: cas-server-support-consent-dynamodb
+          id: support-consent-dynamodb
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-consent-dynamodb
+          description: Apereo CAS Consent Support via DynamoDb
+          bom: cas-bom
+          compatibilityRange: 6.5.0
         - name: cas-server-support-consent-couchdb
           id: support-consent-couchdb
           groupId: org.apereo.cas
           artifactId: cas-server-support-consent-couchdb
-          description: Apereo CAS Consent Support via CouchDbDb
+          description: Apereo CAS Consent Support via CouchDb
           bom: cas-bom
         - name: cas-server-support-consent-jdbc
           id: support-consent-jdbc
@@ -1079,6 +1130,13 @@ initializr:
           bom: cas-bom
           aliases:
             - eureka
+        - name: cas-server-support-events-redis
+          id: support-events-redis
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-events-redis
+          description: Apereo CAS Events Consumer Redis
+          bom: cas-bom
+          compatibilityRange: 6.5.0
         - name: cas-server-support-events-couchdb
           id: support-events-couchdb
           groupId: org.apereo.cas
@@ -1169,7 +1227,7 @@ initializr:
           artifactId: cas-server-support-gauth-dynamodb
           description: Apereo CAS Google Authenticator DynamoDb
           bom: cas-bom
-          compatibilityRange: 6.5.0-SNAPSHOT
+          compatibilityRange: 6.5.0
         - name: cas-server-support-gauth-mongo
           id: support-gauth-mongo
           groupId: org.apereo.cas
@@ -1275,6 +1333,13 @@ initializr:
           artifactId: cas-server-support-hazelcast-core
           description: Apereo CAS Hazelcast Core Support
           bom: cas-bom
+        - name: cas-server-support-hazelcast-discovery-gcp
+          id: support-hazelcast-discovery-gcp
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-hazelcast-discovery-gcp
+          description: Apereo CAS Hazelcast Discovery Google Cloud Platform Support
+          bom: cas-bom
+          compatibilityRange: 6.5.0
         - name: cas-server-support-hazelcast-discovery-aws
           id: support-hazelcast-discovery-aws
           groupId: org.apereo.cas
@@ -1293,7 +1358,7 @@ initializr:
           artifactId: cas-server-support-hazelcast-discovery-zookeeper
           description: Apereo CAS Hazelcast Discovery with Apache Zookeeper Support
           bom: cas-bom
-          compatibilityRange: 6.5.0-SNAPSHOT
+          compatibilityRange: 6.5.0
         - name: cas-server-support-hazelcast-discovery-jclouds
           id: support-hazelcast-discovery-jclouds
           groupId: org.apereo.cas
@@ -1804,6 +1869,13 @@ initializr:
           bom: cas-bom
           aliases:
             - passwordless
+        - name: cas-server-support-person-directory-core
+          id: support-person-directory-core
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-person-directory-core
+          description: Apereo CAS Person Directory & Attribute Resolution Support
+          bom: cas-bom
+          compatibilityRange: 6.5.0
         - name: cas-server-support-person-directory
           id: support-person-directory
           groupId: org.apereo.cas
@@ -1812,6 +1884,7 @@ initializr:
           bom: cas-bom
           aliases:
             - pd
+            - person-directory
         - name: cas-server-support-pm
           id: support-pm
           groupId: org.apereo.cas
@@ -2010,6 +2083,7 @@ initializr:
           artifactId: cas-server-support-saml-googleapps
           description: Apereo CAS SAML Server Google Apps SAML Support
           bom: cas-bom
+          compatibilityRange: "[6.3.0,7.0.0)"
           aliases:
             - googleapps
             - gapps
@@ -2019,6 +2093,7 @@ initializr:
           artifactId: cas-server-support-saml-googleapps-core
           description: Apereo CAS SAML Server Google Apps SAML Core Support
           bom: cas-bom
+          compatibilityRange: "[6.3.0,7.0.0)"
         - name: cas-server-support-saml-idp
           id: support-saml-idp
           groupId: org.apereo.cas
@@ -2120,6 +2195,12 @@ initializr:
           groupId: org.apereo.cas
           artifactId: cas-server-support-saml-sp-integrations
           description: Apereo CAS SAML SP Integrations
+          bom: cas-bom
+        - name: cas-server-support-scim-core
+          id: support-scim-core
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-scim-core
+          description: Apereo CAS SCIM 2 Provisioning Support
           bom: cas-bom
         - name: cas-server-support-scim
           id: support-scim
@@ -2245,7 +2326,7 @@ initializr:
           artifactId: cas-server-support-sms-smsmode
           description: Apereo CAS SmsMode SMS Support
           bom: cas-bom
-          compatibilityRange: 6.5.0-SNAPSHOT
+          compatibilityRange: 6.5.0
           aliases:
             - smsmode
         - name: cas-server-support-sms-nexmo
@@ -2396,6 +2477,13 @@ initializr:
           bom: cas-bom
           aliases:
             - throttle
+        - name: cas-server-support-throttle-bucket4j-core
+          id: support-throttle-bucket4j-core
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-throttle-bucket4j-core
+          description: Apereo CAS Bucket4j Authentication Throttling
+          bom: cas-bom
+          compatibilityRange: 6.5.0
         - name: cas-server-support-throttle-bucket4j
           id: support-throttle-bucket4j
           groupId: org.apereo.cas
@@ -2617,6 +2705,15 @@ initializr:
           artifactId: cas-server-support-webauthn-core-webflow
           description: Apereo CAS FIDO2 WebAuthn Core Webflow
           bom: cas-bom
+        - name: cas-server-support-webauthn-ldap
+          id: support-webauthn-ldap
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-webauthn-ldap
+          description: Apereo CAS WebAuthN LDAP Support
+          bom: cas-bom
+          compatibilityRange: 6.5.0
+          aliases:
+            - webauthn-ldap
         - name: cas-server-support-webauthn-jpa
           id: support-webauthn-jpa
           groupId: org.apereo.cas
@@ -2867,6 +2964,15 @@ initializr:
           artifactId: cas-server-webapp-init-eureka-server
           description: Apereo CAS Spring Cloud Eureka Service Discovery Server API
           bom: cas-bom
+          facets:
+            - web
+        - name: cas-server-webapp-starter-tomcat
+          id: webapp-starter-tomcat
+          groupId: org.apereo.cas
+          artifactId: cas-server-webapp-starter-tomcat
+          description: Apereo CAS Web Application Starter via Apache Tomcat
+          bom: cas-bom
+          compatibilityRange: 6.5.0
           facets:
             - web
         - name: cas-server-webapp-init-tomcat
