@@ -90,11 +90,13 @@ kubectl wait --for condition=ready --timeout=180s --namespace $NAMESPACE pod cas
 kubectl wait --for condition=ready --timeout=180s --namespace $NAMESPACE pod -l cas.server-type=bootadmin
 kubectl wait --for condition=ready --timeout=180s --namespace $NAMESPACE pod -l cas.server-type=mgmt
 echo "Done waiting for startup $(date)"
-set -e
 
+echo "Checking rollout status"
 kubectl rollout --namespace $NAMESPACE status deploy cas-server-boot-admin
 kubectl rollout --namespace $NAMESPACE status deploy cas-server-mgmt
 kubectl rollout --namespace $NAMESPACE status sts cas-server
+echo "Done checking rollout status"
+set -e
 
 kubectl describe pod --namespace $NAMESPACE cas-server-0
 echo "Describing cas bootadmin pod"
@@ -105,18 +107,21 @@ kubectl describe pod --namespace $NAMESPACE -l cas.server-type=mgmt
 echo "Pod Status:"
 kubectl get pods --namespace $NAMESPACE
 
+sleep 10
+
+echo "CAS Management Server Logs..."
+kubectl logs -l cas.server-type=mgmt --tail=-1 --namespace $NAMESPACE | tee cas-mgmt.out
 echo "CAS Server Logs..."
 kubectl logs cas-server-0 --namespace $NAMESPACE | tee cas.out
 echo "CAS Boot Admin Server Logs..."
 kubectl logs -l cas.server-type=bootadmin --tail=-1 --namespace $NAMESPACE | tee cas-bootadmin.out
-echo "CAS Management Server Logs..."
-kubectl logs -l cas.server-type=mgmt --tail=-1 --namespace $NAMESPACE | tee cas-mgmt.out
+
+echo "Checking mgmt server log for startup message"
+grep "Initializing Spring DispatcherServlet" cas-mgmt.out
 echo "Checking cas server log for startup message"
 grep "Started CasWebApplication" cas.out
 echo "Checking bootadmin server log for startup message"
 grep "Started CasSpringBootAdminServerWebApplication" cas-bootadmin.out
-echo "Checking mgmt server log for startup message"
-grep "Found settings" cas-mgmt.out
 
 echo "Running chart built-in test"
 helm test --namespace $NAMESPACE cas-server
@@ -124,4 +129,5 @@ helm test --namespace $NAMESPACE cas-server
 echo "Checking login page"
 curl -k -H "Host: cas.example.org" https://127.0.0.1/cas/login > login.txt
 grep "password" login.txt
+
 
