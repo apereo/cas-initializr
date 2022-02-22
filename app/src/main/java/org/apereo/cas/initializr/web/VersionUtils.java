@@ -14,7 +14,7 @@ public class VersionUtils {
     
     public static Version parse(final String versionText) {
         if (versionText.matches("\\d.\\d.\\d.\\d")) {
-            Version.parse(versionText.substring(0, versionText.lastIndexOf('.')));
+            return Version.parse(versionText.substring(0, versionText.lastIndexOf('.')));
         }
         return Version.parse(versionText);
     }
