@@ -71,6 +71,9 @@ echo "Downloading Shell"
 echo "Listing Views"
 ./gradlew listTemplateViews
 
+echo "Creating ZIP archive"
+./gradlew zip
+
 echo "Configuration Metadata Export"
 ./gradlew exportConfigMetadata
 

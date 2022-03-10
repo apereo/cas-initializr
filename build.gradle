@@ -16,3 +16,16 @@ task springBootVersion(description: "Display current Spring Boot version") {
         println rootProject.springBootVersion
     }
 }
+
+task zip(type: Zip) {
+    from projectDir
+    exclude '.idea', '.gradle', 'tmp', '.git', '**/build/**', '**/bin/**', '**/out/**', '**/.settings/**'
+    destinationDirectory = buildDir
+    archiveFileName = "${project.name}.zip"
+    doLast {
+        def zipFile = file("${buildDir}/${it.archiveFileName.get()}")
+        if (zipFile.exists()) {
+            println "Zip archive is available at ${zipFile.absolutePath}"
+        }
+    }
+}

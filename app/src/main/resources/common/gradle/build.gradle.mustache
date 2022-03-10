@@ -393,6 +393,19 @@ task exportConfigMetadata(group: "CAS", description: "Export collection of CAS p
     }
 }
 
+task zip(type: Zip) {
+    from projectDir
+    exclude '**/.idea/**', '.gradle', 'tmp', '.git', '**/build/**', '**/bin/**', '**/out/**', '**/.settings/**'
+    destinationDirectory = buildDir
+    archiveFileName = "${project.name}.zip"
+    doLast {
+        def zipFile = file("${buildDir}/${it.archiveFileName.get()}")
+        if (zipFile.exists()) {
+            println "Zip archive is available at ${zipFile.absolutePath}"
+        }
+    }
+}
+
 task getResource(group: "CAS", description: "Fetch a CAS resource and move it into the overlay") {
     dependsOn unzip
 
