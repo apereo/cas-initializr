@@ -5,7 +5,7 @@ import io.spring.initializr.generator.condition.ConditionalOnBuildSystem;
 import io.spring.initializr.generator.project.ProjectGenerationConfiguration;
 import io.spring.initializr.generator.project.contributor.ProjectContributor;
 import io.spring.initializr.generator.spring.build.BuildCustomizer;
-import lombok.val;
+
 import org.apereo.cas.initializr.contrib.ChainingSingleResourceProjectContributor;
 import org.apereo.cas.initializr.contrib.ProjectReadMeContributor;
 import org.apereo.cas.initializr.contrib.gradle.OverlayGradleBuildContributor;
@@ -16,7 +16,6 @@ import org.apereo.cas.overlay.casserver.contrib.CasOverlayConfigurationDirectori
 import org.apereo.cas.overlay.casserver.contrib.CasOverlayConfigurationPropertiesContributor;
 import org.apereo.cas.overlay.casserver.contrib.CasOverlayLoggingConfigurationContributor;
 import org.apereo.cas.overlay.casserver.contrib.docker.CasOverlayDockerContributor;
-import org.apereo.cas.overlay.casserver.contrib.gradle.CasOverlayGradleSpringBootContributor;
 import org.apereo.cas.overlay.casserver.contrib.helm.CasOverlayHelmContributor;
 import org.apereo.cas.overlay.casserver.customize.DefaultDependenciesBuildCustomizer;
 
@@ -26,7 +25,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 
-import java.util.Properties;
 import java.util.stream.Collectors;
 
 @ProjectGenerationConfiguration
@@ -50,7 +48,6 @@ public class CasOverlayProjectGenerationConfiguration {
         var chain = new ChainingSingleResourceProjectContributor();
         chain.addContributor(new OverlayGradleBuildContributor(applicationContext));
         chain.addContributor(new CasOverlayConfigurationDirectoriesContributor());
-        chain.addContributor(new CasOverlayGradleSpringBootContributor(applicationContext));
         chain.addContributor(new CasOverlayConfigurationPropertiesContributor(applicationContext));
         chain.addContributor(new CasOverlayLoggingConfigurationContributor());
         return chain;
