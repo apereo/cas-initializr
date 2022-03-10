@@ -50,7 +50,7 @@ public class CasOverlayProjectGenerationConfiguration {
         var chain = new ChainingSingleResourceProjectContributor();
         chain.addContributor(new OverlayGradleBuildContributor(applicationContext));
         chain.addContributor(new CasOverlayConfigurationDirectoriesContributor());
-        chain.addContributor(new CasOverlayGradleSpringBootContributor());
+        chain.addContributor(new CasOverlayGradleSpringBootContributor(applicationContext));
         chain.addContributor(new CasOverlayConfigurationPropertiesContributor(applicationContext));
         chain.addContributor(new CasOverlayLoggingConfigurationContributor());
         return chain;

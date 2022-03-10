@@ -1,10 +1,12 @@
 package org.apereo.cas.overlay.casserver.contrib.gradle;
 
-import io.spring.initializr.generator.project.contributor.SingleResourceProjectContributor;
+import org.apereo.cas.initializr.contrib.TemplatedProjectContributor;
 
-public class CasOverlayGradleSpringBootContributor extends SingleResourceProjectContributor {
+import org.springframework.context.ApplicationContext;
 
-    public CasOverlayGradleSpringBootContributor() {
-        super("gradle/springboot.gradle", "classpath:overlay/gradle/springboot.gradle");
+public class CasOverlayGradleSpringBootContributor extends TemplatedProjectContributor {
+
+    public CasOverlayGradleSpringBootContributor(final ApplicationContext applicationContext) {
+        super(applicationContext, "gradle/springboot.gradle", "classpath:overlay/gradle/springboot.gradle.mustache");
     }
 }

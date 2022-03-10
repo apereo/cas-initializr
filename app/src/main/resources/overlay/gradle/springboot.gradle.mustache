@@ -68,5 +68,74 @@ bootRun {
     args = appArgList
 }
 
+springBoot {
+    buildInfo()
+    {{#casServer}}{{mainClass}} = "org.apereo.cas.web.CasWebApplication"{{/casServer}}
+    {{#springBootAdminServer}}{{mainClass}} = "org.apereo.cas.CasSpringBootAdminServerWebApplication"{{/springBootAdminServer}}
+    {{#configServer}}{{mainClass}} = "org.apereo.cas.CasConfigurationServerWebApplication"{{/configServer}}
+    {{#managementServer}}mainClassName = "org.apereo.cas.mgmt.web.CasManagementWebApplication"{{/managementServer}}
+    {{#discoveryServer}}{{mainClass}} = "org.apereo.cas.CasEurekaServerWebApplication"{{/discoveryServer}}
+}
 
+bootWar {
+    def executable = project.hasProperty("executable") && Boolean.valueOf(project.getProperty("executable"))
+    if (executable) {
+        logger.info "Including launch script for executable WAR artifact"
+        launchScript()
+    } else {
+        logger.info "WAR artifact is not marked as an executable"
+    }
+
+    archiveName "{{appName}}.war"
+    baseName "{{appName}}"
+
+    entryCompression = ZipEntryCompression.STORED
+
+    /*
+        attachClasses = true
+        classesClassifier = 'classes'
+        archiveClasses = true
+    */
+
+    overlays {
+        /*
+            https://docs.freefair.io/gradle-plugins/current/reference/#_io_freefair_war_overlay
+            Note: The "excludes" property is only for files in the war dependency.
+            If a jar is excluded from the war, it could be brought back into the final war as a dependency
+            of non-war dependencies. Those should be excluded via normal gradle dependency exclusions.
+        */
+        cas {
+            {{#casServer}}
+            from "org.apereo.cas:cas-server-webapp${project.appServer}:${project.'cas.version'}@war"
+            {{/casServer}}
+
+            {{#springBootAdminServer}}
+            from "org.apereo.cas:cas-server-webapp-bootadmin-server:${project.'cas.version'}@war"
+            {{/springBootAdminServer}}
+
+            {{#managementServer}}
+            from "org.apereo.cas:cas-mgmt-webapp${project.appServer}:${project.'casmgmt.version'}@war"
+            {{/managementServer}}
+
+            {{#configServer}}
+            from "org.apereo.cas:cas-server-webapp-config-server:${project.'cas.version'}@war"
+            {{/configServer}}
+
+            {{#discoveryServer}}
+            from "org.apereo.cas:cas-server-webapp-eureka-server:${project.'cas.version'}@war"
+            {{/discoveryServer}}
+
+            provided = false
+            excludes = ["WEB-INF/lib/servlet-api-2*.jar"]
+
+            /*
+            excludes = ["WEB-INF/lib/somejar-1.0*"]
+            enableCompilation = true
+            includes = ["*.xyz"]
+            targetPath = "sub-path/bar"
+            skip = false
+            */
+        }
+    }
+}
 

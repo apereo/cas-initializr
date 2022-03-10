@@ -15,6 +15,7 @@ import org.apereo.cas.initializr.contrib.docker.jib.OverlayGradleJibEntrypointCo
 import org.apereo.cas.initializr.contrib.gradle.GradleWrapperConfigurationContributor;
 import org.apereo.cas.initializr.contrib.gradle.GradleWrapperExecutablesContributor;
 import org.apereo.cas.initializr.contrib.gradle.OverlayGradleSettingsContributor;
+import org.apereo.cas.initializr.contrib.gradle.OverlayGradleTasksContributor;
 import org.apereo.cas.initializr.contrib.heroku.HerokuProcFileContributor;
 import org.apereo.cas.initializr.contrib.heroku.HerokuSystemPropertiesFileContributor;
 import org.apereo.cas.initializr.metadata.CasOverlayInitializrMetadataUpdateStrategy;
@@ -71,6 +72,7 @@ public class CasInitializrConfiguration {
     public ChainingSingleResourceProjectContributor overlayGradleBuildContributor() {
         var chain = new ChainingSingleResourceProjectContributor();
         chain.addContributor(new OverlayGradleSettingsContributor(applicationContext));
+        chain.addContributor(new OverlayGradleTasksContributor(applicationContext));
         chain.addContributor(new OverlayWebXmlContributor());
         return chain;
     }
