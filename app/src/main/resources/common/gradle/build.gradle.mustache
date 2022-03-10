@@ -76,9 +76,7 @@ apply plugin: "war"
 apply plugin: "org.springframework.boot"
 apply plugin: "io.freefair.lombok"
 
-{{#casServer}}
 apply from: rootProject.file("gradle/springboot.gradle")
-{{/casServer}}
 apply from: rootProject.file("gradle/jib.gradle")
 apply from: rootProject.file("gradle/tasks.gradle")
 

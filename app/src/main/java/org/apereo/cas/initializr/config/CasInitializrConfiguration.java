@@ -19,6 +19,7 @@ import org.apereo.cas.initializr.contrib.gradle.OverlayGradleTasksContributor;
 import org.apereo.cas.initializr.contrib.heroku.HerokuProcFileContributor;
 import org.apereo.cas.initializr.contrib.heroku.HerokuSystemPropertiesFileContributor;
 import org.apereo.cas.initializr.metadata.CasOverlayInitializrMetadataUpdateStrategy;
+import org.apereo.cas.initializr.contrib.gradle.OverlayGradleSpringBootContributor;
 
 import io.spring.initializr.generator.project.ProjectGenerationConfiguration;
 import io.spring.initializr.generator.project.contributor.ProjectContributor;
@@ -74,6 +75,7 @@ public class CasInitializrConfiguration {
         chain.addContributor(new OverlayGradleSettingsContributor(applicationContext));
         chain.addContributor(new OverlayGradleTasksContributor(applicationContext));
         chain.addContributor(new OverlayWebXmlContributor());
+        chain.addContributor(new OverlayGradleSpringBootContributor(applicationContext));
         return chain;
     }
 
