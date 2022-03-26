@@ -85,29 +85,19 @@ curl {{initializrUrl}}/actuator/info
 
 On a successful deployment via the following methods, the server will be available at:
 
-{{#managementServer}}
-* `https://localhost:8443/cas-management`
-{{/managementServer}}
-
-{{#casServer}}
-* `https://localhost:8443/cas`
-{{/casServer}}
-
-{{#springBootAdminServer}}
-* `https://localhost:8444`
-{{/springBootAdminServer}}
-
-{{#configServer}}
-* `https:/localhost:8888/casconfigserver`
-{{/configServer}}
-
-{{#discoveryServer}}
-* `https://localhost:8761`
-{{/discoveryServer}}
+{{#managementServer}}* `https://localhost:8443/cas-management`{{/managementServer}}
+{{#casServer}}* `https://localhost:8443/cas`{{/casServer}}
+{{#springBootAdminServer}}* `https://localhost:8444`{{/springBootAdminServer}}
+{{#configServer}}* `https:/localhost:8888/casconfigserver`{{/configServer}}
+{{#discoveryServer}}* `https://localhost:8761`{{/discoveryServer}}
   
 ## Executable WAR
 
-Run the server web application as an executable WAR.
+Run the server web application as an executable WAR. Note that running an executable WAR requires CAS to use an embedded container such as Apache Tomcat, Jetty, etc.
+
+{{#appServer}}The current servlet container is specified as `{{appServer}}`.{{/appServer}}
+{{^appServer}}No servlet container is specified for the current build. Examine your `gradle.properties` file
+and modify the `appServer` property to point to the appropriate container of choice.{{/appServer}}
 
 ```bash
 java -jar build/libs/{{appName}}.war
@@ -147,12 +137,10 @@ The following strategies outline how to build and deploy CAS Docker images.
 
 ## Jib
 
-The overlay embraces the [Jib Gradle Plugin](https://github.com/GoogleContainerTools/jib) to provide easy-to-use out-of-the-box tooling for
-building CAS docker images. Jib is an open-source Java containerizer from Google that lets Java developers build containers using the tools
-they know. It is a container image builder that handles all the steps of packaging your application into a container image. It does
-not require you to write a Dockerfile or have Docker installed, and it is directly integrated into the overlay.
+The overlay embraces the [Jib Gradle Plugin](https://github.com/GoogleContainerTools/jib) to provide easy-to-use out-of-the-box tooling for building CAS docker images. Jib is an open-source Java containerizer from Google that lets Java developers build containers using the tools they know. It is a container image builder that handles all the steps of packaging your application into a container image. It does not require you to write a Dockerfile or have Docker installed, and it is directly integrated into the overlay.
 
 ```bash
+# Running this task requires that you have Docker installed and running.
 ./gradlew build jibDockerBuild
 ```
 
