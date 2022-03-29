@@ -49,6 +49,11 @@ cas-initializr:
       sync: true
       branch: 6.3
       type: cas
+    - version: 6.3.10
+      boot-version: 2.3.7.RELEASE
+      sync: true
+      branch: 6.3
+      type: cas-mgmt
     - version: @casMgmtVersion@
       boot-version: @casMgmtSpringBootVersion@
       sync: true
