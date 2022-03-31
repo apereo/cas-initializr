@@ -1,5 +1,6 @@
 package org.apereo.cas.initializr.contrib;
 
+import org.apereo.cas.initializr.config.CasInitializrProperties;
 import org.apereo.cas.initializr.web.OverlayProjectDescription;
 import org.apereo.cas.initializr.web.VersionUtils;
 import org.apereo.cas.overlay.bootadminserver.buildsystem.CasSpringBootAdminServerOverlayBuildSystem;
@@ -123,12 +124,22 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
 
     protected Map<String, Object> prepareProjectTemplateVariables(final OverlayProjectDescription project) {
         var provider = applicationContext.getBean(InitializrMetadataProvider.class);
+        var properties = applicationContext.getBean(CasInitializrProperties.class);
 
         var templateVariables = new HashMap<>(provider.get().defaults());
         var configuration = provider.get().getConfiguration();
         var boms = configuration.getEnv().getBoms();
 
-        templateVariables.put("casMgmtVersion", boms.get("cas-mgmt-bom").getVersion());
+        var type = project.getBuildSystem().id();
+        if (type.equals(CasManagementOverlayBuildSystem.ID)) {
+            templateVariables.put("casMgmtVersion", project.getCasVersion());
+            properties.getSupportedVersions()
+                .stream()
+                .filter(version -> version.getType().equals("cas-mgmt")
+                                   && version.getVersion().equals(project.getCasVersion()))
+                .findFirst()
+                .ifPresent(version -> templateVariables.put("casMgmtCasVersion", version.getPlatformVersion()));
+        }
 
         var casVersion = project.resolveCasVersion(boms.get("cas-bom"));
         templateVariables.put("casVersion", casVersion);
@@ -140,7 +151,7 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
             templateVariables.put("mainClass", "mainClassName");
         }
 
-        var type = project.getBuildSystem().id();
+
         templateVariables.put("buildSystemId", type);
         templateVariables.put("containerImageName", StringUtils.remove(type, "-overlay"));
 

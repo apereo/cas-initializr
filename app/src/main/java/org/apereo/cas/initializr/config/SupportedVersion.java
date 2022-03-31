@@ -20,4 +20,7 @@ public class SupportedVersion {
     private String branch;
 
     private String type;
+
+    private String platformVersion;
+
 }

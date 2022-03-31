@@ -1,9 +1,12 @@
 package org.apereo.cas;
 
+import org.apereo.cas.initializr.config.CasInitializrProperties;
 import org.apereo.cas.initializr.event.CasInitializrEventListener;
+import org.apereo.cas.initializr.info.DependencyAliasesInfoContributor;
 import org.apereo.cas.initializr.rate.RateLimitInterceptor;
 import org.apereo.cas.initializr.web.OverlayProjectGenerationController;
 import org.apereo.cas.initializr.web.OverlayProjectRequestToDescriptionConverter;
+import org.apereo.cas.initializr.web.SupportedVersionsEndpoint;
 import org.apereo.cas.initializr.web.generator.CasInitializrProjectAssetGenerator;
 import org.apereo.cas.initializr.web.generator.CasInitializrProjectGenerationInvoker;
 
@@ -14,7 +17,9 @@ import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.actuate.info.InfoContributor;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -28,6 +33,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * where such configuration classes reside.
  */
 @SpringBootApplication(scanBasePackages = "org.apereo.cas.initializr")
+@EnableConfigurationProperties(CasInitializrProperties.class)
 public class CasInitializrApplication {
 
     public static void main(final String[] args) {
@@ -35,18 +41,21 @@ public class CasInitializrApplication {
     }
 
     @Bean
-    public OverlayProjectGenerationController projectGenerationController(final InitializrMetadataProvider metadataProvider,
-                                                                          final ApplicationContext applicationContext,
-                                                                          final ObjectProvider<ProjectRequestPlatformVersionTransformer> platformVersionTransformer) {
+    public OverlayProjectGenerationController projectGenerationController(
+        final InitializrMetadataProvider metadataProvider,
+        final ApplicationContext applicationContext,
+        final ObjectProvider<ProjectRequestPlatformVersionTransformer> platformVersionTransformer) {
         var transformer = platformVersionTransformer.getIfAvailable(DefaultProjectRequestPlatformVersionTransformer::new);
         var converter = new OverlayProjectRequestToDescriptionConverter(transformer);
         var invoker = new CasInitializrProjectGenerationInvoker(applicationContext, converter, new CasInitializrProjectAssetGenerator());
         return new OverlayProjectGenerationController(metadataProvider, invoker);
     }
-    
+
+    @Bean
     public CasInitializrEventListener casInitializrEventListener() {
         return new CasInitializrEventListener();
     }
+
     @Bean
     public HandlerInterceptor rateLimitInterceptor() {
         return new RateLimitInterceptor();
@@ -54,7 +63,9 @@ public class CasInitializrApplication {
 
     @Bean
     @Autowired
-    public WebMvcConfigurer rateLimitingWebMvcConfigurer(@Qualifier("rateLimitInterceptor") final HandlerInterceptor rateLimitInterceptor) {
+    public WebMvcConfigurer rateLimitingWebMvcConfigurer(
+        @Qualifier("rateLimitInterceptor")
+        final HandlerInterceptor rateLimitInterceptor) {
         return new WebMvcConfigurer() {
             @Override
             public void addInterceptors(final InterceptorRegistry registry) {
@@ -62,4 +73,16 @@ public class CasInitializrApplication {
             }
         };
     }
+
+    @Bean
+    public SupportedVersionsEndpoint supportedVersionsEndpoint(final CasInitializrProperties props) {
+        return new SupportedVersionsEndpoint(props.getSupportedVersions());
+    }
+
+    @Autowired
+    @Bean
+    public InfoContributor dependencyAliasesInfoContributor(final InitializrMetadataProvider provider) {
+        return new DependencyAliasesInfoContributor(provider);
+    }
+
 }

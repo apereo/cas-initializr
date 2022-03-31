@@ -90,19 +90,14 @@ processResources {
                 "casMaintenanceBranch"                   : getBranchName(project.property("casMaintenanceVersion").toString()),
                 "casLatestVersion"                       : project.property("casLatestVersion"),
                 "casBranch"                              : getBranchName(project.property("casVersion").toString()),
-                "casMgmtVersion"                         : project.property("casMgmtVersion"),
-                "casMgmtBranch"                          : getBranchName(project.property("casMgmtVersion").toString()),
-                "casMgmtCasVersion"                      : project.property("casMgmtCasVersion"),
                 "version"                                : project.property("version"),
                 "springBootVersion"                      : project.property("springBootVersion"),
                 "casMaintenanceSpringBootVersion"        : project.property("casMaintenanceSpringBootVersion"),
                 "springBootLatestVersion"                : project.property("springBootLatestVersion"),
-                "casMgmtSpringBootVersion"               : project.property("casMgmtSpringBootVersion"),
                 "gradleDependencyManagementPluginVersion": project.property("gradleDependencyManagementPluginVersion"),
                 "gradleFreeFairPluginVersion"            : project.property("gradleFreeFairPluginVersion"),
                 "gradleDownloadTaskPluginVersion"        : project.property("gradleDownloadTaskPluginVersion"),
                 "tomcatVersion"                          : project.property("tomcatVersion"),
-                "casPlatformMinimumVersion"              : project.property("casPlatformMinimumVersion"),
                 "jibVersion"                             : project.property("jibVersion")
                 
         ]

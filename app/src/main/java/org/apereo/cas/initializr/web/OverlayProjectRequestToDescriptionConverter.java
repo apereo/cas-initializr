@@ -1,10 +1,13 @@
 package org.apereo.cas.initializr.web;
 
+import org.apereo.cas.overlay.casmgmt.buildsystem.CasManagementOverlayBuildSystem;
+
 import io.spring.initializr.generator.buildsystem.BuildSystem;
 import io.spring.initializr.generator.language.Language;
 import io.spring.initializr.generator.packaging.Packaging;
 import io.spring.initializr.generator.project.ProjectDescription;
 import io.spring.initializr.generator.version.Version;
+import io.spring.initializr.metadata.BillOfMaterials;
 import io.spring.initializr.metadata.Dependency;
 import io.spring.initializr.metadata.InitializrMetadata;
 import io.spring.initializr.metadata.support.MetadataBuildItemMapper;
@@ -15,6 +18,7 @@ import io.spring.initializr.web.project.ProjectRequestToDescriptionConverter;
 import org.springframework.util.Assert;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class OverlayProjectRequestToDescriptionConverter implements ProjectRequestToDescriptionConverter<OverlayProjectRequest> {
@@ -92,8 +96,15 @@ public class OverlayProjectRequestToDescriptionConverter implements ProjectReque
     }
 
     private static String determineCasVersion(final OverlayProjectRequest request, final InitializrMetadata metadata) {
-        return request.getCasVersion() != null ? request.getCasVersion()
-            : metadata.getConfiguration().getEnv().getBoms().get("cas-bom").getVersion();
+        if (request.getCasVersion() != null) {
+            return request.getCasVersion();
+        }
+        var type = request.getType();
+        var boms = metadata.getConfiguration().getEnv().getBoms();
+        if (type.equals(CasManagementOverlayBuildSystem.ID)) {
+            return boms.get("cas-mgmt-bom").getVersion();
+        }
+        return boms.get("cas-bom").getVersion();
     }
 
     @Override

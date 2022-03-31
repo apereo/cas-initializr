@@ -15,11 +15,11 @@ import org.apereo.cas.initializr.contrib.docker.jib.OverlayGradleJibEntrypointCo
 import org.apereo.cas.initializr.contrib.gradle.GradleWrapperConfigurationContributor;
 import org.apereo.cas.initializr.contrib.gradle.GradleWrapperExecutablesContributor;
 import org.apereo.cas.initializr.contrib.gradle.OverlayGradleSettingsContributor;
+import org.apereo.cas.initializr.contrib.gradle.OverlayGradleSpringBootContributor;
 import org.apereo.cas.initializr.contrib.gradle.OverlayGradleTasksContributor;
 import org.apereo.cas.initializr.contrib.heroku.HerokuProcFileContributor;
 import org.apereo.cas.initializr.contrib.heroku.HerokuSystemPropertiesFileContributor;
 import org.apereo.cas.initializr.metadata.CasOverlayInitializrMetadataUpdateStrategy;
-import org.apereo.cas.initializr.contrib.gradle.OverlayGradleSpringBootContributor;
 
 import io.spring.initializr.generator.project.ProjectGenerationConfiguration;
 import io.spring.initializr.generator.project.contributor.ProjectContributor;

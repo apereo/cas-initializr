@@ -12,8 +12,7 @@ import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
  */
 @Endpoint(id = "supportedVersions")
 @RequiredArgsConstructor
-public class SupportedVersionsEndpoint
-{
+public class SupportedVersionsEndpoint {
     private final List<SupportedVersion> supportedVersions;
 
     @ReadOperation
