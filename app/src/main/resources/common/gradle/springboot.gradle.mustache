@@ -75,7 +75,7 @@ springBoot {
     {{#casServer}}{{mainClass}} = "org.apereo.cas.web.CasWebApplication"{{/casServer}}
     {{#springBootAdminServer}}{{mainClass}} = "org.apereo.cas.CasSpringBootAdminServerWebApplication"{{/springBootAdminServer}}
     {{#configServer}}{{mainClass}} = "org.apereo.cas.CasConfigurationServerWebApplication"{{/configServer}}
-    {{#managementServer}}mainClassName = "org.apereo.cas.mgmt.web.CasManagementWebApplication"{{/managementServer}}
+    {{#managementServer}}{{mainClass}} = "org.apereo.cas.mgmt.web.CasManagementWebApplication"{{/managementServer}}
     {{#discoveryServer}}{{mainClass}} = "org.apereo.cas.CasEurekaServerWebApplication"{{/discoveryServer}}
 }
 
