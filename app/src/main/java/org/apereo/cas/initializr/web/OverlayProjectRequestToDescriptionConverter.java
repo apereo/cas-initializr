@@ -7,7 +7,6 @@ import io.spring.initializr.generator.language.Language;
 import io.spring.initializr.generator.packaging.Packaging;
 import io.spring.initializr.generator.project.ProjectDescription;
 import io.spring.initializr.generator.version.Version;
-import io.spring.initializr.metadata.BillOfMaterials;
 import io.spring.initializr.metadata.Dependency;
 import io.spring.initializr.metadata.InitializrMetadata;
 import io.spring.initializr.metadata.support.MetadataBuildItemMapper;
@@ -16,9 +15,10 @@ import io.spring.initializr.web.project.ProjectRequest;
 import io.spring.initializr.web.project.ProjectRequestPlatformVersionTransformer;
 import io.spring.initializr.web.project.ProjectRequestToDescriptionConverter;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class OverlayProjectRequestToDescriptionConverter implements ProjectRequestToDescriptionConverter<OverlayProjectRequest> {
@@ -64,12 +64,15 @@ public class OverlayProjectRequestToDescriptionConverter implements ProjectReque
 
     private static void validateDependencies(final ProjectRequest request, final InitializrMetadata metadata) {
         var dependencies = request.getDependencies();
-        dependencies.forEach(dep -> {
-            var dependency = metadata.getDependencies().get(dep);
-            if (dependency == null) {
-                throw new InvalidProjectRequestException("Unknown dependency '" + dep + "' check project metadata");
-            }
-        });
+        dependencies
+            .stream()
+            .filter(StringUtils::hasText)
+            .forEach(dep -> {
+                var dependency = metadata.getDependencies().get(dep);
+                if (dependency == null) {
+                    throw new InvalidProjectRequestException("Unknown dependency '" + dep + "' check project metadata");
+                }
+            });
     }
 
     private static void validateDependencyRange(final Version platformVersion, final List<Dependency> resolvedDependencies) {
@@ -89,10 +92,15 @@ public class OverlayProjectRequestToDescriptionConverter implements ProjectReque
     private static List<Dependency> getResolvedDependencies(final ProjectRequest request, final Version platformVersion,
                                                             final InitializrMetadata metadata) {
         var depIds = request.getDependencies();
-        return depIds.stream().map(it -> {
-            var dependency = metadata.getDependencies().get(it);
-            return dependency.resolve(platformVersion);
-        }).collect(Collectors.toList());
+        return depIds
+            .stream()
+            .filter(StringUtils::hasText)
+            .map(it -> {
+                var dependency = metadata.getDependencies().get(it);
+                return dependency != null ? dependency.resolve(platformVersion) : null;
+            })
+            .filter(Objects::nonNull)
+            .collect(Collectors.toList());
     }
 
     private static String determineCasVersion(final OverlayProjectRequest request, final InitializrMetadata metadata) {

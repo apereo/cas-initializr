@@ -117,6 +117,7 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
             if (model instanceof Map) {
                 ((Map<String, Object>) model).putAll(templateVariables);
             }
+            log.debug("Rendering template [{}], using model [{}]", resourcePattern, model);
             mustache.execute(writer, model).flush();
             return writer.toString();
         }
@@ -131,6 +132,8 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         var boms = configuration.getEnv().getBoms();
 
         var type = project.getBuildSystem().id();
+        templateVariables.put("type", type);
+        
         if (type.equals(CasManagementOverlayBuildSystem.ID)) {
             templateVariables.put("casMgmtVersion", project.getCasVersion());
             properties.getSupportedVersions()
@@ -182,6 +185,11 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
             templateVariables.put("appName", "casdiscoveryserver");
         }
 
+        /**
+         * Starting from CAS 6.5, projects can take advantage of Gradle's
+         * native support for BOMs. Prior to this version, the dependency management plugin
+         * must be used to handle BOMs.
+         */
         var bomCapableVersion = VersionUtils.parse("6.5.0");
         var currentCasProject = VersionUtils.parse(project.getCasVersion());
         templateVariables.put("springDependencyMgmt", currentCasProject.compareTo(bomCapableVersion) < 0);

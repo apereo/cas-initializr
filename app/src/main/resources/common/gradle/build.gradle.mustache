@@ -133,6 +133,7 @@ dependencies {
     */
     {{#managementServer}}
     implementation enforcedPlatform("org.apereo.cas:cas-mgmt-support-bom:${project.'casmgmt.version'}")
+    implementation enforcedPlatform("org.apereo.cas:cas-server-support-bom:${project.'cas.version'}")
     {{/managementServer}}
     {{^managementServer}}
     implementation enforcedPlatform("org.apereo.cas:cas-server-support-bom:${project.'cas.version'}")
