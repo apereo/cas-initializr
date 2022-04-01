@@ -1,24 +1,21 @@
 {{#managementServer}}
-# The version of this overlay project
-version={{casMgmtVersion}}
-
 # CAS Management version
 casmgmt.version={{casMgmtVersion}}
 
-# CAS server version
+# This is the CAS server version that is compatible
+# with the build/version of the CAS management web application.
 cas.version={{casMgmtCasVersion}}
 springBootVersion={{springBootVersion}}
 {{/managementServer}}
 
 {{^managementServer}}
-# The version of this overlay project
-version={{casVersion}}
-
-#CAS server version
+# CAS server version
 cas.version={{casVersion}}
 springBootVersion={{springBootVersion}}
 {{/managementServer}}
 
+# The version of this overlay project
+version=0.0.1
 group={{groupId}}
 artifactId={{buildSystemId}}
 sourceCompatibility={{javaVersion}}

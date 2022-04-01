@@ -58,7 +58,7 @@ cas-initializr:
       sync: true
       branch: 6.3
       type: cas-mgmt
-    - version: 6.4.0
+    - version: 6.4.1
       boot-version: 2.5.4
       platform-version: 6.4.6.2
       sync: true

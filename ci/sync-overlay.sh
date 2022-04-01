@@ -14,12 +14,15 @@ mkdir tmp
 cd tmp
 
 case "${TYPE}" in
-   cas-overlay)
-     repoName="cas-overlay-template"
-     ;;
+  cas-overlay)
+    repoName="cas-overlay-template"
+    ;;
+  cas-config-server-overlay)
+    repoName="cas-configserver-overlay"
+    ;;
   cas-management-overlay)
-     repoName="cas-management-overlay"
-     ;;
+    repoName="cas-management-overlay"
+    ;;
 esac
 
 echo "Building Overlay ${TYPE}:${CAS_VERSION} with Spring Boot ${BOOT_VERSION} for branch ${BRANCH}"
