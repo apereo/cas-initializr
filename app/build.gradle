@@ -86,13 +86,10 @@ processResources {
                 "javaVersion"                            : project.sourceCompatibility,
 
                 "casVersion"                             : project.property("casVersion"),
-                "casMaintenanceVersion"                  : project.property("casMaintenanceVersion"),
-                "casMaintenanceBranch"                   : getBranchName(project.property("casMaintenanceVersion").toString()),
                 "casLatestVersion"                       : project.property("casLatestVersion"),
                 "casBranch"                              : getBranchName(project.property("casVersion").toString()),
                 "version"                                : project.property("version"),
                 "springBootVersion"                      : project.property("springBootVersion"),
-                "casMaintenanceSpringBootVersion"        : project.property("casMaintenanceSpringBootVersion"),
                 "springBootLatestVersion"                : project.property("springBootLatestVersion"),
                 "gradleDependencyManagementPluginVersion": project.property("gradleDependencyManagementPluginVersion"),
                 "gradleFreeFairPluginVersion"            : project.property("gradleFreeFairPluginVersion"),
