@@ -1,7 +1,7 @@
 package org.apereo.cas.overlay.casserver.contrib;
 
 import io.spring.initializr.generator.project.contributor.ProjectContributor;
-import lombok.val;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;

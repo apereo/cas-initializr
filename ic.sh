@@ -1,4 +1,9 @@
 #!/usr/bin/env sh
 
 rm -Rf ./tmp
-curl -k http://localhost:8080/starter.tgz -d dependencies="$1" -d type=cas-overlay -d baseDir=tmp | tar -xzvf -
+
+CAS_VERSION="6.6.0-SNAPSHOT"
+BOOT_VERSION="2.6.6"
+curl -k http://localhost:8080/starter.tgz -d dependencies="$1" \
+  -d "casVersion=${CAS_VERSION}&bootVersion=${BOOT_VERSION}" \
+  -d type=cas-overlay -d baseDir=tmp | tar -xzvf -

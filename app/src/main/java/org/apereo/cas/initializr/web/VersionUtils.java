@@ -11,7 +11,12 @@ import lombok.experimental.UtilityClass;
  */
 @UtilityClass
 public class VersionUtils {
-    
+
+    public static String getBranchName(final String version) {
+        var casBranch = version.split("\\.");
+        return casBranch[0] + '.' + casBranch[1];
+    }
+
     public static Version parse(final String versionText) {
         if (versionText.matches("\\d.\\d.\\d.\\d")) {
             return Version.parse(versionText.substring(0, versionText.lastIndexOf('.')));

@@ -5,7 +5,7 @@ import io.spring.initializr.generator.condition.ConditionalOnBuildSystem;
 import io.spring.initializr.generator.project.ProjectGenerationConfiguration;
 import io.spring.initializr.generator.project.contributor.ProjectContributor;
 import io.spring.initializr.generator.spring.build.BuildCustomizer;
-import lombok.val;
+
 import org.apereo.cas.initializr.contrib.ChainingSingleResourceProjectContributor;
 import org.apereo.cas.initializr.contrib.ProjectReadMeContributor;
 import org.apereo.cas.initializr.contrib.gradle.OverlayGradleBuildContributor;

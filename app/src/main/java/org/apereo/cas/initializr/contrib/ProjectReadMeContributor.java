@@ -1,12 +1,13 @@
 package org.apereo.cas.initializr.contrib;
 
+import org.apereo.cas.initializr.web.OverlayProjectDescription;
+
 import lombok.Getter;
 import lombok.Setter;
-import lombok.SneakyThrows;
 import lombok.experimental.Accessors;
-import lombok.val;
 import org.springframework.context.ApplicationContext;
 
+import java.io.IOException;
 import java.io.StringWriter;
 
 /**
@@ -24,15 +25,16 @@ public class ProjectReadMeContributor extends TemplatedProjectContributor {
         super(applicationContext, "./README.md", "classpath:common/README.md.mustache");
     }
 
-    @SneakyThrows
     @Override
-    protected String postProcessRenderedTemplate(final String template) {
+    protected String postProcessRenderedTemplate(final String template,
+                                                 final OverlayProjectDescription project,
+                                                 final Object model) throws IOException {
         if (appendFromResource == null) {
             return template;
         }
         try (var writer = new StringWriter()) {
             writer.write(template);
-            var appendTemplate = renderTemplateFromResource(this.appendFromResource);
+            var appendTemplate = renderTemplateFromResource(appendFromResource, project, model);
             writer.write(appendTemplate);
             return writer.toString();
         }

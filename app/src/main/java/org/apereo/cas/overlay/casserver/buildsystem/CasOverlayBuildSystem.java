@@ -1,8 +1,8 @@
 package org.apereo.cas.overlay.casserver.buildsystem;
 
-import io.spring.initializr.generator.buildsystem.BuildSystem;
+import org.apereo.cas.overlay.OverlayBuildSystem;
 
-public class CasOverlayBuildSystem implements BuildSystem {
+public class CasOverlayBuildSystem implements OverlayBuildSystem {
     public static final String ID = "cas-overlay";
 
     @Override
@@ -13,5 +13,10 @@ public class CasOverlayBuildSystem implements BuildSystem {
     @Override
     public String toString() {
         return id();
+    }
+
+    @Override
+    public String resourceDirectory() {
+        return "overlay";
     }
 }

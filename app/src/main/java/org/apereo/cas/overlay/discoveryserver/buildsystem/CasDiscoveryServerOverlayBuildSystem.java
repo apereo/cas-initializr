@@ -1,8 +1,8 @@
 package org.apereo.cas.overlay.discoveryserver.buildsystem;
 
-import io.spring.initializr.generator.buildsystem.BuildSystem;
+import org.apereo.cas.overlay.OverlayBuildSystem;
 
-public class CasDiscoveryServerOverlayBuildSystem implements BuildSystem {
+public class CasDiscoveryServerOverlayBuildSystem implements OverlayBuildSystem {
     public static final String ID = "cas-discovery-server-overlay";
 
     @Override
@@ -13,5 +13,10 @@ public class CasDiscoveryServerOverlayBuildSystem implements BuildSystem {
     @Override
     public String toString() {
         return id();
+    }
+
+    @Override
+    public String resourceDirectory() {
+        return "discoveryserver-overlay";
     }
 }

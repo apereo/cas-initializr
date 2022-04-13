@@ -23,6 +23,7 @@ import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.context.ApplicationContext;
+import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -97,27 +98,35 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
             Files.createDirectories(output.getParent());
             Files.createFile(output);
         }
-        var template = renderTemplateFromResource(resourcePattern);
-        template = postProcessRenderedTemplate(template);
+        var project = applicationContext.getBean(OverlayProjectDescription.class);
+        var templateVariables = prepareProjectTemplateVariables(project);
+        var model = contributeInternal(project);
+        if (model instanceof Map) {
+            ((Map<String, Object>) model).putAll(templateVariables);
+        }
+        var template = renderTemplateFromResource(resourcePattern, project, templateVariables);
+        template = postProcessRenderedTemplate(template, project, templateVariables);
         createTemplateFile(output, template);
     }
 
-    protected String postProcessRenderedTemplate(final String template) {
+    protected String postProcessRenderedTemplate(final String template,
+                                                 final OverlayProjectDescription project,
+                                                 final Object model) throws IOException {
         return template;
     }
 
-    protected String renderTemplateFromResource(final String resourcePattern) throws IOException {
+    protected String renderTemplateFromResource(final String resourcePattern,
+                                                final OverlayProjectDescription project,
+                                                final Object model) throws IOException {
         var resource = resolver.getResource(resourcePattern);
-        var mf = new DefaultMustacheFactory();
-        var mustache = mf.compile(new InputStreamReader(resource.getInputStream()), resource.getFilename());
+        return renderTemplate(resource, model);
+    }
+
+    private String renderTemplate(final Resource resource, final Object model) throws IOException {
+        log.debug("Rendering template [{}], using model [{}]", resourcePattern, model);
         try (var writer = new StringWriter()) {
-            var project = applicationContext.getBean(OverlayProjectDescription.class);
-            var templateVariables = prepareProjectTemplateVariables(project);
-            var model = contributeInternal(project);
-            if (model instanceof Map) {
-                ((Map<String, Object>) model).putAll(templateVariables);
-            }
-            log.debug("Rendering template [{}], using model [{}]", resourcePattern, model);
+            var mf = new DefaultMustacheFactory();
+            var mustache = mf.compile(new InputStreamReader(resource.getInputStream()), resource.getFilename());
             mustache.execute(writer, model).flush();
             return writer.toString();
         }
@@ -133,7 +142,7 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
 
         var type = project.getBuildSystem().id();
         templateVariables.put("type", type);
-        
+
         if (type.equals(CasManagementOverlayBuildSystem.ID)) {
             templateVariables.put("casMgmtVersion", project.getCasVersion());
             properties.getSupportedVersions()
@@ -201,6 +210,25 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
 
     protected Object contributeInternal(final ProjectDescription project) {
         return new HashMap<>();
+    }
+
+    protected boolean resourceExists(final String projectResource) {
+        try {
+            var resource = resolver.getResource(projectResource);
+            return resource.getInputStream().available() > 0;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+    
+    protected String appendResource(final String appendTemplate,
+                                    final String originalTemplate,
+                                    final OverlayProjectDescription project) throws IOException {
+        try (var writer = new StringWriter()) {
+            writer.write(originalTemplate);
+            writer.write(appendTemplate);
+            return writer.toString();
+        }
     }
 
     @Getter

@@ -1,8 +1,8 @@
 package org.apereo.cas.overlay.configserver.buildsystem;
 
-import io.spring.initializr.generator.buildsystem.BuildSystem;
+import org.apereo.cas.overlay.OverlayBuildSystem;
 
-public class CasConfigServerOverlayBuildSystem implements BuildSystem {
+public class CasConfigServerOverlayBuildSystem implements OverlayBuildSystem {
     public static final String ID = "cas-config-server-overlay";
 
     @Override
@@ -13,5 +13,10 @@ public class CasConfigServerOverlayBuildSystem implements BuildSystem {
     @Override
     public String toString() {
         return id();
+    }
+
+    @Override
+    public String resourceDirectory() {
+        return "configserver-overlay";
     }
 }

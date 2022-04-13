@@ -2,7 +2,6 @@ package org.apereo.cas.initializr.contrib;
 
 import io.spring.initializr.generator.project.contributor.ProjectContributor;
 import org.springframework.core.Ordered;
-import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.util.FileCopyUtils;
 import java.io.IOException;

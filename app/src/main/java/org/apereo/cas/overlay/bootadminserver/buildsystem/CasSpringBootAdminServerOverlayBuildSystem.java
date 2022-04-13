@@ -1,8 +1,8 @@
 package org.apereo.cas.overlay.bootadminserver.buildsystem;
 
-import io.spring.initializr.generator.buildsystem.BuildSystem;
+import org.apereo.cas.overlay.OverlayBuildSystem;
 
-public class CasSpringBootAdminServerOverlayBuildSystem implements BuildSystem {
+public class CasSpringBootAdminServerOverlayBuildSystem implements OverlayBuildSystem {
     public static final String ID = "cas-bootadmin-server-overlay";
 
     @Override
@@ -13,5 +13,10 @@ public class CasSpringBootAdminServerOverlayBuildSystem implements BuildSystem {
     @Override
     public String toString() {
         return id();
+    }
+
+    @Override
+    public String resourceDirectory() {
+        return "bootadmin-overlay";
     }
 }

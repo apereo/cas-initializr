@@ -276,45 +276,6 @@ task listTemplateViews(group: "CAS", description: "List all CAS views") {
     }
 }
 
-task exportConfigMetadata(group: "CAS", description: "Export collection of CAS properties") {
-    doLast {
-        def file = new File(project.rootDir, 'config-metadata.properties')
-        def queryType = ConfigurationMetadataCatalogQuery.QueryTypes.CAS
-        if (project.hasProperty("queryType")) {
-            queryType = ConfigurationMetadataCatalogQuery.QueryTypes.valueOf(project.findProperty("queryType"))
-        }
-        file.withWriter('utf-8') { writer ->
-            def props = CasConfigurationMetadataCatalog.query(
-                ConfigurationMetadataCatalogQuery.builder()
-                    .queryType(queryType)
-                    .build())
-                .properties()
-            props.each { property ->
-                writer.writeLine("# Type: ${property.type}");
-                writer.writeLine("# Module: ${property.module}")
-                writer.writeLine("# Owner: ${property.owner}")
-                if (property.deprecationLevel != null) {
-                    writer.writeLine("# This setting is deprecated with a severity level of ${property.deprecationLevel}.")
-                    if (property.deprecationReason != null) {
-                        writer.writeLine("# because ${property.deprecationReason}")
-                    }
-                    if (property.deprecationReason != null) {
-                        writer.writeLine("# Replace with: ${property.deprecationReason}")
-                    }
-                }
-                writer.writeLine("#")
-                def description = property.description.replace("\n", "\n# ").replace("\r", "")
-                description = org.apache.commons.text.WordUtils.wrap(description, 70, "\n# ", true)
-                writer.writeLine("# ${description}")
-                writer.writeLine("#")
-                writer.writeLine("# ${property.name}: ${property.defaultValue}")
-                writer.writeLine("")
-            }
-        }
-        println "Configuration metadata is available at ${file.absolutePath}"
-    }
-}
-
 task getResource(group: "CAS", description: "Fetch a CAS resource and move it into the overlay") {
     dependsOn unzip
 

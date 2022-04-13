@@ -3,7 +3,6 @@ package org.apereo.cas.initializr.web.generator;
 import org.apereo.cas.initializr.web.OverlayProjectDescription;
 
 import io.spring.initializr.generator.project.ProjectAssetGenerator;
-import io.spring.initializr.generator.project.ProjectDescription;
 import io.spring.initializr.generator.project.ProjectDirectoryFactory;
 import io.spring.initializr.generator.project.ProjectGenerationContext;
 import io.spring.initializr.generator.project.contributor.ProjectContributor;
