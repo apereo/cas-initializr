@@ -71,6 +71,12 @@ echo "Downloading Shell"
 echo "Listing Views"
 ./gradlew listTemplateViews
 
+echo "Fetching HTML resource"
+./gradlew getResource -PresourceName=casGenericSuccessView
+
+echo "Fetching message bundle"
+./gradlew getResource -PresourceName=messages.properties
+
 echo "Creating ZIP archive"
 ./gradlew zip
 
