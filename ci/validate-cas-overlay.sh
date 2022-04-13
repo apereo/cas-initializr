@@ -66,6 +66,10 @@ echo "Building Docker image with Jib"
 
 publishDockerImage
 
+echo "Verify Java Version"
+./gradlew verifyRequiredJavaVersion
+[ $? -eq 0 ] && echo "Gradle command ran successfully." || exit 1
+
 echo "Downloading Shell"
 ./gradlew downloadShell
 [ $? -eq 0 ] && echo "Gradle command ran successfully." || exit 1
@@ -90,8 +94,8 @@ echo "Configuration Metadata Export"
 ./gradlew exportConfigMetadata
 [ $? -eq 0 ] && echo "Gradle command ran successfully." || exit 1
 
-echo "Exploding WAR"
-./gradlew explodeWar
+echo "Unzip WAR"
+./gradlew unzip
 [ $? -eq 0 ] && echo "Gradle command ran successfully." || exit 1
 
 echo "Build Container Image w/ Docker"
