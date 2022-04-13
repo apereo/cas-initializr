@@ -44,6 +44,7 @@ kill -9 $pid
 echo "Building Docker image with Jib"
 chmod -R 777 ./*.sh >/dev/null 2>&1
 ./gradlew jibDockerBuild
+[ $? -eq 0 ] && echo "Gradle command ran successfully." || exit 1
 
 downloadTomcat
 mv build/libs/casconfigserver.war ${CATALINA_HOME}/webapps/app.war

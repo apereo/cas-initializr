@@ -1,6 +1,6 @@
-import java.nio.file.*
-
 {{#casServer}}
+import org.apereo.cas.metadata.*
+import java.nio.file.*
 buildscript {
     repositories {
         mavenLocal()
@@ -9,6 +9,7 @@ buildscript {
     }
     dependencies {
         classpath "org.apache.ivy:ivy:${project.ivyVersion}"
+        classpath "org.apereo.cas:cas-server-core-configuration-metadata-repository:${project.'cas.version'}"
     }
 }
 apply plugin: "de.undercouch.download"

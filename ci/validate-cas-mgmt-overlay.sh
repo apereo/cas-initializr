@@ -49,6 +49,7 @@ chmod +x "*.sh"  >/dev/null 2>&1
 
 echo "Building Docker image with Jib"
 ./gradlew jibDockerBuild
+[ $? -eq 0 ] && echo "Gradle command ran successfully." || exit 1
 
 downloadTomcat
 mv build/libs/cas-management.war ${CATALINA_HOME}/webapps/app.war

@@ -62,29 +62,37 @@ chmod -R 777 ./*.sh >/dev/null 2>&1
 
 echo "Building Docker image with Jib"
 ./gradlew jibDockerBuild
+[ $? -eq 0 ] && echo "Gradle command ran successfully." || exit 1
 
 publishDockerImage
 
 echo "Downloading Shell"
 ./gradlew downloadShell
+[ $? -eq 0 ] && echo "Gradle command ran successfully." || exit 1
 
 echo "Listing Views"
 ./gradlew listTemplateViews
+[ $? -eq 0 ] && echo "Gradle command ran successfully." || exit 1
 
 echo "Fetching HTML resource"
 ./gradlew getResource -PresourceName=casGenericSuccessView
+[ $? -eq 0 ] && echo "Gradle command ran successfully." || exit 1
 
 echo "Fetching message bundle"
 ./gradlew getResource -PresourceName=messages.properties
+[ $? -eq 0 ] && echo "Gradle command ran successfully." || exit 1
 
 echo "Creating ZIP archive"
 ./gradlew zip
+[ $? -eq 0 ] && echo "Gradle command ran successfully." || exit 1
 
 echo "Configuration Metadata Export"
 ./gradlew exportConfigMetadata
+[ $? -eq 0 ] && echo "Gradle command ran successfully." || exit 1
 
 echo "Exploding WAR"
 ./gradlew explodeWar
+[ $? -eq 0 ] && echo "Gradle command ran successfully." || exit 1
 
 echo "Build Container Image w/ Docker"
 ./docker-build.sh
