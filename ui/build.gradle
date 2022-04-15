@@ -1,0 +1,29 @@
+plugins {
+    id 'base'
+    id 'com.github.node-gradle.node' version '2.2.4'
+}
+
+node {
+    version = '16.14.2'
+    npmVersion = '8.5.0'
+    download = true
+}
+
+npmInstall.setNpmCommand('ci')
+
+task appNpmInstall(type: NpmTask) {
+  description = "Installs all dependencies from package.json"
+  args = ["install"]
+}
+
+task appNpmBuild(type: NpmTask) {
+  description = "Builds production version of the webapp"
+  args = ["run", "build"]
+}
+
+appNpmBuild.dependsOn appNpmInstall
+
+clean.doFirst {
+    file('node_modules').deleteDir()
+    file('build').deleteDir()
+}

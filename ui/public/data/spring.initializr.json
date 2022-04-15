@@ -1,0 +1,2248 @@
+{
+    "_links": {
+        "cas-overlay": {
+            "href": "https://casinit.herokuapp.com/starter.zip?type=cas-overlay{&dependencies,packaging,javaVersion,language,bootVersion,groupId,artifactId,version,name,description,packageName}",
+            "templated": true
+        },
+        "cas-management-overlay": {
+            "href": "https://casinit.herokuapp.com/starter.zip?type=cas-management-overlay{&dependencies,packaging,javaVersion,language,bootVersion,groupId,artifactId,version,name,description,packageName}",
+            "templated": true
+        },
+        "cas-config-server-overlay": {
+            "href": "https://casinit.herokuapp.com/starter.zip?type=cas-config-server-overlay{&dependencies,packaging,javaVersion,language,bootVersion,groupId,artifactId,version,name,description,packageName}",
+            "templated": true
+        },
+        "cas-discovery-server-overlay": {
+            "href": "https://casinit.herokuapp.com/starter.zip?type=cas-discovery-server-overlay{&dependencies,packaging,javaVersion,language,bootVersion,groupId,artifactId,version,name,description,packageName}",
+            "templated": true
+        },
+        "cas-bootadmin-server-overlay": {
+            "href": "https://casinit.herokuapp.com/starter.zip?type=cas-bootadmin-server-overlay{&dependencies,packaging,javaVersion,language,bootVersion,groupId,artifactId,version,name,description,packageName}",
+            "templated": true
+        },
+        "dependencies": {
+            "href": "https://casinit.herokuapp.com/dependencies{?bootVersion}",
+            "templated": true
+        }
+    },
+    "dependencies": {
+        "type": "hierarchical-multi-select",
+        "values": [
+            {
+                "name": "api",
+                "values": [
+                    {
+                        "id": "api",
+                        "name": "cas-server-core-api",
+                        "description": "Apereo CAS Core APIs"
+                    },
+                    {
+                        "id": "api-audit",
+                        "name": "cas-server-core-api-audit",
+                        "description": "Apereo CAS API Audit"
+                    },
+                    {
+                        "id": "api-authentication",
+                        "name": "cas-server-core-api-authentication",
+                        "description": "Apereo CAS Core Authentication APIs"
+                    },
+                    {
+                        "id": "api-configuration",
+                        "name": "cas-server-core-api-configuration",
+                        "description": "Apereo CAS Core Configuration"
+                    },
+                    {
+                        "id": "api-configuration-model",
+                        "name": "cas-server-core-api-configuration-model",
+                        "description": "Apereo CAS Core Configuration Model"
+                    },
+                    {
+                        "id": "api-cookie",
+                        "name": "cas-server-core-api-cookie",
+                        "description": "Apereo CAS Cookie API"
+                    },
+                    {
+                        "id": "api-events",
+                        "name": "cas-server-core-api-events",
+                        "description": "Apereo CAS Core API Events"
+                    },
+                    {
+                        "id": "api-logout",
+                        "name": "cas-server-core-api-logout",
+                        "description": "Apereo CAS Core Logout APIs"
+                    },
+                    {
+                        "id": "api-mfa",
+                        "name": "cas-server-core-api-mfa",
+                        "description": "Apereo CAS Core MFA APIs"
+                    },
+                    {
+                        "id": "api-monitor",
+                        "name": "cas-server-core-api-monitor",
+                        "description": "Apereo CAS Core Monitor APIs"
+                    },
+                    {
+                        "id": "api-protocol",
+                        "name": "cas-server-core-api-protocol",
+                        "description": "Apereo CAS Core Protocol APIs"
+                    },
+                    {
+                        "id": "api-services",
+                        "name": "cas-server-core-api-services",
+                        "description": "Apereo CAS Core Services APIs"
+                    },
+                    {
+                        "id": "api-throttle",
+                        "name": "cas-server-core-api-throttle",
+                        "description": "Apereo CAS Core Throttling APIs"
+                    },
+                    {
+                        "id": "api-ticket",
+                        "name": "cas-server-core-api-ticket",
+                        "description": "Apereo CAS Core Ticket APIs"
+                    },
+                    {
+                        "id": "api-util",
+                        "name": "cas-server-core-api-util",
+                        "description": "Apereo CAS Core Utility APIs"
+                    },
+                    {
+                        "id": "api-validation",
+                        "name": "cas-server-core-api-validation",
+                        "description": "Apereo CAS Core Validation APIs"
+                    },
+                    {
+                        "id": "api-web",
+                        "name": "cas-server-core-api-web",
+                        "description": "Apereo CAS Core Web APIs"
+                    },
+                    {
+                        "id": "api-webflow",
+                        "name": "cas-server-core-api-webflow",
+                        "description": "Apereo CAS Core Webflow APIs"
+                    }
+                ]
+            },
+            {
+                "name": "core",
+                "values": [
+                    {
+                        "id": "core-rest-api",
+                        "name": "cas-server-core-rest-api",
+                        "description": "Apereo CAS Core REST API",
+                        "versionRange": "6.5.0.RELEASE"
+                    },
+                    {
+                        "id": "core",
+                        "name": "cas-server-core",
+                        "description": "Apereo CAS Core"
+                    },
+                    {
+                        "id": "core-audit",
+                        "name": "cas-server-core-audit",
+                        "description": "Apereo CAS Core Audit"
+                    },
+                    {
+                        "id": "core-audit-api",
+                        "name": "cas-server-core-audit-api",
+                        "description": "Apereo CAS Core Audit API"
+                    },
+                    {
+                        "id": "core-authentication",
+                        "name": "cas-server-core-authentication",
+                        "description": "Apereo CAS Core Authentication"
+                    },
+                    {
+                        "id": "core-authentication-api",
+                        "name": "cas-server-core-authentication-api",
+                        "description": "Apereo CAS Core Authentication"
+                    },
+                    {
+                        "id": "core-authentication-attributes",
+                        "name": "cas-server-core-authentication-attributes",
+                        "description": "Apereo CAS Core Authentication Attributes & Repositories"
+                    },
+                    {
+                        "id": "core-authentication-mfa",
+                        "name": "cas-server-core-authentication-mfa",
+                        "description": "Apereo CAS Core Authentication"
+                    },
+                    {
+                        "id": "core-authentication-mfa-api",
+                        "name": "cas-server-core-authentication-mfa-api",
+                        "description": "Apereo CAS Core Multifactor Authentication"
+                    },
+                    {
+                        "id": "core-authentication-throttle",
+                        "name": "cas-server-core-authentication-throttle",
+                        "description": "Apereo CAS Core Authentication Throttling"
+                    },
+                    {
+                        "id": "core-configuration",
+                        "name": "cas-server-core-configuration",
+                        "description": "Apereo CAS Central Configuration"
+                    },
+                    {
+                        "id": "core-configuration-api",
+                        "name": "cas-server-core-configuration-api",
+                        "description": "Apereo CAS Core Configuration API"
+                    },
+                    {
+                        "id": "core-configuration-metadata-repository",
+                        "name": "cas-server-core-configuration-metadata-repository",
+                        "description": "Apereo CAS Core Configuration Metadata Repository"
+                    },
+                    {
+                        "id": "core-cookie",
+                        "name": "cas-server-core-cookie",
+                        "description": "Apereo CAS Cookie Management Core"
+                    },
+                    {
+                        "id": "core-cookie-api",
+                        "name": "cas-server-core-cookie-api",
+                        "description": "Apereo CAS Cookie Management Core"
+                    },
+                    {
+                        "id": "core-events",
+                        "name": "cas-server-core-events",
+                        "description": "Apereo CAS Core Events"
+                    },
+                    {
+                        "id": "core-events-api",
+                        "name": "cas-server-core-events-api",
+                        "description": "Apereo CAS Core Events API"
+                    },
+                    {
+                        "id": "core-events-configuration",
+                        "name": "cas-server-core-events-configuration",
+                        "description": "Apereo CAS Core Events - Configuration Events"
+                    },
+                    {
+                        "id": "core-events-configuration-cloud-bus",
+                        "name": "cas-server-core-events-configuration-cloud-bus",
+                        "description": "Apereo CAS Core Events - Spring Cloud Configuration Bus Events"
+                    },
+                    {
+                        "id": "core-logging",
+                        "name": "cas-server-core-logging",
+                        "description": "Apereo CAS Core Logging"
+                    },
+                    {
+                        "id": "core-logging-api",
+                        "name": "cas-server-core-logging-api",
+                        "description": "Apereo CAS Core Logging Configuration"
+                    },
+                    {
+                        "id": "core-logout",
+                        "name": "cas-server-core-logout",
+                        "description": "Apereo CAS Core Logout"
+                    },
+                    {
+                        "id": "core-logout-api",
+                        "name": "cas-server-core-logout-api",
+                        "description": "Apereo CAS Core Logout"
+                    },
+                    {
+                        "id": "core-monitor",
+                        "name": "cas-server-core-monitor",
+                        "description": "Apereo CAS Core Monitor Support"
+                    },
+                    {
+                        "id": "core-notifications",
+                        "name": "cas-server-core-notifications",
+                        "description": "Apereo CAS Core Notifications"
+                    },
+                    {
+                        "id": "core-rest",
+                        "name": "cas-server-core-rest",
+                        "description": "Apereo CAS REST API"
+                    },
+                    {
+                        "id": "core-services",
+                        "name": "cas-server-core-services",
+                        "description": "Apereo CAS Core Services"
+                    },
+                    {
+                        "id": "core-services-api",
+                        "name": "cas-server-core-services-api",
+                        "description": "Apereo CAS Core Services API"
+                    },
+                    {
+                        "id": "core-services-authentication",
+                        "name": "cas-server-core-services-authentication",
+                        "description": "Apereo CAS Core Services/Authentication API"
+                    },
+                    {
+                        "id": "core-services-registry",
+                        "name": "cas-server-core-services-registry",
+                        "description": "Apereo CAS Core Services Registry and Manager"
+                    },
+                    {
+                        "id": "core-tickets",
+                        "name": "cas-server-core-tickets",
+                        "description": "Apereo CAS Core Tickets"
+                    },
+                    {
+                        "id": "core-tickets-api",
+                        "name": "cas-server-core-tickets-api",
+                        "description": "Apereo CAS Core Tickets"
+                    },
+                    {
+                        "id": "core-util",
+                        "name": "cas-server-core-util",
+                        "description": "Apereo CAS Core Utilities"
+                    },
+                    {
+                        "id": "core-util-api",
+                        "name": "cas-server-core-util-api",
+                        "description": "Apereo CAS Core Utilities"
+                    },
+                    {
+                        "id": "core-validation",
+                        "name": "cas-server-core-validation",
+                        "description": "Apereo CAS Core Validation"
+                    },
+                    {
+                        "id": "core-validation-api",
+                        "name": "cas-server-core-validation-api",
+                        "description": "Apereo CAS Core Validation APIs"
+                    },
+                    {
+                        "id": "core-web",
+                        "name": "cas-server-core-web",
+                        "description": "Apereo CAS Core Web"
+                    },
+                    {
+                        "id": "core-web-api",
+                        "name": "cas-server-core-web-api",
+                        "description": "Apereo CAS Core Web"
+                    },
+                    {
+                        "id": "core-webflow",
+                        "name": "cas-server-core-webflow",
+                        "description": "Apereo CAS Core Webflow"
+                    },
+                    {
+                        "id": "core-webflow-api",
+                        "name": "cas-server-core-webflow-api",
+                        "description": "Apereo CAS Core Webflow"
+                    },
+                    {
+                        "id": "core-webflow-mfa",
+                        "name": "cas-server-core-webflow-mfa",
+                        "description": "Apereo CAS Core Webflow MFA"
+                    },
+                    {
+                        "id": "core-webflow-mfa-api",
+                        "name": "cas-server-core-webflow-mfa-api",
+                        "description": "Apereo CAS Core Webflow MFA API"
+                    }
+                ]
+            },
+            {
+                "name": "support",
+                "values": [
+                    {
+                        "id": "support-actions-core",
+                        "name": "cas-server-support-actions-core",
+                        "description": "Apereo CAS Actions Core Support",
+                        "versionRange": "6.5.0.RELEASE"
+                    },
+                    {
+                        "id": "support-account-mgmt-core",
+                        "name": "cas-server-support-account-mgmt-core",
+                        "description": "Apereo CAS Account Management Support",
+                        "versionRange": "6.5.0.RELEASE"
+                    },
+                    {
+                        "id": "support-account-mgmt-api",
+                        "name": "cas-server-support-account-mgmt-api",
+                        "description": "Apereo CAS Account Management Support",
+                        "versionRange": "6.5.0.RELEASE"
+                    },
+                    {
+                        "id": "support-account-mgmt",
+                        "name": "cas-server-support-account-mgmt",
+                        "description": "Apereo CAS Account Management Support",
+                        "versionRange": "6.5.0.RELEASE"
+                    },
+                    {
+                        "id": "support-acceptto-mfa",
+                        "name": "cas-server-support-acceptto-mfa",
+                        "description": "Apereo CAS Acceptto MFA Support"
+                    },
+                    {
+                        "id": "acme",
+                        "name": "cas-server-support-acme",
+                        "description": "Apereo CAS ACME Support"
+                    },
+                    {
+                        "id": "support-actions",
+                        "name": "cas-server-support-actions",
+                        "description": "Apereo CAS Web Application Spring Webflow Actions"
+                    },
+                    {
+                        "id": "support-audit-couchbase",
+                        "name": "cas-server-support-audit-couchbase",
+                        "description": "Apereo CAS Couchbase Audit Support"
+                    },
+                    {
+                        "id": "support-audit-couchdb",
+                        "name": "cas-server-support-audit-couchdb",
+                        "description": "Apereo CAS MongoDb Audit Support"
+                    },
+                    {
+                        "id": "support-audit-dynamodb",
+                        "name": "cas-server-support-audit-dynamodb",
+                        "description": "Apereo CAS DynamoDb Audit Log Support"
+                    },
+                    {
+                        "id": "support-audit-jdbc",
+                        "name": "cas-server-support-audit-jdbc",
+                        "description": "Apereo CAS JDBC Audit Support"
+                    },
+                    {
+                        "id": "support-audit-mongo",
+                        "name": "cas-server-support-audit-mongo",
+                        "description": "Apereo CAS MongoDb Audit Support"
+                    },
+                    {
+                        "id": "support-audit-redis",
+                        "name": "cas-server-support-audit-redis",
+                        "description": "Apereo CAS Redis Audit Support"
+                    },
+                    {
+                        "id": "support-audit-rest",
+                        "name": "cas-server-support-audit-rest",
+                        "description": "Apereo CAS REST Audit Support"
+                    },
+                    {
+                        "id": "support-aup-core",
+                        "name": "cas-server-support-aup-core",
+                        "description": "Apereo CAS AUP Support"
+                    },
+                    {
+                        "id": "support-aup-couchbase",
+                        "name": "cas-server-support-aup-couchbase",
+                        "description": "Apereo CAS AUP Couchbase Support"
+                    },
+                    {
+                        "id": "support-aup-couchdb",
+                        "name": "cas-server-support-aup-couchdb",
+                        "description": "Apereo CAS AUP CouchDb Support"
+                    },
+                    {
+                        "id": "support-aup-jdbc",
+                        "name": "cas-server-support-aup-jdbc",
+                        "description": "Apereo CAS AUP JDBC Support"
+                    },
+                    {
+                        "id": "support-aup-ldap",
+                        "name": "cas-server-support-aup-ldap",
+                        "description": "Apereo CAS AUP LDAP Support"
+                    },
+                    {
+                        "id": "support-aup-mongo",
+                        "name": "cas-server-support-aup-mongo",
+                        "description": "Apereo CAS AUP Mongo Support"
+                    },
+                    {
+                        "id": "support-aup-redis",
+                        "name": "cas-server-support-aup-redis",
+                        "description": "Apereo CAS AUP Redis Support"
+                    },
+                    {
+                        "id": "support-aup-rest",
+                        "name": "cas-server-support-aup-rest",
+                        "description": "Apereo CAS AUP REST Support"
+                    },
+                    {
+                        "id": "support-aup-webflow",
+                        "name": "cas-server-support-aup-webflow",
+                        "description": "Apereo CAS AUP Webflow Support"
+                    },
+                    {
+                        "id": "support-authy",
+                        "name": "cas-server-support-authy",
+                        "description": "Apereo CAS Authy Support"
+                    },
+                    {
+                        "id": "support-authy-core",
+                        "name": "cas-server-support-authy-core",
+                        "description": "Apereo CAS Authy Core Support"
+                    },
+                    {
+                        "id": "support-aws",
+                        "name": "cas-server-support-aws",
+                        "description": "Apereo CAS Amazon Web Services Support"
+                    },
+                    {
+                        "id": "support-aws-cognito-authentication",
+                        "name": "cas-server-support-aws-cognito-authentication",
+                        "description": "Apereo CAS Amazon Web Services Cognito Authentication"
+                    },
+                    {
+                        "id": "support-aws-s3-service-registry",
+                        "name": "cas-server-support-aws-s3-service-registry",
+                        "description": "Apereo CAS AWS S3 Service Registry Support"
+                    },
+                    {
+                        "id": "support-azuread-authentication",
+                        "name": "cas-server-support-azuread-authentication",
+                        "description": "Apereo CAS Microsoft Azure Active Directory Authentication"
+                    },
+                    {
+                        "id": "support-basic",
+                        "name": "cas-server-support-basic",
+                        "description": "Apereo CAS Basic Authentication Support"
+                    },
+                    {
+                        "id": "support-bom",
+                        "name": "cas-server-support-bom",
+                        "description": "Apereo CAS ‌‌Bill of Material"
+                    },
+                    {
+                        "id": "support-bootadmin-client",
+                        "name": "cas-server-support-bootadmin-client",
+                        "description": "Apereo CAS Spring Boot Admin Client"
+                    },
+                    {
+                        "id": "support-captcha",
+                        "name": "cas-server-support-captcha",
+                        "description": "Apereo CAS Captcha Support"
+                    },
+                    {
+                        "id": "support-captcha-core",
+                        "name": "cas-server-support-captcha-core",
+                        "description": "Apereo CAS Captcha Support"
+                    },
+                    {
+                        "id": "support-cassandra-authentication",
+                        "name": "cas-server-support-cassandra-authentication",
+                        "description": "Apereo CAS Apache Cassandra Authentication Support"
+                    },
+                    {
+                        "id": "support-cassandra-core",
+                        "name": "cas-server-support-cassandra-core",
+                        "description": "Apereo CAS Apache Cassandra Core Support"
+                    },
+                    {
+                        "id": "support-cassandra-service-registry",
+                        "name": "cas-server-support-cassandra-service-registry",
+                        "description": "Apereo CAS Cassandra Service Registry"
+                    },
+                    {
+                        "id": "support-cassandra-ticket-registry",
+                        "name": "cas-server-support-cassandra-ticket-registry",
+                        "description": "Apereo CAS Cassandra Ticket Registry"
+                    },
+                    {
+                        "id": "support-cloud-directory-authentication",
+                        "name": "cas-server-support-cloud-directory-authentication",
+                        "description": "Apereo CAS Amazon Cloud Directory Authentication Support"
+                    },
+                    {
+                        "id": "support-configuration-cloud-kubernetes",
+                        "name": "cas-server-support-configuration-cloud-kubernetes",
+                        "description": "Apereo CAS Configuration - Cloud Kubernetes",
+                        "versionRange": "6.5.0.RELEASE"
+                    },
+                    {
+                        "id": "support-configuration-cloud-amqp",
+                        "name": "cas-server-support-configuration-cloud-amqp",
+                        "description": "Apereo CAS Configuration - Cloud Bus AMQP"
+                    },
+                    {
+                        "id": "support-configuration-cloud-aws-s3",
+                        "name": "cas-server-support-configuration-cloud-aws-s3",
+                        "description": "Apereo CAS Configuration - AWS S3 Objects"
+                    },
+                    {
+                        "id": "support-configuration-cloud-aws-secretsmanager",
+                        "name": "cas-server-support-configuration-cloud-aws-secretsmanager",
+                        "description": "Apereo CAS Configuration - AWS Secrets Manager"
+                    },
+                    {
+                        "id": "support-configuration-cloud-aws-ssm",
+                        "name": "cas-server-support-configuration-cloud-aws-ssm",
+                        "description": "Apereo CAS Configuration - AWS Parameter Store"
+                    },
+                    {
+                        "id": "support-configuration-cloud-azure-keyvault",
+                        "name": "cas-server-support-configuration-cloud-azure-keyvault",
+                        "description": "Apereo CAS Configuration - Microsoft Azure KeyVault"
+                    },
+                    {
+                        "id": "support-configuration-cloud-dynamodb",
+                        "name": "cas-server-support-configuration-cloud-dynamodb",
+                        "description": "Apereo CAS Configuration - DynamoDb"
+                    },
+                    {
+                        "id": "support-configuration-cloud-jdbc",
+                        "name": "cas-server-support-configuration-cloud-jdbc",
+                        "description": "Apereo CAS Configuration - JDBC"
+                    },
+                    {
+                        "id": "support-configuration-cloud-kafka",
+                        "name": "cas-server-support-configuration-cloud-kafka",
+                        "description": "Apereo CAS Configuration - Cloud Bus Kafka"
+                    },
+                    {
+                        "id": "support-configuration-cloud-mongo",
+                        "name": "cas-server-support-configuration-cloud-mongo",
+                        "description": "Apereo CAS Configuration - MongoDb"
+                    },
+                    {
+                        "id": "support-configuration-cloud-rest",
+                        "name": "cas-server-support-configuration-cloud-rest",
+                        "description": "Apereo CAS Configuration - REST Support"
+                    },
+                    {
+                        "id": "support-configuration-cloud-vault",
+                        "name": "cas-server-support-configuration-cloud-vault",
+                        "description": "Apereo CAS Configuration - HashiCorp Vault"
+                    },
+                    {
+                        "id": "support-configuration-cloud-zookeeper",
+                        "name": "cas-server-support-configuration-cloud-zookeeper",
+                        "description": "Apereo CAS Configuration - Apache Zookeeper"
+                    },
+                    {
+                        "id": "support-consent-api",
+                        "name": "cas-server-support-consent-api",
+                        "description": "Apereo CAS Consent API"
+                    },
+                    {
+                        "id": "support-consent-core",
+                        "name": "cas-server-support-consent-core",
+                        "description": "Apereo CAS Consent Core"
+                    },
+                    {
+                        "id": "support-consent-dynamodb",
+                        "name": "cas-server-support-consent-dynamodb",
+                        "description": "Apereo CAS Consent Support via DynamoDb",
+                        "versionRange": "6.5.0.RELEASE"
+                    },
+                    {
+                        "id": "support-consent-couchdb",
+                        "name": "cas-server-support-consent-couchdb",
+                        "description": "Apereo CAS Consent Support via CouchDb"
+                    },
+                    {
+                        "id": "support-consent-jdbc",
+                        "name": "cas-server-support-consent-jdbc",
+                        "description": "Apereo CAS Consent JDBC Support"
+                    },
+                    {
+                        "id": "support-consent-ldap",
+                        "name": "cas-server-support-consent-ldap",
+                        "description": "Apereo CAS Consent LDAP Support"
+                    },
+                    {
+                        "id": "support-consent-mongo",
+                        "name": "cas-server-support-consent-mongo",
+                        "description": "Apereo CAS Consent Support via MongoDb"
+                    },
+                    {
+                        "id": "support-consent-redis",
+                        "name": "cas-server-support-consent-redis",
+                        "description": "Apereo CAS Consent Support via Redis"
+                    },
+                    {
+                        "id": "support-consent-rest",
+                        "name": "cas-server-support-consent-rest",
+                        "description": "Apereo CAS Consent REST Support"
+                    },
+                    {
+                        "id": "support-consent-webflow",
+                        "name": "cas-server-support-consent-webflow",
+                        "description": "Apereo CAS Consent Webflow"
+                    },
+                    {
+                        "id": "support-consul-client",
+                        "name": "cas-server-support-consul-client",
+                        "description": "Apereo CAS Spring Cloud Consul Client"
+                    },
+                    {
+                        "id": "support-cosmosdb-core",
+                        "name": "cas-server-support-cosmosdb-core",
+                        "description": "Apereo CAS Cosmos DB Support Core"
+                    },
+                    {
+                        "id": "support-cosmosdb-service-registry",
+                        "name": "cas-server-support-cosmosdb-service-registry",
+                        "description": "Apereo CAS Azure Cosmos DB Service Registry"
+                    },
+                    {
+                        "id": "support-couchbase-authentication",
+                        "name": "cas-server-support-couchbase-authentication",
+                        "description": "Apereo CAS Couchbase Authentication Support"
+                    },
+                    {
+                        "id": "support-couchbase-core",
+                        "name": "cas-server-support-couchbase-core",
+                        "description": "Apereo CAS Couchbase Support Core"
+                    },
+                    {
+                        "id": "support-couchbase-service-registry",
+                        "name": "cas-server-support-couchbase-service-registry",
+                        "description": "Apereo CAS Couchbase Service Registry"
+                    },
+                    {
+                        "id": "support-couchbase-ticket-registry",
+                        "name": "cas-server-support-couchbase-ticket-registry",
+                        "description": "Apereo CAS Couchbase Ticket Registry"
+                    },
+                    {
+                        "id": "support-couchdb-authentication",
+                        "name": "cas-server-support-couchdb-authentication",
+                        "description": "Apereo CAS CouchDb Authentication Support"
+                    },
+                    {
+                        "id": "support-couchdb-core",
+                        "name": "cas-server-support-couchdb-core",
+                        "description": "Apereo CAS CouchDB Support Core"
+                    },
+                    {
+                        "id": "support-couchdb-service-registry",
+                        "name": "cas-server-support-couchdb-service-registry",
+                        "description": "Apereo CAS CouchDB Service Registry"
+                    },
+                    {
+                        "id": "support-couchdb-ticket-registry",
+                        "name": "cas-server-support-couchdb-ticket-registry",
+                        "description": "Apereo CAS CouchDB Ticket Registry"
+                    },
+                    {
+                        "id": "support-digest-authentication",
+                        "name": "cas-server-support-digest-authentication",
+                        "description": "Apereo CAS Digest Authentication Support"
+                    },
+                    {
+                        "id": "support-discovery-profile",
+                        "name": "cas-server-support-discovery-profile",
+                        "description": "Apereo CAS Discovery Support"
+                    },
+                    {
+                        "id": "support-duo",
+                        "name": "cas-server-support-duo",
+                        "description": "Apereo CAS DuoSecurity Support"
+                    },
+                    {
+                        "id": "support-duo-core",
+                        "name": "cas-server-support-duo-core",
+                        "description": "Apereo CAS DuoSecurity Support"
+                    },
+                    {
+                        "id": "support-duo-core-mfa",
+                        "name": "cas-server-support-duo-core-mfa",
+                        "description": "Apereo CAS Duo Security Core MFA"
+                    },
+                    {
+                        "id": "support-dynamodb-core",
+                        "name": "cas-server-support-dynamodb-core",
+                        "description": "Apereo CAS DynamoDb Support"
+                    },
+                    {
+                        "id": "support-dynamodb-service-registry",
+                        "name": "cas-server-support-dynamodb-service-registry",
+                        "description": "Apereo CAS DynamoDb Service Registry"
+                    },
+                    {
+                        "id": "support-dynamodb-ticket-registry",
+                        "name": "cas-server-support-dynamodb-ticket-registry",
+                        "description": "Apereo CAS DynamoDb Ticket Registry"
+                    },
+                    {
+                        "id": "support-ehcache-monitor",
+                        "name": "cas-server-support-ehcache-monitor",
+                        "description": "Apereo CAS Ehcache Integration Monitor"
+                    },
+                    {
+                        "id": "support-ehcache-ticket-registry",
+                        "name": "cas-server-support-ehcache-ticket-registry",
+                        "description": "Apereo CAS Ehcache Integration"
+                    },
+                    {
+                        "id": "support-ehcache3-ticket-registry",
+                        "name": "cas-server-support-ehcache3-ticket-registry",
+                        "description": "Apereo CAS Ehcache3 Integration"
+                    },
+                    {
+                        "id": "support-electrofence",
+                        "name": "cas-server-support-electrofence",
+                        "description": "Apereo CAS Risk-based Authentication Support"
+                    },
+                    {
+                        "id": "support-eureka-client",
+                        "name": "cas-server-support-eureka-client",
+                        "description": "Apereo CAS Spring Cloud Eureka Client"
+                    },
+                    {
+                        "id": "support-events-redis",
+                        "name": "cas-server-support-events-redis",
+                        "description": "Apereo CAS Events Consumer Redis",
+                        "versionRange": "6.5.0.RELEASE"
+                    },
+                    {
+                        "id": "support-events-couchdb",
+                        "name": "cas-server-support-events-couchdb",
+                        "description": "Apereo CAS Events Consumer CouchDb"
+                    },
+                    {
+                        "id": "support-events-dynamodb",
+                        "name": "cas-server-support-events-dynamodb",
+                        "description": "Apereo CAS DynamoDb Events"
+                    },
+                    {
+                        "id": "support-events-influxdb",
+                        "name": "cas-server-support-events-influxdb",
+                        "description": "Apereo CAS Event InfluxDb Repository"
+                    },
+                    {
+                        "id": "support-events-jpa",
+                        "name": "cas-server-support-events-jpa",
+                        "description": "Apereo CAS Events Consumer JPA"
+                    },
+                    {
+                        "id": "support-events-memory",
+                        "name": "cas-server-support-events-memory",
+                        "description": "Apereo CAS Event Memory Repository"
+                    },
+                    {
+                        "id": "support-events-mongo",
+                        "name": "cas-server-support-events-mongo",
+                        "description": "Apereo CAS Events Consumer MongoDb"
+                    },
+                    {
+                        "id": "support-fortress",
+                        "name": "cas-server-support-fortress",
+                        "description": "Apereo CAS Fortress Support"
+                    },
+                    {
+                        "id": "support-gauth",
+                        "name": "cas-server-support-gauth",
+                        "description": "Apereo CAS Google Authenticator Support"
+                    },
+                    {
+                        "id": "support-gauth-core",
+                        "name": "cas-server-support-gauth-core",
+                        "description": "Apereo CAS Core Google Authenticator Support"
+                    },
+                    {
+                        "id": "support-gauth-core-mfa",
+                        "name": "cas-server-support-gauth-core-mfa",
+                        "description": "Apereo CAS Core Google Authenticator Support"
+                    },
+                    {
+                        "id": "support-gauth-couchdb",
+                        "name": "cas-server-support-gauth-couchdb",
+                        "description": "Apereo CAS Google Authenticator CouchDb"
+                    },
+                    {
+                        "id": "support-gauth-jpa",
+                        "name": "cas-server-support-gauth-jpa",
+                        "description": "Apereo CAS Google Authenticator JPA"
+                    },
+                    {
+                        "id": "support-gauth-ldap",
+                        "name": "cas-server-support-gauth-ldap",
+                        "description": "Apereo CAS Google Authenticator LDAP"
+                    },
+                    {
+                        "id": "support-gauth-dynamodb",
+                        "name": "cas-server-support-gauth-dynamodb",
+                        "description": "Apereo CAS Google Authenticator DynamoDb",
+                        "versionRange": "6.5.0.RELEASE"
+                    },
+                    {
+                        "id": "support-gauth-mongo",
+                        "name": "cas-server-support-gauth-mongo",
+                        "description": "Apereo CAS Google Authenticator Mongo"
+                    },
+                    {
+                        "id": "support-gauth-redis",
+                        "name": "cas-server-support-gauth-redis",
+                        "description": "Apereo CAS Google Authenticator Redis"
+                    },
+                    {
+                        "id": "support-generic",
+                        "name": "cas-server-support-generic",
+                        "description": "Apereo CAS Generic Support"
+                    },
+                    {
+                        "id": "support-generic-remote-webflow",
+                        "name": "cas-server-support-generic-remote-webflow",
+                        "description": "Apereo CAS Remote Address Authentication Webflow Support"
+                    },
+                    {
+                        "id": "support-geolocation",
+                        "name": "cas-server-support-geolocation",
+                        "description": "Apereo CAS GeoLocation Tracking Support"
+                    },
+                    {
+                        "id": "support-geolocation-googlemaps",
+                        "name": "cas-server-support-geolocation-googlemaps",
+                        "description": "Apereo CAS GeoLocation Tracking Support"
+                    },
+                    {
+                        "id": "support-geolocation-maxmind",
+                        "name": "cas-server-support-geolocation-maxmind",
+                        "description": "Apereo CAS GeoLocation Tracking Maxmind Support"
+                    },
+                    {
+                        "id": "support-git-core",
+                        "name": "cas-server-support-git-core",
+                        "description": "Apereo CAS Git Service Registry Implementation"
+                    },
+                    {
+                        "id": "support-git-service-registry",
+                        "name": "cas-server-support-git-service-registry",
+                        "description": "Apereo CAS Git Service Registry Implementation"
+                    },
+                    {
+                        "id": "support-google-analytics",
+                        "name": "cas-server-support-google-analytics",
+                        "description": "Apereo CAS Support for Google Analytics"
+                    },
+                    {
+                        "id": "support-grouper",
+                        "name": "cas-server-support-grouper",
+                        "description": "Apereo CAS Internet2 Grouper Integration"
+                    },
+                    {
+                        "id": "support-grouper-core",
+                        "name": "cas-server-support-grouper-core",
+                        "description": "Apereo CAS Internet2 Grouper Integration"
+                    },
+                    {
+                        "id": "support-gua",
+                        "name": "cas-server-support-gua",
+                        "description": "Apereo CAS Graphical User Authentication Support"
+                    },
+                    {
+                        "id": "support-hazelcast",
+                        "name": "cas-server-support-hazelcast",
+                        "description": "Apereo CAS Hazelcast Core Support Config"
+                    },
+                    {
+                        "id": "support-hazelcast-core",
+                        "name": "cas-server-support-hazelcast-core",
+                        "description": "Apereo CAS Hazelcast Core Support"
+                    },
+                    {
+                        "id": "support-hazelcast-discovery-gcp",
+                        "name": "cas-server-support-hazelcast-discovery-gcp",
+                        "description": "Apereo CAS Hazelcast Discovery Google Cloud Platform Support",
+                        "versionRange": "6.5.0.RELEASE"
+                    },
+                    {
+                        "id": "support-hazelcast-discovery-aws",
+                        "name": "cas-server-support-hazelcast-discovery-aws",
+                        "description": "Apereo CAS Hazelcast Discovery AWS Support"
+                    },
+                    {
+                        "id": "support-hazelcast-discovery-azure",
+                        "name": "cas-server-support-hazelcast-discovery-azure",
+                        "description": "Apereo CAS Hazelcast Discovery Azure Support"
+                    },
+                    {
+                        "id": "support-hazelcast-discovery-zookeeper",
+                        "name": "cas-server-support-hazelcast-discovery-zookeeper",
+                        "description": "Apereo CAS Hazelcast Discovery with Apache Zookeeper Support",
+                        "versionRange": "6.5.0.RELEASE"
+                    },
+                    {
+                        "id": "support-hazelcast-discovery-jclouds",
+                        "name": "cas-server-support-hazelcast-discovery-jclouds",
+                        "description": "Apereo CAS Hazelcast Discovery JClouds Support"
+                    },
+                    {
+                        "id": "support-hazelcast-discovery-kubernetes",
+                        "name": "cas-server-support-hazelcast-discovery-kubernetes",
+                        "description": "Apereo CAS Hazelcast Discovery Kubernetes Support"
+                    },
+                    {
+                        "id": "support-hazelcast-discovery-swarm",
+                        "name": "cas-server-support-hazelcast-discovery-swarm",
+                        "description": "Apereo CAS Hazelcast Discovery Docker Swarm Support"
+                    },
+                    {
+                        "id": "support-hazelcast-monitor",
+                        "name": "cas-server-support-hazelcast-monitor",
+                        "description": "Apereo CAS Hazelcast Monitoring Support"
+                    },
+                    {
+                        "id": "support-hazelcast-ticket-registry",
+                        "name": "cas-server-support-hazelcast-ticket-registry",
+                        "description": "Apereo CAS Hazelcast Integration"
+                    },
+                    {
+                        "id": "support-ignite-ticket-registry",
+                        "name": "cas-server-support-ignite-ticket-registry",
+                        "description": "Apereo CAS Ignite Integration"
+                    },
+                    {
+                        "id": "support-infinispan-ticket-registry",
+                        "name": "cas-server-support-infinispan-ticket-registry",
+                        "description": "Apereo CAS Infinispan Integration"
+                    },
+                    {
+                        "id": "support-influxdb-core",
+                        "name": "cas-server-support-influxdb-core",
+                        "description": "Apereo CAS InfluxDb Core"
+                    },
+                    {
+                        "id": "support-interrupt-api",
+                        "name": "cas-server-support-interrupt-api",
+                        "description": "Apereo CAS Notification/Interrupt API"
+                    },
+                    {
+                        "id": "support-interrupt-core",
+                        "name": "cas-server-support-interrupt-core",
+                        "description": "Apereo CAS Notification/Interrupt Core Implementations"
+                    },
+                    {
+                        "id": "support-interrupt-webflow",
+                        "name": "cas-server-support-interrupt-webflow",
+                        "description": "Apereo CAS Notification/Interrupt Webflow"
+                    },
+                    {
+                        "id": "support-javamelody",
+                        "name": "cas-server-support-javamelody",
+                        "description": "Apereo CAS JavaMelody Support"
+                    },
+                    {
+                        "id": "support-jdbc",
+                        "name": "cas-server-support-jdbc",
+                        "description": "Apereo CAS JDBC Support"
+                    },
+                    {
+                        "id": "support-jdbc-authentication",
+                        "name": "cas-server-support-jdbc-authentication",
+                        "description": "Apereo CAS JDBC Support"
+                    },
+                    {
+                        "id": "support-jdbc-drivers",
+                        "name": "cas-server-support-jdbc-drivers",
+                        "description": "Apereo CAS JDBC Driver Support"
+                    },
+                    {
+                        "id": "support-jdbc-monitor",
+                        "name": "cas-server-support-jdbc-monitor",
+                        "description": "Apereo CAS JDBC Monitor Support"
+                    },
+                    {
+                        "id": "support-jms-ticket-registry",
+                        "name": "cas-server-support-jms-ticket-registry",
+                        "description": "Apereo CAS JMS Ticket Registry"
+                    },
+                    {
+                        "id": "support-jmx",
+                        "name": "cas-server-support-jmx",
+                        "description": "Apereo CAS JMX Support"
+                    },
+                    {
+                        "id": "support-jpa-eclipselink",
+                        "name": "cas-server-support-jpa-eclipselink",
+                        "description": "Apereo CAS JPA EclipseLink Support"
+                    },
+                    {
+                        "id": "support-jpa-hibernate",
+                        "name": "cas-server-support-jpa-hibernate",
+                        "description": "Apereo CAS JPA Hibernate Support"
+                    },
+                    {
+                        "id": "support-jpa-service-registry",
+                        "name": "cas-server-support-jpa-service-registry",
+                        "description": "Apereo CAS JPA Service Registry Support"
+                    },
+                    {
+                        "id": "support-jpa-ticket-registry",
+                        "name": "cas-server-support-jpa-ticket-registry",
+                        "description": "Apereo CAS JPA Ticket Registry Support"
+                    },
+                    {
+                        "id": "support-jpa-util",
+                        "name": "cas-server-support-jpa-util",
+                        "description": "Apereo CAS JPA Utilities and Support"
+                    },
+                    {
+                        "id": "support-json-service-registry",
+                        "name": "cas-server-support-json-service-registry",
+                        "description": "Apereo CAS JSON Service Registry"
+                    },
+                    {
+                        "id": "support-kafka-core",
+                        "name": "cas-server-support-kafka-core",
+                        "description": "Apereo CAS Support with Kafka"
+                    },
+                    {
+                        "id": "support-ldap",
+                        "name": "cas-server-support-ldap",
+                        "description": "Apereo CAS LDAP Support"
+                    },
+                    {
+                        "id": "support-ldap-core",
+                        "name": "cas-server-support-ldap-core",
+                        "description": "Apereo CAS LDAP Core Support"
+                    },
+                    {
+                        "id": "support-ldap-monitor",
+                        "name": "cas-server-support-ldap-monitor",
+                        "description": "Apereo CAS LDAP Monitor Support"
+                    },
+                    {
+                        "id": "support-ldap-service-registry",
+                        "name": "cas-server-support-ldap-service-registry",
+                        "description": "Apereo CAS LDAP Service Registry Support"
+                    },
+                    {
+                        "id": "support-logback",
+                        "name": "cas-server-support-logback",
+                        "description": "Apereo CAS Core Logging Support for Logback"
+                    },
+                    {
+                        "id": "support-logging-config-cloudwatch",
+                        "name": "cas-server-support-logging-config-cloudwatch",
+                        "description": "Apereo CAS Core Logging AWS CloudWatch"
+                    },
+                    {
+                        "id": "support-logging-config-sqs",
+                        "name": "cas-server-support-logging-config-sqs",
+                        "description": "Apereo CAS Core Logging AWS SQS"
+                    },
+                    {
+                        "id": "support-logging-config-splunk",
+                        "name": "cas-server-support-logging-config-splunk",
+                        "description": "Apereo CAS Core Logging Splunk Support"
+                    },
+                    {
+                        "id": "support-memcached-aws-elasticache",
+                        "name": "cas-server-support-memcached-aws-elasticache",
+                        "description": "Apereo CAS Memcached Support via AWS Elasticache"
+                    },
+                    {
+                        "id": "support-memcached-core",
+                        "name": "cas-server-support-memcached-core",
+                        "description": "Apereo CAS Memcached Monitor Core"
+                    },
+                    {
+                        "id": "support-memcached-monitor",
+                        "name": "cas-server-support-memcached-monitor",
+                        "description": "Apereo CAS Memcached Monitor Integration"
+                    },
+                    {
+                        "id": "support-memcached-spy",
+                        "name": "cas-server-support-memcached-spy",
+                        "description": "Apereo CAS Memcached Support via Memcached"
+                    },
+                    {
+                        "id": "support-memcached-ticket-registry",
+                        "name": "cas-server-support-memcached-ticket-registry",
+                        "description": "Apereo CAS Memcached Integration"
+                    },
+                    {
+                        "id": "support-metrics",
+                        "name": "cas-server-support-metrics",
+                        "description": "Apereo CAS Metrics Support"
+                    },
+                    {
+                        "id": "support-mongo",
+                        "name": "cas-server-support-mongo",
+                        "description": "Apereo CAS Mongo Authentication Support"
+                    },
+                    {
+                        "id": "support-mongo-core",
+                        "name": "cas-server-support-mongo-core",
+                        "description": "Apereo CAS MongoDb Core Support"
+                    },
+                    {
+                        "id": "support-mongo-monitor",
+                        "name": "cas-server-support-mongo-monitor",
+                        "description": "Apereo CAS MongoDB Monitoring"
+                    },
+                    {
+                        "id": "support-mongo-service-registry",
+                        "name": "cas-server-support-mongo-service-registry",
+                        "description": "Apereo CAS Mongo Integration"
+                    },
+                    {
+                        "id": "support-mongo-ticket-registry",
+                        "name": "cas-server-support-mongo-ticket-registry",
+                        "description": "Apereo CAS MongoDB Ticket Registry"
+                    },
+                    {
+                        "id": "support-notifications-fcm",
+                        "name": "cas-server-support-notifications-fcm",
+                        "description": "Apereo CAS Server FCM Notifications Support"
+                    },
+                    {
+                        "id": "support-oauth",
+                        "name": "cas-server-support-oauth",
+                        "description": "Apereo CAS Server OAuth Provider Support"
+                    },
+                    {
+                        "id": "support-oauth-api",
+                        "name": "cas-server-support-oauth-api",
+                        "description": "Apereo CAS OAuth Server API Support"
+                    },
+                    {
+                        "id": "support-oauth-core",
+                        "name": "cas-server-support-oauth-core",
+                        "description": "Apereo CAS OAuth Server Support"
+                    },
+                    {
+                        "id": "support-oauth-core-api",
+                        "name": "cas-server-support-oauth-core-api",
+                        "description": "Apereo CAS Server OAuth Provider Core APIs"
+                    },
+                    {
+                        "id": "support-oauth-services",
+                        "name": "cas-server-support-oauth-services",
+                        "description": "Apereo CAS OAuth Server Services Support"
+                    },
+                    {
+                        "id": "support-oauth-uma",
+                        "name": "cas-server-support-oauth-uma",
+                        "description": "Apereo CAS OAuth UMA Server Core Support"
+                    },
+                    {
+                        "id": "support-oauth-uma-core",
+                        "name": "cas-server-support-oauth-uma-core",
+                        "description": "Apereo CAS OAuth UMA Server Support"
+                    },
+                    {
+                        "id": "support-oauth-uma-jpa",
+                        "name": "cas-server-support-oauth-uma-jpa",
+                        "description": "Apereo CAS OAuth UMA Server Support"
+                    },
+                    {
+                        "id": "support-oauth-webflow",
+                        "name": "cas-server-support-oauth-webflow",
+                        "description": "Apereo CAS OAuth Webflow Support"
+                    },
+                    {
+                        "id": "support-oidc",
+                        "name": "cas-server-support-oidc",
+                        "description": "Apereo CAS Server OpenID Connect Support"
+                    },
+                    {
+                        "id": "support-oidc-core",
+                        "name": "cas-server-support-oidc-core",
+                        "description": "Apereo CAS Server OpenID Connect Core"
+                    },
+                    {
+                        "id": "support-oidc-core-api",
+                        "name": "cas-server-support-oidc-core-api",
+                        "description": "Apereo CAS Server OpenID Connect Support"
+                    },
+                    {
+                        "id": "support-oidc-services",
+                        "name": "cas-server-support-oidc-services",
+                        "description": "Apereo CAS Server OpenID Connect Support Services"
+                    },
+                    {
+                        "id": "support-okta-authentication",
+                        "name": "cas-server-support-okta-authentication",
+                        "description": "Apereo CAS Okta Authentication"
+                    },
+                    {
+                        "id": "support-openid",
+                        "name": "cas-server-support-openid",
+                        "description": "Apereo CAS OpenId Server Support"
+                    },
+                    {
+                        "id": "support-openid-webflow",
+                        "name": "cas-server-support-openid-webflow",
+                        "description": "Apereo CAS OpenID Webflow Support"
+                    },
+                    {
+                        "id": "support-otp-mfa",
+                        "name": "cas-server-support-otp-mfa",
+                        "description": "Apereo CAS Multifactor Authentication OTP Support"
+                    },
+                    {
+                        "id": "support-otp-mfa-core",
+                        "name": "cas-server-support-otp-mfa-core",
+                        "description": "Apereo CAS Multifactor Authentication OTP Support"
+                    },
+                    {
+                        "id": "support-pac4j",
+                        "name": "cas-server-support-pac4j",
+                        "description": "Apereo CAS Delegated Authentication Support Using Pac4J"
+                    },
+                    {
+                        "id": "support-pac4j-api",
+                        "name": "cas-server-support-pac4j-api",
+                        "description": "Apereo CAS Support for Pac4j APIs"
+                    },
+                    {
+                        "id": "support-pac4j-authentication",
+                        "name": "cas-server-support-pac4j-authentication",
+                        "description": "Apereo CAS Authentication handler wrapping pac4j"
+                    },
+                    {
+                        "id": "support-pac4j-core",
+                        "name": "cas-server-support-pac4j-core",
+                        "description": "Apereo CAS Support for Pac4j"
+                    },
+                    {
+                        "id": "support-pac4j-core-clients",
+                        "name": "cas-server-support-pac4j-core-clients",
+                        "description": "Apereo CAS Delegated Authentication Support Using Pac4J"
+                    },
+                    {
+                        "id": "support-pac4j-webflow",
+                        "name": "cas-server-support-pac4j-webflow",
+                        "description": "Apereo CAS Pac4j Webflow Support"
+                    },
+                    {
+                        "id": "support-passwordless",
+                        "name": "cas-server-support-passwordless",
+                        "description": "Apereo CAS Passwordless Authentication Support"
+                    },
+                    {
+                        "id": "support-passwordless-jpa",
+                        "name": "cas-server-support-passwordless-jpa",
+                        "description": "Apereo CAS Passwordless Authentication JPA Support"
+                    },
+                    {
+                        "id": "support-passwordless-ldap",
+                        "name": "cas-server-support-passwordless-ldap",
+                        "description": "Apereo CAS Passwordless Authentication LDAP Support"
+                    },
+                    {
+                        "id": "support-passwordless-mongo",
+                        "name": "cas-server-support-passwordless-mongo",
+                        "description": "Apereo CAS Passwordless Authentication MongoDb Support"
+                    },
+                    {
+                        "id": "support-passwordless-webflow",
+                        "name": "cas-server-support-passwordless-webflow",
+                        "description": "Apereo CAS Passwordless Authentication Webflow Support"
+                    },
+                    {
+                        "id": "support-person-directory-core",
+                        "name": "cas-server-support-person-directory-core",
+                        "description": "Apereo CAS Person Directory & Attribute Resolution Support",
+                        "versionRange": "6.5.0.RELEASE"
+                    },
+                    {
+                        "id": "support-person-directory",
+                        "name": "cas-server-support-person-directory",
+                        "description": "Apereo CAS Person Directory & Attribute Resolution Support"
+                    },
+                    {
+                        "id": "support-pm",
+                        "name": "cas-server-support-pm",
+                        "description": "Apereo CAS Password Management - Core Configuration"
+                    },
+                    {
+                        "id": "support-pm-core",
+                        "name": "cas-server-support-pm-core",
+                        "description": "Apereo CAS Password Management - Core"
+                    },
+                    {
+                        "id": "support-pm-jdbc",
+                        "name": "cas-server-support-pm-jdbc",
+                        "description": "Apereo CAS Password Management JDBC Support"
+                    },
+                    {
+                        "id": "support-pm-ldap",
+                        "name": "cas-server-support-pm-ldap",
+                        "description": "Apereo CAS Password Management LDAP Support"
+                    },
+                    {
+                        "id": "support-pm-rest",
+                        "name": "cas-server-support-pm-rest",
+                        "description": "Apereo CAS Password Management LDAP Support"
+                    },
+                    {
+                        "id": "support-pm-webflow",
+                        "name": "cas-server-support-pm-webflow",
+                        "description": "Apereo CAS Password Management - Core"
+                    },
+                    {
+                        "id": "support-radius",
+                        "name": "cas-server-support-radius",
+                        "description": "Apereo CAS RADIUS Support"
+                    },
+                    {
+                        "id": "support-radius-core",
+                        "name": "cas-server-support-radius-core",
+                        "description": "Apereo CAS RADIUS Support"
+                    },
+                    {
+                        "id": "support-radius-core-mfa",
+                        "name": "cas-server-support-radius-core-mfa",
+                        "description": "Apereo CAS RADIUS RSA MFA Support"
+                    },
+                    {
+                        "id": "support-radius-mfa",
+                        "name": "cas-server-support-radius-mfa",
+                        "description": "Apereo CAS RADIUS RSA MFA Support"
+                    },
+                    {
+                        "id": "support-inwebo-mfa",
+                        "name": "cas-server-support-inwebo-mfa",
+                        "description": "Apereo CAS Inweb MFA Support"
+                    },
+                    {
+                        "id": "support-redis-authentication",
+                        "name": "cas-server-support-redis-authentication",
+                        "description": "Apereo CAS Redis Authentication"
+                    },
+                    {
+                        "id": "support-redis-core",
+                        "name": "cas-server-support-redis-core",
+                        "description": "Apereo CAS Redis Core Support"
+                    },
+                    {
+                        "id": "support-redis-service-registry",
+                        "name": "cas-server-support-redis-service-registry",
+                        "description": "Apereo CAS Redis Service Registry Support"
+                    },
+                    {
+                        "id": "support-redis-ticket-registry",
+                        "name": "cas-server-support-redis-ticket-registry",
+                        "description": "Apereo CAS Redis Ticket Registry"
+                    },
+                    {
+                        "id": "support-reports",
+                        "name": "cas-server-support-reports",
+                        "description": "Apereo CAS Web Application Reports"
+                    },
+                    {
+                        "id": "support-reports-core",
+                        "name": "cas-server-support-reports-core",
+                        "description": "Apereo CAS Web Application Reports"
+                    },
+                    {
+                        "id": "support-rest",
+                        "name": "cas-server-support-rest",
+                        "description": "Apereo CAS REST Implementation"
+                    },
+                    {
+                        "id": "support-rest-authentication",
+                        "name": "cas-server-support-rest-authentication",
+                        "description": "Apereo CAS Rest Authentication Support"
+                    },
+                    {
+                        "id": "support-rest-core",
+                        "name": "cas-server-support-rest-core",
+                        "description": "Apereo CAS REST Implementation"
+                    },
+                    {
+                        "id": "support-rest-service-registry",
+                        "name": "cas-server-support-rest-service-registry",
+                        "description": "Apereo CAS RESTful Service Registry"
+                    },
+                    {
+                        "id": "support-rest-services",
+                        "name": "cas-server-support-rest-services",
+                        "description": "Apereo CAS Services REST Implementation"
+                    },
+                    {
+                        "id": "support-rest-tokens",
+                        "name": "cas-server-support-rest-tokens",
+                        "description": "Apereo CAS REST JWT Tickets Implementation"
+                    },
+                    {
+                        "id": "support-rest-x509",
+                        "name": "cas-server-support-rest-x509",
+                        "description": "Apereo CAS X509 REST Implementation"
+                    },
+                    {
+                        "id": "support-saml",
+                        "name": "cas-server-support-saml",
+                        "description": "Apereo CAS SAML Server and Validation Support"
+                    },
+                    {
+                        "id": "support-saml-core",
+                        "name": "cas-server-support-saml-core",
+                        "description": "Apereo CAS SAML Core/Common Functionality"
+                    },
+                    {
+                        "id": "support-saml-core-api",
+                        "name": "cas-server-support-saml-core-api",
+                        "description": "Apereo CAS SAML Core Functionality"
+                    },
+                    {
+                        "id": "support-saml-googleapps",
+                        "name": "cas-server-support-saml-googleapps",
+                        "description": "Apereo CAS SAML Server Google Apps SAML Support",
+                        "versionRange": "[6.3.0.RELEASE,7.0.0.RELEASE)"
+                    },
+                    {
+                        "id": "support-saml-googleapps-core",
+                        "name": "cas-server-support-saml-googleapps-core",
+                        "description": "Apereo CAS SAML Server Google Apps SAML Core Support",
+                        "versionRange": "[6.3.0.RELEASE,7.0.0.RELEASE)"
+                    },
+                    {
+                        "id": "support-saml-idp",
+                        "name": "cas-server-support-saml-idp",
+                        "description": "Apereo CAS SAML Identity Provider Support"
+                    },
+                    {
+                        "id": "support-saml-idp-core",
+                        "name": "cas-server-support-saml-idp-core",
+                        "description": "Apereo CAS SAML Identity Provider Core"
+                    },
+                    {
+                        "id": "support-saml-idp-discovery",
+                        "name": "cas-server-support-saml-idp-discovery",
+                        "description": "Apereo CAS SAML Identity Provider Discovery Support"
+                    },
+                    {
+                        "id": "support-saml-idp-metadata",
+                        "name": "cas-server-support-saml-idp-metadata",
+                        "description": "Apereo CAS SAML Identity Provider Metadata Support"
+                    },
+                    {
+                        "id": "support-saml-idp-metadata-aws-s3",
+                        "name": "cas-server-support-saml-idp-metadata-aws-s3",
+                        "description": "Apereo CAS SAML Identity Provider Metadata Resolution Via Amazon S3 Buckets"
+                    },
+                    {
+                        "id": "support-saml-idp-metadata-couchdb",
+                        "name": "cas-server-support-saml-idp-metadata-couchdb",
+                        "description": "Apereo CAS SAML Identity Provider Metadata Resolution Via CouchDb"
+                    },
+                    {
+                        "id": "support-saml-idp-metadata-redis",
+                        "name": "cas-server-support-saml-idp-metadata-redis",
+                        "description": "Apereo CAS SAML Identity Provider Metadata Resolution Via Redis"
+                    },
+                    {
+                        "id": "support-saml-idp-metadata-git",
+                        "name": "cas-server-support-saml-idp-metadata-git",
+                        "description": "Apereo CAS SAML Identity Provider Metadata Resolution Via Git Repositories"
+                    },
+                    {
+                        "id": "support-saml-idp-metadata-jpa",
+                        "name": "cas-server-support-saml-idp-metadata-jpa",
+                        "description": "Apereo CAS SAML Metadata Support via JDBC"
+                    },
+                    {
+                        "id": "support-saml-idp-metadata-mongo",
+                        "name": "cas-server-support-saml-idp-metadata-mongo",
+                        "description": "Apereo CAS SAML Identity Provider Metadata Resolution Via MongoDb"
+                    },
+                    {
+                        "id": "support-saml-idp-metadata-rest",
+                        "name": "cas-server-support-saml-idp-metadata-rest",
+                        "description": "Apereo CAS SAML Identity Provider Metadata Resolution Via REST"
+                    },
+                    {
+                        "id": "support-saml-idp-ticket",
+                        "name": "cas-server-support-saml-idp-ticket",
+                        "description": "Apereo CAS SAML Identity Provider Ticket Support"
+                    },
+                    {
+                        "id": "support-saml-idp-web",
+                        "name": "cas-server-support-saml-idp-web",
+                        "description": "Apereo CAS SAML Identity Provider Web Support"
+                    },
+                    {
+                        "id": "support-saml-mdui",
+                        "name": "cas-server-support-saml-mdui",
+                        "description": "Apereo CAS SAML Server MDUI Support"
+                    },
+                    {
+                        "id": "support-saml-mdui-core",
+                        "name": "cas-server-support-saml-mdui-core",
+                        "description": "Apereo CAS SAML Server MDUI Core"
+                    },
+                    {
+                        "id": "support-saml-sp-integrations",
+                        "name": "cas-server-support-saml-sp-integrations",
+                        "description": "Apereo CAS SAML SP Integrations"
+                    },
+                    {
+                        "id": "support-scim-core",
+                        "name": "cas-server-support-scim-core",
+                        "description": "Apereo CAS SCIM 2 Provisioning Support"
+                    },
+                    {
+                        "id": "support-scim",
+                        "name": "cas-server-support-scim",
+                        "description": "Apereo CAS SCIM 2 Provisioning Support"
+                    },
+                    {
+                        "id": "support-script-engines",
+                        "name": "cas-server-support-script-engines",
+                        "description": "Apereo CAS Scripting Engine Drivers"
+                    },
+                    {
+                        "id": "support-sentry",
+                        "name": "cas-server-support-sentry",
+                        "description": "Apereo CAS Sentry Monitoring and Tracking Support"
+                    },
+                    {
+                        "id": "support-service-registry-stream",
+                        "name": "cas-server-support-service-registry-stream",
+                        "description": "Apereo CAS Service Registry Streaming Support"
+                    },
+                    {
+                        "id": "support-service-registry-stream-hazelcast",
+                        "name": "cas-server-support-service-registry-stream-hazelcast",
+                        "description": "Apereo CAS Service Registry Streaming Support with Hazelcast"
+                    },
+                    {
+                        "id": "support-service-registry-stream-kafka",
+                        "name": "cas-server-support-service-registry-stream-kafka",
+                        "description": "Apereo CAS Service Registry Streaming Support with Kafka"
+                    },
+                    {
+                        "id": "support-session-hazelcast",
+                        "name": "cas-server-support-session-hazelcast",
+                        "description": "Apereo CAS Web Application Hazelcast Session Management"
+                    },
+                    {
+                        "id": "support-session-jdbc",
+                        "name": "cas-server-support-session-jdbc",
+                        "description": "Apereo CAS Web Application JDBC Session Management"
+                    },
+                    {
+                        "id": "support-session-mongo",
+                        "name": "cas-server-support-session-mongo",
+                        "description": "Apereo CAS Web Application Mongo Session Management"
+                    },
+                    {
+                        "id": "support-session-redis",
+                        "name": "cas-server-support-session-redis",
+                        "description": "Apereo CAS Web Application Redis Session Management"
+                    },
+                    {
+                        "id": "support-shell",
+                        "name": "cas-server-support-shell",
+                        "description": "Apereo CAS Shell Support via Spring Shell"
+                    },
+                    {
+                        "id": "support-shibboleth",
+                        "name": "cas-server-support-shibboleth",
+                        "description": "Apereo CAS Shibboleth IdP/SP Extensions"
+                    },
+                    {
+                        "id": "support-shiro-authentication",
+                        "name": "cas-server-support-shiro-authentication",
+                        "description": "Apereo CAS Apache Shiro Authentication Support"
+                    },
+                    {
+                        "id": "support-simple-mfa",
+                        "name": "cas-server-support-simple-mfa",
+                        "description": "Apereo CAS Simple Multifactor Authentication Support"
+                    },
+                    {
+                        "id": "support-simple-mfa-core",
+                        "name": "cas-server-support-simple-mfa-core",
+                        "description": "Apereo CAS Simple Multifactor Authentication Core Support"
+                    },
+                    {
+                        "id": "support-sleuth",
+                        "name": "cas-server-support-sleuth",
+                        "description": "Apereo CAS Spring Cloud Sleuth Support"
+                    },
+                    {
+                        "id": "support-sms-aws-sns",
+                        "name": "cas-server-support-sms-aws-sns",
+                        "description": "Apereo CAS AWS Simple Notification SMS Support"
+                    },
+                    {
+                        "id": "support-sms-clickatell",
+                        "name": "cas-server-support-sms-clickatell",
+                        "description": "Apereo CAS TextMagic SMS Support"
+                    },
+                    {
+                        "id": "support-sms-smsmode",
+                        "name": "cas-server-support-sms-smsmode",
+                        "description": "Apereo CAS SmsMode SMS Support",
+                        "versionRange": "6.5.0.RELEASE"
+                    },
+                    {
+                        "id": "support-sms-nexmo",
+                        "name": "cas-server-support-sms-nexmo",
+                        "description": "Apereo CAS Nexmo SMS Support"
+                    },
+                    {
+                        "id": "support-sms-textmagic",
+                        "name": "cas-server-support-sms-textmagic",
+                        "description": "Apereo CAS TextMagic SMS Support"
+                    },
+                    {
+                        "id": "support-sms-twilio",
+                        "name": "cas-server-support-sms-twilio",
+                        "description": "Apereo CAS Twilio SMS Support"
+                    },
+                    {
+                        "id": "support-soap-authentication",
+                        "name": "cas-server-support-soap-authentication",
+                        "description": "Apereo CAS SOAP Authentication"
+                    },
+                    {
+                        "id": "support-spnego",
+                        "name": "cas-server-support-spnego",
+                        "description": "Apereo CAS SPNEGO/NTLM Support"
+                    },
+                    {
+                        "id": "support-spnego-webflow",
+                        "name": "cas-server-support-spnego-webflow",
+                        "description": "Apereo CAS SPNEGO Webflow Support"
+                    },
+                    {
+                        "id": "support-surrogate-api",
+                        "name": "cas-server-support-surrogate-api",
+                        "description": "Apereo CAS Surrogate Authentication API"
+                    },
+                    {
+                        "id": "support-surrogate-authentication",
+                        "name": "cas-server-support-surrogate-authentication",
+                        "description": "Apereo CAS Surrogate Authentication Support"
+                    },
+                    {
+                        "id": "support-surrogate-authentication-couchdb",
+                        "name": "cas-server-support-surrogate-authentication-couchdb",
+                        "description": "Apereo CAS Surrogate Authentication CouchDb Support"
+                    },
+                    {
+                        "id": "support-surrogate-authentication-jdbc",
+                        "name": "cas-server-support-surrogate-authentication-jdbc",
+                        "description": "Apereo CAS Surrogate Authentication JDBC Support"
+                    },
+                    {
+                        "id": "support-surrogate-authentication-ldap",
+                        "name": "cas-server-support-surrogate-authentication-ldap",
+                        "description": "Apereo CAS Surrogate Authentication LDAP Support"
+                    },
+                    {
+                        "id": "support-surrogate-authentication-rest",
+                        "name": "cas-server-support-surrogate-authentication-rest",
+                        "description": "Apereo CAS Surrogate Authentication REST Support"
+                    },
+                    {
+                        "id": "support-surrogate-webflow",
+                        "name": "cas-server-support-surrogate-webflow",
+                        "description": "Apereo CAS Surrogate Authentication Webflow"
+                    },
+                    {
+                        "id": "support-swagger",
+                        "name": "cas-server-support-swagger",
+                        "description": "Apereo CAS Swagger API Support"
+                    },
+                    {
+                        "id": "support-swivel",
+                        "name": "cas-server-support-swivel",
+                        "description": "Apereo CAS Swivel Support"
+                    },
+                    {
+                        "id": "support-swivel-core",
+                        "name": "cas-server-support-swivel-core",
+                        "description": "Apereo CAS Swivel Core Support"
+                    },
+                    {
+                        "id": "support-syncope-authentication",
+                        "name": "cas-server-support-syncope-authentication",
+                        "description": "Apereo CAS Apache Syncope Authentication Support"
+                    },
+                    {
+                        "id": "support-themes",
+                        "name": "cas-server-support-themes",
+                        "description": "Apereo CAS Web Application Themes Support"
+                    },
+                    {
+                        "id": "support-themes-collection",
+                        "name": "cas-server-support-themes-collection",
+                        "description": "Apereo CAS Themes Collection"
+                    },
+                    {
+                        "id": "support-themes-core",
+                        "name": "cas-server-support-themes-core",
+                        "description": "Apereo CAS Web Application Themes Support"
+                    },
+                    {
+                        "id": "support-throttle",
+                        "name": "cas-server-support-throttle",
+                        "description": "Apereo CAS Web Application Authentication Throttling"
+                    },
+                    {
+                        "id": "support-throttle-bucket4j-core",
+                        "name": "cas-server-support-throttle-bucket4j-core",
+                        "description": "Apereo CAS Bucket4j Authentication Throttling",
+                        "versionRange": "6.5.0.RELEASE"
+                    },
+                    {
+                        "id": "support-throttle-bucket4j",
+                        "name": "cas-server-support-throttle-bucket4j",
+                        "description": "Apereo CAS Bucket4j Authentication Throttling"
+                    },
+                    {
+                        "id": "support-throttle-core",
+                        "name": "cas-server-support-throttle-core",
+                        "description": "Apereo CAS Authentication Throttling Core"
+                    },
+                    {
+                        "id": "support-throttle-couchdb",
+                        "name": "cas-server-support-throttle-couchdb",
+                        "description": "Apereo CAS CouchDb Authentication Throttling"
+                    },
+                    {
+                        "id": "support-throttle-hazelcast",
+                        "name": "cas-server-support-throttle-hazelcast",
+                        "description": "Apereo CAS Hazelcast Authentication Throttling"
+                    },
+                    {
+                        "id": "support-throttle-jdbc",
+                        "name": "cas-server-support-throttle-jdbc",
+                        "description": "Apereo CAS JDBC Authentication Throttling"
+                    },
+                    {
+                        "id": "support-throttle-mongo",
+                        "name": "cas-server-support-throttle-mongo",
+                        "description": "Apereo CAS MongoDb Authentication Throttling"
+                    },
+                    {
+                        "id": "support-throttle-redis",
+                        "name": "cas-server-support-throttle-redis",
+                        "description": "Apereo CAS Redis Authentication Throttling"
+                    },
+                    {
+                        "id": "support-thymeleaf",
+                        "name": "cas-server-support-thymeleaf",
+                        "description": "Apereo CAS Support for Thymeleaf Template Engine"
+                    },
+                    {
+                        "id": "support-token-authentication",
+                        "name": "cas-server-support-token-authentication",
+                        "description": "Apereo CAS JWT Token Authentication Support"
+                    },
+                    {
+                        "id": "support-token-core",
+                        "name": "cas-server-support-token-core",
+                        "description": "Apereo CAS JWT Token Core"
+                    },
+                    {
+                        "id": "support-token-core-api",
+                        "name": "cas-server-support-token-core-api",
+                        "description": "Apereo CAS JWT Token Core"
+                    },
+                    {
+                        "id": "support-token-tickets",
+                        "name": "cas-server-support-token-tickets",
+                        "description": "Apereo CAS JWT Token Authentication Support"
+                    },
+                    {
+                        "id": "support-token-webflow",
+                        "name": "cas-server-support-token-webflow",
+                        "description": "Apereo CAS Token Authentication Webflow Support"
+                    },
+                    {
+                        "id": "support-trusted",
+                        "name": "cas-server-support-trusted",
+                        "description": "Apereo CAS Trusted User Support"
+                    },
+                    {
+                        "id": "support-trusted-mfa",
+                        "name": "cas-server-support-trusted-mfa",
+                        "description": "Apereo CAS Trusted MFA Browser/Device Support"
+                    },
+                    {
+                        "id": "support-trusted-mfa-core",
+                        "name": "cas-server-support-trusted-mfa-core",
+                        "description": "Apereo CAS Trusted MFA Browser/Device Core"
+                    },
+                    {
+                        "id": "support-trusted-mfa-couchdb",
+                        "name": "cas-server-support-trusted-mfa-couchdb",
+                        "description": "Apereo CAS Trusted MFA Browser/Device CouchDb Support"
+                    },
+                    {
+                        "id": "support-trusted-mfa-redis",
+                        "name": "cas-server-support-trusted-mfa-redis",
+                        "description": "Apereo CAS Trusted MFA Browser/Device Redis Support"
+                    },
+                    {
+                        "id": "support-trusted-mfa-dynamodb",
+                        "name": "cas-server-support-trusted-mfa-dynamodb",
+                        "description": "Apereo CAS Trusted MFA Browser/Device DynamoDb Support"
+                    },
+                    {
+                        "id": "support-trusted-mfa-jdbc",
+                        "name": "cas-server-support-trusted-mfa-jdbc",
+                        "description": "Apereo CAS Trusted MFA Browser/Device JDBC Support"
+                    },
+                    {
+                        "id": "support-trusted-mfa-mongo",
+                        "name": "cas-server-support-trusted-mfa-mongo",
+                        "description": "Apereo CAS Trusted MFA Browser/Device Mongo Support"
+                    },
+                    {
+                        "id": "support-trusted-mfa-rest",
+                        "name": "cas-server-support-trusted-mfa-rest",
+                        "description": "Apereo CAS Trusted MFA Browser/Device REST Support"
+                    },
+                    {
+                        "id": "support-trusted-webflow",
+                        "name": "cas-server-support-trusted-webflow",
+                        "description": "Apereo CAS Trusted Authentication Webflow Support"
+                    },
+                    {
+                        "id": "support-u2f",
+                        "name": "cas-server-support-u2f",
+                        "description": "Apereo CAS U2F Support"
+                    },
+                    {
+                        "id": "support-u2f-core",
+                        "name": "cas-server-support-u2f-core",
+                        "description": "Apereo CAS U2F Core Support"
+                    },
+                    {
+                        "id": "support-u2f-couchdb",
+                        "name": "cas-server-support-u2f-couchdb",
+                        "description": "Apereo CAS U2F FIDO CouchDb Support"
+                    },
+                    {
+                        "id": "support-u2f-dynamodb",
+                        "name": "cas-server-support-u2f-dynamodb",
+                        "description": "Apereo CAS U2F FIDO DynamoDb Support"
+                    },
+                    {
+                        "id": "support-u2f-jpa",
+                        "name": "cas-server-support-u2f-jpa",
+                        "description": "Apereo CAS U2F FIDO Jpa Support"
+                    },
+                    {
+                        "id": "support-u2f-mongo",
+                        "name": "cas-server-support-u2f-mongo",
+                        "description": "Apereo CAS U2F FIDO MongoDb Support"
+                    },
+                    {
+                        "id": "support-u2f-redis",
+                        "name": "cas-server-support-u2f-redis",
+                        "description": "Apereo CAS U2F FIDO Redis Support"
+                    },
+                    {
+                        "id": "support-validation",
+                        "name": "cas-server-support-validation",
+                        "description": "Apereo CAS Web Application Protocol Validation"
+                    },
+                    {
+                        "id": "support-validation-core",
+                        "name": "cas-server-support-validation-core",
+                        "description": "Apereo CAS Web Application Protocol Validation"
+                    },
+                    {
+                        "id": "support-webauthn",
+                        "name": "cas-server-support-webauthn",
+                        "description": "Apereo CAS FIDO2 WebAuthn Support"
+                    },
+                    {
+                        "id": "support-webauthn-core",
+                        "name": "cas-server-support-webauthn-core",
+                        "description": "Apereo CAS FIDO2 WebAuthn Core"
+                    },
+                    {
+                        "id": "support-webauthn-core-webflow",
+                        "name": "cas-server-support-webauthn-core-webflow",
+                        "description": "Apereo CAS FIDO2 WebAuthn Core Webflow"
+                    },
+                    {
+                        "id": "support-webauthn-ldap",
+                        "name": "cas-server-support-webauthn-ldap",
+                        "description": "Apereo CAS WebAuthN LDAP Support",
+                        "versionRange": "6.5.0.RELEASE"
+                    },
+                    {
+                        "id": "support-webauthn-jpa",
+                        "name": "cas-server-support-webauthn-jpa",
+                        "description": "Apereo CAS WebAuthN JPA Support"
+                    },
+                    {
+                        "id": "support-webauthn-redis",
+                        "name": "cas-server-support-webauthn-redis",
+                        "description": "Apereo CAS WebAuthN Redis Support"
+                    },
+                    {
+                        "id": "support-webauthn-mongo",
+                        "name": "cas-server-support-webauthn-mongo",
+                        "description": "Apereo CAS WebAuthN MongoDb Support"
+                    },
+                    {
+                        "id": "support-webauthn-dynamodb",
+                        "name": "cas-server-support-webauthn-dynamodb",
+                        "description": "Apereo CAS WebAuthN DynamoDb Support"
+                    },
+                    {
+                        "id": "support-webauthn-rest",
+                        "name": "cas-server-support-webauthn-rest",
+                        "description": "Apereo CAS WebAuthN REST Support"
+                    },
+                    {
+                        "id": "support-websockets",
+                        "name": "cas-server-support-websockets",
+                        "description": "Apereo CAS WebSockets Support"
+                    },
+                    {
+                        "id": "support-ws-idp",
+                        "name": "cas-server-support-ws-idp",
+                        "description": "Apereo CAS WS-Security IdP"
+                    },
+                    {
+                        "id": "support-ws-idp-api",
+                        "name": "cas-server-support-ws-idp-api",
+                        "description": "Apereo CAS WS-Security IdP API"
+                    },
+                    {
+                        "id": "support-ws-sts",
+                        "name": "cas-server-support-ws-sts",
+                        "description": "Apereo CAS WS-Security Secure Token Service"
+                    },
+                    {
+                        "id": "support-ws-sts-api",
+                        "name": "cas-server-support-ws-sts-api",
+                        "description": "Apereo CAS WS-Security Secure Token Service"
+                    },
+                    {
+                        "id": "support-wsfederation",
+                        "name": "cas-server-support-wsfederation",
+                        "description": "Apereo CAS WS-Federation Support"
+                    },
+                    {
+                        "id": "support-wsfederation-webflow",
+                        "name": "cas-server-support-wsfederation-webflow",
+                        "description": "Apereo CAS WS-Federation Webflow Support"
+                    },
+                    {
+                        "id": "support-x509",
+                        "name": "cas-server-support-x509",
+                        "description": "Apereo CAS X.509 Client Certificate Support"
+                    },
+                    {
+                        "id": "support-x509-core",
+                        "name": "cas-server-support-x509-core",
+                        "description": "Apereo CAS X.509 Client Certificate Core"
+                    },
+                    {
+                        "id": "support-x509-webflow",
+                        "name": "cas-server-support-x509-webflow",
+                        "description": "Apereo CAS X509 Webflow Support"
+                    },
+                    {
+                        "id": "support-yaml-service-registry",
+                        "name": "cas-server-support-yaml-service-registry",
+                        "description": "Apereo CAS YAML Service Registry"
+                    },
+                    {
+                        "id": "support-yubikey",
+                        "name": "cas-server-support-yubikey",
+                        "description": "Apereo CAS YubiKey Support"
+                    },
+                    {
+                        "id": "support-yubikey-core",
+                        "name": "cas-server-support-yubikey-core",
+                        "description": "Apereo CAS YubiKey Core"
+                    },
+                    {
+                        "id": "support-yubikey-core-mfa",
+                        "name": "cas-server-support-yubikey-core-mfa",
+                        "description": "Apereo CAS YubiKey Core Multifactor Authentication"
+                    },
+                    {
+                        "id": "support-yubikey-couchdb",
+                        "name": "cas-server-support-yubikey-couchdb",
+                        "description": "Apereo CAS YubiKey CouchDb Support"
+                    },
+                    {
+                        "id": "support-yubikey-dynamodb",
+                        "name": "cas-server-support-yubikey-dynamodb",
+                        "description": "Apereo CAS U2F YubiKey DynamoDb Support"
+                    },
+                    {
+                        "id": "support-yubikey-jpa",
+                        "name": "cas-server-support-yubikey-jpa",
+                        "description": "Apereo CAS YubiKey Jpa Support"
+                    },
+                    {
+                        "id": "support-yubikey-mongo",
+                        "name": "cas-server-support-yubikey-mongo",
+                        "description": "Apereo CAS YubiKey MongoDb Support"
+                    },
+                    {
+                        "id": "support-yubikey-redis",
+                        "name": "cas-server-support-yubikey-redis",
+                        "description": "Apereo CAS YubiKey Redis Support"
+                    },
+                    {
+                        "id": "support-qr-authentication",
+                        "name": "cas-server-support-qr-authentication",
+                        "description": "Apereo CAS QR Authentication Support"
+                    }
+                ]
+            },
+            {
+                "name": "webapp",
+                "values": [
+                    {
+                        "id": "webapp",
+                        "name": "cas-server-webapp",
+                        "description": "Apereo CAS Web Application"
+                    },
+                    {
+                        "id": "webapp-bootadmin-server",
+                        "name": "cas-server-webapp-bootadmin-server",
+                        "description": "Apereo CAS Spring Boot Admin Server"
+                    },
+                    {
+                        "id": "webapp-config",
+                        "name": "cas-server-webapp-config",
+                        "description": "Apereo CAS Web Application Configuration"
+                    },
+                    {
+                        "id": "webapp-config-server",
+                        "name": "cas-server-webapp-config-server",
+                        "description": "Apereo CAS Spring Cloud Configuration Web Application Server"
+                    },
+                    {
+                        "id": "webapp-eureka-server",
+                        "name": "cas-server-webapp-eureka-server",
+                        "description": "Apereo CAS Spring Cloud Eureka Service Discovery Server Web Application"
+                    },
+                    {
+                        "id": "webapp-init",
+                        "name": "cas-server-webapp-init",
+                        "description": "Apereo CAS Web Application Initializer"
+                    },
+                    {
+                        "id": "webapp-init-bootadmin-server",
+                        "name": "cas-server-webapp-init-bootadmin-server",
+                        "description": "Apereo CAS Spring Boot Admin Web Application Initializer"
+                    },
+                    {
+                        "id": "webapp-init-config-server",
+                        "name": "cas-server-webapp-init-config-server",
+                        "description": "Apereo CAS Spring Cloud Configuration Server API"
+                    },
+                    {
+                        "id": "webapp-init-eureka-server",
+                        "name": "cas-server-webapp-init-eureka-server",
+                        "description": "Apereo CAS Spring Cloud Eureka Service Discovery Server API"
+                    },
+                    {
+                        "id": "webapp-starter-tomcat",
+                        "name": "cas-server-webapp-starter-tomcat",
+                        "description": "Apereo CAS Web Application Starter via Apache Tomcat",
+                        "versionRange": "6.5.0.RELEASE"
+                    },
+                    {
+                        "id": "webapp-init-tomcat",
+                        "name": "cas-server-webapp-init-tomcat",
+                        "description": "Apereo CAS Web Application via Apache Tomcat"
+                    },
+                    {
+                        "id": "webapp-jetty",
+                        "name": "cas-server-webapp-jetty",
+                        "description": "Apereo CAS Web Application via Jetty"
+                    },
+                    {
+                        "id": "webapp-resources",
+                        "name": "cas-server-webapp-resources",
+                        "description": "Apereo CAS Web Resources"
+                    },
+                    {
+                        "id": "webapp-tomcat",
+                        "name": "cas-server-webapp-tomcat",
+                        "description": "Apereo CAS Web Application via Apache Tomcat"
+                    },
+                    {
+                        "id": "webapp-undertow",
+                        "name": "cas-server-webapp-undertow",
+                        "description": "Apereo CAS Web Application via Undertow"
+                    }
+                ]
+            }
+        ]
+    },
+    "type": {
+        "type": "action",
+        "default": "cas-overlay",
+        "values": [
+            {
+                "id": "cas-overlay",
+                "name": "CAS Overlay Gradle Project Zip",
+                "description": "Generate a Gradle-based project as a zip file",
+                "action": "/starter.zip",
+                "tags": { "build": "cas-overlay", "format": "project" }
+            },
+            {
+                "id": "cas-management-overlay",
+                "name": "CAS Management Overlay Gradle Project Zip",
+                "description": "Generate a Gradle-based project as a zip file",
+                "action": "/starter.zip",
+                "tags": {
+                    "build": "cas-management-overlay",
+                    "format": "project"
+                }
+            },
+            {
+                "id": "cas-config-server-overlay",
+                "name": "CAS Config Server Overlay Gradle Project Zip",
+                "description": "Generate a Gradle-based project as a zip file",
+                "action": "/starter.zip",
+                "tags": {
+                    "build": "cas-config-server-overlay",
+                    "format": "project"
+                }
+            },
+            {
+                "id": "cas-discovery-server-overlay",
+                "name": "CAS Discovery Server Overlay Gradle Project Zip",
+                "description": "Generate a Gradle-based project as a zip file",
+                "action": "/starter.zip",
+                "tags": {
+                    "build": "cas-discovery-server-overlay",
+                    "format": "project"
+                }
+            },
+            {
+                "id": "cas-bootadmin-server-overlay",
+                "name": "CAS Spring Boot Admin Server Overlay Gradle Project Zip",
+                "description": "Generate a Gradle-based project as a zip file",
+                "action": "/starter.zip",
+                "tags": {
+                    "build": "cas-bootadmin-server-overlay",
+                    "format": "project"
+                }
+            }
+        ]
+    },
+    "packaging": {
+        "type": "single-select",
+        "default": "war",
+        "values": [{ "id": "war", "name": "War" }]
+    },
+    "javaVersion": {
+        "type": "single-select",
+        "default": "11",
+        "values": [{ "id": "11", "name": "11" }]
+    },
+    "language": {
+        "type": "single-select",
+        "default": "java",
+        "values": [{ "id": "java", "name": "Java" }]
+    },
+    "bootVersion": {
+        "type": "single-select",
+        "default": "2.6.3.RELEASE",
+        "values": [{ "id": "2.6.3.RELEASE", "name": "2.6.3" }]
+    },
+    "groupId": { "type": "text", "default": "org.apereo.cas" },
+    "artifactId": { "type": "text", "default": "cas" },
+    "version": { "type": "text", "default": "0.0.19" },
+    "name": { "type": "text", "default": "cas" },
+    "description": {
+        "type": "text",
+        "default": "WAR overlay to use as a starting template for Apereo CAS deployments."
+    },
+    "packageName": { "type": "text", "default": "org.apereo" }
+}
