@@ -1,5 +1,19 @@
-import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from "@mui/material";
-import React from "react";
+import React from 'react';
+import {
+    FormControl,
+    InputLabel,
+    MenuItem,
+    Select,
+    SelectChangeEvent,
+    Box,
+    Grid,
+    Divider,
+    Typography
+} from '@mui/material';
+
+import Customization from './Customization';
+import Dependencies from './Dependencies';
+
 
 const versions = [
     '6.5.x',
@@ -12,24 +26,22 @@ const versions = [
 
 export default function Initializr() {
 
-    const handleChange = (e:SelectChangeEvent<string>) => setVersion(e.target.value);
-
-    const [version, setVersion] = React.useState('6.5.x');
-
     return (
-        <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">Version</InputLabel>
-            <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={version}
-                label="Version"
-                onChange={handleChange}
-            >
-                {versions.map((v) => (
-                    <MenuItem key={v} value={v}>{v}</MenuItem>
-                ))}
-            </Select>
-        </FormControl>
+        <Grid
+            container
+            rowSpacing={1}
+            columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+            sx={{
+                padding: "2rem",
+            }}
+        >
+            <Grid item xs={6} style={{ padding: "1rem" }}>
+                <Customization />
+            </Grid>
+            <Grid item xs={6} style={{ padding: "1rem" }}>
+                <Dependencies />
+            </Grid>
+        </Grid>
     );
 }
+
