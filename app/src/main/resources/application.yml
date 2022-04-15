@@ -78,9 +78,9 @@ cas-initializr:
       sync: true
       branch: 6.3
       type: cas
-    - version: 6.4.4.3
+    - version: 6.4.6.3
       boot-version: 2.5.4
-      platform-version: 6.4.4.3
+      platform-version: 6.4.6.3
       sync: true
       branch: 6.4
       type: cas
