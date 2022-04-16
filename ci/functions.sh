@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DEFAULT_CAS_VERSION=6.5.2
+DEFAULT_CAS_VERSION=6.5.3
 DEFAULT_BOOT_VERSION=2.6.3
 
 CI_DIR="`dirname \"$0\"`"
