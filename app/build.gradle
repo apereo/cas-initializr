@@ -8,7 +8,7 @@ buildscript {
 }
 
 plugins {
-    id "org.springframework.boot" version "${springBootVersion}"
+    id "org.springframework.boot" version "${springBootInitializrVersion}"
     id "io.spring.dependency-management" version "${gradleDependencyManagementPluginVersion}"
     id "io.freefair.lombok" version "${gradleFreeFairPluginVersion}"
     id "java-library"
@@ -85,6 +85,8 @@ processResources {
         filter org.apache.tools.ant.filters.ReplaceTokens, tokens: [
                 "javaVersion"                            : project.sourceCompatibility,
 
+                "casMgmtVersion"                             : project.property("casMgmtVersion"),
+                
                 "casVersion"                             : project.property("casVersion"),
                 "casLatestVersion"                       : project.property("casLatestVersion"),
                 "casBranch"                              : getBranchName(project.property("casVersion").toString()),
