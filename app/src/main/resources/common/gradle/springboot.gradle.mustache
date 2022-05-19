@@ -1,6 +1,20 @@
 {{#casServer}}
 apply plugin: "org.springframework.boot"
 
+repositories {
+    maven {
+        url "https://repo.spring.io/milestone"
+    }
+    mavenLocal()
+    mavenCentral()
+    maven { url 'https://oss.sonatype.org/content/repositories/releases' }
+    maven {
+        url 'https://oss.sonatype.org/content/repositories/snapshots'
+        mavenContent { snapshotsOnly() }
+    }
+    maven { url 'https://build.shibboleth.net/nexus/content/repositories/releases/' }
+}
+
 configurations {
     bootRunConfig.extendsFrom compileClasspath
 }
