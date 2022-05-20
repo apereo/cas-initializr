@@ -63,7 +63,9 @@ echo "Updating project README with warning..."
 echo "${text}" > README.md
 
 echo "Committing changes..."
-git add --all
+ls
+git status
+git add -A .
 git commit -am "Synced repository from CAS Initializr"
 git status
 
