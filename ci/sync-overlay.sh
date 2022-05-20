@@ -30,8 +30,12 @@ curl http://localhost:8080/starter.tgz \
   -d baseDir=initializr \
   -d type="${TYPE}" \
   -d "casVersion=${CAS_VERSION}&bootVersion=${BOOT_VERSION}" | tar -xzvf -
+if [ $? -ne 0 ] ; then
+  echo "Could not generate overlay projec for CAS ${CAS_VERSION} & Spring Boot ${BOOT_VERSION}"
+  kill -9 $pid
+  exit 1
+fi
 kill -9 $pid
-
 if [ -z "$GH_TOKEN" ] ; then
   echo -e "\nNo GitHub token is defined."
   exit 1
