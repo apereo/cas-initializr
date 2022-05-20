@@ -9,7 +9,7 @@ TYPE=${4:-cas-overlay}
 
 java -jar app/build/libs/app.jar &
 pid=$!
-sleep 15
+sleep 25
 mkdir tmp
 cd tmp
 
@@ -31,7 +31,7 @@ curl http://localhost:8080/starter.tgz \
   -d type="${TYPE}" \
   -d "casVersion=${CAS_VERSION}&bootVersion=${BOOT_VERSION}" | tar -xzvf -
 if [ $? -ne 0 ] ; then
-  echo "Could not generate overlay projec for CAS ${CAS_VERSION} & Spring Boot ${BOOT_VERSION}"
+  echo "Could not generate overlay project for CAS ${CAS_VERSION} & Spring Boot ${BOOT_VERSION}"
   kill -9 $pid
   exit 1
 fi
