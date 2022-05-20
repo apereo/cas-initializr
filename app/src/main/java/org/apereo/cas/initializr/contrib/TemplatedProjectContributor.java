@@ -13,6 +13,7 @@ import org.apereo.cas.overlay.discoveryserver.buildsystem.CasDiscoveryServerOver
 import com.github.mustachejava.DefaultMustacheFactory;
 import io.spring.initializr.generator.project.ProjectDescription;
 import io.spring.initializr.generator.project.contributor.ProjectContributor;
+import io.spring.initializr.generator.version.Version;
 import io.spring.initializr.metadata.InitializrMetadataProvider;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -157,13 +158,13 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         templateVariables.put("casVersion", casVersion);
         templateVariables.put("springBootVersion", project.getSpringBootVersion());
 
-        if (project.getSpringBootVersion().startsWith("2.6")) {
+        var cmp = VersionUtils.parse(project.getSpringBootVersion()).compareTo(Version.parse("2.6.0"));
+        if (cmp >= 0) {
             templateVariables.put("mainClass", "mainClass");
         } else {
             templateVariables.put("mainClass", "mainClassName");
         }
-
-
+        
         templateVariables.put("buildSystemId", type);
         templateVariables.put("containerImageName", StringUtils.remove(type, "-overlay"));
 
@@ -194,7 +195,7 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
             templateVariables.put("appName", "casdiscoveryserver");
         }
 
-        /**
+        /*
          * Starting from CAS 6.5, projects can take advantage of Gradle's
          * native support for BOMs. Prior to this version, the dependency management plugin
          * must be used to handle BOMs.
