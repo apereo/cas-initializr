@@ -4,6 +4,8 @@ source ./ci/functions.sh
 
 CAS_VERSION=${1:-$DEFAULT_CAS_VERSION}
 BOOT_VERSION=${2:-$DEFAULT_BOOT_VERSION}
+MGMT_VERSION=${3:-$DEFAULT_MGMT_VERSION}
+MGMT_BOOT_VERSION=${4:-$DEFAULT_MGMT_BOOT_VERSION}
 
 # set BUILD_IMAGES to something other than yes to skip image buildings
 BUILD_IMAGES=${BUILD_IMAGES:-yes}
@@ -49,7 +51,7 @@ function updateOverlay() {
   # create project dir from Initializr with support boot admin, metrics, and git service registry
   echo "Creating overlay of type: ${type} with dependencies: ${dependencies} in folder $(pwd)"
   echo "Running: curl http://localhost:8080/starter.tgz -d $postdata"
-  curl http://localhost:8080/starter.tgz  -d casVersion=${cas_version} -d bootVersion=${boot_version} -d $postdata | tar -xzf -
+  curl http://localhost:8080/starter.tgz -d casVersion=${cas_version} -d bootVersion=${boot_version} -d $postdata | tar -xzf -
   cd ../..
 }
 
@@ -64,11 +66,11 @@ java -jar app/build/libs/app.jar &
 
 waitForInitializr
 
-updateOverlay cas-overlay $CAS_VERSION $BOOT_VERSION core,bootadmin,metrics,gitsvc,jsonsvc
+updateOverlay cas-overlay $CAS_VERSION $BOOT_VERSION core,bootadmin,metrics,jsonsvc
 updateOverlay cas-bootadmin-server-overlay $CAS_VERSION $BOOT_VERSION
 updateOverlay cas-config-server-overlay $CAS_VERSION $BOOT_VERSION
 updateOverlay cas-discovery-server-overlay $CAS_VERSION $BOOT_VERSION
-updateOverlay cas-management-overlay $CAS_VERSION $BOOT_VERSION
+updateOverlay cas-management-overlay $MGMT_VERSION $MGMT_BOOT_VERSION
 
 stopInitializr
 

@@ -92,9 +92,9 @@ kubectl wait --for condition=ready --timeout=180s --namespace $NAMESPACE pod -l 
 echo "Done waiting for startup $(date)"
 
 echo "Checking rollout status"
-kubectl rollout --namespace $NAMESPACE status deploy cas-server-boot-admin
-kubectl rollout --namespace $NAMESPACE status deploy cas-server-mgmt
-kubectl rollout --namespace $NAMESPACE status sts cas-server
+kubectl rollout --namespace $NAMESPACE status deploy cas-server-boot-admin --timeout=5s
+kubectl rollout --namespace $NAMESPACE status deploy cas-server-mgmt --timeout=5s
+kubectl rollout --namespace $NAMESPACE status sts cas-server --timeout=5s
 echo "Done checking rollout status"
 set -e
 
