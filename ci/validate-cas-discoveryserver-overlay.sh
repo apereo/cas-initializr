@@ -11,7 +11,7 @@ sleep 30
 rm -Rf tmp &> /dev/null
 mkdir tmp
 cd tmp
-curl http://localhost:8080/starter.tgz -d casVersion=${CAS_VERSION} \
+curl http://localhost:8080/starter.tgz --connect-timeout 60 -d casVersion=${CAS_VERSION} \
   -d bootVersion=${BOOT_VERSION} -d type=cas-discovery-server-overlay | tar -xzvf -
 kill -9 $pid
 

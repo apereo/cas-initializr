@@ -10,7 +10,8 @@ pid=$!
 sleep 30
 mkdir tmp
 cd tmp
-curl http://localhost:8080/starter.tgz --connect-timeout 30 -d "casVersion=${CAS_VERSION}&bootVersion=${BOOT_VERSION}" | tar -xzvf -
+curl http://localhost:8080/starter.tgz --connect-timeout 30 \
+   -d "casVersion=${CAS_VERSION}&bootVersion=${BOOT_VERSION}" | tar -xzvf -
 kill -9 $pid
 
 ./gradlew clean build
