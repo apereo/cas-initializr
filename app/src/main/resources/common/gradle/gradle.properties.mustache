@@ -1,4 +1,5 @@
 {{#managementServer}}
+version={{casMgmtVersion}}
 # CAS Management version
 casmgmt.version={{casMgmtVersion}}
 
@@ -9,13 +10,13 @@ springBootVersion={{springBootVersion}}
 {{/managementServer}}
 
 {{^managementServer}}
+version={{casVersion}}
 # CAS server version
 cas.version={{casVersion}}
 springBootVersion={{springBootVersion}}
 {{/managementServer}}
 
 # The version of this overlay project
-version=0.0.1
 group={{groupId}}
 artifactId={{buildSystemId}}
 sourceCompatibility={{javaVersion}}
