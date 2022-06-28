@@ -366,3 +366,19 @@ cas.standard.js.file=/themes/${theme}/js/cas.js
 }
 
 {{/casServer}}
+
+def skipValidation = project.hasProperty("validate") && project.property("validate").equals("false")
+if (!skipValidation) {
+    task validateConfiguration(type: Copy, group: "CAS",
+            description: "Validate CAS configuration") {
+        def file = new File("${projectDir}/src/main/resources/application.properties")
+        if (file.exists()) {
+            throw new GradleException("This overlay project is overriding a CAS-supplied configuration file at ${file.path}. "
+                + "Overriding this file will disable all default CAS settings that are provided to the overlay, and "
+                + "generally has unintended side-effects. It's best to move your configuration inside an application.yml "
+                + "file, if you intend to keep the configuration bundled with the CAS web application. \n\nTo disable this "
+                + "validation step, run the build with -Pvalidate=false.");
+        }
+    }
+    processResources.dependsOn(validateConfiguration)
+}
