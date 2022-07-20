@@ -61,8 +61,8 @@ bootBuildImage {
 }
 
 bootJar {
-    archiveName "app.jar"
-    baseName "app"
+    archiveFileName "app.jar"
+    archiveBaseName "app"
 }
 
 bootRun {
