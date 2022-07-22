@@ -49,7 +49,7 @@ function updateOverlay() {
     postdata="${postdata}&dependencies=${dependencies}"
   fi
   # create project dir from Initializr with support boot admin, metrics, and git service registry
-  echo "Creating overlay of type: ${type} with dependencies: ${dependencies} in folder $(pwd)"
+  echo "Creating overlay of type: ${type}:${cas_version}:${boot_version} with dependencies: ${dependencies} in folder $(pwd)"
   echo "Running: curl http://localhost:8080/starter.tgz -d $postdata"
   curl http://localhost:8080/starter.tgz -d casVersion=${cas_version} -d bootVersion=${boot_version} -d $postdata | tar -xzf -
   cd ../..
@@ -58,10 +58,10 @@ function updateOverlay() {
 stopInitializr
 
 if [[ ! -f app/build/libs/app.jar || "$CLEAN" == "clean" ]]; then
-  echo "Building casinit"
+  echo "Building CAS Initializr"
   ./gradlew clean build
 fi
-echo "Running casinit"
+echo "Running CAS Initializr"
 java -jar app/build/libs/app.jar &
 
 waitForInitializr
