@@ -70,7 +70,7 @@ cas-initializr:
       type: cas-mgmt
     - version: 6.5.5
       boot-version: 2.6.3
-      platform-version: @casMgmtVersion@
+      platform-version: @casVersion@
       sync: true
       branch: 6.5
       type: cas-mgmt

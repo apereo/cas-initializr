@@ -4,7 +4,7 @@ source ./ci/functions.sh
 
 CAS_VERSION=${1:-$DEFAULT_CAS_VERSION}
 BOOT_VERSION=${2:-$DEFAULT_BOOT_VERSION}
-MGMT_VERSION=${3:-$DEFAULT_MGMT_VERSION}
+MGMT_CAS_VERSION=${3:-DEFAULT_MGMT_CAS_VERSION}
 MGMT_BOOT_VERSION=${4:-$DEFAULT_MGMT_BOOT_VERSION}
 
 # set BUILD_IMAGES to something other than yes to skip image buildings
@@ -70,7 +70,7 @@ updateOverlay cas-overlay $CAS_VERSION $BOOT_VERSION core,bootadmin,metrics,json
 updateOverlay cas-bootadmin-server-overlay $CAS_VERSION $BOOT_VERSION
 updateOverlay cas-config-server-overlay $CAS_VERSION $BOOT_VERSION
 updateOverlay cas-discovery-server-overlay $CAS_VERSION $BOOT_VERSION
-updateOverlay cas-management-overlay $MGMT_VERSION $MGMT_BOOT_VERSION
+updateOverlay cas-management-overlay $MGMT_CAS_VERSION $MGMT_BOOT_VERSION
 
 stopInitializr
 
