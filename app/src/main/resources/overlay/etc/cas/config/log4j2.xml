@@ -124,6 +124,7 @@ Set -Dlog4j2.contextSelector=org.apache.logging.log4j.core.selector.BasicContext
         <Logger name="org.springframework.cloud.vault" level="warn" />
         <Logger name="org.springframework.web.client" level="warn" />
         <Logger name="org.springframework.security" level="${sys:spring.security.log.level}"/>
+        <Logger name="org.springframework.security.config.annotation.web.builders" level="error" />
         <Logger name="org.springframework.cloud" level="${sys:spring.cloud.log.level}"/>
         <Logger name="org.springframework.amqp" level="error" />
         <Logger name="org.springframework.integration" level="warn"/>
