@@ -32,8 +32,9 @@ jibVersion=@jibVersion@
 containerImageOrg=apereo
 containerImageName={{containerImageName}}
 
-baseDockerImage=adoptopenjdk/openjdk11:alpine-jre
+baseDockerImage=eclipse-temurin:11-jre
 allowInsecureRegistries=false
+dockerImagePlatform=amd64:linux
 
 # Include launch script for executable WAR artifact
 # Setting this to true allows the final web application

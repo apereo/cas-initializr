@@ -1,8 +1,19 @@
 apply plugin: "com.google.cloud.tools.jib"
 
+def platformCoordinates = project.dockerImagePlatform.split(":")
+
+def dockerUsername = providers.systemProperty("dockerUsername").getOrNull()
+def dockerPassword = providers.systemProperty("dockerPassword").getOrNull()
+
 jib {
     from {
         image = project.baseDockerImage
+        platforms {
+            platform {
+                architecture = platformCoordinates[0]
+                os = platformCoordinates[1]
+            }
+        }
     }
     to {
         image = "${project.containerImageOrg}/${project.containerImageName}"
@@ -12,12 +23,12 @@ jib {
              osxkeychain: Docker Hub
          */
         credHelper = "osxkeychain"
-        /**
-        auth {
-            username = "*******"
-            password = "*******"
+        if (dockerUsername != null && dockerPassword != null) {
+            auth {
+                username = "${dockerUsername}"
+                password = "${dockerPassword}"
+            }
         }
-        */
         tags = [project.version]
     }
     container {
