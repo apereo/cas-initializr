@@ -1,7 +1,6 @@
 apply plugin: "com.google.cloud.tools.jib"
 
-def platformCoordinates = project.dockerImagePlatform.split(":")
-
+def imagePlatforms = project.dockerImagePlatform.split(",")
 def dockerUsername = providers.systemProperty("dockerUsername").getOrNull()
 def dockerPassword = providers.systemProperty("dockerPassword").getOrNull()
 
@@ -9,9 +8,12 @@ jib {
     from {
         image = project.baseDockerImage
         platforms {
-            platform {
-                architecture = platformCoordinates[0]
-                os = platformCoordinates[1]
+            imagePlatforms.each {
+                def given = it.split(":")
+                platform {
+                    architecture = given[0]
+                    os = given[1]
+                }
             }
         }
     }

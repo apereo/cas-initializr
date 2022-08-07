@@ -61,15 +61,10 @@ chmod -R 777 ./*.sh >/dev/null 2>&1
 #echo "Building Docker image with Spring Boot"
 #./gradlew bootBuildImage
 
-declare -a platforms=("amd64:linux" "arm64:linux")
-for platform in "${platforms[@]}"
-do
-  echo "Building Docker image $platform with Jib"
-  ./gradlew jib -PdockerImagePlatform="${platform}" \
-    -DdockerUsername="$DOCKER_USER" -DdockerPassword="$DOCKER_PWD"
-  [ $? -eq 0 ] && echo "Gradle command ran successfully." || exit 1
-#  publishDockerImage
-done
+echo "Building Docker image with Jib"
+./gradlew jib -PdockerImagePlatform="amd64:linux,arm64:linux" \
+  -DdockerUsername="$DOCKER_USER" -DdockerPassword="$DOCKER_PWD"
+[ $? -eq 0 ] && echo "Gradle command ran successfully." || exit 1
 
 echo "Verify Java Version"
 ./gradlew verifyRequiredJavaVersion
