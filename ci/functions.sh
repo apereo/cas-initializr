@@ -6,7 +6,8 @@ DEFAULT_MGMT_VERSION=6.5.5
 DEFAULT_MGMT_BOOT_VERSION=2.6.3
 
 function downloadTomcat() {
-  tomcatVersion=$(./gradlew properties -q | grep tomcatVersion | cut -d'=' -f2)
+  tomcatVersion=$(./gradlew properties -q | grep tomcatVersion | cut -d':' -f2 | sed 's/ *//g')
+  echo "Apache Tomcat version: ${tomcatVersion}"
   tomcatVersionTag="v${tomcatVersion}"
 
   tomcatDir="tomcat-${tomcatVersion:0:1}"
