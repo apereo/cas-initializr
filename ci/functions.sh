@@ -5,18 +5,8 @@ DEFAULT_BOOT_VERSION=2.7.2
 DEFAULT_MGMT_VERSION=6.5.5
 DEFAULT_MGMT_BOOT_VERSION=2.6.3
 
-CI_DIR="`dirname \"$0\"`"
-CI_ABS_PATH=$(cd $CI_DIR; pwd)
-
-function getProperty {
-   local PROP_KEY=$1
-   local PROPERTY_FILE=$2
-   local PROP_VALUE=`cat $PROPERTY_FILE | grep "$PROP_KEY" | cut -d'=' -f2`
-   echo -n "$PROP_VALUE"
-}
-
 function downloadTomcat() {
-  tomcatVersion=$(getProperty tomcatVersion "$CI_ABS_PATH"/../gradle.properties)
+  tomcatVersion=$(./gradlew properties -q | grep tomcatVersion | cut -d'=' -f2)
   tomcatVersionTag="v${tomcatVersion}"
 
   tomcatDir="tomcat-${tomcatVersion:0:1}"
@@ -26,6 +16,7 @@ function downloadTomcat() {
   rm -Rf ${CATALINA_HOME} > /dev/null 2>&1
   echo "Downloading Apache Tomcat from ${tomcatUrl}"
   wget --no-check-certificate ${tomcatUrl} > /dev/null 2>&1
+  [ $? -eq 0 ] && echo "Apache Tomcat downloaded successfully." || exit 1
   unzip apache-tomcat-${tomcatVersion}.zip > /dev/null 2>&1
   chmod +x ${CATALINA_HOME}/bin/*.sh > /dev/null 2>&1
   rm -Rf ${CATALINA_HOME}/webapps/examples ${CATALINA_HOME}/webapps/docs ${CATALINA_HOME}/webapps/host-manager ${CATALINA_HOME}/webapps/manager
