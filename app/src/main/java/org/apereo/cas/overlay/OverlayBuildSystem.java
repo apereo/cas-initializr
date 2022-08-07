@@ -11,4 +11,6 @@ import io.spring.initializr.generator.buildsystem.BuildSystem;
 public interface OverlayBuildSystem extends BuildSystem {
 
     String resourceDirectory();
+
+    String overlayType();
 }

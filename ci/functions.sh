@@ -16,9 +16,11 @@ function getProperty {
 }
 
 function downloadTomcat() {
-  tomcatVersion=$(getProperty tomcatVersion $CI_ABS_PATH/../gradle.properties)
+  tomcatVersion=$(getProperty tomcatVersion "$CI_ABS_PATH"/../gradle.properties)
   tomcatVersionTag="v${tomcatVersion}"
-  tomcatUrl="https://downloads.apache.org/tomcat/tomcat-9/${tomcatVersionTag}/bin/apache-tomcat-${tomcatVersion}.zip"
+
+  tomcatDir="tomcat-${tomcatVersion:0:1}"
+  tomcatUrl="https://downloads.apache.org/tomcat/${tomcatDir}/${tomcatVersionTag}/bin/apache-tomcat-${tomcatVersion}.zip"
 
   export CATALINA_HOME=./apache-tomcat-${tomcatVersion}
   rm -Rf ${CATALINA_HOME} > /dev/null 2>&1

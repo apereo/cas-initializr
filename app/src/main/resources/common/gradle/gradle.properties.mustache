@@ -60,11 +60,9 @@ storeType=PKCS12
 {{#casServer}}
 # Location of the downloaded CAS Shell JAR
 shellDir=build/libs
-ivyVersion=2.4.0
+ivyVersion=2.5.0
 gradleDownloadTaskVersion=@gradleDownloadTaskPluginVersion@
-
-# Control the version of the embedded Apache Tomcat server
-tomcatVersion=@tomcatVersion@
+tomcatVersion={{tomcatVersion}}
 {{/casServer}}
 
 # Include private repository

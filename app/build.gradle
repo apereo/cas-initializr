@@ -84,21 +84,12 @@ processResources {
     filesMatching(['**/*.yml', '**/*.properties', '**/*.md', '**/*.mustache']) {
         filter org.apache.tools.ant.filters.ReplaceTokens, tokens: [
                 "javaVersion"                            : project.sourceCompatibility,
-
-                "casMgmtVersion"                             : project.property("casMgmtVersion"),
-                
-                "casVersion"                             : project.property("casVersion"),
-                "casLatestVersion"                       : project.property("casLatestVersion"),
                 "casBranch"                              : getBranchName(project.property("casVersion").toString()),
                 "version"                                : project.property("version"),
-                "springBootVersion"                      : project.property("springBootVersion"),
-                "springBootLatestVersion"                : project.property("springBootLatestVersion"),
                 "gradleDependencyManagementPluginVersion": project.property("gradleDependencyManagementPluginVersion"),
                 "gradleFreeFairPluginVersion"            : project.property("gradleFreeFairPluginVersion"),
                 "gradleDownloadTaskPluginVersion"        : project.property("gradleDownloadTaskPluginVersion"),
-                "tomcatVersion"                          : project.property("tomcatVersion"),
                 "jibVersion"                             : project.property("jibVersion")
-                
         ]
     }
 }

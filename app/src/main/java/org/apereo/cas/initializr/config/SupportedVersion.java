@@ -23,4 +23,5 @@ public class SupportedVersion {
 
     private String platformVersion;
 
+    private String tomcatVersion;
 }
