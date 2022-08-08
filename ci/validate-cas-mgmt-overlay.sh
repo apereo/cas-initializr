@@ -49,8 +49,7 @@ chmod +x "*.sh"  >/dev/null 2>&1
 ./docker-build.sh
 
 echo "Building Docker image with Jib"
-./gradlew jibDockerBuild
-[ $? -eq 0 ] && echo "Gradle command ran successfully." || exit 1
+publishDockerImage
 
 downloadTomcat
 mv build/libs/cas-management.war ${CATALINA_HOME}/webapps/app.war
@@ -67,5 +66,3 @@ else
     echo "Failed to deploy the web application with status $rc."
     exit 1
 fi
-
-publishDockerImage

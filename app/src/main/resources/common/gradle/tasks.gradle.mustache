@@ -111,12 +111,6 @@ task springBootVersion(description: "Display current Spring Boot version") {
     }
 }
 
-task containerImageCoords(group: "CAS", description: "Display the coordinates for the container image") {
-    doFirst {
-         println "${project.'containerImageOrg'}/${project.'containerImageName'}:${project.version}"
-    }
-}
-
 task zip(type: Zip) {
     from projectDir
     exclude '**/.idea/**', '.gradle', 'tmp', '.git', '**/build/**', '**/bin/**', '**/out/**', '**/.settings/**'
