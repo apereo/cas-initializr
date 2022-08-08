@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Bean;
 
 //import org.apereo.cas.configuration.CasConfigurationProperties;
 
-@Configuration("CasOverlayOverrideConfiguration")
+@Configuration(value = "CasOverlayOverrideConfiguration", proxyBeanMethods = false)
 //@EnableConfigurationProperties(CasConfigurationProperties.class)
 public class CasOverlayOverrideConfiguration {
 

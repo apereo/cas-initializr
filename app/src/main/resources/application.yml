@@ -62,42 +62,56 @@ cas-initializr:
       sync: true
       branch: 6.3
       type: cas-mgmt
+      tomcatVersion: 9.0.65
+      javaVersion: 11
     - version: 6.4.1
       boot-version: 2.5.4
       platform-version: 6.4.6.2
       sync: true
       branch: 6.4
       type: cas-mgmt
+      tomcatVersion: 9.0.65
+      javaVersion: 11
     - version: 6.5.5
       boot-version: 2.6.3
-      platform-version: @casVersion@
+      platform-version: 6.5.8
       sync: true
       branch: 6.5
       type: cas-mgmt
+      tomcatVersion: 9.0.65
+      javaVersion: 11
     - version: 6.3.7.2
       boot-version: 2.3.7.RELEASE
       platform-version: 6.3.7.2
       sync: true
       branch: 6.3
       type: cas
+      tomcatVersion: 9.0.65
+      javaVersion: 11
     - version: 6.4.6.6
       boot-version: 2.5.4
       platform-version: 6.4.6.6
       sync: true
       branch: 6.4
       type: cas
-    - version: @casVersion@
-      platform-version: @casVersion@
-      boot-version: @springBootVersion@
-      branch: @casBranch@
+      tomcatVersion: 9.0.65
+      javaVersion: 11
+    - version: 6.5.8
+      platform-version: 6.5.8
+      boot-version: 2.6.3
+      branch: 6.5
       sync: true
       type: cas
-    - version: @casLatestVersion@
-      platform-version: @casLatestVersion@
-      boot-version: @springBootLatestVersion@
+      tomcatVersion: 9.0.65
+      javaVersion: 11
+    - version: 6.6.0-SNAPSHOT
+      platform-version: 6.6.0-SNAPSHOT
+      boot-version: 2.7.2
       sync: true
       branch: master
       type: cas
+      tomcatVersion: 9.0.65
+      javaVersion: 11
 
 initializr:
   name:
@@ -109,12 +123,13 @@ initializr:
   artifact-id:
     value: cas
   version:
-    value: @version@
+    value: 1.0.0
   package-name:
     value: org.apereo
   javaVersions:
-    - id: @javaVersion@
+    - id: 11
       default: true
+    - id: 17
   languages:
     - name: Java
       id: java
@@ -210,7 +225,7 @@ initializr:
       action: /starter.tgz
 
   boot-versions:
-    - id: @springBootVersion@
+    - id: 2.7.2
       default: true
   env:
     force-ssl: true
@@ -218,11 +233,11 @@ initializr:
       cas-bom:
         groupId: org.apereo.cas
         artifactId: cas-server-support-bom
-        version: @casVersion@
+        version: 6.6.0-SNAPSHOT
       cas-mgmt-bom:
         groupId: org.apereo.cas
         artifactId: cas-mgmt-support-bom
-        version: @casMgmtVersion@
+        version: 6.5.6
   dependencies:
     - name: api
       content:

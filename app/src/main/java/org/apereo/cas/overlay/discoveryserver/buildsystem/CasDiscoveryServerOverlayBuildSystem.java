@@ -16,6 +16,11 @@ public class CasDiscoveryServerOverlayBuildSystem implements OverlayBuildSystem 
     }
 
     @Override
+    public String overlayType() {
+        return "cas";
+    }
+
+    @Override
     public String resourceDirectory() {
         return "discoveryserver-overlay";
     }

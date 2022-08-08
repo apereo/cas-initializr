@@ -144,6 +144,16 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         var type = project.getBuildSystem().id();
         templateVariables.put("type", type);
 
+        properties.getSupportedVersions()
+            .stream()
+            .filter(version -> version.getType().equals(project.getBuildSystem().overlayType())
+                               && version.getVersion().equals(project.getCasVersion()))
+            .findFirst()
+            .ifPresent(version -> {
+                templateVariables.put("tomcatVersion", version.getTomcatVersion());
+                templateVariables.put("javaVersion", version.getJavaVersion());
+            });
+
         if (type.equals(CasManagementOverlayBuildSystem.ID)) {
             templateVariables.put("casMgmtVersion", project.getCasVersion());
             properties.getSupportedVersions()
@@ -169,7 +179,7 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         templateVariables.put("containerImageName", StringUtils.remove(type, "-overlay"));
 
         templateVariables.put("initializrUrl", generateAppUrl());
-
+        
         if (type.equalsIgnoreCase(CasOverlayBuildSystem.ID) || type.equalsIgnoreCase(CasManagementOverlayBuildSystem.ID)) {
             handleApplicationServerType(project, templateVariables);
             templateVariables.put("hasDockerFile", Boolean.TRUE);
