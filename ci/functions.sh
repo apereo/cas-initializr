@@ -30,7 +30,7 @@ function publishDockerImage() {
     echo "${DOCKER_PWD}" | docker login --username "$DOCKER_USER" --password-stdin
 
     echo -e "\nPublishing Docker image...\n"
-    ./gradlew jib -PdockerImagePlatform="amd64:linux,arm64:linux,amd64:windows" \
+    ./gradlew jib -PdockerImagePlatform="amd64:linux,arm64:linux" \
         -DdockerUsername="$DOCKER_USER" -DdockerPassword="$DOCKER_PWD"
     [ $? -eq 0 ] && echo "Gradle command ran successfully." || exit 1
   else
