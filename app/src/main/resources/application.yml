@@ -63,6 +63,7 @@ cas-initializr:
       branch: 6.3
       type: cas-mgmt
       tomcatVersion: 9.0.65
+      javaVersion: 11
     - version: 6.4.1
       boot-version: 2.5.4
       platform-version: 6.4.6.2
@@ -70,6 +71,7 @@ cas-initializr:
       branch: 6.4
       type: cas-mgmt
       tomcatVersion: 9.0.65
+      javaVersion: 11
     - version: 6.5.5
       boot-version: 2.6.3
       platform-version: 6.5.8
@@ -77,6 +79,7 @@ cas-initializr:
       branch: 6.5
       type: cas-mgmt
       tomcatVersion: 9.0.65
+      javaVersion: 11
     - version: 6.3.7.2
       boot-version: 2.3.7.RELEASE
       platform-version: 6.3.7.2
@@ -84,6 +87,7 @@ cas-initializr:
       branch: 6.3
       type: cas
       tomcatVersion: 9.0.65
+      javaVersion: 11
     - version: 6.4.6.6
       boot-version: 2.5.4
       platform-version: 6.4.6.6
@@ -91,6 +95,7 @@ cas-initializr:
       branch: 6.4
       type: cas
       tomcatVersion: 9.0.65
+      javaVersion: 11
     - version: 6.5.8
       platform-version: 6.5.8
       boot-version: 2.6.3
@@ -98,6 +103,7 @@ cas-initializr:
       sync: true
       type: cas
       tomcatVersion: 9.0.65
+      javaVersion: 11
     - version: 6.6.0-SNAPSHOT
       platform-version: 6.6.0-SNAPSHOT
       boot-version: 2.7.2
@@ -105,6 +111,7 @@ cas-initializr:
       branch: master
       type: cas
       tomcatVersion: 9.0.65
+      javaVersion: 11
 
 initializr:
   name:
@@ -120,8 +127,9 @@ initializr:
   package-name:
     value: org.apereo
   javaVersions:
-    - id: @javaVersion@
+    - id: 11
       default: true
+    - id: 17
   languages:
     - name: Java
       id: java

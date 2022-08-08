@@ -151,6 +151,7 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
             .findFirst()
             .ifPresent(version -> {
                 templateVariables.put("tomcatVersion", version.getTomcatVersion());
+                templateVariables.put("javaVersion", version.getJavaVersion());
             });
 
         if (type.equals(CasManagementOverlayBuildSystem.ID)) {

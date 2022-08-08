@@ -184,7 +184,7 @@ task verifyRequiredJavaVersion {
     def currentVersion = org.gradle.api.JavaVersion.current()
     logger.info "Checking current Java version ${currentVersion} for required Java version ${project.targetCompatibility}"
     if (!currentVersion.name.equalsIgnoreCase("${project.targetCompatibility}")) {
-        throw new GradleException("Current Java version ${currentVersion} does not match required Java version ${project.targetCompatibility}")
+        logger.warn("Careful: Current Java version ${currentVersion} does not match required Java version ${project.targetCompatibility}")
     }
 }
 

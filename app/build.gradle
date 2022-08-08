@@ -48,8 +48,8 @@ dependencies {
     implementation "io.spring.initializr:initializr-generator"
     implementation "io.spring.initializr:initializr-generator"
 
-    implementation "org.apereo.cas:cas-server-core-configuration-metadata-repository:${casVersion}"
-    implementation "org.apereo.cas:cas-server-core-api-configuration-model:${casVersion}"
+    implementation "org.apereo.cas:cas-server-core-configuration-metadata-repository:${casInitializrVersion}"
+    implementation "org.apereo.cas:cas-server-core-api-configuration-model:${casInitializrVersion}"
 
     runtimeOnly "org.springframework.boot:spring-boot-starter-tomcat"
 
@@ -57,7 +57,7 @@ dependencies {
 }
 
 bootBuildImage {
-    imageName = "apereo/cas-initializr:${casVersion}"
+    imageName = "apereo/cas-initializr:${casInitializrVersion}"
 }
 
 bootJar {
@@ -83,8 +83,7 @@ def getBranchName(String version) {
 processResources {
     filesMatching(['**/*.yml', '**/*.properties', '**/*.md', '**/*.mustache']) {
         filter org.apache.tools.ant.filters.ReplaceTokens, tokens: [
-                "javaVersion"                            : project.sourceCompatibility,
-                "casBranch"                              : getBranchName(project.property("casVersion").toString()),
+                "casBranch"                              : getBranchName(project.property("casInitializrVersion").toString()),
                 "version"                                : project.property("version"),
                 "gradleDependencyManagementPluginVersion": project.property("gradleDependencyManagementPluginVersion"),
                 "gradleFreeFairPluginVersion"            : project.property("gradleFreeFairPluginVersion"),
