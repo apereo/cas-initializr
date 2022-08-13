@@ -9,11 +9,6 @@ management:
     enabled: false
   server:
     port: ${MGMT_PORT:${PORT:8080}}
-    # Mgmt server address cannot be specified if
-    # the server port and the management server port
-    # are the same. This needs to be modified manually
-    # or controlled using a runtime system setting.
-    # address: ${MGMT_ADDRESS:}
   endpoints:
     enabled-by-default: false
     web:
@@ -41,79 +36,16 @@ logging:
         initializr: debug
 
 spring:
+  profiles:
+    include: initializr
   cloud:
     compatibility-verifier.enabled: false 
   main:
     allow-bean-definition-overriding: true
 
-#######################################################################
-# Note:
-#
-# As versions change here, the BOM section might also be updated
-# particularly when new versions are released.
-# BOM should always point to the latest version of the software.
-#
-###########################################################################
-cas-initializr:
-  supported-versions:
-    - version: 6.3.10
-      platform-version: 6.3.7.4
-      boot-version: 2.3.7.RELEASE
-      sync: true
-      branch: 6.3
-      type: cas-mgmt
-      tomcatVersion: 9.0.65
-      javaVersion: 11
-    - version: 6.4.1
-      boot-version: 2.5.4
-      platform-version: 6.4.6.2
-      sync: true
-      branch: 6.4
-      type: cas-mgmt
-      tomcatVersion: 9.0.65
-      javaVersion: 11
-    - version: 6.5.5
-      boot-version: 2.6.3
-      platform-version: 6.5.8
-      sync: true
-      branch: 6.5
-      type: cas-mgmt
-      tomcatVersion: 9.0.65
-      javaVersion: 11
-    - version: 6.3.7.2
-      boot-version: 2.3.7.RELEASE
-      platform-version: 6.3.7.2
-      sync: true
-      branch: 6.3
-      type: cas
-      tomcatVersion: 9.0.65
-      javaVersion: 11
-    - version: 6.4.6.6
-      boot-version: 2.5.4
-      platform-version: 6.4.6.6
-      sync: true
-      branch: 6.4
-      type: cas
-      tomcatVersion: 9.0.65
-      javaVersion: 11
-    - version: 6.5.8
-      platform-version: 6.5.8
-      boot-version: 2.6.3
-      branch: 6.5
-      sync: true
-      type: cas
-      tomcatVersion: 9.0.65
-      javaVersion: 11
-    - version: 6.6.0-SNAPSHOT
-      platform-version: 6.6.0-SNAPSHOT
-      boot-version: 2.7.2
-      sync: true
-      branch: master
-      type: cas
-      tomcatVersion: 9.0.65
-      javaVersion: 11
-
 initializr:
+  env:
+    force-ssl: true
   name:
     value: cas
   description:
@@ -130,6 +62,7 @@ initializr:
     - id: 11
       default: true
     - id: 17
+    - id: 21
   languages:
     - name: Java
       id: java
@@ -223,21 +156,6 @@ initializr:
         format: project
       default: false
       action: /starter.tgz
-
-  boot-versions:
-    - id: 2.7.2
-      default: true
-  env:
-    force-ssl: true
-    boms:
-      cas-bom:
-        groupId: org.apereo.cas
-        artifactId: cas-server-support-bom
-        version: 6.6.0-SNAPSHOT
-      cas-mgmt-bom:
-        groupId: org.apereo.cas
-        artifactId: cas-mgmt-support-bom
-        version: 6.5.6
   dependencies:
     - name: api
       content:
@@ -2562,6 +2480,12 @@ initializr:
           groupId: org.apereo.cas
           artifactId: cas-server-support-throttle-jdbc
           description: Apereo CAS JDBC Authentication Throttling
+          bom: cas-bom
+        - name: cas-server-support-throttle-ldap
+          id: support-throttle-ldap
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-throttle-ldap
+          description: Apereo CAS LDAP Authentication Throttling
           bom: cas-bom
         - name: cas-server-support-throttle-mongo
           id: support-throttle-mongo
