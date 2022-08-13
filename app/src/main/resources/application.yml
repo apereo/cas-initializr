@@ -1219,6 +1219,12 @@ initializr:
           bom: cas-bom
           aliases:
             - remote
+        - name: cas-server-support-geolocation-ip
+          id: support-geolocation-ip
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-geolocation-ip
+          description: Apereo CAS GeoLocation IP Tracking Support
+          bom: cas-bom
         - name: cas-server-support-geolocation
           id: support-geolocation
           groupId: org.apereo.cas
@@ -2229,6 +2235,12 @@ initializr:
           artifactId: cas-server-support-session-redis
           description: Apereo CAS Web Application Redis Session Management
           bom: cas-bom
+        - name: cas-server-support-shell-core
+          id: support-shell-core
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-shell-core
+          description: Apereo CAS Shell Core
+          bom: cas-bom
         - name: cas-server-support-shell
           id: support-shell
           groupId: org.apereo.cas
@@ -2442,6 +2454,13 @@ initializr:
           bom: cas-bom
           aliases:
             - throttle
+        - name: cas-server-support-bucket4j-core
+          id: support-bucket4j-core
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-bucket4j-core
+          description: Apereo CAS Bucket4j Core
+          bom: cas-bom
+          compatibilityRange: 6.5.0
         - name: cas-server-support-throttle-bucket4j-core
           id: support-throttle-bucket4j-core
           groupId: org.apereo.cas
