@@ -75,15 +75,19 @@ bootRun {
     args = appArgList
 }
 
-def getBranchName(String version) {
-    def casBranch = version.split("\\.")
-    return casBranch[0] + "." + casBranch[1]
-}
 
 processResources {
+    filesMatching("**/application-*.yml") {
+        expand (
+                springBootLatestVersion: project.springBootLatestVersion,
+                apacheTomcat9LatestVersion: project.apacheTomcat9LatestVersion,
+                casLatestVersion: project.casLatestVersion,
+                casManagementLatestVersion: project.casManagementLatestVersion
+        )
+    }
+
     filesMatching(['**/*.yml', '**/*.properties', '**/*.md', '**/*.mustache']) {
         filter org.apache.tools.ant.filters.ReplaceTokens, tokens: [
-                "casBranch"                              : getBranchName(project.property("casInitializrVersion").toString()),
                 "version"                                : project.property("version"),
                 "gradleDependencyManagementPluginVersion": project.property("gradleDependencyManagementPluginVersion"),
                 "gradleFreeFairPluginVersion"            : project.property("gradleFreeFairPluginVersion"),
@@ -100,7 +104,7 @@ supportedTypes.forEach({ type ->
                          dependsOn: build) {
         doLast {
             def yaml = new org.yaml.snakeyaml.Yaml()
-            def file = file("${buildDir}/resources/main/application.yml")
+            def file = file("${buildDir}/resources/main/application-initializr.yml")
             def config = yaml.load(file.newInputStream())
             def supportedVersions = config.'cas-initializr'.'supported-versions'
             def results = supportedVersions.findAll { ver -> ver.type == type }
