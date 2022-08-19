@@ -3,15 +3,20 @@
 source ./ci/functions.sh
 
 CAS_VERSION=${1:-$DEFAULT_CAS_VERSION}
-BOOT_VERSION=${2:-$DEFAULT_BOOT_VERSION}
+BOOT_VERSION=$2
+
+parameters="casVersion=${CAS_VERSION}"
+if [ -z "${BOOT_VERSION}" ]; then
+  parameters="${parameters}&bootVersion=${BOOT_VERSION}"
+fi
 
 java -jar app/build/libs/app.jar &
 pid=$!
 sleep 30
 mkdir tmp
 cd tmp
-curl http://localhost:8080/starter.tgz --connect-timeout 30 \
-   -d "casVersion=${CAS_VERSION}&bootVersion=${BOOT_VERSION}" | tar -xzvf -
+echo "Requesting CAS overlay for ${parameters}"
+curl http://localhost:8080/starter.tgz --connect-timeout 30 -d "${parameters}" | tar -xzvf -
 kill -9 $pid
 
 ./gradlew clean build

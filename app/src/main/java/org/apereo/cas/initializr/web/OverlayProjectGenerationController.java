@@ -9,16 +9,18 @@ import java.util.Map;
 public class OverlayProjectGenerationController extends ProjectGenerationController<OverlayProjectRequest> {
 
 
-    public OverlayProjectGenerationController(final InitializrMetadataProvider metadataProvider,
-                                              final ProjectGenerationInvoker<OverlayProjectRequest> projectGenerationInvoker) {
+    public OverlayProjectGenerationController(
+        final InitializrMetadataProvider metadataProvider,
+        final ProjectGenerationInvoker<OverlayProjectRequest> projectGenerationInvoker) {
         super(metadataProvider, projectGenerationInvoker);
     }
 
     @Override
-    public OverlayProjectRequest projectRequest(final Map<String, String> headers) {
+    public OverlayProjectRequest projectRequest(final Map<String, String> parameters) {
         var request = new OverlayProjectRequest();
-        request.getParameters().putAll(headers);
+        request.getParameters().putAll(parameters);
         request.initialize(getMetadata());
+        request.setBootVersion(null);
         return request;
     }
 }

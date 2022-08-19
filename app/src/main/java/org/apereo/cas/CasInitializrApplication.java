@@ -42,11 +42,12 @@ public class CasInitializrApplication {
 
     @Bean
     public OverlayProjectGenerationController projectGenerationController(
+        final CasInitializrProperties properties,
         final InitializrMetadataProvider metadataProvider,
         final ApplicationContext applicationContext,
         final ObjectProvider<ProjectRequestPlatformVersionTransformer> platformVersionTransformer) {
         var transformer = platformVersionTransformer.getIfAvailable(DefaultProjectRequestPlatformVersionTransformer::new);
-        var converter = new OverlayProjectRequestToDescriptionConverter(transformer);
+        var converter = new OverlayProjectRequestToDescriptionConverter(transformer, properties);
         var invoker = new CasInitializrProjectGenerationInvoker(applicationContext, converter, new CasInitializrProjectAssetGenerator());
         return new OverlayProjectGenerationController(metadataProvider, invoker);
     }
