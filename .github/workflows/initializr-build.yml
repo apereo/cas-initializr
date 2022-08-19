@@ -180,8 +180,10 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: binary-artifacts
-      - name: Validate Overlay
+      - name: Validate Overlay w/ CAS & SpringBoot
         run: ./ci/validate-cas-overlay.sh ${{ matrix.versions.version }} ${{ matrix.versions.boot-version }}
+      - name: Validate Overlay w/ CAS Only
+        run: ./ci/validate-cas-overlay.sh ${{ matrix.versions.version }}
   validate-cas-mgmt-overlay:
     needs: [ supported-versions-cas-mgmt ]
     runs-on: ubuntu-latest
