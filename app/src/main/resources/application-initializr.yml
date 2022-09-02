@@ -20,7 +20,7 @@ cas-initializr:
       sync: true
       branch: 6.3
       type: cas-mgmt
-      tomcatVersion: ${apacheTomcat9LatestVersion}
+      tomcat-version: ${apacheTomcat9LatestVersion}
       javaVersion: 11
     - version: 6.4.1
       boot-version: 2.5.4
@@ -28,45 +28,45 @@ cas-initializr:
       sync: true
       branch: 6.4
       type: cas-mgmt
-      tomcatVersion: ${apacheTomcat9LatestVersion}
-      javaVersion: 11
+      tomcat-version: ${apacheTomcat9LatestVersion}
+      java-version: 11
     - version: ${casManagementLatestVersion}
       boot-version: 2.6.3
       platform-version: 6.5.8
       sync: true
       branch: 6.5
       type: cas-mgmt
-      tomcatVersion: ${apacheTomcat9LatestVersion}
-      javaVersion: 11
+      tomcat-version: ${apacheTomcat9LatestVersion}
+      java-version: 11
     - version: 6.3.7.2
       boot-version: 2.3.7.RELEASE
       platform-version: 6.3.7.2
       sync: true
       branch: 6.3
       type: cas
-      tomcatVersion: ${apacheTomcat9LatestVersion}
-      javaVersion: 11
+      tomcat-version: ${apacheTomcat9LatestVersion}
+      java-version: 11
     - version: 6.4.6.6
       boot-version: 2.5.4
       platform-version: 6.4.6.6
       sync: true
       branch: 6.4
       type: cas
-      tomcatVersion: ${apacheTomcat9LatestVersion}
-      javaVersion: 11
+      tomcat-version: ${apacheTomcat9LatestVersion}
+      java-version: 11
     - version: 6.5.9
       platform-version: 6.5.9
       boot-version: 2.6.3
       branch: 6.5
       sync: true
       type: cas
-      tomcatVersion: ${apacheTomcat9LatestVersion}
-      javaVersion: 11
+      tomcat-version: ${apacheTomcat9LatestVersion}
+      java-version: 11
     - version: ${casLatestVersion}
       platform-version: ${casLatestVersion}
       boot-version: ${springBootLatestVersion}
       sync: true
       branch: master
       type: cas
-      tomcatVersion: ${apacheTomcat9LatestVersion}
-      javaVersion: 11
+      tomcat-version: ${apacheTomcat9LatestVersion}
+      java-version: 11

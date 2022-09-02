@@ -1,7 +1,7 @@
 #!/bin/bash
 
 function downloadTomcat() {
-  tomcatVersion=$(./gradlew properties -q | grep tomcatVersion | cut -d':' -f2 | sed 's/ *//g')
+  tomcatVersion=$1
   echo "Apache Tomcat version: ${tomcatVersion}"
   tomcatVersionTag="v${tomcatVersion}"
 
