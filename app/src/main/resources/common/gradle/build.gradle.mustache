@@ -34,7 +34,7 @@ buildscript {
         classpath "io.freefair.gradle:maven-plugin:${project.gradleFreeFairPluginVersion}"
         classpath "io.freefair.gradle:lombok-plugin:${project.gradleFreeFairPluginVersion}"
         classpath "io.spring.gradle:dependency-management-plugin:${project.gradleDependencyManagementPluginVersion}"
-        classpath "gradle.plugin.com.google.cloud.tools:jib-gradle-plugin:${project.jibVersion}"
+        classpath "com.google.cloud.tools:jib-gradle-plugin:${project.jibVersion}"
 
         {{#casServer}}
         classpath "de.undercouch:gradle-download-task:${project.gradleDownloadTaskVersion}"
