@@ -70,11 +70,6 @@ bootRun {
     list.add("java.management/sun.management=ALL-UNNAMED")
     list.add("--add-opens")
     list.add("jdk.management/com.sun.management.internal=ALL-UNNAMED")
-
-    list.add("-XX:+UnlockExperimentalVMOptions")
-    list.add("-XX:+EnableJVMCI")
-    list.add("-XX:+UseJVMCICompiler")
-
     list.add("-Xrunjdwp:transport=dt_socket,address=5000,server=y,suspend=n")
 
     jvmArgs = list
