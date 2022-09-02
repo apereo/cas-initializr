@@ -54,8 +54,8 @@ cas-initializr:
       type: cas
       tomcatVersion: ${apacheTomcat9LatestVersion}
       javaVersion: 11
-    - version: 6.5.8
-      platform-version: 6.5.8
+    - version: 6.5.9
+      platform-version: 6.5.9
       boot-version: 2.6.3
       branch: 6.5
       sync: true
