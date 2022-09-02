@@ -47,19 +47,19 @@ until curl -k -L --output /dev/null --silent --fail http://localhost:8090/cas/lo
    sleep 5
 done
 echo -e "\n\nReady!"
-kill -9 $pid
+echo "Killing process $pid" && kill -9 $pid
 
 echo "Running CAS Overlay with bootRun"
-./gradlew clean build bootRun -Dserver.ssl.enabled=false -Dserver.port=8090 &
+./gradlew clean build bootRun -Dserver.ssl.enabled=false -Dserver.port=8091 &
 pid=$!
 sleep 15
 echo "Launched CAS with pid ${pid} using bootRun. Waiting for CAS server to come online..."
-until curl -k -L --output /dev/null --silent --fail http://localhost:8090/cas/login; do
+until curl -k -L --output /dev/null --silent --fail http://localhost:8091/cas/login; do
    echo -n '.'
    sleep 5
 done
 echo -e "\n\nReady!"
-kill -9 $pid
+echo "Killing process $pid" && kill -9 $pid
 
 chmod -R 777 ./*.sh >/dev/null 2>&1
 
