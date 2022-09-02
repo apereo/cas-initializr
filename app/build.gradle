@@ -113,10 +113,25 @@ supportedTypes.forEach({ type ->
     }
 })
 
-task latestVersions(description: "Display supported versions", dependsOn: build) {
+task latestCasVersion(description: "Display latest CAS version", dependsOn: build) {
     doLast {
         def results = [version: project.property("casLatestVersion"),
                        'boot-version': project.property("springBootLatestVersion")]
+        println(groovy.json.JsonOutput.toJson(results))
+    }
+}
+
+task latestCasMgmtVersion(description: "Display latest CAS Management version", dependsOn: build) {
+    doLast {
+        def results = [version: project.property("casManagementLatestVersion")]
+        println(groovy.json.JsonOutput.toJson(results))
+    }
+}
+
+task latestCasVersions(description: "Display latest CAS versions", dependsOn: build) {
+    doLast {
+        def results = ['cas-version': project.property("casLatestVersion"),
+                       'cas-mgmt-version': project.property("casManagementLatestVersion")]
         println(groovy.json.JsonOutput.toJson(results))
     }
 }

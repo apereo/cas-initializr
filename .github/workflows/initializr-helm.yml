@@ -58,10 +58,10 @@ jobs:
           name: binary-artifacts
       - id: print-supported-versions
         name: Print supported versions
-        run: ./gradlew --no-daemon -q latestVersions | jq
+        run: ./gradlew --no-daemon -q latestCasVersions | jq
       - id: get-supported-versions
         name: Get supported versions for matrix
-        run: echo "::set-output name=supported-versions::$(./gradlew --no-daemon -q latestVersions)]}"
+        run: echo "::set-output name=supported-versions::$(./gradlew --no-daemon -q latestCasVersions)]}"
   ##########################################################################
   helm:
     runs-on: ubuntu-latest
@@ -107,8 +107,8 @@ jobs:
       #        uses: mxschmitt/action-tmate@v3
       - name: Build Images for Helm Chart
         env:
-          HELM_CAS_VERSION: "${{ fromJSON(needs.latest-versions-cas.outputs.supported-versions).version }}"
-          HELM_BOOT_VERSION: "${{ fromJSON(needs.latest-versions-cas.outputs.supported-versions).boot-version }}"
-        run: ./ci/validate-helm-build-images.sh $HELM_CAS_VERSION $HELM_BOOT_VERSION
+          HELM_CAS_VERSION: "${{ fromJSON(needs.latest-versions-cas.outputs.supported-versions).cas-version }}"
+          HELM_CAS_MGMT_VERSION: "${{ fromJSON(needs.latest-versions-cas.outputs.supported-versions).cas-mgmt-version }}"
+        run: ./ci/validate-helm-build-images.sh $HELM_CAS_VERSION $HELM_CAS_MGMT_VERSION
       - name: Validate Helm Chart
         run: ./ci/validate-helm.sh

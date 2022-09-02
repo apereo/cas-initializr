@@ -58,10 +58,10 @@ jobs:
           name: binary-artifacts
       - id: print-supported-versions
         name: Print supported versions
-        run: ./gradlew --no-daemon -q latestVersions | jq
+        run: ./gradlew --no-daemon -q latestCasVersion | jq
       - id: get-supported-versions
         name: Get supported versions for matrix
-        run: echo "::set-output name=supported-versions::$(./gradlew --no-daemon -q latestVersions)]}"
+        run: echo "::set-output name=supported-versions::$(./gradlew --no-daemon -q latestCasVersion)]}"
   ##########################################################################
   supported-versions-cas:
     needs: [ build ]

@@ -3,16 +3,14 @@
 source ./ci/functions.sh
 
 CAS_VERSION=${1:-$DEFAULT_CAS_VERSION}
-BOOT_VERSION=${2:-$DEFAULT_BOOT_VERSION}
-MGMT_VERSION=${3:-$DEFAULT_MGMT_VERSION}
-MGMT_BOOT_VERSION=${4:-$DEFAULT_MGMT_BOOT_VERSION}
+CAS_MGMT_VERSION=${2:-$DEFAULT_MGMT_VERSION}
 
 # set BUILD_IMAGES to something other than yes to skip image buildings
 BUILD_IMAGES=${BUILD_IMAGES:-yes}
 
-echo "Validating HELM build images for CAS ${CAS_VERSION} and Spring Boot ${BOOT_VERSION}..."
+echo "Validating HELM build images for CAS ${CAS_VERSION}"
 
-# pass clean as first arg if you want to build new intializr
+# pass clean as first arg if you want to build new initializr
 if [[ $1 == "clean" ]] ; then
   CLEAN=clean
   shift
@@ -35,8 +33,7 @@ function updateImage() {
 function updateOverlay() {
   local type=${1:-cas-overlay}
   local cas_version=${2:-$CAS_VERSION}
-  local boot_version=${3:-$BOOT_VERSION}
-  local dependencies=${4:-""}
+  local dependencies=${3:-""}
 
   if [[ -d tmp/$type ]] ; then
     rm -rf tmp/$type
@@ -49,9 +46,9 @@ function updateOverlay() {
     postdata="${postdata}&dependencies=${dependencies}"
   fi
   # create project dir from Initializr with support boot admin, metrics, and git service registry
-  echo "Creating overlay of type: ${type}:${cas_version}:${boot_version} with dependencies: ${dependencies} in folder $(pwd)"
+  echo "Creating overlay of type: ${type}:${cas_version} with dependencies: ${dependencies} in folder $(pwd)"
   echo "Running: curl http://localhost:8080/starter.tgz -d $postdata"
-  curl http://localhost:8080/starter.tgz -d casVersion=${cas_version} -d bootVersion=${boot_version} -d $postdata | tar -xzf -
+  curl http://localhost:8080/starter.tgz -d casVersion="${cas_version}" -d $postdata | tar -xzf -
   cd ../..
 }
 
@@ -66,11 +63,11 @@ java -jar app/build/libs/app.jar &
 
 waitForInitializr
 
-updateOverlay cas-overlay $CAS_VERSION $BOOT_VERSION core,bootadmin,metrics,jsonsvc
-updateOverlay cas-bootadmin-server-overlay $CAS_VERSION $BOOT_VERSION
-updateOverlay cas-config-server-overlay $CAS_VERSION $BOOT_VERSION
-updateOverlay cas-discovery-server-overlay $CAS_VERSION $BOOT_VERSION
-updateOverlay cas-management-overlay $MGMT_VERSION $MGMT_BOOT_VERSION
+updateOverlay cas-overlay $CAS_VERSION core,bootadmin,metrics,jsonsvc
+updateOverlay cas-bootadmin-server-overlay $CAS_VERSION
+updateOverlay cas-config-server-overlay $CAS_VERSION
+updateOverlay cas-discovery-server-overlay $CAS_VERSION
+updateOverlay cas-management-overlay $CAS_MGMT_VERSION
 
 stopInitializr
 
