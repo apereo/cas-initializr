@@ -42,6 +42,7 @@ jobs:
           path: ./**/build/libs/*.*
   ##########################################################################
   latest-versions-cas:
+    if: false
     needs: [ build ]
     runs-on: ubuntu-latest
     outputs:
@@ -64,6 +65,7 @@ jobs:
         run: echo "::set-output name=supported-versions::$(./gradlew --no-daemon -q latestCasVersion)]}"
   ##########################################################################
   supported-versions-cas:
+    if: false
     needs: [ build ]
     runs-on: ubuntu-latest
     outputs:
@@ -108,6 +110,7 @@ jobs:
         run: echo "::set-output name=supported-versions::$(./gradlew --no-daemon -q versions-cas-mgmt)]}"
   ##########################################################################
   sync-cas-mgmt-overlay:
+    if: false
     needs: [ supported-versions-cas-mgmt ]
     runs-on: ubuntu-latest
     strategy:
@@ -121,7 +124,7 @@ jobs:
         if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
         uses: actions/setup-java@v3
         with:
-          java-version: ${{ env.JDK_CURRENT }}
+          java-version: ${{ matrix.versions.java-version }}
           distribution: 'temurin'
       - name: Initialize
         if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
@@ -135,6 +138,7 @@ jobs:
         run: ./ci/sync-overlay.sh ${{ matrix.versions.version }} ${{ matrix.versions.boot-version }} ${{ matrix.versions.branch }} cas-management-overlay
   ##########################################################################
   sync-cas-overlay:
+    if: false
     needs: [ supported-versions-cas ]
     runs-on: ubuntu-latest
     strategy:
@@ -148,7 +152,7 @@ jobs:
         if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
         uses: actions/setup-java@v3
         with:
-          java-version: ${{ env.JDK_CURRENT }}
+          java-version: ${{ matrix.versions.java-version }}
           distribution: 'temurin'
       - name: Initialize
         if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
@@ -162,6 +166,7 @@ jobs:
         run: ./ci/sync-overlay.sh ${{ matrix.versions.version }} ${{ matrix.versions.boot-version }} ${{ matrix.versions.branch }} cas-overlay
   ##########################################################################
   validate-cas-overlay:
+    if: false
     needs: [ supported-versions-cas ]
     runs-on: ubuntu-latest
     strategy:
@@ -215,6 +220,7 @@ jobs:
           ./ci/validate-cas-mgmt-overlay.sh --cas ${{ matrix.versions.version }} \
             --apache-tomcat ${{ matrix.versions.tomcat-version }}
   validate-cas-configserver-overlay:
+    if: false
     needs: [ supported-versions-cas ]
     runs-on: ubuntu-latest
     strategy:
@@ -240,6 +246,7 @@ jobs:
           ./ci/validate-cas-configserver-overlay.sh --cas ${{ matrix.versions.version }} \
             --apache-tomcat ${{ matrix.versions.tomcat-version }}
   sync-cas-configserver-overlay:
+    if: false
     needs: [ supported-versions-cas ]
     runs-on: ubuntu-latest
     strategy:
@@ -266,6 +273,7 @@ jobs:
         if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
         run: ./ci/sync-overlay.sh ${{ matrix.versions.version }} ${{ matrix.versions.boot-version }} ${{ matrix.versions.branch }} cas-config-server-overlay
   validate-cas-discoveryserver-overlay:
+    if: false
     needs: [ supported-versions-cas ]
     runs-on: ubuntu-latest
     strategy:
@@ -289,6 +297,7 @@ jobs:
           ./ci/validate-cas-discoveryserver-overlay.sh --cas ${{ matrix.versions.version }} \
             --apache-tomcat ${{ matrix.versions.tomcat-version }}
   validate-cas-bootadminserver-overlay:
+    if: false
     needs: [ supported-versions-cas ]
     runs-on: ubuntu-latest
     strategy:
@@ -312,6 +321,7 @@ jobs:
           ./ci/validate-cas-bootadminserver-overlay.sh --cas ${{ matrix.versions.version }} \
             --apache-tomcat ${{ matrix.versions.tomcat-version }}
   publish:
+    if: false
     needs: [ build ]
     runs-on: ubuntu-latest
     steps:
