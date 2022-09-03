@@ -21,7 +21,7 @@ cas-initializr:
       branch: 6.3
       type: cas-mgmt
       tomcat-version: ${apacheTomcat9LatestVersion}
-      javaVersion: 11
+      java-version: 11
     - version: 6.4.1
       boot-version: 2.5.4
       platform-version: 6.4.6.2
