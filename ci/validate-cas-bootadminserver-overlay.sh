@@ -2,8 +2,22 @@
 
 source ./ci/functions.sh
 
-CAS_VERSION=${1:-$DEFAULT_CAS_VERSION}
-BOOT_VERSION=${2:-$DEFAULT_BOOT_VERSION}
+while (( "$#" )); do
+    case "$1" in
+    --cas)
+        CAS_VERSION="$2"
+        shift 2
+        ;;
+    --spring-boot)
+        BOOT_VERSION="$2"
+        shift 2
+        ;;
+    --apache-tomcat)
+        TOMCAT_VERSION="$2"
+        shift 2
+        ;;
+    esac
+done
 
 java -jar app/build/libs/app.jar &
 pid=$!
@@ -35,7 +49,7 @@ kill -9 $pid
 echo "Building Docker image with Jib"
 publishDockerImage
 
-downloadTomcat
+downloadTomcat $TOMCAT_VERSION
 mv build/libs/casbootadminserver.war ${CATALINA_HOME}/webapps/app.war
 
 export SPRING_SECURITY_USER_PASSWORD=password

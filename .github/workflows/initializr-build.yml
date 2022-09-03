@@ -2,7 +2,7 @@ name: Initializr Build
 
 env:
   TERM: xterm-256color
-  JDK_CURRENT: 17
+  JDK_CURRENT: 11
   DOCKER_USER: ${{ secrets.DOCKER_USER }}
   DOCKER_PWD: ${{ secrets.DOCKER_PWD }}
   GH_TOKEN: ${{ secrets.GH_TOKEN }}
@@ -58,10 +58,10 @@ jobs:
           name: binary-artifacts
       - id: print-supported-versions
         name: Print supported versions
-        run: ./gradlew --no-daemon -q latestVersions | jq
+        run: ./gradlew --no-daemon -q latestCasVersion | jq
       - id: get-supported-versions
         name: Get supported versions for matrix
-        run: echo "::set-output name=supported-versions::$(./gradlew --no-daemon -q latestVersions)]}"
+        run: echo "::set-output name=supported-versions::$(./gradlew --no-daemon -q latestCasVersion)]}"
   ##########################################################################
   supported-versions-cas:
     needs: [ build ]
@@ -121,7 +121,7 @@ jobs:
         if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
         uses: actions/setup-java@v3
         with:
-          java-version: ${{ env.JDK_CURRENT }}
+          java-version: ${{ matrix.versions.java-version }}
           distribution: 'temurin'
       - name: Initialize
         if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
@@ -148,7 +148,7 @@ jobs:
         if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
         uses: actions/setup-java@v3
         with:
-          java-version: ${{ env.JDK_CURRENT }}
+          java-version: ${{ matrix.versions.java-version }}
           distribution: 'temurin'
       - name: Initialize
         if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
@@ -173,7 +173,7 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
-          java-version: ${{ env.JDK_CURRENT }}
+          java-version: ${{ matrix.versions.java-version }}
           distribution: 'temurin'
       - name: Initialize
         run: chmod -R 777 ./ci/*.sh
@@ -181,9 +181,14 @@ jobs:
         with:
           name: binary-artifacts
       - name: Validate Overlay w/ CAS & SpringBoot
-        run: ./ci/validate-cas-overlay.sh ${{ matrix.versions.version }} ${{ matrix.versions.boot-version }}
+        run: |
+          ./ci/validate-cas-overlay.sh --cas ${{ matrix.versions.version }} \
+            --spring-boot ${{ matrix.versions.boot-version }} \
+            --apache-tomcat ${{ matrix.versions.tomcat-version }}
       - name: Validate Overlay w/ CAS Only
-        run: ./ci/validate-cas-overlay.sh ${{ matrix.versions.version }}
+        run: |
+          ./ci/validate-cas-overlay.sh --cas ${{ matrix.versions.version }} \
+            --apache-tomcat ${{ matrix.versions.tomcat-version }}
   validate-cas-mgmt-overlay:
     needs: [ supported-versions-cas-mgmt ]
     runs-on: ubuntu-latest
@@ -196,7 +201,7 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
-          java-version: ${{ env.JDK_CURRENT }}
+          java-version: ${{ matrix.versions.java-version }}
           distribution: 'temurin'
       - name: Initialize
         run: chmod -R 777 ./ci/*.sh
@@ -206,7 +211,9 @@ jobs:
       # - name: Setup tmate session
       #   uses: mxschmitt/action-tmate@v3
       - name: Validate Overlay
-        run: ./ci/validate-cas-mgmt-overlay.sh ${{ matrix.versions.version }} ${{ matrix.versions.boot-version }}
+        run: |
+          ./ci/validate-cas-mgmt-overlay.sh --cas ${{ matrix.versions.version }} \
+            --apache-tomcat ${{ matrix.versions.tomcat-version }}
   validate-cas-configserver-overlay:
     needs: [ supported-versions-cas ]
     runs-on: ubuntu-latest
@@ -219,7 +226,7 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
-          java-version: ${{ env.JDK_CURRENT }}
+          java-version: ${{ matrix.versions.java-version }}
           distribution: 'temurin'
       - name: Initialize
         run: chmod -R 777 ./ci/*.sh
@@ -229,7 +236,9 @@ jobs:
       # - name: Setup tmate session
       #   uses: mxschmitt/action-tmate@v3
       - name: Validate Overlay
-        run: ./ci/validate-cas-configserver-overlay.sh ${{ matrix.versions.version }} ${{ matrix.versions.boot-version }}
+        run: |
+          ./ci/validate-cas-configserver-overlay.sh --cas ${{ matrix.versions.version }} \
+            --apache-tomcat ${{ matrix.versions.tomcat-version }}
   sync-cas-configserver-overlay:
     needs: [ supported-versions-cas ]
     runs-on: ubuntu-latest
@@ -244,7 +253,7 @@ jobs:
         if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
         uses: actions/setup-java@v3
         with:
-          java-version: ${{ env.JDK_CURRENT }}
+          java-version: ${{ matrix.versions.java-version }}
           distribution: 'temurin'
       - name: Initialize
         if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
@@ -268,7 +277,7 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
-          java-version: ${{ env.JDK_CURRENT }}
+          java-version: ${{ matrix.versions.java-version }}
           distribution: 'temurin'
       - name: Initialize
         run: chmod -R 777 ./ci/*.sh
@@ -276,7 +285,9 @@ jobs:
         with:
           name: binary-artifacts
       - name: Validate Overlay
-        run: ./ci/validate-cas-discoveryserver-overlay.sh ${{ matrix.versions.version }} ${{ matrix.versions.boot-version }}
+        run: |
+          ./ci/validate-cas-discoveryserver-overlay.sh --cas ${{ matrix.versions.version }} \
+            --apache-tomcat ${{ matrix.versions.tomcat-version }}
   validate-cas-bootadminserver-overlay:
     needs: [ supported-versions-cas ]
     runs-on: ubuntu-latest
@@ -289,7 +300,7 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
-          java-version: ${{ env.JDK_CURRENT }}
+          java-version: ${{ matrix.versions.java-version }}
           distribution: 'temurin'
       - name: Initialize
         run: chmod -R 777 ./ci/*.sh
@@ -297,7 +308,9 @@ jobs:
         with:
           name: binary-artifacts
       - name: Validate Overlay
-        run: ./ci/validate-cas-bootadminserver-overlay.sh ${{ matrix.versions.version }} ${{ matrix.versions.boot-version }}
+        run: |
+          ./ci/validate-cas-bootadminserver-overlay.sh --cas ${{ matrix.versions.version }} \
+            --apache-tomcat ${{ matrix.versions.tomcat-version }}
   publish:
     needs: [ build ]
     runs-on: ubuntu-latest
