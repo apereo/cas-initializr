@@ -108,7 +108,7 @@ jobs:
         run: echo "::set-output name=supported-versions::$(./gradlew --no-daemon -q versions-cas-mgmt)]}"
   ##########################################################################
   sync-cas-mgmt-overlay:
-        needs: [ supported-versions-cas-mgmt ]
+    needs: [ supported-versions-cas-mgmt ]
     runs-on: ubuntu-latest
     strategy:
       matrix:
