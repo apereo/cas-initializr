@@ -286,7 +286,7 @@ jobs:
           name: binary-artifacts
       - name: Validate Overlay
         run: |
-          ./ci/validate-cas-discoveryserver-overlay.sh--cas ${{ matrix.versions.version }} \
+          ./ci/validate-cas-discoveryserver-overlay.sh --cas ${{ matrix.versions.version }} \
             --apache-tomcat ${{ matrix.versions.tomcat-version }}
   validate-cas-bootadminserver-overlay:
     needs: [ supported-versions-cas ]

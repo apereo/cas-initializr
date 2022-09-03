@@ -56,9 +56,9 @@ echo -e "\n\nReady!"
 kill -9 $pid
 
 echo "Building Docker image with Jib"
-publishDockerImage $TOMCAT_VERSION
+publishDockerImage
 
-downloadTomcat
+downloadTomcat $TOMCAT_VERSION
 mv build/libs/casconfigserver.war ${CATALINA_HOME}/webapps/app.war
 
 export SPRING_SECURITY_USER_PASSWORD=password
