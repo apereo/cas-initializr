@@ -86,7 +86,7 @@ ps -ef
 chmod -R 777 ./*.sh >/dev/null 2>&1
 
 #echo "Building Docker image with Spring Boot"
-#./gradlew bootBuildImage
+#./gradlew --no-daemon bootBuildImage
 
 echo "Building Docker image with Jib"
 publishDockerImage
