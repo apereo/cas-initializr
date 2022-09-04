@@ -22,6 +22,7 @@ cas-initializr:
       type: cas-mgmt
       tomcat-version: 9.0.65
       java-version: 11
+      container-base-image: eclipse-temurin:11-jre
     - version: 6.4.1
       boot-version: 2.5.4
       platform-version: 6.4.6.2
@@ -30,6 +31,7 @@ cas-initializr:
       type: cas-mgmt
       tomcat-version: 9.0.65
       java-version: 11
+      container-base-image: eclipse-temurin:11-jre
     - version: ${casManagementLatestVersion}
       boot-version: 2.6.3
       platform-version: 6.5.8
@@ -38,6 +40,7 @@ cas-initializr:
       type: cas-mgmt
       tomcat-version: 9.0.65
       java-version: 11
+      container-base-image: eclipse-temurin:11-jre
     - version: 6.3.7.2
       boot-version: 2.3.7.RELEASE
       platform-version: 6.3.7.2
@@ -46,6 +49,7 @@ cas-initializr:
       type: cas
       tomcat-version: 9.0.65
       java-version: 11
+      container-base-image: eclipse-temurin:11-jre
     - version: 6.4.6.6
       boot-version: 2.5.4
       platform-version: 6.4.6.6
@@ -54,6 +58,7 @@ cas-initializr:
       type: cas
       tomcat-version: 9.0.65
       java-version: 11
+      container-base-image: eclipse-temurin:11-jre
     - version: 6.5.9
       platform-version: 6.5.9
       boot-version: 2.6.3
@@ -62,6 +67,7 @@ cas-initializr:
       type: cas
       tomcat-version: 9.0.65
       java-version: 11
+      container-base-image: eclipse-temurin:11-jre
     - version: 6.6.0
       platform-version: 6.6.0
       boot-version: 2.7.3
@@ -70,6 +76,7 @@ cas-initializr:
       type: cas
       tomcat-version: 9.0.65
       java-version: 11
+      container-base-image: eclipse-temurin:11-jre
     - version: ${casLatestVersion}
       platform-version: ${casLatestVersion}
       boot-version: ${springBootLatestVersion}
@@ -78,3 +85,4 @@ cas-initializr:
       type: cas
       tomcat-version: ${apacheTomcat9LatestVersion}
       java-version: 17
+      container-base-image: eclipse-temurin:17-jre
