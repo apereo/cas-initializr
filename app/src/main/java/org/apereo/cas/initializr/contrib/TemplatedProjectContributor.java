@@ -152,6 +152,7 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
             .ifPresent(version -> {
                 templateVariables.put("tomcatVersion", version.getTomcatVersion());
                 templateVariables.put("javaVersion", version.getJavaVersion());
+                templateVariables.put("containerBaseImageName", version.getContainerBaseImage());
             });
 
         if (type.equals(CasManagementOverlayBuildSystem.ID)) {

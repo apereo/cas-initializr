@@ -20,48 +20,63 @@ cas-initializr:
       sync: true
       branch: 6.3
       type: cas-mgmt
-      tomcat-version: ${apacheTomcat9LatestVersion}
+      tomcat-version: 9.0.65
       java-version: 11
+      container-base-image: eclipse-temurin:11-jre
     - version: 6.4.1
       boot-version: 2.5.4
       platform-version: 6.4.6.2
       sync: true
       branch: 6.4
       type: cas-mgmt
-      tomcat-version: ${apacheTomcat9LatestVersion}
+      tomcat-version: 9.0.65
       java-version: 11
+      container-base-image: eclipse-temurin:11-jre
     - version: ${casManagementLatestVersion}
       boot-version: 2.6.3
       platform-version: 6.5.8
       sync: true
       branch: 6.5
       type: cas-mgmt
-      tomcat-version: ${apacheTomcat9LatestVersion}
+      tomcat-version: 9.0.65
       java-version: 11
+      container-base-image: eclipse-temurin:11-jre
     - version: 6.3.7.2
       boot-version: 2.3.7.RELEASE
       platform-version: 6.3.7.2
       sync: true
       branch: 6.3
       type: cas
-      tomcat-version: ${apacheTomcat9LatestVersion}
+      tomcat-version: 9.0.65
       java-version: 11
+      container-base-image: eclipse-temurin:11-jre
     - version: 6.4.6.6
       boot-version: 2.5.4
       platform-version: 6.4.6.6
       sync: true
       branch: 6.4
       type: cas
-      tomcat-version: ${apacheTomcat9LatestVersion}
+      tomcat-version: 9.0.65
       java-version: 11
+      container-base-image: eclipse-temurin:11-jre
     - version: 6.5.9
       platform-version: 6.5.9
       boot-version: 2.6.3
       branch: 6.5
       sync: true
       type: cas
-      tomcat-version: ${apacheTomcat9LatestVersion}
+      tomcat-version: 9.0.65
       java-version: 11
+      container-base-image: eclipse-temurin:11-jre
+    - version: 6.6.0
+      platform-version: 6.6.0
+      boot-version: 2.7.3
+      sync: true
+      branch: 6.6
+      type: cas
+      tomcat-version: 9.0.65
+      java-version: 11
+      container-base-image: eclipse-temurin:11-jre
     - version: ${casLatestVersion}
       platform-version: ${casLatestVersion}
       boot-version: ${springBootLatestVersion}
@@ -69,4 +84,5 @@ cas-initializr:
       branch: master
       type: cas
       tomcat-version: ${apacheTomcat9LatestVersion}
-      java-version: 11
+      java-version: 17
+      container-base-image: eclipse-temurin:17-jre
