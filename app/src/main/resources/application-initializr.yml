@@ -72,7 +72,7 @@ cas-initializr:
       platform-version: 6.6.0
       boot-version: 2.7.3
       sync: true
-      branch: 6.6.x
+      branch: 6.6
       type: cas
       tomcat-version: 9.0.65
       java-version: 11
