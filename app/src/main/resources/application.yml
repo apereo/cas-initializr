@@ -30,7 +30,7 @@ logging:
       springframework:
         web: debug
       apereo:
-        cas: info
+        cas: debug
     io:
       spring:
         initializr: debug

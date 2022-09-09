@@ -82,6 +82,7 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
     }
 
     protected static void createTemplateFile(final Path output, final String template) throws IOException {
+        log.info(output.toFile().getAbsolutePath());
         FileCopyUtils.copy(new BufferedInputStream(new ByteArrayInputStream(template.getBytes(StandardCharsets.UTF_8))),
             Files.newOutputStream(output, StandardOpenOption.APPEND));
         val filename = output.getFileName().toFile().getName();
