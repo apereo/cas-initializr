@@ -36,7 +36,7 @@ public class CasManagementOverlayProjectGenerationConfiguration {
 
     @Bean
     public CasManagementOverlayDockerContributor casMgmtOverlayDockerContributor() {
-        return new CasManagementOverlayDockerContributor();
+        return new CasManagementOverlayDockerContributor(applicationContext);
     }
 
     @Bean

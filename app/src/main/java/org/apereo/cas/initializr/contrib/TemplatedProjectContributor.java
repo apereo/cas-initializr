@@ -2,6 +2,7 @@ package org.apereo.cas.initializr.contrib;
 
 import org.apereo.cas.initializr.config.CasInitializrProperties;
 import org.apereo.cas.initializr.web.OverlayProjectDescription;
+import org.apereo.cas.initializr.web.UnsupportedVersionException;
 import org.apereo.cas.initializr.web.VersionUtils;
 import org.apereo.cas.overlay.bootadminserver.buildsystem.CasSpringBootAdminServerOverlayBuildSystem;
 import org.apereo.cas.overlay.casmgmt.buildsystem.CasManagementOverlayBuildSystem;
@@ -22,6 +23,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
@@ -34,6 +36,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -41,6 +44,8 @@ import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -79,6 +84,8 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
     protected static void createTemplateFile(final Path output, final String template) throws IOException {
         FileCopyUtils.copy(new BufferedInputStream(new ByteArrayInputStream(template.getBytes(StandardCharsets.UTF_8))),
             Files.newOutputStream(output, StandardOpenOption.APPEND));
+        val filename = output.getFileName().toFile().getName();
+        output.toFile().setExecutable(filename.endsWith(".sh") || filename.endsWith(".bat"));
     }
 
     protected static List<CasDependency> handleProjectRequestedDependencies(final ProjectDescription project) {
@@ -94,20 +101,49 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
 
     @Override
     public void contribute(final Path projectRoot) throws IOException {
-        var output = projectRoot.resolve(relativePath);
-        if (!Files.exists(output)) {
-            Files.createDirectories(output.getParent());
-            Files.createFile(output);
+        if (resourcePattern.endsWith("/**")) {
+            val resources = resolver.getResources(resourcePattern);
+            for (val resource : resources) {
+                val filename = org.apache.commons.lang3.StringUtils.remove(resource.getFilename(), ".mustache");
+                val output = projectRoot.resolve(
+                    org.apache.commons.lang3.StringUtils.appendIfMissing(relativePath, "/") + filename);
+                createFileAndParentDirectories(output);
+                var templateVariables = getProjectTemplateVariables();
+                var template = renderTemplate(resource, templateVariables);
+
+                var project = applicationContext.getBean(OverlayProjectDescription.class);
+                template = postProcessRenderedTemplate(template, project, templateVariables);
+                createTemplateFile(output, template);
+            }
+        } else {
+            processTemplatedFile(projectRoot.resolve(relativePath));
         }
+    }
+
+    private Map<String, Object> getProjectTemplateVariables() {
         var project = applicationContext.getBean(OverlayProjectDescription.class);
         var templateVariables = prepareProjectTemplateVariables(project);
         var model = contributeInternal(project);
         if (model instanceof Map) {
             ((Map<String, Object>) model).putAll(templateVariables);
         }
+        return templateVariables;
+    }
+
+    private void processTemplatedFile(final Path output) throws IOException {
+        createFileAndParentDirectories(output);
+        var templateVariables = getProjectTemplateVariables();
+        var project = applicationContext.getBean(OverlayProjectDescription.class);
         var template = renderTemplateFromResource(resourcePattern, project, templateVariables);
         template = postProcessRenderedTemplate(template, project, templateVariables);
         createTemplateFile(output, template);
+    }
+
+    private static void createFileAndParentDirectories(final Path output) throws IOException {
+        if (!Files.exists(output)) {
+            Files.createDirectories(output.getParent());
+            Files.createFile(output);
+        }
     }
 
     protected String postProcessRenderedTemplate(final String template,
@@ -149,10 +185,13 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
             .filter(version -> version.getType().equals(project.getBuildSystem().overlayType())
                                && version.getVersion().equals(project.getCasVersion()))
             .findFirst()
-            .ifPresent(version -> {
+            .ifPresentOrElse(version -> {
                 templateVariables.put("tomcatVersion", version.getTomcatVersion());
                 templateVariables.put("javaVersion", version.getJavaVersion());
                 templateVariables.put("containerBaseImageName", version.getContainerBaseImage());
+            }, () -> {
+                throw new UnsupportedVersionException(project.getCasVersion(),
+                    "Unsupported version " + project.getCasVersion() + " for project type " + project.getBuildSystem().overlayType());
             });
 
         if (type.equals(CasManagementOverlayBuildSystem.ID)) {
@@ -233,7 +272,7 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         }
     }
     
-    protected String appendResource(final String appendTemplate,
+    protected static String appendResource(final String appendTemplate,
                                     final String originalTemplate,
                                     final OverlayProjectDescription project) throws IOException {
         try (var writer = new StringWriter()) {

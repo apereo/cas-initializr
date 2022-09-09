@@ -1,11 +1,5 @@
 package org.apereo.cas.overlay.casserver.config;
 
-import io.spring.initializr.generator.buildsystem.BuildItemResolver;
-import io.spring.initializr.generator.condition.ConditionalOnBuildSystem;
-import io.spring.initializr.generator.project.ProjectGenerationConfiguration;
-import io.spring.initializr.generator.project.contributor.ProjectContributor;
-import io.spring.initializr.generator.spring.build.BuildCustomizer;
-
 import org.apereo.cas.initializr.contrib.ChainingSingleResourceProjectContributor;
 import org.apereo.cas.initializr.contrib.ProjectReadMeContributor;
 import org.apereo.cas.initializr.contrib.gradle.OverlayGradleBuildContributor;
@@ -19,6 +13,11 @@ import org.apereo.cas.overlay.casserver.contrib.docker.CasOverlayDockerContribut
 import org.apereo.cas.overlay.casserver.contrib.helm.CasOverlayHelmContributor;
 import org.apereo.cas.overlay.casserver.customize.DefaultDependenciesBuildCustomizer;
 
+import io.spring.initializr.generator.buildsystem.BuildItemResolver;
+import io.spring.initializr.generator.condition.ConditionalOnBuildSystem;
+import io.spring.initializr.generator.project.ProjectGenerationConfiguration;
+import io.spring.initializr.generator.project.contributor.ProjectContributor;
+import io.spring.initializr.generator.spring.build.BuildCustomizer;
 import org.apache.commons.text.WordUtils;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +34,7 @@ public class CasOverlayProjectGenerationConfiguration {
 
     @Bean
     public CasOverlayDockerContributor casOverlayDockerContributor() {
-        return new CasOverlayDockerContributor();
+        return new CasOverlayDockerContributor(applicationContext);
     }
 
     @Bean
@@ -56,7 +55,7 @@ public class CasOverlayProjectGenerationConfiguration {
     @Bean
     public ProjectContributor overlayProjectReadMeContributor() {
         return new ProjectReadMeContributor(applicationContext)
-                .setAppendFromResource("classpath:overlay/README.md.mustache");
+            .setAppendFromResource("classpath:overlay/README.md.mustache");
     }
 
     @Bean
