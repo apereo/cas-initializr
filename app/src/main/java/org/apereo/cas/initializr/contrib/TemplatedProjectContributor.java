@@ -36,7 +36,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
-import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -44,8 +43,6 @@ import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -82,7 +79,7 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
     }
 
     protected static void createTemplateFile(final Path output, final String template) throws IOException {
-        log.info(output.toFile().getAbsolutePath());
+        log.info("Processing template file {}", output.toFile().getAbsolutePath());
         FileCopyUtils.copy(new BufferedInputStream(new ByteArrayInputStream(template.getBytes(StandardCharsets.UTF_8))),
             Files.newOutputStream(output, StandardOpenOption.APPEND));
         val filename = output.getFileName().toFile().getName();
@@ -105,16 +102,18 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         if (resourcePattern.endsWith("/**")) {
             val resources = resolver.getResources(resourcePattern);
             for (val resource : resources) {
-                val filename = org.apache.commons.lang3.StringUtils.remove(resource.getFilename(), ".mustache");
-                val output = projectRoot.resolve(
-                    org.apache.commons.lang3.StringUtils.appendIfMissing(relativePath, "/") + filename);
-                createFileAndParentDirectories(output);
-                var templateVariables = getProjectTemplateVariables();
-                var template = renderTemplate(resource, templateVariables);
-
-                var project = applicationContext.getBean(OverlayProjectDescription.class);
-                template = postProcessRenderedTemplate(template, project, templateVariables);
-                createTemplateFile(output, template);
+                if (resource.isReadable()) {
+                    val filename = org.apache.commons.lang3.StringUtils.remove(resource.getFilename(), ".mustache");
+                    val output = projectRoot.resolve(
+                        org.apache.commons.lang3.StringUtils.appendIfMissing(relativePath, "/") + filename);
+                    log.info("Output file {}", output.toFile().getAbsolutePath());
+                    createFileAndParentDirectories(output);
+                    var templateVariables = getProjectTemplateVariables();
+                    var template = renderTemplate(resource, templateVariables);
+                    var project = applicationContext.getBean(OverlayProjectDescription.class);
+                    template = postProcessRenderedTemplate(template, project, templateVariables);
+                    createTemplateFile(output, template);
+                }
             }
         } else {
             processTemplatedFile(projectRoot.resolve(relativePath));
@@ -160,8 +159,8 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         return renderTemplate(resource, model);
     }
 
-    private String renderTemplate(final Resource resource, final Object model) throws IOException {
-        log.debug("Rendering template [{}], using model [{}]", resourcePattern, model);
+    private static String renderTemplate(final Resource resource, final Object model) throws IOException {
+        log.debug("Rendering template [{}], using model [{}]", resource, model);
         try (var writer = new StringWriter()) {
             var mf = new DefaultMustacheFactory();
             var mustache = mf.compile(new InputStreamReader(resource.getInputStream()), resource.getFilename());
@@ -215,12 +214,12 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         } else {
             templateVariables.put("mainClass", "mainClassName");
         }
-        
+
         templateVariables.put("buildSystemId", type);
         templateVariables.put("containerImageName", StringUtils.remove(type, "-overlay"));
 
         templateVariables.put("initializrUrl", generateAppUrl());
-        
+
         if (type.equalsIgnoreCase(CasOverlayBuildSystem.ID) || type.equalsIgnoreCase(CasManagementOverlayBuildSystem.ID)) {
             handleApplicationServerType(project, templateVariables);
             templateVariables.put("hasDockerFile", Boolean.TRUE);
@@ -272,10 +271,10 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
             return false;
         }
     }
-    
+
     protected static String appendResource(final String appendTemplate,
-                                    final String originalTemplate,
-                                    final OverlayProjectDescription project) throws IOException {
+                                           final String originalTemplate,
+                                           final OverlayProjectDescription project) throws IOException {
         try (var writer = new StringWriter()) {
             writer.write(originalTemplate);
             writer.write(appendTemplate);
