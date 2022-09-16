@@ -14,48 +14,12 @@ initializr:
         version: ${casManagementLatestVersion}
 cas-initializr:
   supported-versions:
-    - version: 6.3.10
-      platform-version: 6.3.7.4
-      boot-version: 2.3.7.RELEASE
-      sync: true
-      branch: 6.3
-      type: cas-mgmt
-      tomcat-version: 9.0.65
-      java-version: 11
-      container-base-image: eclipse-temurin:11-jdk
-    - version: 6.4.1
-      boot-version: 2.5.4
-      platform-version: 6.4.6.2
-      sync: true
-      branch: 6.4
-      type: cas-mgmt
-      tomcat-version: 9.0.65
-      java-version: 11
-      container-base-image: eclipse-temurin:11-jdk
     - version: ${casManagementLatestVersion}
       boot-version: 2.6.3
       platform-version: 6.5.8
       sync: true
       branch: 6.5
       type: cas-mgmt
-      tomcat-version: 9.0.65
-      java-version: 11
-      container-base-image: eclipse-temurin:11-jdk
-    - version: 6.3.7.2
-      boot-version: 2.3.7.RELEASE
-      platform-version: 6.3.7.2
-      sync: true
-      branch: 6.3
-      type: cas
-      tomcat-version: 9.0.65
-      java-version: 11
-      container-base-image: eclipse-temurin:11-jdk
-    - version: 6.4.6.6
-      boot-version: 2.5.4
-      platform-version: 6.4.6.6
-      sync: true
-      branch: 6.4
-      type: cas
       tomcat-version: 9.0.65
       java-version: 11
       container-base-image: eclipse-temurin:11-jdk
