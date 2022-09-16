@@ -28,7 +28,7 @@ CAS Initializr is a Spring Boot application and can be run using the following c
 Or run the Docker image:
 
 ```bash  
-imageTag=(`./gradlew casVersion --q`) && docker run --rm -p 8080:8080 -t apereo/cas-initializr:$imageTag 
+imageTag=(`./gradlew initializrVersion --q`) && docker run --rm -p 8080:8080 -t apereo/cas-initializr:$imageTag 
 ```
 
 The service will be available on `http://localhost:8080`.

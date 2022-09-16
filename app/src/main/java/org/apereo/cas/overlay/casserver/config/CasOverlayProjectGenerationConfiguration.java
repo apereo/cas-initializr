@@ -7,7 +7,6 @@ import org.apereo.cas.initializr.contrib.gradle.OverlayGradlePropertiesContribut
 import org.apereo.cas.overlay.casserver.buildsystem.CasOverlayBuildSystem;
 import org.apereo.cas.overlay.casserver.buildsystem.CasOverlayGradleBuild;
 import org.apereo.cas.overlay.casserver.contrib.CasOverlayConfigurationDirectoriesContributor;
-import org.apereo.cas.overlay.casserver.contrib.CasOverlayConfigurationPropertiesContributor;
 import org.apereo.cas.overlay.casserver.contrib.CasOverlayLoggingConfigurationContributor;
 import org.apereo.cas.overlay.casserver.contrib.docker.CasOverlayDockerContributor;
 import org.apereo.cas.overlay.casserver.contrib.helm.CasOverlayHelmContributor;
@@ -18,7 +17,6 @@ import io.spring.initializr.generator.condition.ConditionalOnBuildSystem;
 import io.spring.initializr.generator.project.ProjectGenerationConfiguration;
 import io.spring.initializr.generator.project.contributor.ProjectContributor;
 import io.spring.initializr.generator.spring.build.BuildCustomizer;
-import org.apache.commons.text.WordUtils;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -47,7 +45,6 @@ public class CasOverlayProjectGenerationConfiguration {
         var chain = new ChainingSingleResourceProjectContributor();
         chain.addContributor(new OverlayGradleBuildContributor(applicationContext));
         chain.addContributor(new CasOverlayConfigurationDirectoriesContributor());
-        chain.addContributor(new CasOverlayConfigurationPropertiesContributor(applicationContext));
         chain.addContributor(new CasOverlayLoggingConfigurationContributor());
         return chain;
     }
@@ -75,11 +72,5 @@ public class CasOverlayProjectGenerationConfiguration {
     @Bean
     public BuildCustomizer<CasOverlayGradleBuild> defaultDependenciesBuildCustomizer() {
         return new DefaultDependenciesBuildCustomizer(applicationContext);
-    }
-
-    public static void main(String[] args) {
-        String txt = "# The order of this attribute repository in the chain of repositories. Can be used to explicitly position this source in chain and affects merging strategies.";
-
-        System.out.println(WordUtils.wrap(txt, 70, "\n# ", true));
     }
 }

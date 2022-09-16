@@ -24,7 +24,7 @@ import lombok.ToString;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
@@ -83,7 +83,8 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         FileCopyUtils.copy(new BufferedInputStream(new ByteArrayInputStream(template.getBytes(StandardCharsets.UTF_8))),
             Files.newOutputStream(output, StandardOpenOption.APPEND));
         val filename = output.getFileName().toFile().getName();
-        output.toFile().setExecutable(filename.endsWith(".sh") || filename.endsWith(".bat"));
+        val result = output.toFile().setExecutable(filename.endsWith(".sh") || filename.endsWith(".bat"));
+        log.debug("{} was marked as executable: {}", filename, result);
     }
 
     protected static List<CasDependency> handleProjectRequestedDependencies(final ProjectDescription project) {

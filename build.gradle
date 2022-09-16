@@ -5,9 +5,9 @@ allprojects {
     }
 }
 
-task casVersion(group: "Initializr", description: "Display current CAS version") {
+task initializrVersion(group: "Initializr", description: "Display current Initializr version") {
     doLast {
-        println rootProject.casInitializrVersion
+        println rootProject.version
     }
 }
 

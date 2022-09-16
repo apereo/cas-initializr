@@ -48,16 +48,13 @@ dependencies {
     implementation "io.spring.initializr:initializr-generator"
     implementation "io.spring.initializr:initializr-generator"
 
-    implementation "org.apereo.cas:cas-server-core-configuration-metadata-repository:${casInitializrVersion}"
-    implementation "org.apereo.cas:cas-server-core-api-configuration-model:${casInitializrVersion}"
-
     runtimeOnly "org.springframework.boot:spring-boot-starter-tomcat"
 
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 }
 
 bootBuildImage {
-    imageName = "apereo/cas-initializr:${casInitializrVersion}"
+    imageName = "apereo/cas-initializr:${project.version}"
 }
 
 bootJar {

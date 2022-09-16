@@ -5,7 +5,7 @@ source ./ci/functions.sh
 set -e
 
 cd tmp/cas-overlay
-imageTag=$(./gradlew casVersion --q)
+imageTag=$(./gradlew initializrVersion --q)
 echo "Image tag is ${imageTag}"
 
 cd helm
