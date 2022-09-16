@@ -3,7 +3,7 @@ name: Initializr Helm Charts
 env:
   TERM: xterm-256color
   HELM_CURRENT: v3.9.0
-  JDK_CURRENT: 11
+  JDK_CURRENT: 17
   JDK_DISTRO: 'temurin'
 
 ##########################################################################
