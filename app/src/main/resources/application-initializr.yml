@@ -15,10 +15,10 @@ initializr:
 cas-initializr:
   supported-versions:
     - version: ${casManagementLatestVersion}
-      boot-version: 2.6.3
-      platform-version: 6.5.8
+      boot-version: 2.7.1
+      platform-version: 6.6.0
       sync: true
-      branch: 6.5
+      branch: 6.6
       type: cas-mgmt
       tomcat-version: 9.0.65
       java-version: 11
