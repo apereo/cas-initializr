@@ -29,12 +29,14 @@ gradleDependencyManagementPluginVersion=@gradleDependencyManagementPluginVersion
 jibVersion=@jibVersion@
 
 # Specify the coordinates of the container image to build via jib
-containerImageOrg=apereo
+containerImageOrg={{containerImageOrg}}
 containerImageName={{containerImageName}}
 
 baseDockerImage={{containerBaseImageName}}
 allowInsecureRegistries=false
 dockerImagePlatform=amd64:linux
+
+containerImage={{containerImageOrg}}/{{containerImageName}}
 
 # Include launch script for executable WAR artifact
 # Setting this to true allows the final web application

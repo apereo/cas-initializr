@@ -218,6 +218,7 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
 
         templateVariables.put("buildSystemId", type);
         templateVariables.put("containerImageName", StringUtils.remove(type, "-overlay"));
+        templateVariables.put("containerImageOrg", "apereo");
 
         templateVariables.put("initializrUrl", generateAppUrl());
 

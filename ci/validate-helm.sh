@@ -5,7 +5,8 @@ source ./ci/functions.sh
 set -e
 
 cd tmp/cas-overlay
-imageTag=$(./gradlew initializrVersion --q)
+docker images
+imageTag=$(./gradlew containerImage --q)
 echo "Image tag is ${imageTag}"
 
 cd helm
