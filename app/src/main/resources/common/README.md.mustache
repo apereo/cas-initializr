@@ -91,13 +91,27 @@ On a successful deployment via the following methods, the server will be availab
 {{#configServer}}* `https:/localhost:8888/casconfigserver`{{/configServer}}
 {{#discoveryServer}}* `https://localhost:8761`{{/discoveryServer}}
   
-## Executable WAR
+## Build and run CAS with an embedded server
 
-Run the server web application as an executable WAR. Note that running an executable WAR requires CAS to use an embedded container such as Apache Tomcat, Jetty, etc.
+Run the server web application as an executable WAR. 
+
+Note that running an executable WAR requires CAS to use an embedded container such as Apache Tomcat, Jetty, etc.
 
 {{#appServer}}The current servlet container is specified as `{{appServer}}`.{{/appServer}}
 {{^appServer}}No servlet container is specified for the current build. Examine your `gradle.properties` file
 and modify the `appServer` property to point to the appropriate container of choice.{{/appServer}}
+
+### Building
+
+In order to build an executable war, update `gradle.properties` and set `executable=false`, then run:
+
+```bash
+./gradlew[.bat] clean build
+```
+
+### Running
+
+Once built, you can run CAS with the command:
 
 ```bash
 java -jar build/libs/{{appName}}.war
@@ -109,7 +123,9 @@ Or via:
 ./gradlew[.bat] run
 ```
 
-Debug the CAS web application as an executable WAR:
+### Debugging
+
+To debug the CAS web application as an executable WAR:
 
 ```bash
 ./gradlew[.bat] debug
@@ -121,11 +137,35 @@ Or via:
 java -Xdebug -Xrunjdwp:transport=dt_socket,address=5000,server=y,suspend=y -jar build/libs/{{appName}}.war
 ```
 
-Run the CAS web application as a *standalone* executable WAR:
+## Build and run CAS as a *standalone* executable WAR
+
+This allows you to run the CAS web application as a *standalone* executable WAR on Linux and Mac.
+
+The build system will add a startup script inside the war, that makes it executable.
+
+### Building
+
+In order to build a standalone executable war, update `gradle.properties` and set `executable=true`, then run:
 
 ```bash
-./gradlew[.bat] clean executable
+./gradlew clean executable
 ```
+
+### Running
+
+Once built, the generated `build/libs/cas.war` will be directly executable on Linux and Mac:
+
+```bash
+./build/libs/cas.war
+```
+
+You can take a look at the startup script inside the war by running the command:
+
+```bash
+head -n ./build/libs/cas.war
+`` 
+
+(where 'n' is an integer specifying the lines you want to see)
 
 ## External
 
