@@ -5,8 +5,8 @@ source ./ci/functions.sh
 set -e
 
 cd tmp/cas-overlay
-docker images
-imageTag=$(./gradlew containerImage --q)
+
+imageTag=$(./gradlew casVersion --q)
 echo "Image tag is ${imageTag}"
 
 cd helm
@@ -79,6 +79,8 @@ sleep 5
 
 
 echo "Install cas-server helm chart"
+docker images
+
 echo "Using local jib image imported into k3s"
 helm upgrade --install cas-server --namespace $NAMESPACE --set image.pullPolicy=Never --set bootadminimage.pullPolicy=Never --set mgmtimage.pullPolicy=Never --set image.tag="${imageTag}" ./cas-server
 

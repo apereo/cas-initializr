@@ -18,7 +18,7 @@ jib {
         }
     }
     to {
-        image = "${project.containerImage}"
+        image = "${project.containerImage}:${project.version}"
         /**
              ecr-login: Amazon Elastic Container Registry (ECR)
              gcr: Google Container Registry (GCR)

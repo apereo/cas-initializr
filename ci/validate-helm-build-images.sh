@@ -78,3 +78,6 @@ if [[ "$BUILD_IMAGES" == "yes" ]] ; then
   updateImage cas-discovery-server-overlay
   updateImage cas-management-overlay
 fi
+
+echo "Final Docker images built"
+docker images
