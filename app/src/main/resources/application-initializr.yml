@@ -20,7 +20,7 @@ cas-initializr:
       sync: true
       branch: 6.6
       type: cas-mgmt
-      tomcat-version: 9.0.67
+      tomcat-version: 9.0.68
       java-version: 11
       container-base-image: eclipse-temurin:11-jdk
     - version: 6.5.9
@@ -29,7 +29,7 @@ cas-initializr:
       branch: 6.5
       sync: true
       type: cas
-      tomcat-version: 9.0.67
+      tomcat-version: 9.0.68
       java-version: 11
       container-base-image: eclipse-temurin:11-jdk
     - version: 6.6.1
@@ -38,7 +38,7 @@ cas-initializr:
       sync: true
       branch: 6.6
       type: cas
-      tomcat-version: 9.0.67
+      tomcat-version: 9.0.68
       java-version: 11
       container-base-image: eclipse-temurin:11-jdk
     - version: ${casLatestVersion}
