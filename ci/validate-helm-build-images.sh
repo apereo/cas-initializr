@@ -37,8 +37,8 @@ function updateImage() {
   ./gradlew clean build jibBuildTar --refresh-dependencies
 
   echo "Loading ${type} image into k3s"
-  sudo k3s ctr images import build/jib-image.tar
-  sudo k3s ctr images tag $REGISTRY/$IMAGE_REPO/$image_name:$version $REGISTRY/$IMAGE_REPO/$image_name:latest
+  sudo k3s ctr image import build/jib-image.tar
+  sudo k3s ctr image tag "${REGISTRY}/${IMAGE_REPO}/${image_name}:${version}" "${REGISTRY}/${IMAGE_REPO}/${image_name}:latest"
   cd ../..
 }
 
@@ -84,8 +84,8 @@ updateOverlay cas-management-overlay $CAS_MGMT_VERSION
 stopInitializr
 
 if [[ "$BUILD_IMAGES" == "yes" ]] ; then
-  echo Purging existing apereo images
-  sudo k3s ctr image rm $(sudo k3s ctr image list -q | grep apereo | xargs)
+  echo "Purging existing $IMAGE_REPO images"
+  sudo k3s ctr image rm $(sudo k3s ctr image list -q | grep $IMAGE_REPO | xargs)
   updateImage cas-overlay cas ${CAS_VERSION}
   updateImage cas-bootadmin-server-overlay cas-bootadmin-server ${CAS_VERSION}
   updateImage cas-config-server-overlay cas-config-server ${CAS_VERSION}
