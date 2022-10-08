@@ -130,6 +130,12 @@ helm test --namespace $NAMESPACE cas-server
 
 echo "Checking login page"
 curl -k -H "Host: cas.example.org" https://127.0.0.1/cas/login > login.txt
+set +e
 grep "password" login.txt
-
-
+if [[ $? -ne 0 ]]; then
+  echo "Password not found in login page:"
+  cat login.txt
+  exit 1
+fi
+set -e
+rm login.txt
