@@ -39,7 +39,7 @@ fi
 rm tmp.out
 
 # Set KUBECONFIG for helm
-export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+export KUBECONFIG=${KUBECONFIG:-/etc/rancher/k3s/k3s.yaml}
 
 # Lint chart
 echo Lint check on cas-server helm chart
@@ -77,11 +77,10 @@ helm delete cas-server --namespace $NAMESPACE || true
 # make sure everything is gone
 sleep 5
 
+echo "Listing local jib image imported into k3s"
+sudo k3s ctr images list
 
 echo "Install cas-server helm chart"
-docker images
-
-echo "Using local jib image imported into k3s"
 helm upgrade --install cas-server --namespace $NAMESPACE --set image.pullPolicy=Never --set bootadminimage.pullPolicy=Never --set mgmtimage.pullPolicy=Never --set image.tag="${imageTag}" ./cas-server
 
 # make sure resources are created before waiting on their status

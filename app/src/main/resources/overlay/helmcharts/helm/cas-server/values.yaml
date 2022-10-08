@@ -199,9 +199,9 @@ casServerContainer:
       cas.monitor.endpoints.endpoint.health.access[0]=IP_ADDRESS
       cas.monitor.endpoints.endpoint.health.requiredIpAddresses[0]=127.0.0.1
       cas.monitor.endpoints.endpoint.health.requiredIpAddresses[1]=0:0:0:0:0:0:0:1
-      cas.monitor.endpoints.endpoint.health.requiredIpAddresses[2]=10.0.0.0/8
-      cas.monitor.endpoints.endpoint.health.requiredIpAddresses[3]=172.16.0.0/12
-      cas.monitor.endpoints.endpoint.health.requiredIpAddresses[4]=192.168.0.0/16
+      cas.monitor.endpoints.endpoint.health.requiredIpAddresses[2]=10\\..*
+      cas.monitor.endpoints.endpoint.health.requiredIpAddresses[3]=172\\.16\\..*
+      cas.monitor.endpoints.endpoint.health.requiredIpAddresses[4]=192\\.168\\..*
 
       spring.boot.admin.client.enabled=true
       #eof

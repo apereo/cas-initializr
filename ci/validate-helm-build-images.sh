@@ -2,8 +2,13 @@
 
 source ./ci/functions.sh
 
-CAS_VERSION=${1:-$DEFAULT_CAS_VERSION}
-CAS_MGMT_VERSION=${2:-$DEFAULT_MGMT_VERSION}
+CAS_VERSION=${1}
+CAS_MGMT_VERSION=${2}
+
+if [[ -z $CAS_VERSION || -z $CAS_MGMT_VERSION ]]; then
+  echo Usage: $0 [CAS_VERSION] [CAS_MGMT_VERSION]
+  exit 1
+fi
 
 # set BUILD_IMAGES to something other than yes to skip image buildings
 BUILD_IMAGES=${BUILD_IMAGES:-yes}
@@ -34,6 +39,7 @@ function updateOverlay() {
   local type=${1:-cas-overlay}
   local cas_version=${2:-$CAS_VERSION}
   local dependencies=${3:-""}
+  local javaVersion=17
 
   if [[ -d tmp/$type ]] ; then
     rm -rf tmp/$type
@@ -48,7 +54,7 @@ function updateOverlay() {
   # create project dir from Initializr with support boot admin, metrics, and git service registry
   echo "Creating overlay of type: ${type}:${cas_version} with dependencies: ${dependencies} in folder $(pwd)"
   echo "Running: curl http://localhost:8080/starter.tgz -d $postdata"
-  curl http://localhost:8080/starter.tgz -d casVersion="${cas_version}" -d $postdata | tar -xzf -
+  curl http://localhost:8080/starter.tgz -d javaVersion=${javaVersion} -d casVersion="${cas_version}" -d $postdata | tar -xzf -
   cd ../..
 }
 
@@ -79,5 +85,5 @@ if [[ "$BUILD_IMAGES" == "yes" ]] ; then
   updateImage cas-management-overlay
 fi
 
-echo "Final Docker images built"
-docker images
+echo "Listing final images built"
+sudo k3s ctr images list
