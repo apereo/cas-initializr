@@ -7,8 +7,8 @@ BOOT_VERSION=${2}
 BRANCH=${3:-master}
 TYPE=${4:-cas-overlay}
 
-if [[ -z $CAS_VERSION || -z BOOT_VERSION ]]; then
-  echo Usage: $0 [CAS_VERSION] [BOOT_VERSION] [BRANCH] [TYPE]
+if [[ -z "$CAS_VERSION" || -z "$BOOT_VERSION" ]]; then
+  echo "Usage: $0 [CAS_VERSION] [BOOT_VERSION] [BRANCH] [TYPE]"
   exit 1
 fi
 

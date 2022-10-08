@@ -8,8 +8,8 @@ CAS_MGMT_VERSION=${2}
 REGISTRY=docker.io
 IMAGE_REPO=apereo
 
-if [[ -z $CAS_VERSION || -z $CAS_MGMT_VERSION ]]; then
-  echo Usage: $0 [CAS_VERSION] [CAS_MGMT_VERSION]
+if [[ -z "$CAS_VERSION" || -z "$CAS_MGMT_VERSION" ]]; then
+  echo "Usage: $0 [CAS_VERSION] [CAS_MGMT_VERSION]"
   exit 1
 fi
 
