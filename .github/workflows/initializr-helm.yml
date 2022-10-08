@@ -69,7 +69,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        k3s-version: [ v1.24.1,v1.23.8 ]
+        k3s-version: [ v1.24.6,v1.25.2 ]
     env:
       GOPATH: /home/runner/go
     steps:

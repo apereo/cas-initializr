@@ -94,4 +94,4 @@ if [[ "$BUILD_IMAGES" == "yes" ]] ; then
 fi
 
 echo "Listing final images built"
-sudo k3s ctr images list
+sudo k3s ctr image list -q

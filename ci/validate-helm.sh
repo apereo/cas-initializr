@@ -78,7 +78,7 @@ helm delete cas-server --namespace $NAMESPACE || true
 sleep 5
 
 echo "Listing local jib image imported into k3s"
-sudo k3s ctr images list
+sudo k3s ctr image list -q
 
 echo "Install cas-server helm chart"
 helm upgrade --install cas-server --namespace $NAMESPACE --set image.pullPolicy=Never --set bootadminimage.pullPolicy=Never --set mgmtimage.pullPolicy=Never --set image.tag="${imageTag}" ./cas-server
