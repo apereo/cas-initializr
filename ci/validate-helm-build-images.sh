@@ -39,7 +39,6 @@ function updateOverlay() {
   local type=${1:-cas-overlay}
   local cas_version=${2:-$CAS_VERSION}
   local dependencies=${3:-""}
-  local javaVersion=17
 
   if [[ -d tmp/$type ]] ; then
     rm -rf tmp/$type
@@ -54,7 +53,7 @@ function updateOverlay() {
   # create project dir from Initializr with support boot admin, metrics, and git service registry
   echo "Creating overlay of type: ${type}:${cas_version} with dependencies: ${dependencies} in folder $(pwd)"
   echo "Running: curl http://localhost:8080/starter.tgz -d $postdata"
-  curl http://localhost:8080/starter.tgz -d javaVersion=${javaVersion} -d casVersion="${cas_version}" -d $postdata | tar -xzf -
+  curl http://localhost:8080/starter.tgz -d casVersion="${cas_version}" -d $postdata | tar -xzf -
   cd ../..
 }
 
