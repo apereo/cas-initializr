@@ -25,6 +25,9 @@ set -e
 
 function updateImage() {
   local type=${1:-cas-overlay}
+  local image_name=${2:-cas}
+  local version=${3:-$CAS_VERSION}
+
   cd tmp/$type
   echo
   echo "Building War and Jib Docker Image for ${type}"
@@ -32,6 +35,7 @@ function updateImage() {
 
   echo "Loading ${type} image into k3s"
   sudo k3s ctr images import build/jib-image.tar
+  sudo k3s ctr images tag docker.io/apereo/$image_name:$version apereo/$image_name:latest
   cd ../..
 }
 
@@ -77,11 +81,11 @@ updateOverlay cas-management-overlay $CAS_MGMT_VERSION
 stopInitializr
 
 if [[ "$BUILD_IMAGES" == "yes" ]] ; then
-  updateImage cas-overlay
-  updateImage cas-bootadmin-server-overlay
-  updateImage cas-config-server-overlay
-  updateImage cas-discovery-server-overlay
-  updateImage cas-management-overlay
+  updateImage cas-overlay cas ${CAS_VERSION}
+  updateImage cas-bootadmin-server-overlay cas-bootadmin-server ${CAS_VERSION}
+  updateImage cas-config-server-overlay cas-config-server ${CAS_VERSION}
+  updateImage cas-discovery-server-overlay cas-discovery-server ${CAS_VERSION}
+  updateImage cas-management-overlay cas-management ${CAS_MGMT_VERSION}
 fi
 
 echo "Listing final images built"
