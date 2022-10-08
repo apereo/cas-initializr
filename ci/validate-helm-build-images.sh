@@ -5,6 +5,9 @@ source ./ci/functions.sh
 CAS_VERSION=${1}
 CAS_MGMT_VERSION=${2}
 
+REGISTRY=docker.io
+IMAGE_REPO=apereo
+
 if [[ -z $CAS_VERSION || -z $CAS_MGMT_VERSION ]]; then
   echo Usage: $0 [CAS_VERSION] [CAS_MGMT_VERSION]
   exit 1
@@ -35,7 +38,7 @@ function updateImage() {
 
   echo "Loading ${type} image into k3s"
   sudo k3s ctr images import build/jib-image.tar
-  sudo k3s ctr images tag docker.io/apereo/$image_name:$version apereo/$image_name:latest
+  sudo k3s ctr images tag $REGISTRY/$IMAGE_REPO/$image_name:$version $REGISTRY/$IMAGE_REPO/$image_name:latest
   cd ../..
 }
 
@@ -81,6 +84,8 @@ updateOverlay cas-management-overlay $CAS_MGMT_VERSION
 stopInitializr
 
 if [[ "$BUILD_IMAGES" == "yes" ]] ; then
+  echo Purging existing apereo images
+  sudo k3s ctr image rm $(sudo k3s ctr image list -q | grep apereo | xargs)
   updateImage cas-overlay cas ${CAS_VERSION}
   updateImage cas-bootadmin-server-overlay cas-bootadmin-server ${CAS_VERSION}
   updateImage cas-config-server-overlay cas-config-server ${CAS_VERSION}
