@@ -2,7 +2,6 @@ name: Initializr Helm Charts
 
 env:
   TERM: xterm-256color
-  HELM_CURRENT: v3.9.0
   JDK_CURRENT: 17
   JDK_DISTRO: 'temurin'
 
@@ -89,7 +88,6 @@ jobs:
           # - k3s release channels at https://github.com/k3s-io/k3s/blob/HEAD/channel.yaml
           k3s-channel: ${{ matrix.k3s-channel }}
           traefik-enabled: false
-          helm-version: ${{ env.HELM_CURRENT }}
       - name: Build Images for Helm Chart
         env:
           HELM_CAS_VERSION: "${{ fromJSON(needs.latest-versions-cas.outputs.supported-versions).cas-version }}"
