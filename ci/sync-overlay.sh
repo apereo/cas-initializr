@@ -2,10 +2,15 @@
 
 source ./ci/functions.sh
 
-CAS_VERSION=${1:-$DEFAULT_CAS_VERSION}
-BOOT_VERSION=${2:-$DEFAULT_BOOT_VERSION}
+CAS_VERSION=${1}
+BOOT_VERSION=${2}
 BRANCH=${3:-master}
 TYPE=${4:-cas-overlay}
+
+if [[ -z "$CAS_VERSION" || -z "$BOOT_VERSION" ]]; then
+  echo "Usage: $0 [CAS_VERSION] [BOOT_VERSION] [BRANCH] [TYPE]"
+  exit 1
+fi
 
 java -jar app/build/libs/app.jar &
 pid=$!

@@ -2,8 +2,16 @@
 
 source ./ci/functions.sh
 
-CAS_VERSION=${1:-$DEFAULT_CAS_VERSION}
-CAS_MGMT_VERSION=${2:-$DEFAULT_MGMT_VERSION}
+CAS_VERSION=${1}
+CAS_MGMT_VERSION=${2}
+
+REGISTRY=docker.io
+IMAGE_REPO=apereo
+
+if [[ -z "$CAS_VERSION" || -z "$CAS_MGMT_VERSION" ]]; then
+  echo "Usage: $0 [CAS_VERSION] [CAS_MGMT_VERSION]"
+  exit 1
+fi
 
 # set BUILD_IMAGES to something other than yes to skip image buildings
 BUILD_IMAGES=${BUILD_IMAGES:-yes}
@@ -20,13 +28,17 @@ set -e
 
 function updateImage() {
   local type=${1:-cas-overlay}
+  local image_name=${2:-cas}
+  local version=${3:-$CAS_VERSION}
+
   cd tmp/$type
   echo
   echo "Building War and Jib Docker Image for ${type}"
   ./gradlew clean build jibBuildTar --refresh-dependencies
 
   echo "Loading ${type} image into k3s"
-  sudo k3s ctr images import build/jib-image.tar
+  sudo k3s ctr image import build/jib-image.tar
+  sudo k3s ctr image tag "${REGISTRY}/${IMAGE_REPO}/${image_name}:${version}" "${REGISTRY}/${IMAGE_REPO}/${image_name}:latest"
   cd ../..
 }
 
@@ -72,12 +84,14 @@ updateOverlay cas-management-overlay $CAS_MGMT_VERSION
 stopInitializr
 
 if [[ "$BUILD_IMAGES" == "yes" ]] ; then
-  updateImage cas-overlay
-  updateImage cas-bootadmin-server-overlay
-  updateImage cas-config-server-overlay
-  updateImage cas-discovery-server-overlay
-  updateImage cas-management-overlay
+  echo "Purging existing $IMAGE_REPO images"
+  sudo k3s ctr image rm $(sudo k3s ctr image list -q | grep $IMAGE_REPO | xargs)
+  updateImage cas-overlay cas ${CAS_VERSION}
+  updateImage cas-bootadmin-server-overlay cas-bootadmin-server ${CAS_VERSION}
+  updateImage cas-config-server-overlay cas-config-server ${CAS_VERSION}
+  updateImage cas-discovery-server-overlay cas-discovery-server ${CAS_VERSION}
+  updateImage cas-management-overlay cas-management ${CAS_MGMT_VERSION}
 fi
 
-echo "Final Docker images built"
-docker images
+echo "Listing final images built"
+sudo k3s ctr image list -q

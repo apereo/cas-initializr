@@ -32,7 +32,7 @@ cd tmp
 echo "Requesting CAS overlay for ${parameters}"
 curl http://localhost:8080/starter.tgz --connect-timeout 30 -d "${parameters}" | tar -xzvf -
 kill -9 $pid
-pkill java
+[ "$CI" = "true" ] && pkill java
 
 ./gradlew clean build --warning-mode all --no-daemon
 downloadTomcat "$TOMCAT_VERSION"
@@ -50,7 +50,7 @@ else
     echo "Failed to deploy the web application with status $rc."
     exit 1
 fi
-pkill java
+[ "$CI" = "true" ] && pkill java
 ps -ef
 
 echo "Running CAS Overlay as an executable WAR file"
@@ -66,7 +66,7 @@ done
 echo -e "\n\nReady!"
 echo "Killing process $pid"
 kill -9 $pid
-pkill java
+[ "$CI" = "true" ] && pkill java
 ps -ef
 
 echo "Running CAS Overlay with bootRun"
@@ -81,7 +81,7 @@ done
 echo -e "\n\nReady!"
 echo "Killing process $pid"
 kill -9 $pid
-pkill java
+[ "$CI" = "true" ] && pkill java
 ps -ef
 chmod -R 777 ./*.sh >/dev/null 2>&1
 
@@ -129,4 +129,4 @@ echo "Build Container Image w/ Docker"
 echo "Build Container Image w/ Docker Compose"
 docker-compose build
 
-pkill java
+[ "$CI" = "true" ] && pkill java
