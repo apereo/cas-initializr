@@ -84,25 +84,15 @@ jobs:
         with:
           name: binary-artifacts
       - name: Install K3S
-        env:
-          INSTALL_K3S_VERSION: ${{ matrix.k3s-version }}+k3s1
-          INSTALL_K3S_EXEC: "--disable=traefik --flannel-backend=host-gw" # using ingress-nginx
-        run: |
-          set -x
-          curl -sfL https://get.k3s.io | sh -
-          sudo chmod -R a+rw /etc/rancher/k3s
-          sudo mkdir -p $HOME/.kube && sudo chown -R runner $HOME/.kube
-          sudo k3s kubectl config view --raw > $HOME/.kube/config
-          sudo chown runner $HOME/.kube/config
-          kubectl version
-      - name: Add /usr/local/bin to PATH
-        run: |
-          echo "/usr/local/bin" >> $GITHUB_PATH
+        uses: debianmaster/actions-k3s@master
+        id: k3s-install
+        with:
+          version: ${{ matrix.k3s-version }}+k3s1
       - name: Install helm
         uses: azure/setup-helm@v3
         with:
           version: ${{ env.HELM_CURRENT }}
-        id: install
+        id: helm-install
       #      - name: Setup tmate session if timeout waiting for pods to start
       #        uses: mxschmitt/action-tmate@v3
       - name: Build Images for Helm Chart
