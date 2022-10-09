@@ -69,7 +69,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        k3s-version: [ v1.24.6,v1.25.2 ]
+        k3s-channel: [ stable, latest ]
     env:
       GOPATH: /home/runner/go
     steps:
@@ -90,10 +90,8 @@ jobs:
           # - k3s release channels at https://github.com/k3s-io/k3s/blob/HEAD/channel.yaml
           # - k3s versions at https://github.com/k3s-io/k3s/tags
           # - helm versions at https://github.com/helm/helm/tags
-          # k3s-channel: latest
-          extra-setup-args: "--flannel-backend=host-gw"
+          k3s-channel: ${{ matrix.k3s-channel }}
           traefik-enabled: false
-          k3s-version: ${{ matrix.k3s-version }}+k3s1
           helm-version: ${{ env.HELM_CURRENT }}
       #      - name: Setup tmate session if timeout waiting for pods to start
       #        uses: mxschmitt/action-tmate@v3
