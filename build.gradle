@@ -5,19 +5,19 @@ allprojects {
     }
 }
 
-task casVersion(description: "Display current CAS version") {
+task initializrVersion(group: "Initializr", description: "Display current Initializr version") {
     doLast {
-        println rootProject.casVersion
+        println rootProject.version
     }
 }
 
-task springBootVersion(description: "Display current Spring Boot version") {
+task springBootVersion(group: "Initializr", description: "Display current Spring Boot version") {
     doLast {
-        println rootProject.springBootVersion
+        println rootProject.springBootInitializrVersion
     }
 }
 
-task zip(type: Zip) {
+task zip(group: "Initializr", type: Zip) {
     from projectDir
     exclude '.idea', '.gradle', 'tmp', '.git', '**/build/**', '**/bin/**', '**/out/**', '**/.settings/**'
     destinationDirectory = buildDir

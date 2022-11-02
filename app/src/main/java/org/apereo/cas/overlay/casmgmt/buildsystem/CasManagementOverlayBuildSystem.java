@@ -16,6 +16,11 @@ public class CasManagementOverlayBuildSystem implements OverlayBuildSystem {
     }
 
     @Override
+    public String overlayType() {
+        return "cas-mgmt";
+    }
+
+    @Override
     public String resourceDirectory() {
         return "mgmt-overlay";
     }

@@ -5,6 +5,7 @@ source ./ci/functions.sh
 set -e
 
 cd tmp/cas-overlay
+
 imageTag=$(./gradlew casVersion --q)
 echo "Image tag is ${imageTag}"
 
@@ -38,7 +39,7 @@ fi
 rm tmp.out
 
 # Set KUBECONFIG for helm
-export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+export KUBECONFIG=${KUBECONFIG:-/etc/rancher/k3s/k3s.yaml}
 
 # Lint chart
 echo Lint check on cas-server helm chart
@@ -76,9 +77,10 @@ helm delete cas-server --namespace $NAMESPACE || true
 # make sure everything is gone
 sleep 5
 
+echo "Listing local jib image imported into k3s"
+sudo k3s ctr image list -q
 
 echo "Install cas-server helm chart"
-echo "Using local jib image imported into k3s"
 helm upgrade --install cas-server --namespace $NAMESPACE --set image.pullPolicy=Never --set bootadminimage.pullPolicy=Never --set mgmtimage.pullPolicy=Never --set image.tag="${imageTag}" ./cas-server
 
 # make sure resources are created before waiting on their status
@@ -92,9 +94,9 @@ kubectl wait --for condition=ready --timeout=180s --namespace $NAMESPACE pod -l 
 echo "Done waiting for startup $(date)"
 
 echo "Checking rollout status"
-kubectl rollout --namespace $NAMESPACE status deploy cas-server-boot-admin
-kubectl rollout --namespace $NAMESPACE status deploy cas-server-mgmt
-kubectl rollout --namespace $NAMESPACE status sts cas-server
+kubectl rollout --namespace $NAMESPACE status deploy cas-server-boot-admin --timeout=5s
+kubectl rollout --namespace $NAMESPACE status deploy cas-server-mgmt --timeout=5s
+kubectl rollout --namespace $NAMESPACE status sts cas-server --timeout=5s
 echo "Done checking rollout status"
 set -e
 
@@ -128,6 +130,12 @@ helm test --namespace $NAMESPACE cas-server
 
 echo "Checking login page"
 curl -k -H "Host: cas.example.org" https://127.0.0.1/cas/login > login.txt
+set +e
 grep "password" login.txt
-
-
+if [[ $? -ne 0 ]]; then
+  echo "Password not found in login page:"
+  cat login.txt
+  exit 1
+fi
+set -e
+rm login.txt

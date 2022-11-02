@@ -30,4 +30,6 @@ public class CasInitializrProjectGenerationInvoker extends ProjectGenerationInvo
     protected ProjectAssetGenerator<Path> getProjectAssetGenerator(final ProjectDescription description) {
         return this.projectAssetGenerator;
     }
+
+
 }

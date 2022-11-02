@@ -2,8 +2,7 @@ name: Initializr Helm Charts
 
 env:
   TERM: xterm-256color
-  HELM_CURRENT: v3.6.3
-  JDK_CURRENT: 11
+  JDK_CURRENT: 17
   JDK_DISTRO: 'temurin'
 
 ##########################################################################
@@ -21,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 1
     steps:
-      - uses: styfle/cancel-workflow-action@0.9.1
+      - uses: styfle/cancel-workflow-action@0.11.0
         with:
           access_token: ${{ github.token }}
   ##########################################################################
@@ -58,10 +57,10 @@ jobs:
           name: binary-artifacts
       - id: print-supported-versions
         name: Print supported versions
-        run: ./gradlew --no-daemon -q latestVersions | jq
+        run: ./gradlew --no-daemon -q latestCasVersions | jq
       - id: get-supported-versions
         name: Get supported versions for matrix
-        run: echo "::set-output name=supported-versions::$(./gradlew --no-daemon -q latestVersions)]}"
+        run: echo "::set-output name=supported-versions::$(./gradlew --no-daemon -q latestCasVersions)]}"
   ##########################################################################
   helm:
     runs-on: ubuntu-latest
@@ -69,7 +68,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        k3s-version: [ v1.22.5,v1.21.4 ]
+        k3s-channel: [ stable, latest ]
     env:
       GOPATH: /home/runner/go
     steps:
@@ -83,32 +82,16 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: binary-artifacts
-      - name: Install K3S
-        env:
-          INSTALL_K3S_VERSION: ${{ matrix.k3s-version }}+k3s1
-          INSTALL_K3S_EXEC: "--disable=traefik --flannel-backend=host-gw" # using ingress-nginx
-        run: |
-          set -x
-          curl -sfL https://get.k3s.io | sh -
-          sudo chmod -R a+rw /etc/rancher/k3s
-          sudo mkdir -p $HOME/.kube && sudo chown -R runner $HOME/.kube
-          sudo k3s kubectl config view --raw > $HOME/.kube/config
-          sudo chown runner $HOME/.kube/config
-          kubectl version
-      - name: Add /usr/local/bin to PATH
-        run: |
-          echo "/usr/local/bin" >> $GITHUB_PATH
-      - name: Install helm
-        uses: azure/setup-helm@v1
+      - name: Install K3S and Helm
+        uses: jupyterhub/action-k3s-helm@v3
         with:
-          version: ${{ env.HELM_CURRENT }}
-        id: install
-      #      - name: Setup tmate session if timeout waiting for pods to start
-      #        uses: mxschmitt/action-tmate@v3
+          # - k3s release channels at https://github.com/k3s-io/k3s/blob/HEAD/channel.yaml
+          k3s-channel: ${{ matrix.k3s-channel }}
+          traefik-enabled: false
       - name: Build Images for Helm Chart
         env:
-          HELM_CAS_VERSION: "${{ fromJSON(needs.latest-versions-cas.outputs.supported-versions).version }}"
-          HELM_BOOT_VERSION: "${{ fromJSON(needs.latest-versions-cas.outputs.supported-versions).boot-version }}"
-        run: ./ci/validate-helm-build-images.sh $HELM_CAS_VERSION $HELM_BOOT_VERSION
+          HELM_CAS_VERSION: "${{ fromJSON(needs.latest-versions-cas.outputs.supported-versions).cas-version }}"
+          HELM_CAS_MGMT_VERSION: "${{ fromJSON(needs.latest-versions-cas.outputs.supported-versions).cas-mgmt-version }}"
+        run: ./ci/validate-helm-build-images.sh $HELM_CAS_VERSION $HELM_CAS_MGMT_VERSION
       - name: Validate Helm Chart
         run: ./ci/validate-helm.sh

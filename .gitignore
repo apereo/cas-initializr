@@ -10,3 +10,4 @@ tmp
 .classpath
 .settings
 *.class
+.java-version

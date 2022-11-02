@@ -1,0 +1,52 @@
+initializr:
+  boot-versions:
+    - id: ${springBootLatestVersion}
+      default: true
+  env:
+    boms:
+      cas-bom:
+        groupId: org.apereo.cas
+        artifactId: cas-server-support-bom
+        version: ${casLatestVersion}
+      cas-mgmt-bom:
+        groupId: org.apereo.cas
+        artifactId: cas-mgmt-support-bom
+        version: ${casManagementLatestVersion}
+cas-initializr:
+  supported-versions:
+    - version: ${casManagementLatestVersion}
+      boot-version: 2.7.1
+      platform-version: 6.6.0
+      sync: true
+      branch: 6.6
+      type: cas-mgmt
+      tomcat-version: 9.0.68
+      java-version: 11
+      container-base-image: eclipse-temurin:11-jdk
+    - version: 6.5.9
+      platform-version: 6.5.9
+      boot-version: 2.6.3
+      branch: 6.5
+      sync: true
+      type: cas
+      tomcat-version: 9.0.68
+      java-version: 11
+      container-base-image: eclipse-temurin:11-jdk
+    - version: 6.6.1
+      platform-version: 6.6.0
+      boot-version: 2.7.3
+      sync: true
+      branch: 6.6
+      type: cas
+      tomcat-version: 9.0.68
+      java-version: 11
+      container-base-image: eclipse-temurin:11-jdk
+    - version: ${casLatestVersion}
+      platform-version: ${casLatestVersion}
+      boot-version: ${springBootLatestVersion}
+      sync: true
+      branch: master
+      type: cas
+      tomcat-version: ${apacheTomcat9LatestVersion}
+      java-version: 17
+      container-base-image: eclipse-temurin:17-jdk

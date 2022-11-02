@@ -2,14 +2,19 @@
 
 source ./ci/functions.sh
 
-CAS_VERSION=${1:-$DEFAULT_CAS_VERSION}
-BOOT_VERSION=${2:-$DEFAULT_BOOT_VERSION}
+CAS_VERSION=${1}
+BOOT_VERSION=${2}
 BRANCH=${3:-master}
 TYPE=${4:-cas-overlay}
 
+if [[ -z "$CAS_VERSION" || -z "$BOOT_VERSION" ]]; then
+  echo "Usage: $0 [CAS_VERSION] [BOOT_VERSION] [BRANCH] [TYPE]"
+  exit 1
+fi
+
 java -jar app/build/libs/app.jar &
 pid=$!
-sleep 15
+sleep 25
 mkdir tmp
 cd tmp
 
@@ -30,8 +35,12 @@ curl http://localhost:8080/starter.tgz \
   -d baseDir=initializr \
   -d type="${TYPE}" \
   -d "casVersion=${CAS_VERSION}&bootVersion=${BOOT_VERSION}" | tar -xzvf -
+if [ $? -ne 0 ] ; then
+  echo "Could not generate overlay project for CAS ${CAS_VERSION} & Spring Boot ${BOOT_VERSION}"
+  kill -9 $pid
+  exit 1
+fi
 kill -9 $pid
-
 if [ -z "$GH_TOKEN" ] ; then
   echo -e "\nNo GitHub token is defined."
   exit 1
@@ -63,7 +72,9 @@ echo "Updating project README with warning..."
 echo "${text}" > README.md
 
 echo "Committing changes..."
-git add --all
+ls
+git status
+git add -A .
 git commit -am "Synced repository from CAS Initializr"
 git status
 

@@ -15,6 +15,13 @@ public class CasSpringBootAdminServerOverlayBuildSystem implements OverlayBuildS
         return id();
     }
 
+
+
+    @Override
+    public String overlayType() {
+        return "cas";
+    }
+
     @Override
     public String resourceDirectory() {
         return "bootadmin-overlay";

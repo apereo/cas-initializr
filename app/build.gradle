@@ -3,12 +3,12 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath "org.yaml:snakeyaml:1.30"
+        classpath "org.yaml:snakeyaml:1.33"
     }
 }
 
 plugins {
-    id "org.springframework.boot" version "${springBootVersion}"
+    id "org.springframework.boot" version "${springBootInitializrVersion}"
     id "io.spring.dependency-management" version "${gradleDependencyManagementPluginVersion}"
     id "io.freefair.lombok" version "${gradleFreeFairPluginVersion}"
     id "java-library"
@@ -36,11 +36,12 @@ springBoot {
 
 dependencies {
     implementation "org.jooq:jool:0.9.14"
-    implementation "org.eclipse.jgit:org.eclipse.jgit:6.1.0.202203080745-r"
-    implementation "com.github.vladimir-bukhtoyarov:bucket4j-core:7.4.0"
+    implementation "org.eclipse.jgit:org.eclipse.jgit:6.3.0.202209071007-r"
+    implementation "com.github.vladimir-bukhtoyarov:bucket4j-core:7.6.0"
     implementation "com.github.spullara.mustache.java:compiler:0.9.10"
     
     implementation "org.springframework.boot:spring-boot-starter-web"
+    implementation "org.springframework.boot:spring-boot-starter-actuator"
 
     implementation "io.spring.initializr:initializr-web"
     implementation "io.spring.initializr:initializr-actuator"
@@ -48,21 +49,18 @@ dependencies {
     implementation "io.spring.initializr:initializr-generator"
     implementation "io.spring.initializr:initializr-generator"
 
-    implementation "org.apereo.cas:cas-server-core-configuration-metadata-repository:${casVersion}"
-    implementation "org.apereo.cas:cas-server-core-api-configuration-model:${casVersion}"
-
     runtimeOnly "org.springframework.boot:spring-boot-starter-tomcat"
 
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 }
 
 bootBuildImage {
-    imageName = "apereo/cas-initializr:${casVersion}"
+    imageName = "apereo/cas-initializr:${project.version}"
 }
 
 bootJar {
-    archiveName "app.jar"
-    baseName "app"
+    archiveFileName = "app.jar"
+    archiveBaseName = "app"
 }
 
 bootRun {
@@ -75,28 +73,24 @@ bootRun {
     args = appArgList
 }
 
-def getBranchName(String version) {
-    def casBranch = version.split("\\.")
-    return casBranch[0] + "." + casBranch[1]
-}
 
 processResources {
+    filesMatching("**/application-*.yml") {
+        expand (
+                springBootLatestVersion: project.springBootLatestVersion,
+                apacheTomcat9LatestVersion: project.apacheTomcat9LatestVersion,
+                casLatestVersion: project.casLatestVersion,
+                casManagementLatestVersion: project.casManagementLatestVersion
+        )
+    }
+
     filesMatching(['**/*.yml', '**/*.properties', '**/*.md', '**/*.mustache']) {
         filter org.apache.tools.ant.filters.ReplaceTokens, tokens: [
-                "javaVersion"                            : project.sourceCompatibility,
-
-                "casVersion"                             : project.property("casVersion"),
-                "casLatestVersion"                       : project.property("casLatestVersion"),
-                "casBranch"                              : getBranchName(project.property("casVersion").toString()),
                 "version"                                : project.property("version"),
-                "springBootVersion"                      : project.property("springBootVersion"),
-                "springBootLatestVersion"                : project.property("springBootLatestVersion"),
                 "gradleDependencyManagementPluginVersion": project.property("gradleDependencyManagementPluginVersion"),
                 "gradleFreeFairPluginVersion"            : project.property("gradleFreeFairPluginVersion"),
                 "gradleDownloadTaskPluginVersion"        : project.property("gradleDownloadTaskPluginVersion"),
-                "tomcatVersion"                          : project.property("tomcatVersion"),
                 "jibVersion"                             : project.property("jibVersion")
-                
         ]
     }
 }
@@ -108,7 +102,7 @@ supportedTypes.forEach({ type ->
                          dependsOn: build) {
         doLast {
             def yaml = new org.yaml.snakeyaml.Yaml()
-            def file = file("${buildDir}/resources/main/application.yml")
+            def file = file("${buildDir}/resources/main/application-initializr.yml")
             def config = yaml.load(file.newInputStream())
             def supportedVersions = config.'cas-initializr'.'supported-versions'
             def results = supportedVersions.findAll { ver -> ver.type == type }
@@ -117,10 +111,25 @@ supportedTypes.forEach({ type ->
     }
 })
 
-task latestVersions(description: "Display supported versions", dependsOn: build) {
+task latestCasVersion(description: "Display latest CAS version", dependsOn: build) {
     doLast {
         def results = [version: project.property("casLatestVersion"),
                        'boot-version': project.property("springBootLatestVersion")]
+        println(groovy.json.JsonOutput.toJson(results))
+    }
+}
+
+task latestCasMgmtVersion(description: "Display latest CAS Management version", dependsOn: build) {
+    doLast {
+        def results = [version: project.property("casManagementLatestVersion")]
+        println(groovy.json.JsonOutput.toJson(results))
+    }
+}
+
+task latestCasVersions(description: "Display latest CAS versions", dependsOn: build) {
+    doLast {
+        def results = ['cas-version': project.property("casLatestVersion"),
+                       'cas-mgmt-version': project.property("casManagementLatestVersion")]
         println(groovy.json.JsonOutput.toJson(results))
     }
 }

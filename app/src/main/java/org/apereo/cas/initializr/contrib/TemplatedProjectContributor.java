@@ -2,6 +2,7 @@ package org.apereo.cas.initializr.contrib;
 
 import org.apereo.cas.initializr.config.CasInitializrProperties;
 import org.apereo.cas.initializr.web.OverlayProjectDescription;
+import org.apereo.cas.initializr.web.UnsupportedVersionException;
 import org.apereo.cas.initializr.web.VersionUtils;
 import org.apereo.cas.overlay.bootadminserver.buildsystem.CasSpringBootAdminServerOverlayBuildSystem;
 import org.apereo.cas.overlay.casmgmt.buildsystem.CasManagementOverlayBuildSystem;
@@ -13,6 +14,7 @@ import org.apereo.cas.overlay.discoveryserver.buildsystem.CasDiscoveryServerOver
 import com.github.mustachejava.DefaultMustacheFactory;
 import io.spring.initializr.generator.project.ProjectDescription;
 import io.spring.initializr.generator.project.contributor.ProjectContributor;
+import io.spring.initializr.generator.version.Version;
 import io.spring.initializr.metadata.InitializrMetadataProvider;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,7 +23,8 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
+import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
@@ -76,8 +79,12 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
     }
 
     protected static void createTemplateFile(final Path output, final String template) throws IOException {
+        log.info("Processing template file {}", output.toFile().getAbsolutePath());
         FileCopyUtils.copy(new BufferedInputStream(new ByteArrayInputStream(template.getBytes(StandardCharsets.UTF_8))),
             Files.newOutputStream(output, StandardOpenOption.APPEND));
+        val filename = output.getFileName().toFile().getName();
+        val result = output.toFile().setExecutable(filename.endsWith(".sh") || filename.endsWith(".bat"));
+        log.debug("{} was marked as executable: {}", filename, result);
     }
 
     protected static List<CasDependency> handleProjectRequestedDependencies(final ProjectDescription project) {
@@ -93,20 +100,51 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
 
     @Override
     public void contribute(final Path projectRoot) throws IOException {
-        var output = projectRoot.resolve(relativePath);
-        if (!Files.exists(output)) {
-            Files.createDirectories(output.getParent());
-            Files.createFile(output);
+        if (resourcePattern.endsWith("/**")) {
+            val resources = resolver.getResources(resourcePattern);
+            for (val resource : resources) {
+                if (resource.isReadable()) {
+                    val filename = org.apache.commons.lang3.StringUtils.remove(resource.getFilename(), ".mustache");
+                    val output = projectRoot.resolve(
+                        org.apache.commons.lang3.StringUtils.appendIfMissing(relativePath, "/") + filename);
+                    log.info("Output file {}", output.toFile().getAbsolutePath());
+                    createFileAndParentDirectories(output);
+                    var templateVariables = getProjectTemplateVariables();
+                    var template = renderTemplate(resource, templateVariables);
+                    var project = applicationContext.getBean(OverlayProjectDescription.class);
+                    template = postProcessRenderedTemplate(template, project, templateVariables);
+                    createTemplateFile(output, template);
+                }
+            }
+        } else {
+            processTemplatedFile(projectRoot.resolve(relativePath));
         }
+    }
+
+    private Map<String, Object> getProjectTemplateVariables() {
         var project = applicationContext.getBean(OverlayProjectDescription.class);
         var templateVariables = prepareProjectTemplateVariables(project);
         var model = contributeInternal(project);
         if (model instanceof Map) {
             ((Map<String, Object>) model).putAll(templateVariables);
         }
+        return templateVariables;
+    }
+
+    private void processTemplatedFile(final Path output) throws IOException {
+        createFileAndParentDirectories(output);
+        var templateVariables = getProjectTemplateVariables();
+        var project = applicationContext.getBean(OverlayProjectDescription.class);
         var template = renderTemplateFromResource(resourcePattern, project, templateVariables);
         template = postProcessRenderedTemplate(template, project, templateVariables);
         createTemplateFile(output, template);
+    }
+
+    private static void createFileAndParentDirectories(final Path output) throws IOException {
+        if (!Files.exists(output)) {
+            Files.createDirectories(output.getParent());
+            Files.createFile(output);
+        }
     }
 
     protected String postProcessRenderedTemplate(final String template,
@@ -122,8 +160,8 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         return renderTemplate(resource, model);
     }
 
-    private String renderTemplate(final Resource resource, final Object model) throws IOException {
-        log.debug("Rendering template [{}], using model [{}]", resourcePattern, model);
+    private static String renderTemplate(final Resource resource, final Object model) throws IOException {
+        log.debug("Rendering template [{}], using model [{}]", resource, model);
         try (var writer = new StringWriter()) {
             var mf = new DefaultMustacheFactory();
             var mustache = mf.compile(new InputStreamReader(resource.getInputStream()), resource.getFilename());
@@ -143,6 +181,20 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         var type = project.getBuildSystem().id();
         templateVariables.put("type", type);
 
+        properties.getSupportedVersions()
+            .stream()
+            .filter(version -> version.getType().equals(project.getBuildSystem().overlayType())
+                               && version.getVersion().equals(project.getCasVersion()))
+            .findFirst()
+            .ifPresentOrElse(version -> {
+                templateVariables.put("tomcatVersion", version.getTomcatVersion());
+                templateVariables.put("javaVersion", version.getJavaVersion());
+                templateVariables.put("containerBaseImageName", version.getContainerBaseImage());
+            }, () -> {
+                throw new UnsupportedVersionException(project.getCasVersion(),
+                    "Unsupported version " + project.getCasVersion() + " for project type " + project.getBuildSystem().overlayType());
+            });
+
         if (type.equals(CasManagementOverlayBuildSystem.ID)) {
             templateVariables.put("casMgmtVersion", project.getCasVersion());
             properties.getSupportedVersions()
@@ -157,15 +209,16 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         templateVariables.put("casVersion", casVersion);
         templateVariables.put("springBootVersion", project.getSpringBootVersion());
 
-        if (project.getSpringBootVersion().startsWith("2.6")) {
+        var cmp = VersionUtils.parse(project.getSpringBootVersion()).compareTo(Version.parse("2.6.0"));
+        if (cmp >= 0) {
             templateVariables.put("mainClass", "mainClass");
         } else {
             templateVariables.put("mainClass", "mainClassName");
         }
 
-
         templateVariables.put("buildSystemId", type);
         templateVariables.put("containerImageName", StringUtils.remove(type, "-overlay"));
+        templateVariables.put("containerImageOrg", "apereo");
 
         templateVariables.put("initializrUrl", generateAppUrl());
 
@@ -194,7 +247,7 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
             templateVariables.put("appName", "casdiscoveryserver");
         }
 
-        /**
+        /*
          * Starting from CAS 6.5, projects can take advantage of Gradle's
          * native support for BOMs. Prior to this version, the dependency management plugin
          * must be used to handle BOMs.
@@ -220,10 +273,10 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
             return false;
         }
     }
-    
-    protected String appendResource(final String appendTemplate,
-                                    final String originalTemplate,
-                                    final OverlayProjectDescription project) throws IOException {
+
+    protected static String appendResource(final String appendTemplate,
+                                           final String originalTemplate,
+                                           final OverlayProjectDescription project) throws IOException {
         try (var writer = new StringWriter()) {
             writer.write(originalTemplate);
             writer.write(appendTemplate);

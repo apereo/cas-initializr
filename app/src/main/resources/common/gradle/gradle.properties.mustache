@@ -1,21 +1,22 @@
 {{#managementServer}}
+version={{casMgmtVersion}}
 # CAS Management version
 casmgmt.version={{casMgmtVersion}}
 
 # This is the CAS server version that is compatible
 # with the build/version of the CAS management web application.
 cas.version={{casMgmtCasVersion}}
-springBootVersion={{springBootVersion}}
 {{/managementServer}}
 
 {{^managementServer}}
+version={{casVersion}}
 # CAS server version
 cas.version={{casVersion}}
-springBootVersion={{springBootVersion}}
 {{/managementServer}}
 
+springBootVersion={{springBootVersion}}
+
 # The version of this overlay project
-version=0.0.1
 group={{groupId}}
 artifactId={{buildSystemId}}
 sourceCompatibility={{javaVersion}}
@@ -28,11 +29,14 @@ gradleDependencyManagementPluginVersion=@gradleDependencyManagementPluginVersion
 jibVersion=@jibVersion@
 
 # Specify the coordinates of the container image to build via jib
-containerImageOrg=apereo
+containerImageOrg={{containerImageOrg}}
 containerImageName={{containerImageName}}
 
-baseDockerImage=adoptopenjdk/openjdk11:alpine-jre
+baseDockerImage={{containerBaseImageName}}
 allowInsecureRegistries=false
+dockerImagePlatform=amd64:linux
+
+containerImage={{containerImageOrg}}/{{containerImageName}}
 
 # Include launch script for executable WAR artifact
 # Setting this to true allows the final web application
@@ -58,12 +62,11 @@ storeType=PKCS12
 {{#casServer}}
 # Location of the downloaded CAS Shell JAR
 shellDir=build/libs
-ivyVersion=2.4.0
+ivyVersion=2.5.0
 gradleDownloadTaskVersion=@gradleDownloadTaskPluginVersion@
-
-# Control the version of the embedded Apache Tomcat server
-tomcatVersion=@tomcatVersion@
 {{/casServer}}
+
+tomcatVersion={{tomcatVersion}}
 
 # Include private repository
 # override these in user properties or pass in values from env on command line

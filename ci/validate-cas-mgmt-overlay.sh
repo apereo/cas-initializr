@@ -2,8 +2,22 @@
 
 source ./ci/functions.sh
 
-CAS_VERSION=${1:-$DEFAULT_CAS_VERSION}
-BOOT_VERSION=${2:-$DEFAULT_BOOT_VERSION}
+while (( "$#" )); do
+    case "$1" in
+    --cas)
+        CAS_VERSION="$2"
+        shift 2
+        ;;
+    --spring-boot)
+        BOOT_VERSION="$2"
+        shift 2
+        ;;
+    --apache-tomcat)
+        TOMCAT_VERSION="$2"
+        shift 2
+        ;;
+    esac
+done
 
 java -jar app/build/libs/app.jar &
 pid=$!
@@ -11,8 +25,9 @@ sleep 30
 rm -Rf tmp &> /dev/null
 mkdir tmp
 cd tmp
-curl http://localhost:8080/starter.tgz -d casVersion=${CAS_VERSION} -d bootVersion=${BOOT_VERSION} \
-  -d type=cas-management-overlay -d dependencies="jpasvc" | tar -xzvf -
+curl http://localhost:8080/starter.tgz --connect-timeout 60 \
+    -d casVersion=${CAS_VERSION} -d bootVersion=${BOOT_VERSION} \
+    -d type=cas-management-overlay -d dependencies="jpasvc" | tar -xzvf -
 kill -9 $pid
 
 echo "Building CAS Mgmt Overlay"
@@ -48,10 +63,9 @@ chmod +x "*.sh"  >/dev/null 2>&1
 ./docker-build.sh
 
 echo "Building Docker image with Jib"
-./gradlew jibDockerBuild
-[ $? -eq 0 ] && echo "Gradle command ran successfully." || exit 1
+publishDockerImage
 
-downloadTomcat
+downloadTomcat $TOMCAT_VERSION
 mv build/libs/cas-management.war ${CATALINA_HOME}/webapps/app.war
 
 ${CATALINA_HOME}/bin/startup.sh & >/dev/null 2>&1
@@ -66,5 +80,3 @@ else
     echo "Failed to deploy the web application with status $rc."
     exit 1
 fi
-
-publishDockerImage

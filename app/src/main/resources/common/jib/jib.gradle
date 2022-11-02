@@ -1,23 +1,36 @@
 apply plugin: "com.google.cloud.tools.jib"
 
+def imagePlatforms = project.dockerImagePlatform.split(",")
+def dockerUsername = providers.systemProperty("dockerUsername").getOrNull()
+def dockerPassword = providers.systemProperty("dockerPassword").getOrNull()
+
 jib {
     from {
         image = project.baseDockerImage
+        platforms {
+            imagePlatforms.each {
+                def given = it.split(":")
+                platform {
+                    architecture = given[0]
+                    os = given[1]
+                }
+            }
+        }
     }
     to {
-        image = "${project.containerImageOrg}/${project.containerImageName}"
+        image = "${project.containerImage}:${project.version}"
         /**
              ecr-login: Amazon Elastic Container Registry (ECR)
              gcr: Google Container Registry (GCR)
              osxkeychain: Docker Hub
          */
         credHelper = "osxkeychain"
-        /**
-        auth {
-            username = "*******"
-            password = "*******"
+        if (dockerUsername != null && dockerPassword != null) {
+            auth {
+                username = "${dockerUsername}"
+                password = "${dockerPassword}"
+            }
         }
-        */
         tags = [project.version]
     }
     container {

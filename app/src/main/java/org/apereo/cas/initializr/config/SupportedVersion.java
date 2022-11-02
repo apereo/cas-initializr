@@ -10,6 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class SupportedVersion {
+    private String containerBaseImage;
 
     private String version;
 
@@ -23,4 +24,7 @@ public class SupportedVersion {
 
     private String platformVersion;
 
+    private String tomcatVersion;
+
+    private String javaVersion;
 }

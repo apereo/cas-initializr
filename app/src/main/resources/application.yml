@@ -8,12 +8,7 @@ management:
   security:
     enabled: false
   server:
-    port: ${MGMT_PORT:${PORT:8081}}
-    # Mgmt server address cannot be specified if
-    # the server port and the management server port
-    # are the same. This needs to be modified manually
-    # or controlled using a runtime system setting.
-    # address: ${MGMT_ADDRESS:}
+    port: ${MGMT_PORT:${PORT:8080}}
   endpoints:
     enabled-by-default: false
     web:
@@ -35,69 +30,22 @@ logging:
       springframework:
         web: debug
       apereo:
-        cas: info
+        cas: debug
     io:
       spring:
         initializr: debug
 
 spring:
+  profiles:
+    include: initializr
+  cloud:
+    compatibility-verifier.enabled: false 
   main:
     allow-bean-definition-overriding: true
 
-#######################################################################
-# Note:
-#
-# As versions change here, the BOM section might also be updated
-# particularly when new versions are released.
-# BOM should always point to the latest version of the software.
-#
-###########################################################################
-cas-initializr:
-  supported-versions:
-    - version: 6.3.10
-      platform-version: 6.3.7.4
-      boot-version: 2.3.7.RELEASE
-      sync: true
-      branch: 6.3
-      type: cas-mgmt
-    - version: 6.4.1
-      boot-version: 2.5.4
-      platform-version: 6.4.6.2
-      sync: true
-      branch: 6.4
-      type: cas-mgmt
-    - version: 6.5.2
-      boot-version: 2.6.3
-      platform-version: 6.5.2
-      sync: true
-      branch: 6.5
-      type: cas-mgmt
-    - version: 6.3.7.2
-      boot-version: 2.3.7.RELEASE
-      platform-version: 6.3.7.2
-      sync: true
-      branch: 6.3
-      type: cas
-    - version: 6.4.6.3
-      boot-version: 2.5.4
-      platform-version: 6.4.6.3
-      sync: true
-      branch: 6.4
-      type: cas
-    - version: @casVersion@
-      platform-version: @casVersion@
-      boot-version: @springBootVersion@
-      branch: @casBranch@
-      sync: true
-      type: cas
-    - version: @casLatestVersion@
-      platform-version: @casLatestVersion@
-      boot-version: @springBootLatestVersion@
-      sync: true
-      branch: master
-      type: cas
-
 initializr:
+  env:
+    force-ssl: true
   name:
     value: cas
   description:
@@ -107,12 +55,14 @@ initializr:
   artifact-id:
     value: cas
   version:
-    value: @version@
+    value: 1.0.0
   package-name:
     value: org.apereo
   javaVersions:
-    - id: @javaVersion@
+    - id: 11
       default: true
+    - id: 17
+    - id: 21
   languages:
     - name: Java
       id: java
@@ -206,21 +156,6 @@ initializr:
         format: project
       default: false
       action: /starter.tgz
-
-  boot-versions:
-    - id: @springBootVersion@
-      default: true
-  env:
-    force-ssl: true
-    boms:
-      cas-bom:
-        groupId: org.apereo.cas
-        artifactId: cas-server-support-bom
-        version: @casVersion@
-      cas-mgmt-bom:
-        groupId: org.apereo.cas
-        artifactId: cas-mgmt-support-bom
-        version: 6.5.2
   dependencies:
     - name: api
       content:
@@ -1284,6 +1219,12 @@ initializr:
           bom: cas-bom
           aliases:
             - remote
+        - name: cas-server-support-geolocation-ip
+          id: support-geolocation-ip
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-geolocation-ip
+          description: Apereo CAS GeoLocation IP Tracking Support
+          bom: cas-bom
         - name: cas-server-support-geolocation
           id: support-geolocation
           groupId: org.apereo.cas
@@ -2294,6 +2235,12 @@ initializr:
           artifactId: cas-server-support-session-redis
           description: Apereo CAS Web Application Redis Session Management
           bom: cas-bom
+        - name: cas-server-support-shell-core
+          id: support-shell-core
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-shell-core
+          description: Apereo CAS Shell Core
+          bom: cas-bom
         - name: cas-server-support-shell
           id: support-shell
           groupId: org.apereo.cas
@@ -2507,6 +2454,13 @@ initializr:
           bom: cas-bom
           aliases:
             - throttle
+        - name: cas-server-support-bucket4j-core
+          id: support-bucket4j-core
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-bucket4j-core
+          description: Apereo CAS Bucket4j Core
+          bom: cas-bom
+          compatibilityRange: 6.5.0
         - name: cas-server-support-throttle-bucket4j-core
           id: support-throttle-bucket4j-core
           groupId: org.apereo.cas
@@ -2545,6 +2499,12 @@ initializr:
           groupId: org.apereo.cas
           artifactId: cas-server-support-throttle-jdbc
           description: Apereo CAS JDBC Authentication Throttling
+          bom: cas-bom
+        - name: cas-server-support-throttle-ldap
+          id: support-throttle-ldap
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-throttle-ldap
+          description: Apereo CAS LDAP Authentication Throttling
           bom: cas-bom
         - name: cas-server-support-throttle-mongo
           id: support-throttle-mongo

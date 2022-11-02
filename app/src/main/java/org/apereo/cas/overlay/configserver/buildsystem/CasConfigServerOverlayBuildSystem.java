@@ -16,6 +16,11 @@ public class CasConfigServerOverlayBuildSystem implements OverlayBuildSystem {
     }
 
     @Override
+    public String overlayType() {
+        return "cas";
+    }
+
+    @Override
     public String resourceDirectory() {
         return "configserver-overlay";
     }

@@ -1,17 +1,18 @@
 package org.apereo.cas.overlay.casmgmt.contrib.docker;
 
-import io.spring.initializr.generator.project.contributor.MultipleResourcesProjectContributor;
+import org.apereo.cas.initializr.contrib.TemplatedProjectContributor;
+
+import org.springframework.context.ApplicationContext;
 
 /**
  * This is {@link CasManagementOverlayDockerContributor}.
  *
  * @author Misagh Moayyed
  */
-public class CasManagementOverlayDockerContributor extends MultipleResourcesProjectContributor {
+public class CasManagementOverlayDockerContributor extends TemplatedProjectContributor {
 
-    public CasManagementOverlayDockerContributor() {
-        super("classpath:mgmt-overlay/docker", filename -> filename.endsWith(".sh"));
+    public CasManagementOverlayDockerContributor(final ApplicationContext applicationContext) {
+        super(applicationContext, "./", "classpath:mgmt-overlay/docker/**");
     }
-
 }
 

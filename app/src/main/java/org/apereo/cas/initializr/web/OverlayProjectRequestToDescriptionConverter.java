@@ -1,5 +1,7 @@
 package org.apereo.cas.initializr.web;
 
+import org.apereo.cas.initializr.config.CasInitializrProperties;
+import org.apereo.cas.initializr.config.SupportedVersion;
 import org.apereo.cas.overlay.casmgmt.buildsystem.CasManagementOverlayBuildSystem;
 
 import io.spring.initializr.generator.buildsystem.BuildSystem;
@@ -14,21 +16,21 @@ import io.spring.initializr.web.project.InvalidProjectRequestException;
 import io.spring.initializr.web.project.ProjectRequest;
 import io.spring.initializr.web.project.ProjectRequestPlatformVersionTransformer;
 import io.spring.initializr.web.project.ProjectRequestToDescriptionConverter;
-import org.springframework.util.Assert;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
+@Slf4j
 public class OverlayProjectRequestToDescriptionConverter implements ProjectRequestToDescriptionConverter<OverlayProjectRequest> {
     private final ProjectRequestPlatformVersionTransformer platformVersionTransformer;
 
-    public OverlayProjectRequestToDescriptionConverter(
-        final ProjectRequestPlatformVersionTransformer platformVersionTransformer) {
-        Assert.notNull(platformVersionTransformer, "PlatformVersionTransformer must not be null");
-        this.platformVersionTransformer = platformVersionTransformer;
-    }
+    private final CasInitializrProperties properties;
 
     private static void validateType(final String type, final InitializrMetadata metadata) {
         if (type != null) {
@@ -140,10 +142,12 @@ public class OverlayProjectRequestToDescriptionConverter implements ProjectReque
         description.setName(request.getName());
         description.setPackageName(request.getPackageName());
         description.setPackaging(Packaging.forId(request.getPackaging()));
-        description.setPlatformVersion(getSpringBootPlatformVersion(request, metadata));
+
+        val springBootPlatformVersion = getSpringBootPlatformVersion(request, casVersion, metadata);
+        description.setPlatformVersion(springBootPlatformVersion);
         description.setVersion(request.getVersion());
         description.setCasVersion(casVersion.toString());
-        description.setSpringBootVersion(getSpringBootPlatformVersion(request, metadata).toString());
+        description.setSpringBootVersion(springBootPlatformVersion.toString());
 
         resolvedDependencies.forEach(dependency -> description.addDependency(dependency.getId(),
             MetadataBuildItemMapper.toDependency(dependency)));
@@ -171,9 +175,20 @@ public class OverlayProjectRequestToDescriptionConverter implements ProjectReque
         return this.platformVersionTransformer.transform(VersionUtils.parse(versionText), metadata);
     }
 
-    private Version getSpringBootPlatformVersion(final OverlayProjectRequest request, final InitializrMetadata metadata) {
-        var versionText = request.getBootVersion() != null ? request.getBootVersion()
-            : metadata.getBootVersions().getDefault().getId();
+    private Version getSpringBootPlatformVersion(final OverlayProjectRequest request,
+                                                 final Version casVersion,
+                                                 final InitializrMetadata metadata) {
+        var versionText = request.getBootVersion();
+        if (!StringUtils.hasText(versionText)) {
+            log.debug("Spring Boot version unspecified for {}", casVersion);
+            versionText = properties.getSupportedVersions()
+                .stream()
+                .filter(version -> VersionUtils.parse(version.getVersion()).equals(casVersion))
+                .map(SupportedVersion::getBootVersion)
+                .findFirst()
+                .orElseThrow();
+        }
+        log.info("Resolving Spring Boot version {} for {}", versionText, casVersion);
         return this.platformVersionTransformer.transform(VersionUtils.parse(versionText), metadata);
     }
 }
