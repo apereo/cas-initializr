@@ -1,46 +1,42 @@
 import React, { PropsWithChildren } from 'react';
 
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import useFetch from "use-http";
-import { Dependency } from '../data/Dependency';
-import { DependencyType, InitializrResponseData } from '../data/InitializrResponseData';
-import { setList } from '../store/DependencyReducer';
+import { InitializrResponseData } from '../data/InitializrResponseData';
+import { CasVersionOption } from '../data/Option';
+import { setApiLoaded, setVersionsLoaded } from '../store/AppReducer';
 import { useAppDispatch } from '../store/hooks';
+import { setApiOptions, setCasVersionOptions } from "../store/OptionReducer";
 
 export const DataContext: React.FC<PropsWithChildren<{}>> = ({ children }) => {
-
     const dispatch = useAppDispatch();
 
-    const [data, setData] = useState({});
-    const { get, response } = useFetch<InitializrResponseData>("/api");
+    const api = useFetch<InitializrResponseData>("/api");
+    const actuator = useFetch<CasVersionOption[]>("/api/actuator/supportedVersions");
 
+    /*eslint-disable react-hooks/exhaustive-deps*/
     useEffect(() => {
-        initializeData();
+        initializeApiData();
+        initializeVersions();
     }, []);
 
-    async function initializeData() {
-        const d = await get("/");
-        if (response.ok) {
-            const parsed = d.dependencies.values.reduce(
-                (collection: Dependency[], type: DependencyType) => {
-                    const p = type.values.map((dep) => ({
-                        ...dep,
-                        type: type.name
-                    })) as Dependency[];
-
-                    return [
-                        ...collection,
-                        ...p
-                    ];
-                },
-                [] as Dependency[]
-            );
-
-            dispatch(setList(parsed));
+    async function initializeApiData() {
+        const d = await api.get("/");
+        if (api.response.ok) {
+            dispatch(setApiOptions(d));
+            dispatch(setApiLoaded(true));
         }
     }
 
-    return (<>{children}</>);
+    async function initializeVersions() {
+        const d = await actuator.get("/");
+        if (actuator.response.ok) {
+            dispatch(setCasVersionOptions(d));
+            dispatch(setVersionsLoaded(true))
+        }
+    }
+
+    return <>{children}</>;
 };
 
 export default DataContext;

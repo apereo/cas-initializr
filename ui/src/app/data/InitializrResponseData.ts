@@ -1,20 +1,9 @@
-import { Dependency } from "./Dependency";
-
-export interface InitializrResponseData {
+import { ApiOptions } from "./Option";
+export interface InitializrResponseData extends ApiOptions {
     _links: {
         [key: string]: {
             href: string;
             templated: boolean;
-        }
+        };
     };
-
-    dependencies: {
-        type: string;
-        values: DependencyType[]
-    }
-}
-
-export interface DependencyType {
-    name: string;
-    values: Partial<Dependency>[];
 }

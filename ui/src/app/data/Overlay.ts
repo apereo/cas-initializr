@@ -1,12 +1,15 @@
-import { Dependency } from "./Dependency";
-
 export interface Overlay {
+    casVersion: string;
+    type: string;
+    packaging: string;
+    dependencies: string[];
+    javaVersion: string;
+    language: string;
+    bootVersion: string;
+    groupId: string;
+    artifactId: string;
     version: string;
-    group: string;
-    artifact: string;
     name: string;
     description: string;
-    package: string;
-    dependencies: Dependency[];
+    packageName: string;
 }
-

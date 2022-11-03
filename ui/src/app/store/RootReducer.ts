@@ -1,9 +1,13 @@
 import { combineReducers } from "@reduxjs/toolkit";
 
-import DependencyReducer from "./DependencyReducer";
+import OverlayReducer from "./OverlayReducer";
+import OptionReducer from "./OptionReducer";
+import AppReducer from "./AppReducer";
 
 const reducer = combineReducers({
-    dependencies: DependencyReducer.reducer,
+    app: AppReducer.reducer,
+    overlay: OverlayReducer.reducer,
+    option: OptionReducer.reducer
 });
 
 export type RootState = ReturnType<typeof reducer>;

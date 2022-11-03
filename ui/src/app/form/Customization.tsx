@@ -1,125 +1,181 @@
+import React from "react";
 import {
-    Button,
     FormControl,
     FormHelperText,
-    Input,
     InputLabel,
     MenuItem,
     Select,
-    SelectChangeEvent,
     TextField,
     Typography,
     Stack,
-    Paper,
+    Divider,
+    Button,
 } from "@mui/material";
-import { styled } from "@mui/material/styles";
-import React from "react";
-import { useForm } from "react-hook-form";
+
+import { Controller, useForm } from "react-hook-form";
 import { Overlay } from "../data/Overlay";
+import {
+    useCasTypes,
+    useCasVersionsForType,
+    useDefaultValues,
+} from "../store/OptionReducer";
+import { CasVersionOption, TypeOptionValue } from "../data/Option";
+import { useAppDispatch } from "../store/hooks";
+import { setCustomization } from "../store/OverlayReducer";
 
-const versions = ["6.5.x", "6.4.x", "6.3.x", "6.2.x", "6.1.x", "6.0.x"];
+export default function Customization() {
 
-const FormItem = styled(Paper)(({ theme }) => ({
-    padding: theme.spacing(1),
-}));
+    const defaultValues = useDefaultValues();
+    const dispatch = useAppDispatch();
 
-export default function Customization () {
-    const {
-        register,
-        handleSubmit,
-        watch,
-        formState: { errors },
-    } = useForm<Overlay>();
+    const { register, watch, control } = useForm<Overlay>({
+        defaultValues: {
+            ...defaultValues,
+            casVersion: ''
+        },
+        mode: 'onChange'
+    });
 
-    const onSubmit = handleSubmit((data) => console.log(data));
-    const handleChange = (e: SelectChangeEvent<string>) =>
-        setVersion(e.target.value);
+    const type = watch('type');
 
-    const [version, setVersion] = React.useState("6.5.x");
+    const types = useCasTypes();
+    const versions = useCasVersionsForType(type);
 
-    console.log(watch("version"));
+    const formData = watch();
+
+    React.useEffect(() => {
+        dispatch(setCustomization(formData));
+    }, [formData]);
 
     return (
         <>
-            <Typography variant="subtitle1" style={{marginBottom: '1rem'}}>Customization</Typography>
-            <form onSubmit={onSubmit}>
+            <Typography variant="subtitle1" style={{ marginBottom: "1rem" }}>
+                Customization
+            </Typography>
+            <form>
                 <Stack spacing={2}>
                     <FormControl fullWidth>
-                        <InputLabel id="version-select-label">
-                            Version
-                        </InputLabel>
-                        <Select
-                            labelId="version-select-label"
-                            id="version-select"
-                            value={version}
-                            label="Version"
-                            {...register("version")}
-                        >
-                            {versions.map((v) => (
-                                <MenuItem key={v} value={v}>
-                                    {v}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-                    <FormControl fullWidth>
-                        <TextField
-                            id="group-input"
-                            label="Group"
-                            variant="outlined"
-                            {...register("group")}
+                        <Controller
+                            control={control}
+                            name="type"
+                            render={({
+                                field: { onChange, onBlur, value, ref },
+                            }) => (
+                                <Select
+                                    labelId="type-select-label"
+                                    id="type-select"
+                                    label="Type"
+                                    value={value}
+                                    onChange={onChange}
+                                    inputRef={ref}
+                                >
+                                    {types.map(
+                                        (t: TypeOptionValue, idx: number) => (
+                                            <MenuItem key={idx} value={t.id}>
+                                                {t.name}
+                                            </MenuItem>
+                                        )
+                                    )}
+                                </Select>
+                            )}
                         />
-                        <FormHelperText id="group-helper-text">
-                            ex. com.example
-                        </FormHelperText>
                     </FormControl>
-                    <FormControl fullWidth>
-                        <TextField
-                            id="artifact-input"
-                            label="Artifact"
-                            variant="outlined"
-                            {...register("artifact")}
-                        />
-                        <FormHelperText id="artifact-helper-text">
-                            ex. demo
-                        </FormHelperText>
-                    </FormControl>
-                    <FormControl fullWidth>
-                        <TextField
-                            id="name-input"
-                            label="Name"
-                            variant="outlined"
-                            {...register("name")}
-                        />
-                        <FormHelperText id="name-helper-text">
-                            ex. demo
-                        </FormHelperText>
-                    </FormControl>
-                    <FormControl fullWidth>
-                        <TextField
-                            id="description-input"
-                            label="Description"
-                            variant="outlined"
-                            multiline
-                            {...register("name")}
-                        />
-                        <FormHelperText id="description-helper-text">
-                            ex. Demo CAS Initializr project
-                        </FormHelperText>
-                    </FormControl>
-                    <FormControl fullWidth>
-                        <TextField
-                            id="package-input"
-                            label="Package"
-                            variant="outlined"
-                            {...register("package")}
-                        />
-                        <FormHelperText id="package-helper-text">
-                            ex. demo
-                        </FormHelperText>
-                    </FormControl>
-
-                    <Button variant="outlined">Download</Button>
+                    {type && type !== "" && (
+                        <React.Fragment>
+                            <FormControl fullWidth>
+                                <InputLabel id="version-select-label">
+                                    Version
+                                </InputLabel>
+                                <Controller
+                                    control={control}
+                                    name="casVersion"
+                                    render={({
+                                        field: { onChange, onBlur, value, ref },
+                                    }) => (
+                                        <Select
+                                            labelId="version-select-label"
+                                            id="version-select"
+                                            label="Version"
+                                            value={value}
+                                            onChange={onChange}
+                                            inputRef={ref}
+                                        >
+                                            {versions.map(
+                                                (
+                                                    v: CasVersionOption,
+                                                    idx: number
+                                                ) => (
+                                                    <MenuItem
+                                                        key={idx}
+                                                        value={v.version}
+                                                    >
+                                                        {v.version}
+                                                    </MenuItem>
+                                                )
+                                            )}
+                                        </Select>
+                                    )}
+                                />
+                            </FormControl>
+                            <Divider>Optional</Divider>
+                            <FormControl fullWidth>
+                                <TextField
+                                    id="group-input"
+                                    label="Group"
+                                    variant="outlined"
+                                    {...register("groupId")}
+                                />
+                                <FormHelperText id="group-helper-text">
+                                    ex. com.example
+                                </FormHelperText>
+                            </FormControl>
+                            <FormControl fullWidth>
+                                <TextField
+                                    id="artifact-input"
+                                    label="Artifact"
+                                    variant="outlined"
+                                    {...register("artifactId")}
+                                />
+                                <FormHelperText id="artifact-helper-text">
+                                    ex. demo
+                                </FormHelperText>
+                            </FormControl>
+                            <FormControl fullWidth>
+                                <TextField
+                                    id="name-input"
+                                    label="Name"
+                                    variant="outlined"
+                                    {...register("name")}
+                                />
+                                <FormHelperText id="name-helper-text">
+                                    ex. demo
+                                </FormHelperText>
+                            </FormControl>
+                            <FormControl fullWidth>
+                                <TextField
+                                    id="description-input"
+                                    label="Description"
+                                    variant="outlined"
+                                    multiline
+                                    {...register("description")}
+                                />
+                                <FormHelperText id="description-helper-text">
+                                    ex. Demo CAS Initializr project
+                                </FormHelperText>
+                            </FormControl>
+                            <FormControl fullWidth>
+                                <TextField
+                                    id="package-input"
+                                    label="Package"
+                                    variant="outlined"
+                                    {...register("packaging")}
+                                />
+                                <FormHelperText id="package-helper-text">
+                                    ex. demo
+                                </FormHelperText>
+                            </FormControl>
+                        </React.Fragment>
+                    )}
                 </Stack>
             </form>
         </>

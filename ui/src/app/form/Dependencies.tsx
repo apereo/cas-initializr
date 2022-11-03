@@ -1,115 +1,94 @@
 import {
-    Dialog,
-    DialogProps,
-    DialogActions,
-    DialogContent,
-    DialogTitle,
+    IconButton,
     List,
     ListItem,
     ListItemText,
     Typography,
-    Button,
-    Chip,
-    ListItemButton,
-    ListItemIcon,
-    Checkbox,
-} from '@mui/material';
-import React from 'react';
-import { Dependency } from '../data/Dependency';
-import { useDependencies } from '../store/DependencyReducer';
+} from "@mui/material";
+import React, { Fragment } from 'react';
+import DeleteIcon from "@mui/icons-material/Delete";
+import { Dependency } from "../data/Dependency";
+import { useDependencies } from "../store/OptionReducer";
+import DependencySelector from "./DependencySelector";
+import { useAppDispatch } from "../store/hooks";
+import { setDependencies } from "../store/OverlayReducer";
 
 export default function Dependencies() {
+    const deps = useDependencies();
+    const dispatch = useAppDispatch();
 
-    const [open, setOpen] = React.useState(false);
-    const [scroll, setScroll] = React.useState<DialogProps["scroll"]>("paper");
+    const [selected, setSelected] = React.useState<string[]>([]);
+    const [mapped, setMapped] = React.useState<(Dependency | undefined)[]>([]);
 
-    const handleClickOpen = (scrollType: DialogProps["scroll"]) => () => {
-        setOpen(true);
-        setScroll(scrollType);
+    const mapSelected = (sel: string[]) => {
+        setSelected(sel);
     };
 
-    const handleClose = () => {
-        setOpen(false);
-    };
-
-    const descriptionElementRef = React.useRef<HTMLElement>(null);
-    React.useEffect(() => {
-        if (open) {
-            const { current: descriptionElement } = descriptionElementRef;
-            if (descriptionElement !== null) {
-                descriptionElement.focus();
-            }
+    const remove = (id: string) => {
+        if (id) {
+            setSelected(
+                selected.filter((s: string) => s !== id)
+            );
         }
-    }, [open]);
+    };
 
-    const dependencies = useDependencies();
-
-    const handleToggle = (val: string) => () => console.log(val);
-
-    const checked: string[] = [];
+    React.useEffect(() => {
+        setMapped(
+            selected.map((s: string) =>
+                deps.find((d: Dependency) => d.id === s)
+            )
+        );
+        dispatch(setDependencies(selected));
+    }, [selected]);
 
     return (
         <>
-            <Typography variant="subtitle1" style={{ marginBottom: "1rem" }}>
-                Dependencies
-            </Typography>
-            <Button onClick={handleClickOpen("paper")}>Add Dependencies</Button>
-
-            <Dialog
-                open={open}
-                onClose={handleClose}
-                scroll={scroll}
-                aria-labelledby="scroll-dialog-title"
-                aria-describedby="scroll-dialog-description"
+            <div
+                style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "",
+                }}
             >
-                <DialogTitle id="scroll-dialog-title">Dependencies</DialogTitle>
-                <DialogContent dividers={scroll === "paper"}>
-                    <List
-                        sx={{
-                            width: "100%",
-                        }}
-                    >
-                        {dependencies.map((dep: Dependency) => (
-                            <ListItem key={dep.id}>
-                                <ListItemButton
-                                    role={undefined}
-                                    onClick={handleToggle(dep.id)}
-                                    dense
-                                >
-                                    <ListItemIcon>
-                                        <Checkbox
-                                            edge="start"
-                                            checked={
-                                                checked.indexOf(dep.id) !== -1
-                                            }
-                                            tabIndex={-1}
-                                            disableRipple
-                                        />
-                                    </ListItemIcon>
-                                    <ListItemText
-                                        primary={
-                                            <>
-                                                {dep.name}
-                                                <Chip
-                                                    label={dep.type}
-                                                    size="small"
-                                                    color="primary"
-                                                    style={{marginLeft: '1rem'}}
-                                                />
-                                            </>
-                                        }
-                                        secondary={dep.description}
-                                    />
-                                </ListItemButton>
+                <Typography
+                    variant="subtitle1"
+                    style={{ marginBottom: "0rem", marginRight: "1rem" }}
+                >
+                    Dependencies
+                </Typography>
+                <DependencySelector
+                    selected={selected}
+                    onSelectedChange={(selected: string[]) =>
+                        mapSelected(selected)
+                    }
+                />
+            </div>
+            <List dense>
+                {mapped.map((s: Dependency | undefined, idx: number) => (
+                    <Fragment key={idx}>
+                        {s !== undefined ? (
+                            <ListItem
+                                secondaryAction={
+                                    <IconButton
+                                        edge="end"
+                                        aria-label="delete"
+                                        onClick={() => remove(s?.id)}
+                                    >
+                                        <DeleteIcon />
+                                    </IconButton>
+                                }
+                            >
+                                <ListItemText
+                                    primary={s.name}
+                                    secondary={s.description}
+                                />
                             </ListItem>
-                        ))}
-                    </List>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleClose} color="secondary">Cancel</Button>
-                    <Button onClick={handleClose} color="info">Update Dependencies</Button>
-                </DialogActions>
-            </Dialog>
+                        ) : (
+                            <Fragment></Fragment>
+                        )}
+                    </Fragment>
+                ))}
+            </List>
         </>
     );
 }
