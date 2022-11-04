@@ -32,7 +32,7 @@ cas-initializr:
       tomcat-version: 9.0.68
       java-version: 11
       container-base-image: eclipse-temurin:11-jdk
-    - version: 6.6.1
+    - version: 6.6.2
       platform-version: 6.6.0
       boot-version: 2.7.3
       sync: true
