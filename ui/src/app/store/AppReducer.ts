@@ -21,7 +21,7 @@ export const AppSlice = createSlice({
             state.apiLoaded = action.payload;
         },
         setVersionsLoaded(state, action: PayloadAction<boolean>) {
-            state.apiLoaded = action.payload;
+            state.versionsLoaded = action.payload;
         },
     },
 });
@@ -33,7 +33,7 @@ export const ApiLoadedSelector = createSelector(
 
 export const VersionsLoadedSelector = createSelector(
     stateSelector,
-    (state: AppState) => state.apiLoaded
+    (state: AppState) => state.versionsLoaded
 );
 
 export function useApiLoaded() {

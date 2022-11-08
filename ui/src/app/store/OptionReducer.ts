@@ -149,7 +149,7 @@ export const CasDefaultSelector = createSelector(
     }
 );
 
-export function useDependencies(): Dependency[] {
+export function useDependencyList(): Dependency[] {
     const deps = useSelector(OptionDependenciesSelector);
 
     const parsed = useMemo(() => {

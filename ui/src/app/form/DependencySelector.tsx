@@ -12,13 +12,16 @@ import {
     InputAdornment,
     IconButton,
     Divider,
+    InputLabel,
+    FormControl,
 } from "@mui/material";
 import React from "react";
 import { Dependency } from "../data/Dependency";
-import { useDependencies } from "../store/OptionReducer";
+import { useDependencyList } from "../store/OptionReducer";
 import { Close } from "@mui/icons-material";
 import Fuse from "fuse.js";
 import { FixedSizeList, ListChildComponentProps } from "react-window";
+import { useOverlayDependencies } from "../store/OverlayReducer";
 
 const options: Fuse.IFuseOptions<Dependency> = {
     includeScore: true,
@@ -76,15 +79,17 @@ function ItemRenderer(props: ListChildComponentProps) {
 }
 
 export interface DependencySelectorProps {
-    selected: string[];
     onSelectedChange(selected: string[]): void;
 }
 
-export default function DependencySelector({ selected, onSelectedChange }: DependencySelectorProps ) {
-    const available = useDependencies();
+export default function DependencySelector({ onSelectedChange }: DependencySelectorProps ) {
+    const available = useDependencyList();
+    const selected = useOverlayDependencies();
 
     const engine = useFuseSearchEngine(available, options);
     const [open, setOpen] = React.useState(false);
+    const [search, setSearch] = React.useState<string>("");
+    const [limited, setLimited] = React.useState<Dependency[]>([...available]);
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -95,28 +100,22 @@ export default function DependencySelector({ selected, onSelectedChange }: Depen
     };
 
     const handleToggle = (val: string) => {
-        setChecked(
-            checked.indexOf(val) > -1
-                ? [...checked.filter((d) => d !== val)]
-                : [...checked, val]
+        onSelectedChange(
+            selected.indexOf(val) > -1
+                ? [...selected.filter((d) => d !== val)]
+                : [...selected, val]
         );
     };
 
-    const [checked, setChecked] = React.useState<string[]>(selected);
-    const [search, setSearch] = React.useState<string>("");
-    const [limited, setLimited] = React.useState<Dependency[]>([...available]);
-    const getSearchResults = (search: string) =>
-        engine.search(search).map((r) => r.item);
+    const getSearchResults = React.useCallback((search: string) => {
+        return search.length > 0
+            ? engine.search(search).map((r) => r.item)
+            : [...available];
+    }, [available, engine]);
 
     React.useEffect(() => {
-        setLimited(
-            search.length > 1 ? getSearchResults(search) : [...available]
-        );
-    }, [search]);
-
-    React.useEffect(() => {
-        onSelectedChange(checked);
-    }, [checked])
+        setLimited(getSearchResults(search));
+    }, [search, available, getSearchResults]);
 
     return (
         <>
@@ -134,32 +133,37 @@ export default function DependencySelector({ selected, onSelectedChange }: Depen
                     >
                         Dependencies
                     </Typography>
-                    <OutlinedInput
-                        id="search"
-                        label="Search"
-                        fullWidth
-                        value={search}
-                        onChange={(ev) => setSearch(ev.target.value)}
-                        endAdornment={
-                            <InputAdornment position="end">
-                                <IconButton
-                                    aria-label="toggle password visibility"
-                                    onClick={() => setSearch("")}
-                                    onMouseDown={() => setSearch("")}
-                                    edge="end"
-                                >
-                                    <Close />
-                                </IconButton>
-                            </InputAdornment>
-                        }
-                    />
+                    <FormControl fullWidth sx={{ m: 1 }}>
+                        <InputLabel htmlFor="dep-search-select-helper-label">
+                            Search
+                        </InputLabel>
+                        <OutlinedInput
+                            id="dep-search-select-helper-label"
+                            fullWidth
+                            label="Search"
+                            value={search}
+                            onChange={(ev) => setSearch(ev.target.value)}
+                            endAdornment={
+                                <InputAdornment position="end">
+                                    <IconButton
+                                        aria-label="toggle password visibility"
+                                        onClick={() => setSearch("")}
+                                        onMouseDown={() => setSearch("")}
+                                        edge="end"
+                                    >
+                                        <Close />
+                                    </IconButton>
+                                </InputAdornment>
+                            }
+                        />
+                    </FormControl>
                 </div>
                 <Divider />
                 <FixedSizeList
                     itemData={limited.map((i) => ({
                         ...i,
                         handleToggle,
-                        checked: checked.indexOf(i.id) > -1,
+                        checked: selected.indexOf(i.id) > -1,
                     }))}
                     height={1000}
                     itemCount={limited.length}

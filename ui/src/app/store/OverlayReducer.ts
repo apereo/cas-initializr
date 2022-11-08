@@ -3,6 +3,9 @@ import { useSelector } from "react-redux";
 
 import { RootState } from "./RootReducer";
 import { Overlay } from "../data/Overlay";
+import { useDependencyList } from "./OptionReducer";
+import { Dependency } from "../data/Dependency";
+import { isEmpty, isNil } from "lodash";
 
 export interface OverlayState extends Overlay {
     casVersion: string;
@@ -88,8 +91,22 @@ export function useOverlayDependencies() {
     return useSelector(OverlayDependenciesSelector);
 }
 
+export function useMappedOverlayDependencies() {
+    const selected = useOverlayDependencies();
+    const list = useDependencyList();
+
+    return selected.map((s: string) =>
+        list.find((d: Dependency) => d.id === s)
+    );
+}
+
 export function useOverlay() {
     return useSelector(OverlaySelector);
+}
+
+export function useCanDownload() {
+    const { type, casVersion } = useOverlay();
+    return !isNil(type) && !isEmpty(type) && !isNil(casVersion) && !isEmpty(casVersion);
 }
 
 export const { setDependencies, setCustomization } = OverlaySlice.actions;

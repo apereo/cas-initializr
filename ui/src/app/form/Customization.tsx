@@ -9,7 +9,6 @@ import {
     Typography,
     Stack,
     Divider,
-    Button,
 } from "@mui/material";
 
 import { Controller, useForm } from "react-hook-form";
@@ -45,7 +44,7 @@ export default function Customization() {
 
     React.useEffect(() => {
         dispatch(setCustomization(formData));
-    }, [formData]);
+    }, [formData, dispatch]);
 
     return (
         <>
@@ -55,6 +54,9 @@ export default function Customization() {
             <form>
                 <Stack spacing={2}>
                     <FormControl fullWidth>
+                        <InputLabel id="version-select-label">
+                            Type *
+                        </InputLabel>
                         <Controller
                             control={control}
                             name="type"
@@ -68,6 +70,7 @@ export default function Customization() {
                                     value={value}
                                     onChange={onChange}
                                     inputRef={ref}
+                                    required
                                 >
                                     {types.map(
                                         (t: TypeOptionValue, idx: number) => (
@@ -84,7 +87,7 @@ export default function Customization() {
                         <React.Fragment>
                             <FormControl fullWidth>
                                 <InputLabel id="version-select-label">
-                                    Version
+                                    Version *
                                 </InputLabel>
                                 <Controller
                                     control={control}
@@ -99,6 +102,7 @@ export default function Customization() {
                                             value={value}
                                             onChange={onChange}
                                             inputRef={ref}
+                                            required
                                         >
                                             {versions.map(
                                                 (

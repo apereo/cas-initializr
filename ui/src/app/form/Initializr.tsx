@@ -1,11 +1,11 @@
 import React from 'react';
-import { Button, Divider, Grid } from '@mui/material';
+import { Button, CircularProgress, Divider, Grid } from '@mui/material';
 
 import Customization from './Customization';
 import Dependencies from './Dependencies';
-import { useApiLoaded } from '../store/AppReducer';
+import { useApiLoaded, useVersionsLoaded } from '../store/AppReducer';
 import { Overlay } from '../data/Overlay';
-import { useOverlay } from '../store/OverlayReducer';
+import { useCanDownload, useOverlay } from '../store/OverlayReducer';
 import { isNil, pickBy } from 'lodash';
 
 import * as FileSaver from 'file-saver';
@@ -21,6 +21,8 @@ export const downloadAsZip = (fileName: string, data: any) => {
 export default function Initializr() {
 
     const apiLoaded = useApiLoaded();
+    const versionsLoaded = useVersionsLoaded();
+    const canDownload = useCanDownload();
 
     const overlay = useOverlay();
 
@@ -39,29 +41,39 @@ export default function Initializr() {
     };
 
     return (
-        <>
-            {apiLoaded && (
-                <Grid
-                    container
-                    rowSpacing={1}
-                    columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-                    sx={{
-                        padding: "2rem",
-                    }}
-                >
+        <Grid
+            container
+            rowSpacing={1}
+            columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+            sx={{
+                padding: "2rem",
+            }}
+        >
+            {apiLoaded && versionsLoaded ? (
+                <>
                     <Grid item xs={6} style={{ padding: "1rem" }}>
                         <Customization />
                         <Divider style={{ margin: "1rem 0rem" }} />
-                        <Button fullWidth variant="contained" type="submit" onClick={() => download(overlay)}>
+                        <Button
+                            fullWidth
+                            variant="contained"
+                            type="submit"
+                            onClick={() => download(overlay)}
+                            disabled={ !canDownload }
+                        >
                             Download
                         </Button>
                     </Grid>
                     <Grid item xs={6} style={{ padding: "1rem" }}>
                         <Dependencies />
                     </Grid>
+                </>
+            ) : (
+                <Grid item xs={12} style={{ padding: "1rem", justifyContent: 'center', display: 'flex' }} zeroMinWidth>
+                    <CircularProgress />
                 </Grid>
             )}
-        </>
+        </Grid>
     );
 }
 

@@ -8,38 +8,18 @@ import {
 import React, { Fragment } from 'react';
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Dependency } from "../data/Dependency";
-import { useDependencies } from "../store/OptionReducer";
 import DependencySelector from "./DependencySelector";
 import { useAppDispatch } from "../store/hooks";
-import { setDependencies } from "../store/OverlayReducer";
+import { setDependencies, useMappedOverlayDependencies, useOverlayDependencies } from "../store/OverlayReducer";
 
 export default function Dependencies() {
-    const deps = useDependencies();
+    const selectedDependencies = useMappedOverlayDependencies();
+    const selected = useOverlayDependencies();
     const dispatch = useAppDispatch();
 
-    const [selected, setSelected] = React.useState<string[]>([]);
-    const [mapped, setMapped] = React.useState<(Dependency | undefined)[]>([]);
-
-    const mapSelected = (sel: string[]) => {
-        setSelected(sel);
-    };
-
     const remove = (id: string) => {
-        if (id) {
-            setSelected(
-                selected.filter((s: string) => s !== id)
-            );
-        }
+        dispatch(setDependencies(selected.filter((s: string) => s !== id)));
     };
-
-    React.useEffect(() => {
-        setMapped(
-            selected.map((s: string) =>
-                deps.find((d: Dependency) => d.id === s)
-            )
-        );
-        dispatch(setDependencies(selected));
-    }, [selected]);
 
     return (
         <>
@@ -57,37 +37,38 @@ export default function Dependencies() {
                     Dependencies
                 </Typography>
                 <DependencySelector
-                    selected={selected}
-                    onSelectedChange={(selected: string[]) =>
-                        mapSelected(selected)
+                    onSelectedChange={(sel: string[]) =>
+                        dispatch(setDependencies(sel))
                     }
                 />
             </div>
             <List dense>
-                {mapped.map((s: Dependency | undefined, idx: number) => (
-                    <Fragment key={idx}>
-                        {s !== undefined ? (
-                            <ListItem
-                                secondaryAction={
-                                    <IconButton
-                                        edge="end"
-                                        aria-label="delete"
-                                        onClick={() => remove(s?.id)}
-                                    >
-                                        <DeleteIcon />
-                                    </IconButton>
-                                }
-                            >
-                                <ListItemText
-                                    primary={s.name}
-                                    secondary={s.description}
-                                />
-                            </ListItem>
-                        ) : (
-                            <Fragment></Fragment>
-                        )}
-                    </Fragment>
-                ))}
+                {selectedDependencies.map(
+                    (s: Dependency | undefined, idx: number) => (
+                        <Fragment key={idx}>
+                            {s !== undefined ? (
+                                <ListItem
+                                    secondaryAction={
+                                        <IconButton
+                                            edge="end"
+                                            aria-label="delete"
+                                            onClick={() => remove(s.id)}
+                                        >
+                                            <DeleteIcon />
+                                        </IconButton>
+                                    }
+                                >
+                                    <ListItemText
+                                        primary={s.name}
+                                        secondary={s.description}
+                                    />
+                                </ListItem>
+                            ) : (
+                                <Fragment></Fragment>
+                            )}
+                        </Fragment>
+                    )
+                )}
             </List>
         </>
     );
