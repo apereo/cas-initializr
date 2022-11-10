@@ -4,6 +4,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
+import logo from './cas-logo.png';
 
 export default function MainAppBar() {
     return (
@@ -31,7 +32,7 @@ export default function MainAppBar() {
                     }}
                 >
                     <img
-                        src={`/images/cas-logo.png`}
+                        src={logo}
                         alt='CAS Logo'
                         height='32px'
                     />

@@ -8,11 +8,13 @@ import { setApiLoaded, setVersionsLoaded } from '../store/AppReducer';
 import { useAppDispatch } from '../store/hooks';
 import { setApiOptions, setCasVersionOptions } from "../store/OptionReducer";
 
+import { API_PATH } from '../App.constant';
+
 export const DataContext: React.FC<PropsWithChildren<{}>> = ({ children }) => {
     const dispatch = useAppDispatch();
 
-    const api = useFetch<InitializrResponseData>("/api");
-    const actuator = useFetch<CasVersionOption[]>("/api/actuator/supportedVersions");
+    const api = useFetch<InitializrResponseData>(`${API_PATH}`);
+    const actuator = useFetch<CasVersionOption[]>(`${API_PATH}actuator/supportedVersions`);
 
     /*eslint-disable react-hooks/exhaustive-deps*/
     useEffect(() => {
@@ -21,7 +23,7 @@ export const DataContext: React.FC<PropsWithChildren<{}>> = ({ children }) => {
     }, []);
 
     async function initializeApiData() {
-        const d = await api.get("/");
+        const d = await api.get("");
         if (api.response.ok) {
             dispatch(setApiOptions(d));
             dispatch(setApiLoaded(true));
@@ -29,7 +31,7 @@ export const DataContext: React.FC<PropsWithChildren<{}>> = ({ children }) => {
     }
 
     async function initializeVersions() {
-        const d = await actuator.get("/");
+        const d = await actuator.get("");
         if (actuator.response.ok) {
             dispatch(setCasVersionOptions(d));
             dispatch(setVersionsLoaded(true))

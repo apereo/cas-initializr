@@ -18,7 +18,7 @@ import {
 import React from "react";
 import { Dependency } from "../data/Dependency";
 import { useDependencyList } from "../store/OptionReducer";
-import { Close } from "@mui/icons-material";
+import { Close, HighlightOff } from "@mui/icons-material";
 import Fuse from "fuse.js";
 import { FixedSizeList, ListChildComponentProps } from "react-window";
 import { useOverlayDependencies } from "../store/OverlayReducer";
@@ -125,14 +125,30 @@ export default function DependencySelector({ onSelectedChange }: DependencySelec
 
             <Drawer open={open} onClose={handleClose} anchor="right" id="foo">
                 <div
-                    style={{ padding: "1rem 1.5rem 0", marginBottom: "1.5rem" }}
+                    style={{
+                        padding: "1rem 1.5rem 0",
+                        display: "flex",
+                        justifyContent: "space-between",
+                    }}
                 >
                     <Typography
                         variant="h6"
-                        style={{ padding: "0rem 0rem 1rem 0rem" }}
+                        style={{ padding: "0rem 0rem 0rem 0rem" }}
                     >
                         Dependencies
                     </Typography>
+                    <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={() => handleClose()}
+                        onMouseDown={() => handleClose()}
+                        edge="end"
+                    >
+                        <Close />
+                    </IconButton>
+                </div>
+                <div
+                    style={{ padding: "1rem 1.5rem 0", marginBottom: "1.5rem" }}
+                >
                     <FormControl fullWidth sx={{ m: 1 }}>
                         <InputLabel htmlFor="dep-search-select-helper-label">
                             Search
@@ -151,7 +167,7 @@ export default function DependencySelector({ onSelectedChange }: DependencySelec
                                         onMouseDown={() => setSearch("")}
                                         edge="end"
                                     >
-                                        <Close />
+                                        <HighlightOff />
                                     </IconButton>
                                 </InputAdornment>
                             }

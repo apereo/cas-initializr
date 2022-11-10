@@ -1,29 +1,37 @@
 plugins {
-    id 'base'
-    id 'com.github.node-gradle.node' version '2.2.4'
+  id "java"
+  id "com.github.node-gradle.node" version "3.5.0"
 }
 
 node {
     version = '16.14.2'
-    npmVersion = '8.5.0'
+    yarnVersion = ''
     download = true
 }
 
-npmInstall.setNpmCommand('ci')
+def yarn = tasks.named("yarn")
 
-task appNpmInstall(type: NpmTask) {
-  description = "Installs all dependencies from package.json"
-  args = ["install"]
+def buildTask = tasks.register("buildWebapp", NpxTask) {
+    command = "react-scripts"
+    args = [
+        "build"
+    ]
+    dependsOn(yarn)
+    inputs.dir(fileTree("src").exclude("**/*.test.js").exclude("**/*.spec.js").exclude("**/__tests__/**/*.js"))
+    inputs.dir("node_modules")
+    inputs.dir("public")
+    outputs.dir("${buildDir}")
+    environment = ["BUILD_PATH": "${buildDir}"]
 }
 
-task appNpmBuild(type: NpmTask) {
-  description = "Builds production version of the webapp"
-  args = ["run", "build"]
+sourceSets {
+    java {
+        main {
+            resources {
+                // This makes the processResources task automatically depend on the buildWebapp one
+                srcDir(buildTask)
+            }
+        }
+    }
 }
 
-appNpmBuild.dependsOn appNpmInstall
-
-clean.doFirst {
-    file('node_modules').deleteDir()
-    file('build').deleteDir()
-}
