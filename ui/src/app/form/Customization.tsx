@@ -10,7 +10,11 @@ import {
     Stack,
     Divider,
 } from "@mui/material";
-
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import MuiAccordion, { AccordionProps } from "@mui/material/Accordion";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import { styled } from "@mui/material/styles";
 import { Controller, useForm } from "react-hook-form";
 import { Overlay } from "../data/Overlay";
 import {
@@ -21,6 +25,18 @@ import {
 import { CasVersionOption, TypeOptionValue } from "../data/Option";
 import { useAppDispatch } from "../store/hooks";
 import { setCustomization } from "../store/OverlayReducer";
+
+const Accordion = styled((props: AccordionProps) => (
+    <MuiAccordion disableGutters {...props} />
+))(({ theme }: {theme: any}) => ({
+    border: `0px solid ${theme.palette.divider}`,
+    "&:not(:last-child)": {
+        borderBottom: 0,
+    },
+    "&:before": {
+        display: "none",
+    },
+}));
 
 export default function Customization() {
 
@@ -49,8 +65,9 @@ export default function Customization() {
     return (
         <>
             <Typography variant="subtitle1" style={{ marginBottom: "1rem" }}>
-                Customization
+                Build your CAS deployment
             </Typography>
+            <Divider style={{marginBottom: '2rem'}} />
             <form>
                 <Stack spacing={2}>
                     <FormControl fullWidth>
@@ -121,63 +138,62 @@ export default function Customization() {
                                     )}
                                 />
                             </FormControl>
-                            <Divider>Optional</Divider>
-                            <FormControl fullWidth>
-                                <TextField
-                                    id="group-input"
-                                    label="Group"
-                                    variant="outlined"
-                                    {...register("groupId")}
-                                />
-                                <FormHelperText id="group-helper-text">
-                                    ex. com.example
-                                </FormHelperText>
-                            </FormControl>
-                            <FormControl fullWidth>
-                                <TextField
-                                    id="artifact-input"
-                                    label="Artifact"
-                                    variant="outlined"
-                                    {...register("artifactId")}
-                                />
-                                <FormHelperText id="artifact-helper-text">
-                                    ex. demo
-                                </FormHelperText>
-                            </FormControl>
-                            <FormControl fullWidth>
-                                <TextField
-                                    id="name-input"
-                                    label="Name"
-                                    variant="outlined"
-                                    {...register("name")}
-                                />
-                                <FormHelperText id="name-helper-text">
-                                    ex. demo
-                                </FormHelperText>
-                            </FormControl>
-                            <FormControl fullWidth>
-                                <TextField
-                                    id="description-input"
-                                    label="Description"
-                                    variant="outlined"
-                                    multiline
-                                    {...register("description")}
-                                />
-                                <FormHelperText id="description-helper-text">
-                                    ex. Demo CAS Initializr project
-                                </FormHelperText>
-                            </FormControl>
-                            <FormControl fullWidth>
-                                <TextField
-                                    id="package-input"
-                                    label="Package"
-                                    variant="outlined"
-                                    {...register("packaging")}
-                                />
-                                <FormHelperText id="package-helper-text">
-                                    ex. demo
-                                </FormHelperText>
-                            </FormControl>
+                            <Accordion>
+                                <AccordionSummary
+                                    expandIcon={<ExpandMoreIcon />}
+                                    aria-controls="panel1a-content"
+                                    id="panel1a-header"
+                                >
+                                    <Typography>Advanced Options</Typography>
+                                </AccordionSummary>
+                                <AccordionDetails>
+                                    <FormControl
+                                        fullWidth
+                                        style={{ marginBottom: "2rem" }}
+                                    >
+                                        <TextField
+                                            id="group-input"
+                                            label="Group"
+                                            variant="outlined"
+                                            {...register("groupId")}
+                                        />
+                                    </FormControl>
+                                    <FormControl
+                                        fullWidth
+                                        style={{ marginBottom: "2rem" }}
+                                    >
+                                        <TextField
+                                            id="artifact-input"
+                                            label="Artifact"
+                                            variant="outlined"
+                                            {...register("artifactId")}
+                                        />
+                                    </FormControl>
+                                    <FormControl
+                                        fullWidth
+                                        style={{ marginBottom: "2rem" }}
+                                    >
+                                        <TextField
+                                            id="name-input"
+                                            label="Name"
+                                            variant="outlined"
+                                            {...register("name")}
+                                        />
+                                    </FormControl>
+                                    <FormControl
+                                        fullWidth
+                                        style={{ marginBottom: "2rem" }}
+                                    >
+                                        <TextField
+                                            id="description-input"
+                                            label="Description"
+                                            variant="outlined"
+                                            multiline
+                                            {...register("description")}
+                                        />
+                                    </FormControl>
+                                </AccordionDetails>
+                            </Accordion>
                         </React.Fragment>
                     )}
                 </Stack>

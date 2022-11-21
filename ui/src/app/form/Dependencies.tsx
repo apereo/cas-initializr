@@ -1,16 +1,22 @@
+import React, { Fragment } from "react";
 import {
+    Button,
     IconButton,
     List,
     ListItem,
     ListItemText,
-    Typography,
 } from "@mui/material";
-import React, { Fragment } from 'react';
+
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Dependency } from "../data/Dependency";
 import DependencySelector from "./DependencySelector";
 import { useAppDispatch } from "../store/hooks";
-import { setDependencies, useMappedOverlayDependencies, useOverlayDependencies } from "../store/OverlayReducer";
+import {
+    setDependencies,
+    useMappedOverlayDependencies,
+    useOverlayDependencies,
+} from "../store/OverlayReducer";
 
 export default function Dependencies() {
     const selectedDependencies = useMappedOverlayDependencies();
@@ -21,26 +27,32 @@ export default function Dependencies() {
         dispatch(setDependencies(selected.filter((s: string) => s !== id)));
     };
 
+    const clear = () => {
+        dispatch(setDependencies([]));
+    };
+
     return (
         <>
             <div
                 style={{
                     display: "flex",
                     alignItems: "center",
-                    justifyContent: "",
+                    justifyContent: "space-between",
                 }}
             >
-                <Typography
-                    variant="subtitle1"
-                    style={{ marginBottom: "0rem", marginRight: "1rem" }}
-                >
-                    Dependencies
-                </Typography>
                 <DependencySelector
                     onSelectedChange={(sel: string[]) =>
                         dispatch(setDependencies(sel))
                     }
                 />
+                {selected?.length > 0 && (
+                    <Button
+                        onClick={() => clear()}
+                        endIcon={<DeleteForeverIcon />}
+                    >
+                        Clear All
+                    </Button>
+                )}
             </div>
             <List dense>
                 {selectedDependencies.map(

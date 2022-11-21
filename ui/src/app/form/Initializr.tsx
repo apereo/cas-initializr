@@ -9,10 +9,12 @@ import { useCanDownload, useOverlay } from '../store/OverlayReducer';
 import { isNil, pickBy } from 'lodash';
 
 import * as FileSaver from 'file-saver';
-import useFetch from 'use-http';
+
 import * as queryString from 'query-string';
 import { useDefaultValues } from '../store/OptionReducer';
 import { API_PATH } from "../App.constant";
+
+
 
 export const downloadAsZip = (fileName: string, data: any) => {
     // const blob = new Blob([data], { type: 'text/zip;charset=utf-8' });
@@ -29,14 +31,14 @@ export default function Initializr() {
 
     const defaults = useDefaultValues();
 
-    const downloader = useFetch<any>(`${API_PATH}starter.tgz`);
+    
 
     const download = async (overlay: Overlay) => {
         const used = pickBy(overlay, (value: any) => value !== "" && !isNil(value));
         const string = queryString.stringify(used, { arrayFormat: "comma" });
-        await downloader.get(`?${string}`);
-        const file = await downloader.response.blob();
-        if (downloader.response.ok) {
+        const response = await fetch(`?${string}`);
+        if (response.ok) {
+            const file = await response.blob();
             downloadAsZip(overlay.name ? overlay.name : defaults.name || 'cas', file);
         }
     };
@@ -48,7 +50,7 @@ export default function Initializr() {
                     color: "#fff",
                     zIndex: (theme) => theme.zIndex.drawer + 1,
                 }}
-                open={downloader.loading}
+                open={false}
             >
                 <CircularProgress color="inherit" />
             </Backdrop>

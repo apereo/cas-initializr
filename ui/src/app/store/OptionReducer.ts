@@ -1,7 +1,7 @@
 import { createSlice, createSelector, PayloadAction } from "@reduxjs/toolkit";
 import { useSelector } from "react-redux";
 import { useMemo } from 'react';
-
+import { uniq } from "lodash";
 import { RootState } from "./RootReducer";
 
 import {
@@ -136,15 +136,15 @@ export const CasDefaultSelector = createSelector(
     (state: OptionState): Partial<Overlay> => {
         return {
             type: state.type.default,
-            packaging: "", // state.packaging.default
-            javaVersion: "", // state.javaVersion.default,
-            language: "", // state.language.default,
-            groupId: "", // state.groupId.default,
-            artifactId: "", // state.artifactId.default,
-            version: "", // state.version.default,
-            name: "", // state.name.default,
-            description: "", // state.description.default,
-            packageName: "", // state.packageName.default,
+            packaging: state.packaging.default,
+            javaVersion: state.javaVersion.default,
+            language: state.language.default,
+            groupId: state.groupId.default,
+            artifactId: state.artifactId.default,
+            version: state.version.default,
+            name: state.name.default,
+            description: state.description.default,
+            packageName: state.packageName.default,
         };
     }
 );
@@ -169,11 +169,16 @@ export function useDependencyList(): Dependency[] {
     return parsed as Dependency[];
 }
 
+export function useDependencyListTypes(): string[] {
+    const deps = useDependencyList();
+    return uniq(deps.map((d) => d.type));
+}
+
 export function useCasVersions(): CasVersionOption[] {
     return useSelector(CasVersionsSelector);
 }
 
-const map: { [id: string]: string } = {
+const mapVersions: { [id: string]: string } = {
     "cas-overlay": "cas",
     "cas-management-overlay": "cas-mgmt",
 };
@@ -182,7 +187,7 @@ export function useCasVersionsForType(type: string): CasVersionOption[] {
     const versions = useCasVersions();
     
     return useMemo(() => {
-        const id = map.hasOwnProperty(type) ? map[type] : null;
+        const id = mapVersions.hasOwnProperty(type) ? mapVersions[type] : null;
 
         if (id) {
             return versions.filter((v) => v.type === id);
@@ -193,7 +198,13 @@ export function useCasVersionsForType(type: string): CasVersionOption[] {
 }
 
 export function useCasTypes(): TypeOptionValue[] {
-    return useSelector(CasTypesSelector);
+    const types = useSelector(CasTypesSelector);
+    return useMemo(() => {
+        return types.map((t: any) => ({
+            ...t,
+            name: t.name.replace("Gradle Project Zip", ""),
+        }));
+    }, [types]);
 }
 
 export function useDefaultValues(): Partial<Overlay> {

@@ -5,16 +5,13 @@ import {
 } from "@mui/material/styles";
 import { Box, Divider, PaletteMode } from '@mui/material';
 import { Provider } from "react-redux";
+
 import './App.scss';
 import MainAppBar from './core/navigation/MainAppBar';
 import Initializr from './form/Initializr';
-
 import { getDesignTokens, CasTheme } from "./theme/CasTheme";
-
 import { DataContext } from './core/DataContext';
-
 import { store } from "./store/store";
-
 
 const ColorModeContext = React.createContext({ toggleColorMode: () => {} });
 

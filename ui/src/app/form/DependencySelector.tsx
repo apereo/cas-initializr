@@ -15,9 +15,13 @@ import {
     InputLabel,
     FormControl,
 } from "@mui/material";
+import ButtonGroup from "@mui/material/ButtonGroup";
 import React from "react";
 import { Dependency } from "../data/Dependency";
-import { useDependencyList } from "../store/OptionReducer";
+import {
+    useDependencyList,
+    useDependencyListTypes,
+} from "../store/OptionReducer";
 import { Close, HighlightOff } from "@mui/icons-material";
 import Fuse from "fuse.js";
 import { FixedSizeList, ListChildComponentProps } from "react-window";
@@ -90,6 +94,8 @@ export default function DependencySelector({ onSelectedChange }: DependencySelec
     const [open, setOpen] = React.useState(false);
     const [search, setSearch] = React.useState<string>("");
     const [limited, setLimited] = React.useState<Dependency[]>([...available]);
+    const [filterType, setFilterType] = React.useState<string | null>(null);
+    const [filtered, setFiltered] = React.useState<Dependency[]>([...available]);
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -110,12 +116,18 @@ export default function DependencySelector({ onSelectedChange }: DependencySelec
     const getSearchResults = React.useCallback((search: string) => {
         return search.length > 0
             ? engine.search(search).map((r) => r.item)
-            : [...available];
-    }, [available, engine]);
+            : [...filtered];
+    }, [filtered, engine]);
 
     React.useEffect(() => {
         setLimited(getSearchResults(search));
     }, [search, available, getSearchResults]);
+
+    const depTypes = useDependencyListTypes();
+
+    React.useEffect(() => {
+        setFiltered(filterType !== null ? [...available].filter((d: Dependency) => d.type === filterType) : [...available]);
+    }, [filterType, available])
 
     return (
         <>
@@ -173,6 +185,23 @@ export default function DependencySelector({ onSelectedChange }: DependencySelec
                             }
                         />
                     </FormControl>
+                    <ButtonGroup
+                        variant="contained"
+                        aria-label="outlined primary button group"
+                        style={{ marginLeft: "0.5rem" }}
+                        size="small"
+                    >
+                        <Button onClick={() => setFilterType(null)}>All</Button>
+                        {depTypes.map((type: string) => (
+                            <Button
+                                key={type}
+                                disabled={type === filterType}
+                                onClick={() => setFilterType(type)}
+                            >
+                                {type}
+                            </Button>
+                        ))}
+                    </ButtonGroup>
                 </div>
                 <Divider />
                 <FixedSizeList

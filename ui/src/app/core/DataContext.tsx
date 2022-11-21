@@ -1,20 +1,21 @@
 import React, { PropsWithChildren } from 'react';
 
 import { useEffect } from "react";
-import useFetch from "use-http";
-import { InitializrResponseData } from '../data/InitializrResponseData';
-import { CasVersionOption } from '../data/Option';
+
 import { setApiLoaded, setVersionsLoaded } from '../store/AppReducer';
 import { useAppDispatch } from '../store/hooks';
 import { setApiOptions, setCasVersionOptions } from "../store/OptionReducer";
 
 import { API_PATH } from '../App.constant';
 
+const fetchProps = {
+    headers: {
+        "Content-Type": "application/json",
+    },
+};
+
 export const DataContext: React.FC<PropsWithChildren<{}>> = ({ children }) => {
     const dispatch = useAppDispatch();
-
-    const api = useFetch<InitializrResponseData>(`${API_PATH}`);
-    const actuator = useFetch<CasVersionOption[]>(`${API_PATH}actuator/supportedVersions`);
 
     /*eslint-disable react-hooks/exhaustive-deps*/
     useEffect(() => {
@@ -23,17 +24,17 @@ export const DataContext: React.FC<PropsWithChildren<{}>> = ({ children }) => {
     }, []);
 
     async function initializeApiData() {
-        const d = await api.get("");
-        if (api.response.ok) {
-            dispatch(setApiOptions(d));
+        const response = await fetch(`${API_PATH}`, fetchProps);
+        if (response.ok) {
+            dispatch(setApiOptions(await response.json()));
             dispatch(setApiLoaded(true));
         }
     }
 
     async function initializeVersions() {
-        const d = await actuator.get("");
-        if (actuator.response.ok) {
-            dispatch(setCasVersionOptions(d));
+        const response = await fetch(`${API_PATH}actuator/supportedVersions`, fetchProps);
+        if (response.ok) {
+            dispatch(setCasVersionOptions(await response.json()));
             dispatch(setVersionsLoaded(true))
         }
     }
