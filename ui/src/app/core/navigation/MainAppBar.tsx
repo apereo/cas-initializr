@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -20,80 +20,37 @@ import MailIcon from "@mui/icons-material/Mail";
 import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
 import FeedIcon from "@mui/icons-material/Feed";
 
+import moment from 'moment';
+
 import logo from "./cas-logo.png";
+import { API_PATH } from '../../App.constant';
+import { Divider, Link } from '@mui/material';
+import { Close } from '@mui/icons-material';
+
+const fetchProps = {
+    headers: {
+        "Content-Type": "application/json",
+    },
+};
 
 export default function MainAppBar() {
     const [open, setOpen] = React.useState(false);
 
-    const toggleDrawer = (open: boolean) => setOpen(!open);
+    const [version, setVersion] = React.useState<string>('');
+    const [date, setDate] = React.useState<string>('');
 
-    const list = () => (
-        <Box
-            sx={{
-                width: 300,
-            }}
-            role="presentation"
-        >
-            <List>
-                <ListItem disablePadding>
-                    <ListItemButton>
-                        <ListItemIcon>
-                            <InsertDriveFileIcon />
-                        </ListItemIcon>
-                        <ListItemText primary={"CAS Documentation"} />
-                    </ListItemButton>
-                </ListItem>
-                <ListItem disablePadding>
-                    <ListItemButton>
-                        <ListItemIcon>
-                            <CallMergeIcon />
-                        </ListItemIcon>
-                        <ListItemText primary={"Pull Requests"} />
-                    </ListItemButton>
-                </ListItem>
-                <ListItem disablePadding>
-                    <ListItemButton>
-                        <ListItemIcon>
-                            <InfoIcon />
-                        </ListItemIcon>
-                        <ListItemText primary={"Contributor Guidelines"} />
-                    </ListItemButton>
-                </ListItem>
-                <ListItem disablePadding>
-                    <ListItemButton>
-                        <ListItemIcon>
-                            <HelpIcon />
-                        </ListItemIcon>
-                        <ListItemText primary={"Support"} />
-                    </ListItemButton>
-                </ListItem>
-                <ListItem disablePadding>
-                    <ListItemButton>
-                        <ListItemIcon>
-                            <MailIcon />
-                        </ListItemIcon>
-                        <ListItemText primary={"Mailing Lists"} />
-                    </ListItemButton>
-                </ListItem>
-                <ListItem disablePadding>
-                    <ListItemButton>
-                        <ListItemIcon>
-                            <QuestionAnswerIcon />
-                        </ListItemIcon>
-                        <ListItemText primary={"Chatroom"} />
-                    </ListItemButton>
-                </ListItem>
-                <ListItem disablePadding>
-                    <ListItemButton>
-                        <ListItemIcon>
-                            <FeedIcon />
-                        </ListItemIcon>
-                        <ListItemText primary={"Blog"} />
-                    </ListItemButton>
-                </ListItem>
-            </List>
-        </Box>
-    );
+    useEffect(() => {
+        initializeSystemData();
+    }, []);
+
+    async function initializeSystemData() {
+        const response = await fetch(`${API_PATH}actuator/info`, fetchProps);
+        if (response.ok) {
+            const { build: { version, time } } = await response.json();
+            setVersion(version);
+            setDate(moment(new Date(time)).format('M/D/YY, H:mm A'));
+        }
+    }
 
     return (
         <Fragment>
@@ -126,12 +83,135 @@ export default function MainAppBar() {
                     </Typography>
                 </Toolbar>
             </AppBar>
-            <Drawer
-                anchor={"left"}
-                open={open}
-                onClose={() => toggleDrawer(!open)}
-            >
-                {list()}
+            <Drawer anchor={"left"} open={open} onClose={() => setOpen(!open)}>
+                <Box
+                    sx={{
+                        width: 300,
+                        padding: "1rem",
+                    }}
+                    role="presentation"
+                >
+                    <div
+                        style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            marginBottom: '1rem'
+                        }}
+                    >
+                        <div>
+                            <Typography variant="h6" noWrap component="p">
+                                CAS
+                            </Typography>
+                            <Typography variant="body2" noWrap component="p">
+                                Central Authentication Service
+                            </Typography>
+                        </div>
+                        <IconButton
+                            aria-label="toggle drawer visibility"
+                            onClick={() => setOpen(false)}
+                            onMouseDown={() => setOpen(false)}
+                        >
+                            <Close />
+                        </IconButton>
+                    </div>
+                    <Divider />
+                    <List>
+                        <ListItem disablePadding>
+                            <ListItemButton
+                                component="a"
+                                href="https://apereo.github.io/cas"
+                                target="_blank"
+                                rel="noopener"
+                            >
+                                <ListItemIcon>
+                                    <InsertDriveFileIcon />
+                                </ListItemIcon>
+                                <ListItemText primary={"CAS Documentation"} />
+                            </ListItemButton>
+                        </ListItem>
+                        <ListItem disablePadding>
+                            <ListItemButton
+                                component="a"
+                                href="https://github.com/apereo/cas/pulls"
+                                target="_blank"
+                                rel="noopener"
+                            >
+                                <ListItemIcon>
+                                    <CallMergeIcon />
+                                </ListItemIcon>
+                                <ListItemText primary={"Pull Requests"} />
+                            </ListItemButton>
+                        </ListItem>
+                        <ListItem disablePadding>
+                            <ListItemButton
+                                component="a"
+                                href="https://apereo.github.io/cas/developer/Contributor-Guidelines.html"
+                                target="_blank"
+                                rel="noopener"
+                            >
+                                <ListItemIcon>
+                                    <InfoIcon />
+                                </ListItemIcon>
+                                <ListItemText
+                                    primary={"Contributor Guidelines"}
+                                />
+                            </ListItemButton>
+                        </ListItem>
+                        <ListItem disablePadding>
+                            <ListItemButton
+                                component="a"
+                                href="https://apereo.github.io/cas/Support.html"
+                                target="_blank"
+                                rel="noopener"
+                            >
+                                <ListItemIcon>
+                                    <HelpIcon />
+                                </ListItemIcon>
+                                <ListItemText primary={"Support"} />
+                            </ListItemButton>
+                        </ListItem>
+                        <ListItem disablePadding>
+                            <ListItemButton
+                                component="a"
+                                href="https://apereo.github.io/cas/Mailing-Lists.html"
+                                target="_blank"
+                                rel="noopener"
+                            >
+                                <ListItemIcon>
+                                    <MailIcon />
+                                </ListItemIcon>
+                                <ListItemText primary={"Mailing Lists"} />
+                            </ListItemButton>
+                        </ListItem>
+                        <ListItem disablePadding>
+                            <ListItemButton
+                                component="a"
+                                href="https://gitter.im/apereo/cas"
+                                target="_blank"
+                                rel="noopener"
+                            >
+                                <ListItemIcon>
+                                    <QuestionAnswerIcon />
+                                </ListItemIcon>
+                                <ListItemText primary={"Chatroom"} />
+                            </ListItemButton>
+                        </ListItem>
+                        <ListItem disablePadding>
+                            <ListItemButton
+                                component="a"
+                                href="https://apereo.github.io/"
+                                target="_blank"
+                                rel="noopener"
+                            >
+                                <ListItemIcon>
+                                    <FeedIcon />
+                                </ListItemIcon>
+                                <ListItemText primary={"Blog"} />
+                            </ListItemButton>
+                        </ListItem>
+                    </List>
+                </Box>
             </Drawer>
             <AppBar
                 position="fixed"
@@ -140,12 +220,28 @@ export default function MainAppBar() {
                 sx={{ top: "auto", bottom: 0 }}
             >
                 <Toolbar>
-                    <Typography
-                        variant="body2"
-                        noWrap
-                        component="p"
-                    >
-                        Powered By: 
+                    <Typography variant="body2" component="div" style={{display: 'block', width: '100%'}}>
+                        <div style={{ display: "flex", justifyContent: 'center' }}>
+                            <p>Copyright © 2005–2022 Apereo, Inc.</p>
+                            <p
+                                style={{
+                                    marginRight: "2rem",
+                                    marginLeft: "2rem",
+                                }}
+                            >
+                                Powered by
+                                <Link
+                                    href="https://github.com/apereo/cas"
+                                    target="_blank"
+                                    rel="noopener"
+                                >
+                                    Apereo CAS
+                                </Link>
+                            </p>
+                            <p>
+                                {version} {date}
+                            </p>
+                        </div>
                     </Typography>
                 </Toolbar>
             </AppBar>

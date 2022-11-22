@@ -12,10 +12,6 @@ import * as FileSaver from 'file-saver';
 
 import * as queryString from 'query-string';
 import { useDefaultValues } from '../store/OptionReducer';
-import { API_PATH } from "../App.constant";
-
-
-
 export const downloadAsZip = (fileName: string, data: any) => {
     // const blob = new Blob([data], { type: 'text/zip;charset=utf-8' });
     FileSaver.saveAs(data, `${fileName}.tar.gz`);
@@ -26,13 +22,8 @@ export default function Initializr() {
     const apiLoaded = useApiLoaded();
     const versionsLoaded = useVersionsLoaded();
     const canDownload = useCanDownload();
-
     const overlay = useOverlay();
-
     const defaults = useDefaultValues();
-
-    
-
     const download = async (overlay: Overlay) => {
         const used = pickBy(overlay, (value: any) => value !== "" && !isNil(value));
         const string = queryString.stringify(used, { arrayFormat: "comma" });
