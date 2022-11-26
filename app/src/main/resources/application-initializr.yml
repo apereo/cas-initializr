@@ -20,7 +20,7 @@ cas-initializr:
       sync: true
       branch: 6.6
       type: cas-mgmt
-      tomcat-version: 9.0.69
+      tomcat-version: ${apacheTomcat9LatestVersion}
       java-version: 11
       container-base-image: eclipse-temurin:11-jdk
     - version: 6.5.9
@@ -29,7 +29,7 @@ cas-initializr:
       branch: 6.5
       sync: true
       type: cas
-      tomcat-version: 9.0.69
+      tomcat-version: ${apacheTomcat9LatestVersion}
       java-version: 11
       container-base-image: eclipse-temurin:11-jdk
     - version: 6.6.3
@@ -38,7 +38,7 @@ cas-initializr:
       sync: true
       branch: 6.6
       type: cas
-      tomcat-version: 9.0.69
+      tomcat-version: ${apacheTomcat9LatestVersion}
       java-version: 11
       container-base-image: eclipse-temurin:11-jdk
     - version: ${casLatestVersion}
@@ -47,6 +47,6 @@ cas-initializr:
       sync: true
       branch: master
       type: cas
-      tomcat-version: ${apacheTomcat9LatestVersion}
+      tomcat-version: ${apacheTomcat10LatestVersion}
       java-version: 17
       container-base-image: eclipse-temurin:17-jdk
