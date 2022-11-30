@@ -20,6 +20,7 @@ import org.apereo.cas.initializr.contrib.gradle.OverlayGradleTasksContributor;
 import org.apereo.cas.initializr.contrib.heroku.HerokuProcFileContributor;
 import org.apereo.cas.initializr.contrib.heroku.HerokuSystemPropertiesFileContributor;
 import org.apereo.cas.initializr.metadata.CasOverlayInitializrMetadataUpdateStrategy;
+import org.apereo.cas.initializr.web.ui.InitializrHomeController;
 
 import io.spring.initializr.generator.project.ProjectGenerationConfiguration;
 import io.spring.initializr.generator.project.contributor.ProjectContributor;
@@ -94,6 +95,11 @@ public class CasInitializrConfiguration {
         chain.addContributor(new OverlayGradleJibEntrypointContributor(applicationContext));
         chain.addContributor(new LocalEtcCasDirectoryContributor());
         return chain;
+    }
+
+    @Bean
+    public InitializrHomeController initializrHomeController() {
+        return new InitializrHomeController();
     }
 
     @Bean

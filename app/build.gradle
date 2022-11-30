@@ -41,6 +41,7 @@ dependencies {
     implementation "com.github.spullara.mustache.java:compiler:0.9.10"
     
     implementation "org.springframework.boot:spring-boot-starter-web"
+    implementation "org.springframework.boot:spring-boot-starter-thymeleaf"
     implementation "org.springframework.boot:spring-boot-starter-actuator"
 
     implementation "io.spring.initializr:initializr-web"
@@ -79,6 +80,7 @@ processResources {
         expand (
                 springBootLatestVersion: project.springBootLatestVersion,
                 apacheTomcat9LatestVersion: project.apacheTomcat9LatestVersion,
+                apacheTomcat10LatestVersion: project.apacheTomcat10LatestVersion,
                 casLatestVersion: project.casLatestVersion,
                 casManagementLatestVersion: project.casManagementLatestVersion
         )
