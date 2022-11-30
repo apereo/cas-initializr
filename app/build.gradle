@@ -80,6 +80,7 @@ processResources {
         expand (
                 springBootLatestVersion: project.springBootLatestVersion,
                 apacheTomcat9LatestVersion: project.apacheTomcat9LatestVersion,
+                apacheTomcat10LatestVersion: project.apacheTomcat10LatestVersion,
                 casLatestVersion: project.casLatestVersion,
                 casManagementLatestVersion: project.casManagementLatestVersion
         )
