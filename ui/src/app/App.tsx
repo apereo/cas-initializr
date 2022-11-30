@@ -35,10 +35,6 @@ function App() {
         [mode]
     );
 
-    React.useEffect(() => {
-        console.log(theme);
-    }, [theme])
-
     return (
         <ColorModeContext.Provider value={colorMode}>
             <ThemeProvider theme={theme}>

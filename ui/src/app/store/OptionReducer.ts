@@ -1,7 +1,7 @@
 import { createSlice, createSelector, PayloadAction } from "@reduxjs/toolkit";
 import { useSelector } from "react-redux";
 import { useMemo } from 'react';
-import { uniq } from "lodash";
+import { reverse, sortBy, uniq } from "lodash";
 import { RootState } from "./RootReducer";
 
 import {
@@ -105,7 +105,8 @@ export const OptionSlice = createSlice({
             state.packageName = packageName;
         },
         setCasVersionOptions(state, action: PayloadAction<CasVersionOption[]>) {
-            state.casVersion = action.payload;
+            const { payload: versions } = action;
+            state.casVersion = versions;
         },
     },
 });
@@ -134,6 +135,9 @@ export const CasTypesSelector = createSelector(
 export const CasDefaultSelector = createSelector(
     stateSelector,
     (state: OptionState): Partial<Overlay> => {
+        const { casVersion: versions } = state;
+        const stable = versions.filter(({version}) => /^(\d+\.)?(\d+\.)?(\*|\d+)$/.test(version));
+        const sorted = reverse(sortBy(stable, ['version']));
         return {
             type: state.type.default,
             packaging: state.packaging.default,
@@ -145,6 +149,7 @@ export const CasDefaultSelector = createSelector(
             name: state.name.default,
             description: state.description.default,
             packageName: state.packageName.default,
+            casVersion: sorted?.length ? sorted[0].version : ''
         };
     }
 );
@@ -195,6 +200,11 @@ export function useCasVersionsForType(type: string): CasVersionOption[] {
 
         return [];
     }, [type, versions]);
+}
+
+export function useSortedCasVersionsForType(type: string): CasVersionOption[] {
+    const versions = useCasVersionsForType(type);
+    return reverse(sortBy(versions, ['version']));
 }
 
 export function useCasTypes(): TypeOptionValue[] {

@@ -155,5 +155,7 @@ task copyUITemplates(type: Copy) {
     into "${buildDir}/resources/main/templates"
 }
 
-rootProject.tasks["wrapper"].finalizedBy([copyWrapper, copyWrapperExecutables, copyUIStatic, copyUITemplates]) 
-build.dependsOn([copyWrapper, copyWrapperExecutables, copyUIStatic, copyUITemplates])
+rootProject.tasks["wrapper"].finalizedBy([copyWrapper, copyWrapperExecutables]) 
+processResources.dependsOn([copyUITemplates, copyUIStatic])
+build.dependsOn([copyWrapper, copyWrapperExecutables])
+

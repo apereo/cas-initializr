@@ -229,7 +229,7 @@ export default function MainAppBar() {
                                     marginLeft: "2rem",
                                 }}
                             >
-                                Powered by
+                                Powered by&nbsp;
                                 <Link
                                     href="https://github.com/apereo/cas"
                                     target="_blank"

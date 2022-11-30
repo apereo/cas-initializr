@@ -18,7 +18,7 @@ import { Controller, useForm } from "react-hook-form";
 import { Overlay } from "../data/Overlay";
 import {
     useCasTypes,
-    useCasVersionsForType,
+    useSortedCasVersionsForType,
     useDefaultValues,
 } from "../store/OptionReducer";
 import { CasVersionOption, TypeOptionValue } from "../data/Option";
@@ -44,8 +44,7 @@ export default function Customization() {
 
     const { register, watch, control } = useForm<Overlay>({
         defaultValues: {
-            ...defaultValues,
-            casVersion: ''
+            ...defaultValues
         },
         mode: 'onChange'
     });
@@ -53,7 +52,7 @@ export default function Customization() {
     const type = watch('type');
 
     const types = useCasTypes();
-    const versions = useCasVersionsForType(type);
+    const versions = useSortedCasVersionsForType(type);
 
     const formData = watch();
 
