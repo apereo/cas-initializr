@@ -1,2 +1,3 @@
 rootProject.name = 'cas-initializr'
 include "app"
+include "ui"

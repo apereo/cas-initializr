@@ -1,0 +1,37 @@
+plugins {
+  id "java"
+  id "com.github.node-gradle.node" version "3.5.0"
+}
+
+node {
+    version = '16.14.2'
+    yarnVersion = ''
+    download = true
+}
+
+def yarn = tasks.named("yarn")
+
+def buildTask = tasks.register("buildWebapp", NpxTask) {
+    command = "react-scripts"
+    args = [
+        "build"
+    ]
+    dependsOn(yarn)
+    inputs.dir(fileTree("src").exclude("**/*.test.js").exclude("**/*.spec.js").exclude("**/__tests__/**/*.js"))
+    inputs.dir("node_modules")
+    inputs.dir("public")
+    outputs.dir("${buildDir}")
+    environment = ["BUILD_PATH": "${buildDir}"]
+}
+
+sourceSets {
+    java {
+        main {
+            resources {
+                // This makes the processResources task automatically depend on the buildWebapp one
+                srcDir(buildTask)
+            }
+        }
+    }
+}
+

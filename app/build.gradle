@@ -146,5 +146,17 @@ task copyWrapperExecutables(type: Copy) {
     into "src/main/resources/common/gradle/exec"
 }
 
+task copyUIStatic(type: Copy) {
+    from tasks.findByPath(":ui:buildWebapp").outputs
+    into "${buildDir}/resources/main/static"
+}
+
+task copyUITemplates(type: Copy) {
+    from tasks.findByPath(":ui:buildWebapp").outputs
+    into "${buildDir}/resources/main/templates"
+}
+
 rootProject.tasks["wrapper"].finalizedBy([copyWrapper, copyWrapperExecutables]) 
+processResources.dependsOn([copyUITemplates, copyUIStatic])
 build.dependsOn([copyWrapper, copyWrapperExecutables])
+
