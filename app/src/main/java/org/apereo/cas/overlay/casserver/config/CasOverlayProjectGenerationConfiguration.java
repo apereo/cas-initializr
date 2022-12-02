@@ -1,7 +1,7 @@
 package org.apereo.cas.overlay.casserver.config;
 
 import org.apereo.cas.initializr.contrib.ChainingSingleResourceProjectContributor;
-import org.apereo.cas.initializr.contrib.ProjectReadMeContributor;
+import org.apereo.cas.initializr.contrib.project.ProjectReadMeContributor;
 import org.apereo.cas.initializr.contrib.gradle.OverlayGradleBuildContributor;
 import org.apereo.cas.initializr.contrib.gradle.OverlayGradlePropertiesContributor;
 import org.apereo.cas.overlay.casserver.buildsystem.CasOverlayBuildSystem;

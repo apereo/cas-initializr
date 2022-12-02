@@ -104,9 +104,8 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
             val resources = resolver.getResources(resourcePattern);
             for (val resource : resources) {
                 if (resource.isReadable()) {
-                    val filename = org.apache.commons.lang3.StringUtils.remove(resource.getFilename(), ".mustache");
-                    val output = projectRoot.resolve(
-                        org.apache.commons.lang3.StringUtils.appendIfMissing(relativePath, "/") + filename);
+                    val filename = StringUtils.remove(resource.getFilename(), ".mustache");
+                    val output = projectRoot.resolve(StringUtils.appendIfMissing(relativePath, "/") + filename);
                     log.info("Output file {}", output.toFile().getAbsolutePath());
                     createFileAndParentDirectories(output);
                     var templateVariables = getProjectTemplateVariables();

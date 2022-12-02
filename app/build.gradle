@@ -36,6 +36,7 @@ springBoot {
 
 dependencies {
     implementation "org.jooq:jool:0.9.14"
+    implementation "commons-io:commons-io:2.11.0"
     implementation "org.eclipse.jgit:org.eclipse.jgit:6.4.0.202211300538-r"
     implementation "com.github.vladimir-bukhtoyarov:bucket4j-core:7.6.0"
     implementation "com.github.spullara.mustache.java:compiler:0.9.10"
@@ -103,7 +104,7 @@ supportedTypes.forEach({ type ->
                          description: "Display supported versions") {
         doLast {
             def yaml = new org.yaml.snakeyaml.Yaml()
-            def file = file("${buildDir}/resources/main/application-initializr.yml")
+            def file = file("src/main/resources/application-initializr.yml")
             def config = yaml.load(file.newInputStream())
             def supportedVersions = config.'cas-initializr'.'supported-versions'
             def results = supportedVersions.findAll { ver -> ver.type == type }

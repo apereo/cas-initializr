@@ -1,5 +1,6 @@
-package org.apereo.cas.initializr.contrib;
+package org.apereo.cas.initializr.contrib.project;
 
+import org.apereo.cas.initializr.contrib.TemplatedProjectContributor;
 import org.apereo.cas.initializr.web.OverlayProjectDescription;
 
 import lombok.Getter;

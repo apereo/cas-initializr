@@ -17,6 +17,7 @@ bin/
 *.iml
 *.log
 tmp/
+.java-version
 ./apache-tomcat
 apache-tomcat.zip
 config-metadata.properties

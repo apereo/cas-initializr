@@ -1,4 +1,4 @@
-package org.apereo.cas.initializr.contrib;
+package org.apereo.cas.initializr.contrib.project;
 
 import io.spring.initializr.generator.project.contributor.SingleResourceProjectContributor;
 

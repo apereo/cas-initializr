@@ -1,15 +1,15 @@
 package org.apereo.cas.initializr.config;
 
-import org.apereo.cas.initializr.contrib.ApplicationYamlPropertiesContributor;
+import org.apereo.cas.initializr.contrib.project.ApplicationYamlPropertiesContributor;
 import org.apereo.cas.initializr.contrib.ChainingMultipleResourcesProjectContributor;
 import org.apereo.cas.initializr.contrib.ChainingSingleResourceProjectContributor;
-import org.apereo.cas.initializr.contrib.IgnoreRulesContributor;
-import org.apereo.cas.initializr.contrib.LocalEtcCasDirectoryContributor;
-import org.apereo.cas.initializr.contrib.OverlayLombokConfigContributor;
-import org.apereo.cas.initializr.contrib.OverlayOverrideConfigurationContributor;
-import org.apereo.cas.initializr.contrib.OverlaySpringFactoriesContributor;
-import org.apereo.cas.initializr.contrib.OverlayWebXmlContributor;
-import org.apereo.cas.initializr.contrib.ProjectLicenseContributor;
+import org.apereo.cas.initializr.contrib.project.IgnoreRulesContributor;
+import org.apereo.cas.initializr.contrib.project.LocalEtcCasDirectoryContributor;
+import org.apereo.cas.initializr.contrib.project.OverlayLombokConfigContributor;
+import org.apereo.cas.initializr.contrib.project.OverlayOverrideConfigurationContributor;
+import org.apereo.cas.initializr.contrib.project.OverlaySpringFactoriesContributor;
+import org.apereo.cas.initializr.contrib.project.OverlayWebXmlContributor;
+import org.apereo.cas.initializr.contrib.project.ProjectLicenseContributor;
 import org.apereo.cas.initializr.contrib.docker.jib.OverlayGradleJibContributor;
 import org.apereo.cas.initializr.contrib.docker.jib.OverlayGradleJibEntrypointContributor;
 import org.apereo.cas.initializr.contrib.gradle.GradleWrapperConfigurationContributor;
