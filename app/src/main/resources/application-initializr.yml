@@ -18,6 +18,7 @@ cas-initializr:
       boot-version: 2.7.1
       platform-version: 6.6.0
       sync: true
+      validate: true
       branch: 6.6
       type: cas-mgmt
       tomcat-version: ${apacheTomcat9LatestVersion}
@@ -27,7 +28,8 @@ cas-initializr:
       platform-version: 6.5.9
       boot-version: 2.6.3
       branch: 6.5
-      sync: true
+      sync: false
+      validate: false
       type: cas
       tomcat-version: ${apacheTomcat9LatestVersion}
       java-version: 11
@@ -36,6 +38,7 @@ cas-initializr:
       platform-version: 6.6.0
       boot-version: 2.7.3
       sync: true
+      validate: true
       branch: 6.6
       type: cas
       tomcat-version: ${apacheTomcat9LatestVersion}
@@ -45,6 +48,7 @@ cas-initializr:
       platform-version: ${casLatestVersion}
       boot-version: ${springBootLatestVersion}
       sync: true
+      validate: true
       branch: master
       type: cas
       tomcat-version: ${apacheTomcat10LatestVersion}

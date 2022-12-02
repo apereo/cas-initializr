@@ -60,7 +60,7 @@ jobs:
         run: ./gradlew --no-daemon -q latestCasVersions | jq
       - id: get-supported-versions
         name: Get supported versions for matrix
-        run: echo "::set-output name=supported-versions::$(./gradlew --no-daemon -q latestCasVersions)]}"
+        run: echo "supported-versions=$(./gradlew --no-daemon -q latestCasVersions)" >> $GITHUB_OUTPUT
   ##########################################################################
   helm:
     runs-on: ubuntu-latest

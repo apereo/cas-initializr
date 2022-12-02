@@ -61,7 +61,7 @@ jobs:
         run: ./gradlew --no-daemon -q latestCasVersion | jq
       - id: get-supported-versions
         name: Get supported versions for matrix
-        run: echo "::set-output name=supported-versions::$(./gradlew --no-daemon -q latestCasVersion)]}"
+        run: echo "supported-versions=$(./gradlew --no-daemon -q latestCasVersion)" >> $GITHUB_OUTPUT
   ##########################################################################
   supported-versions-cas:
     needs: [ build ]
@@ -83,7 +83,7 @@ jobs:
         run: ./gradlew --no-daemon -q versions-cas | jq
       - id: get-supported-versions
         name: Get supported versions for matrix
-        run: echo "::set-output name=supported-versions::$(./gradlew --no-daemon -q versions-cas)]}"
+        run: echo "supported-versions=$(./gradlew --no-daemon -q versions-cas)" >> $GITHUB_OUTPUT
   ##########################################################################
   supported-versions-cas-mgmt:
     needs: [ build ]
@@ -105,60 +105,52 @@ jobs:
         run: ./gradlew --no-daemon -q versions-cas-mgmt | jq
       - id: get-supported-versions
         name: Get supported versions for matrix
-        run: echo "::set-output name=supported-versions::$(./gradlew --no-daemon -q versions-cas-mgmt)]}"
+        run: echo "supported-versions=$(./gradlew --no-daemon -q versions-cas-mgmt)" >> $GITHUB_OUTPUT
   ##########################################################################
   sync-cas-mgmt-overlay:
     needs: [ supported-versions-cas-mgmt ]
     runs-on: ubuntu-latest
+    if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
     strategy:
       matrix:
         versions: ${{fromJSON(needs.supported-versions-cas-mgmt.outputs.supported-versions)}}
     name: Sync CAS Mgmt Server ${{ matrix.versions.version }} Branch ${{ matrix.versions.branch }}
     steps:
       - uses: actions/checkout@v3
-        if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
       - name: Set up JDK
-        if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
         uses: actions/setup-java@v3
         with:
           java-version: ${{ matrix.versions.java-version }}
           distribution: 'temurin'
       - name: Initialize
-        if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
         run: chmod -R 777 ./ci/*.sh
       - uses: actions/download-artifact@v3
-        if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
         with:
           name: binary-artifacts
       - name: Sync Overlay
-        if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
         run: ./ci/sync-overlay.sh ${{ matrix.versions.version }} ${{ matrix.versions.boot-version }} ${{ matrix.versions.branch }} cas-management-overlay
   ##########################################################################
   sync-cas-overlay:
     needs: [ supported-versions-cas ]
     runs-on: ubuntu-latest
+    if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
     strategy:
       matrix:
         versions: ${{fromJSON(needs.supported-versions-cas.outputs.supported-versions)}}
     name: Sync CAS Server ${{ matrix.versions.version }} Branch ${{ matrix.versions.branch }}
     steps:
       - uses: actions/checkout@v3
-        if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
       - name: Set up JDK
-        if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
         uses: actions/setup-java@v3
         with:
           java-version: ${{ matrix.versions.java-version }}
           distribution: 'temurin'
       - name: Initialize
-        if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
         run: chmod -R 777 ./ci/*.sh
       - uses: actions/download-artifact@v3
-        if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
         with:
           name: binary-artifacts
       - name: Sync Overlay
-        if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
         run: ./ci/sync-overlay.sh ${{ matrix.versions.version }} ${{ matrix.versions.boot-version }} ${{ matrix.versions.branch }} cas-overlay
   ##########################################################################
   validate-cas-overlay:
@@ -242,28 +234,24 @@ jobs:
   sync-cas-configserver-overlay:
     needs: [ supported-versions-cas ]
     runs-on: ubuntu-latest
+    if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
     strategy:
       matrix:
         versions: ${{fromJSON(needs.supported-versions-cas.outputs.supported-versions)}}
     name: Sync Config Server ${{ matrix.versions.version }} Branch ${{ matrix.versions.branch }}
     steps:
       - uses: actions/checkout@v3
-        if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
       - name: Set up JDK
-        if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
         uses: actions/setup-java@v3
         with:
           java-version: ${{ matrix.versions.java-version }}
           distribution: 'temurin'
       - name: Initialize
-        if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
         run: chmod -R 777 ./ci/*.sh
       - uses: actions/download-artifact@v3
-        if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
         with:
           name: binary-artifacts
       - name: Sync Overlay
-        if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
         run: ./ci/sync-overlay.sh ${{ matrix.versions.version }} ${{ matrix.versions.boot-version }} ${{ matrix.versions.branch }} cas-config-server-overlay
   validate-cas-discoveryserver-overlay:
     needs: [ supported-versions-cas ]

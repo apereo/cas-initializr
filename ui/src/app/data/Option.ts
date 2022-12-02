@@ -14,6 +14,7 @@ export interface CasVersionOption {
     version: string;
     bootVersion: string;
     sync: boolean;
+    validate: boolean;
     branch: string;
     type: string;
     platformVersion: string;
