@@ -155,17 +155,13 @@ tasks.register('copyWrapperExecutables', Copy) {
 }
 
 def copyUIStatic = tasks.register('copyUIStatic', Copy) {
-    doLast {
-        from tasks.findByPath(":ui:buildWebapp").outputs
-        into "${buildDir}/resources/main/static"
-    }
+    from tasks.findByPath(":ui:buildWebapp").outputs
+    into "${buildDir}/resources/main/static"
 }
 
 def copyUITemplates = tasks.register('copyUITemplates', Copy) {
-    doLast {
-        from tasks.findByPath(":ui:buildWebapp").outputs
-        into "${buildDir}/resources/main/templates"
-    }
+    from tasks.findByPath(":ui:buildWebapp").outputs
+    into "${buildDir}/resources/main/templates"
 }
 
 rootProject.tasks["wrapper"].finalizedBy([copyWrapper, copyWrapperExecutables])

@@ -11,3 +11,4 @@ tmp
 .settings
 *.class
 .java-version
+.DS_Store
