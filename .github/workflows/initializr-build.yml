@@ -110,10 +110,10 @@ jobs:
   sync-cas-mgmt-overlay:
     needs: [ supported-versions-cas-mgmt ]
     runs-on: ubuntu-latest
-    if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
     strategy:
       matrix:
         versions: ${{fromJSON(needs.supported-versions-cas-mgmt.outputs.supported-versions)}}
+    if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
     name: Sync CAS Mgmt Server ${{ matrix.versions.version }} Branch ${{ matrix.versions.branch }}
     steps:
       - uses: actions/checkout@v3
