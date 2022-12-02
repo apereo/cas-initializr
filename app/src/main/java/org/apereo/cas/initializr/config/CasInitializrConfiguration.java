@@ -4,6 +4,7 @@ import org.apereo.cas.initializr.contrib.project.ApplicationYamlPropertiesContri
 import org.apereo.cas.initializr.contrib.ChainingMultipleResourcesProjectContributor;
 import org.apereo.cas.initializr.contrib.ChainingSingleResourceProjectContributor;
 import org.apereo.cas.initializr.contrib.project.IgnoreRulesContributor;
+import org.apereo.cas.initializr.contrib.project.JenvJavaVersionContributor;
 import org.apereo.cas.initializr.contrib.project.LocalEtcCasDirectoryContributor;
 import org.apereo.cas.initializr.contrib.project.OverlayLombokConfigContributor;
 import org.apereo.cas.initializr.contrib.project.OverlayOverrideConfigurationContributor;
@@ -47,6 +48,11 @@ public class CasInitializrConfiguration {
     @Bean
     public ProjectContributor ignoreRulesContributor() {
         return new IgnoreRulesContributor();
+    }
+
+    @Bean
+    public ProjectContributor jenvJavaVersionContributor() {
+        return new JenvJavaVersionContributor(applicationContext);
     }
 
     @Bean

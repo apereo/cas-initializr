@@ -20,12 +20,12 @@ import java.nio.file.Path;
  */
 @RequiredArgsConstructor
 public class JenvJavaVersionContributor implements ProjectContributor {
-    private final CasInitializrProperties properties;
-
     private final ConfigurableApplicationContext applicationContext;
 
     @Override
     public void contribute(final Path projectRoot) throws IOException {
+        var properties = applicationContext.getBean(CasInitializrProperties.class);
+
         var output = projectRoot.resolve(".java-version");
         if (!Files.exists(output)) {
             var project = applicationContext.getBean(OverlayProjectDescription.class);
