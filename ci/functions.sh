@@ -3,20 +3,22 @@
 function downloadTomcat() {
   tomcatVersion=$1
   echo "Apache Tomcat version: ${tomcatVersion}"
-  tomcatVersionTag="v${tomcatVersion}"
+
+  tomcatMajorVersion=$(echo "$tomcatVersion" | cut -d. -f1)
+  tomcatVersionTag="v${tomcatMajorVersion}"
 
   tomcatDir="tomcat-${tomcatVersion:0:1}"
   tomcatUrl="https://downloads.apache.org/tomcat/${tomcatDir}/${tomcatVersionTag}/bin/apache-tomcat-${tomcatVersion}.zip"
 
   export CATALINA_HOME=./apache-tomcat-${tomcatVersion}
-  rm -Rf ${CATALINA_HOME} > /dev/null 2>&1
+  rm -Rf "${CATALINA_HOME}" > /dev/null 2>&1
   echo "Downloading Apache Tomcat from ${tomcatUrl}"
   wget --no-check-certificate ${tomcatUrl} > /dev/null 2>&1
   [ $? -eq 0 ] && echo "Apache Tomcat downloaded successfully." || exit 1
-  unzip apache-tomcat-${tomcatVersion}.zip > /dev/null 2>&1
-  chmod +x ${CATALINA_HOME}/bin/*.sh > /dev/null 2>&1
-  rm -Rf ${CATALINA_HOME}/webapps/examples ${CATALINA_HOME}/webapps/docs ${CATALINA_HOME}/webapps/host-manager ${CATALINA_HOME}/webapps/manager
-  touch ${CATALINA_HOME}/logs/catalina.out ; tail -F ${CATALINA_HOME}/logs/catalina.out &
+  unzip apache-tomcat-"${tomcatVersion}".zip > /dev/null 2>&1
+  chmod +x "${CATALINA_HOME}"/bin/*.sh > /dev/null 2>&1
+  rm -Rf "${CATALINA_HOME}"/webapps/examples ${CATALINA_HOME}/webapps/docs ${CATALINA_HOME}/webapps/host-manager ${CATALINA_HOME}/webapps/manager
+  touch "${CATALINA_HOME}"/logs/catalina.out ; tail -F ${CATALINA_HOME}/logs/catalina.out &
 }
 
 function publishDockerImage() {
