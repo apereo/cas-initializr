@@ -5,6 +5,8 @@ import org.apereo.cas.overlay.OverlayBuildSystem;
 public class CasOverlayBuildSystem implements OverlayBuildSystem {
     public static final String ID = "cas-overlay";
 
+    public static final String TYPE = "cas";
+
     @Override
     public String id() {
         return ID;
@@ -17,7 +19,7 @@ public class CasOverlayBuildSystem implements OverlayBuildSystem {
 
     @Override
     public String overlayType() {
-        return "cas";
+        return TYPE;
     }
 
     @Override

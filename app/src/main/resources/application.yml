@@ -46,6 +46,8 @@ spring:
 initializr:
   env:
     force-ssl: true
+    platform:
+      compatibility-range: 6.5.0
   name:
     value: cas
   description:

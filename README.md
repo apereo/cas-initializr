@@ -86,8 +86,19 @@ all dependencies supported and available by this service, you can invoke the fol
 curl http://localhost:8080/dependencies
 ```
 
-Typically, dependency identifiers match CAS server 
-dependency/module artifact names without the `cas-server-` prefix.
+Typically, dependency identifiers match CAS dependency/module artifact names without the `cas-server-` prefix.
+
+To see the CAS versions and projects are that supported by the CAS Initializr, you may invoke the following command:
+
+```bash
+curl http://localhost:8080/actuator/supportedVersions
+```
+
+You may also see a full list of dependencies and their aliases as well as supported versions via:
+
+```bash
+curl http://localhost:8080/actuator/info
+```
 
 ## Service metadata
 

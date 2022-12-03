@@ -5,12 +5,15 @@ import org.apereo.cas.initializr.event.CasInitializrEventListener;
 import org.apereo.cas.initializr.info.DependencyAliasesInfoContributor;
 import org.apereo.cas.initializr.rate.RateLimitInterceptor;
 import org.apereo.cas.initializr.web.OverlayProjectGenerationController;
+import org.apereo.cas.initializr.web.OverlayProjectMetadataController;
 import org.apereo.cas.initializr.web.OverlayProjectRequestToDescriptionConverter;
 import org.apereo.cas.initializr.web.SupportedVersionsEndpoint;
 import org.apereo.cas.initializr.web.generator.CasInitializrProjectAssetGenerator;
 import org.apereo.cas.initializr.web.generator.CasInitializrProjectGenerationInvoker;
 
+import io.spring.initializr.metadata.DependencyMetadataProvider;
 import io.spring.initializr.metadata.InitializrMetadataProvider;
+import io.spring.initializr.web.controller.ProjectMetadataController;
 import io.spring.initializr.web.project.DefaultProjectRequestPlatformVersionTransformer;
 import io.spring.initializr.web.project.ProjectRequestPlatformVersionTransformer;
 import org.springframework.beans.factory.ObjectProvider;
@@ -19,8 +22,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.actuate.info.InfoContributor;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -50,6 +55,14 @@ public class CasInitializrApplication {
         var converter = new OverlayProjectRequestToDescriptionConverter(transformer, properties);
         var invoker = new CasInitializrProjectGenerationInvoker(applicationContext, converter, new CasInitializrProjectAssetGenerator());
         return new OverlayProjectGenerationController(metadataProvider, invoker);
+    }
+
+
+    @Bean
+    public ProjectMetadataController projectMetadataController(final InitializrMetadataProvider metadataProvider,
+                                                        final DependencyMetadataProvider dependencyMetadataProvider,
+                                                        final ConfigurableApplicationContext applicationContext) {
+        return new OverlayProjectMetadataController(metadataProvider, dependencyMetadataProvider, applicationContext);
     }
 
     @Bean
@@ -82,8 +95,9 @@ public class CasInitializrApplication {
 
     @Autowired
     @Bean
-    public InfoContributor dependencyAliasesInfoContributor(final InitializrMetadataProvider provider) {
-        return new DependencyAliasesInfoContributor(provider);
+    public InfoContributor dependencyAliasesInfoContributor(final InitializrMetadataProvider provider,
+                                                            final ConfigurableApplicationContext applicationContext) {
+        return new DependencyAliasesInfoContributor(provider, applicationContext);
     }
 
 }
