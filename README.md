@@ -33,6 +33,10 @@ imageTag=(`./gradlew initializrVersion --q`) && docker run --rm -p 8080:8080 -t 
 
 The service will be available on `http://localhost:8080`.
 
+## User Interface
+
+CAS Initializr also presents a user interface, available at `http://localhost:8080/ui`.
+
 ## Generating a project
 
 #### Generate a vanilla CAS overlay:
@@ -68,6 +72,7 @@ Type can be one of:
   - `cas-management-overlay`
 
 #### Generate a CAS Overlay using latest cas-initializr deployed on heroku.com:
+
 ```bash
 curl https://casinit.herokuapp.com/starter.tgz -d "dependencies=core,bootadmin,metrics,gitsvc,jsonsvc,redis" | tar  -xzvf -
 ```
