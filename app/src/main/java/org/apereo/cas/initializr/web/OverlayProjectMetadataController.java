@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Comparator;
+import java.util.stream.Collectors;
 
 public class OverlayProjectMetadataController extends ProjectMetadataController {
     private final DependencyMetadataProvider dependencyMetadataProvider;
@@ -53,7 +54,7 @@ public class OverlayProjectMetadataController extends ProjectMetadataController 
             .filter(ver -> ver.getType().equals(CasOverlayBuildSystem.TYPE))
             .map(SupportedVersion::getVersion)
             .sorted(Comparator.reverseOrder())
-            .toList();
+            .collect(Collectors.toList());
 
         var versionToChoose = (casVersion != null)
             ? VersionUtils.parse(casVersion)
