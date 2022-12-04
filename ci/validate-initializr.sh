@@ -28,7 +28,6 @@ curl -H 'Accept: application/json' http://localhost:8080/actuator/supportedVersi
 echo "Checking CAS Initializr UI"
 curl http://localhost:8080/ui
 
-echo "\nAll CAS Initializr checks have passed"
+echo -e "\nAll CAS Initializr checks have passed"
 
 kill -9 $pid
-[ "$CI" = "true" ] && pkill java
