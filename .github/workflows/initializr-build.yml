@@ -58,7 +58,7 @@ jobs:
           name: binary-artifacts
       - id: print-supported-versions
         name: Print supported versions
-        run: ./gradlew --no-daemon -q latestCasVersion | jq
+        run: ./gradlew --no-daemon -q latestCasVersion
       - id: get-supported-versions
         name: Get supported versions for matrix
         run: echo "supported-versions=$(./gradlew --no-daemon -q latestCasVersion)" >> $GITHUB_OUTPUT
@@ -80,7 +80,7 @@ jobs:
           name: binary-artifacts
       - id: print-supported-versions
         name: Print supported versions
-        run: ./gradlew --no-daemon -q versions-cas | jq
+        run: ./gradlew --no-daemon -q versions-cas
       - id: get-supported-versions
         name: Get supported versions for matrix
         run: echo "supported-versions=$(./gradlew --no-daemon -q versions-cas)" >> $GITHUB_OUTPUT
@@ -102,7 +102,7 @@ jobs:
           name: binary-artifacts
       - id: print-supported-versions
         name: Print supported versions
-        run: ./gradlew --no-daemon -q versions-cas-mgmt | jq
+        run: ./gradlew --no-daemon -q versions-cas-mgmt
       - id: get-supported-versions
         name: Get supported versions for matrix
         run: echo "supported-versions=$(./gradlew --no-daemon -q versions-cas-mgmt)" >> $GITHUB_OUTPUT
