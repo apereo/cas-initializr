@@ -75,6 +75,10 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         } else if (dependencies.containsKey("webapp-undertow")) {
             appServer = "-undertow";
         }
+        if (dependencies.containsKey("webapp")) {
+            appServer = "";
+        }
+
         defaults.put("appServer", appServer);
     }
 
