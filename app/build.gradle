@@ -168,6 +168,6 @@ rootProject.tasks["wrapper"].finalizedBy([copyWrapper, copyWrapperExecutables])
 build.dependsOn([copyWrapper, copyWrapperExecutables])
 
 def taskNames = gradle.startParameter.taskNames
-if (taskNames.isEmpty() || !taskNames.get(0).contains("bootRun")) {
+if (taskNames.contains("build")) {
     processResources.dependsOn([copyUITemplates, copyUIStatic])
 }
