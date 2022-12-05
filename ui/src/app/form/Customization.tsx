@@ -38,18 +38,22 @@ const Accordion = styled((props: AccordionProps) => (
 }));
 
 export default function Customization() {
-
     const defaultValues = useDefaultValues();
     const dispatch = useAppDispatch();
 
-    const { register, watch, control } = useForm<Overlay>({
+    const { register, watch, control, reset } = useForm<Overlay>({
         defaultValues: {
-            ...defaultValues
+            ...defaultValues,
         },
-        mode: 'onChange'
+        mode: "onChange",
     });
 
-    const type = watch('type');
+    const type = watch("type");
+
+    /*eslint-disable react-hooks/exhaustive-deps*/
+    React.useEffect(() => {
+        reset({ ...defaultValues, type });
+    }, [defaultValues, reset]);
 
     const types = useCasTypes();
     const versions = useSortedCasVersionsForType(type);
@@ -65,7 +69,7 @@ export default function Customization() {
             <Typography variant="subtitle1" style={{ marginBottom: "1rem" }}>
                 Build your CAS deployment
             </Typography>
-            <Divider style={{marginBottom: '2rem'}} />
+            <Divider style={{ marginBottom: "2rem" }} />
             <form>
                 <Stack spacing={2}>
                     <FormControl fullWidth>

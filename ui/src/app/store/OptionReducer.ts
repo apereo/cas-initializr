@@ -13,12 +13,22 @@ import {
 } from "../data/Option";
 import { Dependency } from "../data/Dependency";
 import { Overlay } from "../data/Overlay";
+import { OverlayState } from './OverlayReducer';
 
 export interface OptionState extends ApiOptions {
     casVersion: CasVersionOption[];
 }
 
+const mapVersions: { [id: string]: string } = {
+    "cas-overlay": "cas",
+    "cas-management-overlay": "cas-mgmt",
+    "cas-config-server-overlay": "cas",
+    "cas-discovery-server-overlay": "cas",
+    "cas-bootadmin-server-overlay": "cas",
+};
+
 const stateSelector = (state: RootState): any => state.option;
+const overlaySelector = (state: RootState): any => state.overlay;
 
 export const OptionSlice = createSlice({
     name: "Option",
@@ -134,10 +144,25 @@ export const CasTypesSelector = createSelector(
 
 export const CasDefaultSelector = createSelector(
     stateSelector,
-    (state: OptionState): Partial<Overlay> => {
+    overlaySelector,
+    (state: OptionState, overlay: OverlayState): Partial<Overlay> => {
         const { casVersion: versions } = state;
-        const stable = versions.filter(({version}) => /^(\d+\.)?(\d+\.)?(\*|\d+)$/.test(version));
-        const sorted = reverse(sortBy(stable, ['version']));
+        const { type } = overlay;
+        
+
+        const id = mapVersions.hasOwnProperty(type) ? mapVersions[type] : null;
+
+        let filtered = versions;
+
+        if (id) {
+            filtered = versions.filter((v) => v.type === id);
+        }
+
+        const stable = filtered.filter(({ version }) =>
+            /^(\d+\.)?(\d+\.)?(\*|\d+)$/.test(version)
+        );
+        const sorted = reverse(sortBy(stable, ["version"]));
+
         return {
             type: state.type.default,
             packaging: state.packaging.default,
@@ -183,10 +208,7 @@ export function useCasVersions(): CasVersionOption[] {
     return useSelector(CasVersionsSelector);
 }
 
-const mapVersions: { [id: string]: string } = {
-    "cas-overlay": "cas",
-    "cas-management-overlay": "cas-mgmt",
-};
+
 
 export function useCasVersionsForType(type: string): CasVersionOption[] {
     const versions = useCasVersions();
