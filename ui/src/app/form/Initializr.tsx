@@ -12,6 +12,7 @@ import * as FileSaver from 'file-saver';
 
 import * as queryString from 'query-string';
 import { useDefaultValues } from '../store/OptionReducer';
+import { API_PATH } from '../App.constant';
 export const downloadAsZip = (fileName: string, data: any) => {
     // const blob = new Blob([data], { type: 'text/zip;charset=utf-8' });
     FileSaver.saveAs(data, `${fileName}.tar.gz`);
@@ -24,12 +25,17 @@ export default function Initializr() {
     const canDownload = useCanDownload();
     const overlay = useOverlay();
     const defaults = useDefaultValues();
+
+    const [loading, setLoading] = React.useState(false);
+
     const download = async (overlay: Overlay) => {
+        setLoading(true);
         const used = pickBy(overlay, (value: any) => value !== "" && !isNil(value));
         const string = queryString.stringify(used, { arrayFormat: "comma" });
-        const response = await fetch(`?${string}`);
+        const response = await fetch(`${API_PATH}starter.tgz?${string}`);
         if (response.ok) {
             const file = await response.blob();
+            setLoading(false);
             downloadAsZip(overlay.name ? overlay.name : defaults.name || 'cas', file);
         }
     };
@@ -64,9 +70,10 @@ export default function Initializr() {
                                     variant="contained"
                                     type="submit"
                                     onClick={() => download(overlay)}
-                                    disabled={!canDownload}
+                                    disabled={!canDownload || loading}
                                 >
                                     Download
+                                    {loading && <CircularProgress size={'1.5rem'} style={{marginLeft: '1rem'}} /> }
                                 </Button>
                             </div>
                         </Grid>
