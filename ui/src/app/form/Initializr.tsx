@@ -10,7 +10,7 @@ import { isNil, pickBy } from 'lodash';
 
 import * as FileSaver from 'file-saver';
 
-import * as queryString from 'query-string';
+import queryString from 'query-string';
 import { useDefaultValues } from '../store/OptionReducer';
 import { API_PATH } from '../App.constant';
 export const downloadAsZip = (fileName: string, data: any) => {
