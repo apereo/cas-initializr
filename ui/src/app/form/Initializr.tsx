@@ -10,7 +10,7 @@ import { isNil, pickBy } from 'lodash';
 
 import * as FileSaver from 'file-saver';
 
-import * as queryString from 'query-string';
+import qs from 'query-string';
 import { useDefaultValues } from '../store/OptionReducer';
 import { API_PATH } from '../App.constant';
 export const downloadAsZip = (fileName: string, data: any) => {
@@ -31,7 +31,7 @@ export default function Initializr() {
     const download = async (overlay: Overlay) => {
         setLoading(true);
         const used = pickBy(overlay, (value: any) => value !== "" && !isNil(value));
-        const string = queryString.stringify(used, { arrayFormat: "comma" });
+        const string = qs.stringify(used, { arrayFormat: "comma" });
         const response = await fetch(`${API_PATH}starter.tgz?${string}`);
         if (response.ok) {
             const file = await response.blob();
