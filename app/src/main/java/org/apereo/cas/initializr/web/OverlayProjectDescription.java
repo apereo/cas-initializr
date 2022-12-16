@@ -15,6 +15,13 @@ public class OverlayProjectDescription extends MutableProjectDescription {
 
     private String springBootVersion;
 
+    private boolean dockerSupported;
+
+    private boolean helmSupported;
+
+    private boolean herokuSupported;
+
+
     public String resolveCasVersion(final BillOfMaterials billOfMaterials) {
         return StringUtils.defaultIfBlank(this.casVersion, billOfMaterials.getVersion());
     }

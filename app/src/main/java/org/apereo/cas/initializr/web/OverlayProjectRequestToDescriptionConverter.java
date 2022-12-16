@@ -19,6 +19,7 @@ import io.spring.initializr.web.project.ProjectRequestToDescriptionConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
@@ -149,8 +150,24 @@ public class OverlayProjectRequestToDescriptionConverter implements ProjectReque
         description.setCasVersion(casVersion.toString());
         description.setSpringBootVersion(springBootPlatformVersion.toString());
 
+        description.setHelmSupported(getBooleanParameter(request, "helmSupported", Boolean.TRUE));
+        description.setDockerSupported(getBooleanParameter(request, "dockerSupported", Boolean.TRUE));
+        description.setHerokuSupported(getBooleanParameter(request, "herokuSupported", Boolean.TRUE));
+
         resolvedDependencies.forEach(dependency -> description.addDependency(dependency.getId(),
             MetadataBuildItemMapper.toDependency(dependency)));
+    }
+
+    private Boolean getBooleanParameter(final OverlayProjectRequest request, final String name, final Boolean defaultValue) {
+        if (request.getParameters().containsKey(name)) {
+            var value = request.getParameters().get(name);
+            if (value.getClass().isArray()) {
+                value = ((Object[]) value)[0];
+            }
+            return BooleanUtils.toBoolean(value.toString());
+        }
+        return defaultValue;
+
     }
 
     private void validate(final OverlayProjectRequest request, final InitializrMetadata metadata) {

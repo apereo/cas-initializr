@@ -37,7 +37,7 @@ public class CasOverlayProjectGenerationConfiguration {
 
     @Bean
     public CasOverlayHelmContributor casOverlayHelmContributor() {
-        return new CasOverlayHelmContributor();
+        return new CasOverlayHelmContributor(applicationContext);
     }
 
     @Bean

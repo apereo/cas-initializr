@@ -15,8 +15,10 @@ public class OverlayGradleJibEntrypointContributor extends TemplatedProjectContr
 
     @Override
     public void contribute(final Path projectRoot) throws IOException {
-        super.contribute(projectRoot);
-        var output = projectRoot.resolve(ENTRYPOINT_SCRIPT_PATH);
-        output.toFile().setExecutable(true);
+        if (getOverlayProjectDescription().isDockerSupported()) {
+            super.contribute(projectRoot);
+            var output = projectRoot.resolve(ENTRYPOINT_SCRIPT_PATH);
+            output.toFile().setExecutable(true);
+        }
     }
 }

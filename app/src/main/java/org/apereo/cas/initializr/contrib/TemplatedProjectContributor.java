@@ -102,6 +102,10 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         return dependencies;
     }
 
+    protected OverlayProjectDescription getOverlayProjectDescription() {
+        return applicationContext.getBean(OverlayProjectDescription.class);
+    }
+
     @Override
     public void contribute(final Path projectRoot) throws IOException {
         if (resourcePattern.endsWith("/**")) {
@@ -220,6 +224,10 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         }
 
         templateVariables.put("buildSystemId", type);
+
+        val dockerSupported = getOverlayProjectDescription().isDockerSupported();
+        templateVariables.put("dockerSupported", dockerSupported);
+
         templateVariables.put("containerImageName", StringUtils.remove(type, "-overlay"));
         templateVariables.put("containerImageOrg", "apereo");
 
@@ -227,8 +235,9 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
 
         if (type.equalsIgnoreCase(CasOverlayBuildSystem.ID) || type.equalsIgnoreCase(CasManagementOverlayBuildSystem.ID)) {
             handleApplicationServerType(project, templateVariables);
-            templateVariables.put("hasDockerFile", Boolean.TRUE);
+            templateVariables.put("hasDockerFile", dockerSupported);
         }
+
         if (type.equalsIgnoreCase(CasManagementOverlayBuildSystem.ID)) {
             templateVariables.put("managementServer", Boolean.TRUE);
             templateVariables.put("appName", "cas-management");
