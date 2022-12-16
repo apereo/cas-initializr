@@ -1,6 +1,5 @@
 package org.apereo.cas.initializr.web;
 
-import io.spring.initializr.metadata.InitializrMetadata;
 import io.spring.initializr.metadata.InitializrMetadataProvider;
 import io.spring.initializr.web.controller.ProjectGenerationController;
 import io.spring.initializr.web.project.ProjectGenerationInvoker;
