@@ -2259,6 +2259,13 @@
   resolved "https://registry.yarnpkg.com/@types/qs/-/qs-6.9.7.tgz#63bb7d067db107cc1e457c303bc25d511febf6cb"
   integrity sha512-FGa1F62FT09qcrueBA6qYTrJPVDzah9a+493+o2PCXsesWHIn27G98TsSMs3WPNbZIEj4+VJf6saSFpvD+3Zsw==
 
+"@types/query-string@^6.3.0":
+  version "6.3.0"
+  resolved "https://registry.yarnpkg.com/@types/query-string/-/query-string-6.3.0.tgz#b6fa172a01405abcaedac681118e78429d62ea39"
+  integrity sha512-yuIv/WRffRzL7cBW+sla4HwBZrEXRNf1MKQ5SklPEadth+BKbDxiVG8A3iISN5B3yC4EeSCzMZP8llHTcUhOzQ==
+  dependencies:
+    query-string "*"
+
 "@types/range-parser@*":
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/@types/range-parser/-/range-parser-1.2.4.tgz#cd667bcfdd025213aafb7ca5915a932590acdcdc"
@@ -7649,10 +7656,10 @@ qs@6.11.0:
   dependencies:
     side-channel "^1.0.4"
 
-query-string@^8.0.0:
-  version "8.0.0"
-  resolved "https://registry.yarnpkg.com/query-string/-/query-string-8.0.0.tgz#6fe8b0efcfea80dabe470f64a2e46eaf8beae357"
-  integrity sha512-mB9U/uR7+1ZTzHMMlkk06qH74bKeNkZXzZXxLpoOfypAR9AVhVcYhvOnFtiosoS6Mf7rNwsLhnzeefgZMgCE/A==
+query-string@*, query-string@^8.0.0:
+  version "8.0.3"
+  resolved "https://registry.yarnpkg.com/query-string/-/query-string-8.0.3.tgz#c6f18a1ce18005fb5d3dcd6507dbcdc165615c49"
+  integrity sha512-RtRwkRFCLPQWz27ETbeqIA9UdaLv2Ps7EiNjIS57BaZyx/gWi4QKq7K4+rYBEHToSo/dvLZ+S1fEOKcacojA/Q==
   dependencies:
     decode-uri-component "^0.2.2"
     filter-obj "^5.1.0"
