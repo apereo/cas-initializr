@@ -36,7 +36,7 @@ public class JenvJavaVersionContributor implements ProjectContributor {
                 .findFirst()
                 .ifPresent(Unchecked.consumer(version -> {
                     Files.createFile(output);
-                    FileUtils.write(output.toFile(), version.getJavaVersion(), StandardCharsets.UTF_8);
+                    FileUtils.write(output.toFile(), String.format("%s.0", version.getJavaVersion()), StandardCharsets.UTF_8);
                 }));
         }
     }

@@ -34,7 +34,9 @@ buildscript {
         classpath "io.freefair.gradle:maven-plugin:${project.gradleFreeFairPluginVersion}"
         classpath "io.freefair.gradle:lombok-plugin:${project.gradleFreeFairPluginVersion}"
         classpath "io.spring.gradle:dependency-management-plugin:${project.gradleDependencyManagementPluginVersion}"
+        {{#dockerSupported}}
         classpath "com.google.cloud.tools:jib-gradle-plugin:${project.jibVersion}"
+        {{/dockerSupported}}
 
         {{#casServer}}
         classpath "de.undercouch:gradle-download-task:${project.gradleDownloadTaskVersion}"
@@ -84,7 +86,9 @@ apply plugin: "org.springframework.boot"
 apply plugin: "io.freefair.lombok"
 
 apply from: rootProject.file("gradle/springboot.gradle")
+{{#dockerSupported}}
 apply from: rootProject.file("gradle/jib.gradle")
+{{/dockerSupported}}
 apply from: rootProject.file("gradle/tasks.gradle")
 
 {{#springDependencyMgmt}}
@@ -129,9 +133,11 @@ java {
     }
 }
 
+{{#dockerSupported}}
 bootBuildImage {
     imageName = "${project.'containerImageOrg'}/${project.'containerImageName'}:${project.version}"
 }
+{{/dockerSupported}}
 
 dependencies {
     {{^springDependencyMgmt}}

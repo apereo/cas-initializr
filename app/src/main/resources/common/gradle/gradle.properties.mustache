@@ -25,6 +25,7 @@ targetCompatibility={{javaVersion}}
 gradleFreeFairPluginVersion=@gradleFreeFairPluginVersion@
 gradleDependencyManagementPluginVersion=@gradleDependencyManagementPluginVersion@
 
+{{#dockerSupported}}
 # Used to build docker images
 jibVersion=@jibVersion@
 
@@ -37,6 +38,7 @@ allowInsecureRegistries=false
 dockerImagePlatform=amd64:linux
 
 containerImage={{containerImageOrg}}/{{containerImageName}}
+{{/dockerSupported}}
 
 # Include launch script for executable WAR artifact
 # Setting this to true allows the final web application

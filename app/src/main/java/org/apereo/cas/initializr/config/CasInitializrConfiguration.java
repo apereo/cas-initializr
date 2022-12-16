@@ -97,7 +97,7 @@ public class CasInitializrConfiguration {
     @Bean
     public ChainingSingleResourceProjectContributor overlayJibConfigurationContributor() {
         var chain = new ChainingSingleResourceProjectContributor();
-        chain.addContributor(new OverlayGradleJibContributor());
+        chain.addContributor(new OverlayGradleJibContributor(applicationContext));
         chain.addContributor(new OverlayGradleJibEntrypointContributor(applicationContext));
         chain.addContributor(new LocalEtcCasDirectoryContributor());
         return chain;
