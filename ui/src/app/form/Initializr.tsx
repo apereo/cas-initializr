@@ -11,7 +11,7 @@ import JSZip from "jszip";
 
 import * as FileSaver from 'file-saver';
 
-import * as queryString from 'query-string';
+import qs from 'query-string';
 import { useDefaultValues } from '../store/OptionReducer';
 import { API_PATH } from '../App.constant';
 import { Preview } from '../preview/Preview';
@@ -39,7 +39,7 @@ export default function Initializr() {
 
     const fetchArchive = async (overlay: Overlay, type: string = 'tgz') => {
         const used = pickBy(overlay, (value: any) => value !== "" && !isNil(value));
-        const string = queryString.stringify(used, { arrayFormat: "comma" });
+        const string = qs.stringify(used, { arrayFormat: "comma" });
         return await fetch(`${API_PATH}starter.${type}?${string}`);
     };
 
