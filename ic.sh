@@ -10,4 +10,6 @@ BOOT_VERSION="3.0.0"
 
 curl -k http://localhost:8080/starter.tgz -d dependencies="$1" \
   -d "casVersion=${CAS_VERSION}&bootVersion=${BOOT_VERSION}" \
+  -d dockerSupported=false -d helmSupported=false \
+  -d herokuSupported=false \
   -d type=cas-overlay -d baseDir=tmp | tar -xzvf -

@@ -10,7 +10,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 @Setter
 public class OverlayProjectRequest extends WebProjectRequest {
     private String casVersion;
-
+    
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.NO_CLASS_NAME_STYLE);
