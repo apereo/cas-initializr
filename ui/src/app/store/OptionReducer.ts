@@ -13,7 +13,6 @@ import {
 } from "../data/Option";
 import { Dependency } from "../data/Dependency";
 import { Overlay } from "../data/Overlay";
-import { OverlayState } from './OverlayReducer';
 
 export interface OptionState extends ApiOptions {
     casVersion: CasVersionOption[];
