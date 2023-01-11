@@ -13,7 +13,6 @@ import {
 } from "../data/Option";
 import { Dependency } from "../data/Dependency";
 import { Overlay } from "../data/Overlay";
-import { OverlayState } from './OverlayReducer';
 
 export interface OptionState extends ApiOptions {
     casVersion: CasVersionOption[];
@@ -29,6 +28,7 @@ const mapVersions: { [id: string]: string } = {
 
 const stateSelector = (state: RootState): any => state.option;
 const overlaySelector = (state: RootState): any => state.overlay;
+
 
 export const OptionSlice = createSlice({
     name: "Option",
@@ -142,13 +142,16 @@ export const CasTypesSelector = createSelector(
     }
 );
 
+export const CurrentTypeSelector = createSelector(
+    overlaySelector,
+    (overlay: Overlay) => overlay.type
+)
+
 export const CasDefaultSelector = createSelector(
     stateSelector,
-    overlaySelector,
-    (state: OptionState, overlay: OverlayState): Partial<Overlay> => {
+    CurrentTypeSelector,
+    (state: OptionState, type: string): Partial<Overlay> => {
         const { casVersion: versions } = state;
-        const { type } = overlay;
-        
 
         const id = mapVersions.hasOwnProperty(type) ? mapVersions[type] : null;
 
@@ -174,7 +177,7 @@ export const CasDefaultSelector = createSelector(
             name: state.name.default,
             description: state.description.default,
             packageName: state.packageName.default,
-            casVersion: sorted?.length ? sorted[0].version : ''
+            casVersion: sorted?.length ? sorted[0].version : "",
         };
     }
 );
