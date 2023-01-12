@@ -27,6 +27,8 @@ import Fuse from "fuse.js";
 import { FixedSizeList, ListChildComponentProps } from "react-window";
 import { useOverlayDependencies } from "../store/OverlayReducer";
 
+import { useHotkeys } from "react-hotkeys-hook";
+
 const options: Fuse.IFuseOptions<Dependency> = {
     includeScore: true,
     // Search in `author` and in `tags` array
@@ -127,7 +129,9 @@ export default function DependencySelector({ onSelectedChange }: DependencySelec
 
     React.useEffect(() => {
         setFiltered(filterType !== null ? [...available].filter((d: Dependency) => d.type === filterType) : [...available]);
-    }, [filterType, available])
+    }, [filterType, available]);
+
+    useHotkeys("ctrl+B", () => handleClickOpen(), [handleClickOpen]);
 
     return (
         <>

@@ -2,6 +2,7 @@ import JSZip, { JSZipObject } from "jszip";
 import omitBy from "lodash/omitBy";
 import find from 'lodash/find';
 import get from "lodash/get";
+import { sortBy } from "lodash";
 
 export const OMIT = [
     /.git\//
@@ -107,12 +108,31 @@ export enum EntryType {
     FOLDER = 'folder',
 }
 
+function sort(t: FileTreeItem[]) {
+    return sortBy(t, [
+        (item: FileTreeItem) => item.type !== 'dir',
+        (item: FileTreeItem) => item.name.toLowerCase()
+    ]).map((i): FileTreeItem => {
+        if (i.type === "dir" && i.children) {
+            return ({
+                ...i,
+                children: sort(i.children)
+            })
+        }
+        return i;
+    });
+}
+
 async function arrangeIntoTree(paths: string[], zip: JSZip): Promise<FileTreeItem[]> {
     const tree: any = [];
+
+
+    // console.log(paths);
 
     return new Promise(async (resolve) => {
         for(const path of paths) {
             const pathParts = path.split("/");
+
             // pathParts.shift();
 
             let currentLevel = tree;
@@ -152,7 +172,7 @@ async function arrangeIntoTree(paths: string[], zip: JSZip): Promise<FileTreeIte
             }
         };
 
-        resolve(tree);
+        resolve(sort(tree));
     });
 }
 

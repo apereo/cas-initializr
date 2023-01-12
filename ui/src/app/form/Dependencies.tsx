@@ -6,7 +6,7 @@ import {
     ListItem,
     ListItemText,
 } from "@mui/material";
-
+import { useHotkeys } from "react-hotkeys-hook";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Dependency } from "../data/Dependency";
@@ -30,6 +30,8 @@ export default function Dependencies() {
     const clear = () => {
         dispatch(setDependencies([]));
     };
+
+    useHotkeys("ctrl+D", () => clear(), [clear]);
 
     return (
         <>

@@ -2,6 +2,7 @@ import React from "react";
 import { usePreviewSelected } from "../store/PreviewReducer";
 import { Box, Typography } from "@mui/material";
 import CodeRenderer from "../core/components/CodeRenderer";
+import ReactMarkdown from "react-markdown";
 
 export function Code() {
 
@@ -10,6 +11,12 @@ export function Code() {
     const item = React.useMemo(() => {
         if (selected && selected.content) {
             switch (selected.type) {
+                case "markdown":
+                    return (
+                        <div style={{ padding: "1.5rem" }}>
+                            <ReactMarkdown>{selected.content}</ReactMarkdown>
+                        </div>
+                    );
                 case "image":
                     return (
                         <div style={{ padding: "1.5rem" }}>

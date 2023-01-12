@@ -1,6 +1,6 @@
 import React, {Fragment} from 'react';
 import { Backdrop, Button, CircularProgress, Divider, Grid } from '@mui/material';
-
+import { useHotkeys } from "react-hotkeys-hook";
 import Customization from './Customization';
 import Dependencies from './Dependencies';
 import { useApiLoaded, useVersionsLoaded } from '../store/AppReducer';
@@ -73,6 +73,9 @@ export default function Initializr() {
             setLoading(false);
         }
     };
+
+    useHotkeys("ctrl+space", () => explore(overlay), [overlay]);
+    useHotkeys("ctrl+enter", () => download(overlay), [overlay]);
 
     return (
         <Fragment>
