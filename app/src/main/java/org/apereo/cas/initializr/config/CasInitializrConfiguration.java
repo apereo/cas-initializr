@@ -8,7 +8,6 @@ import org.apereo.cas.initializr.contrib.project.JenvJavaVersionContributor;
 import org.apereo.cas.initializr.contrib.project.LocalEtcCasDirectoryContributor;
 import org.apereo.cas.initializr.contrib.project.OverlayLombokConfigContributor;
 import org.apereo.cas.initializr.contrib.project.OverlayOverrideConfigurationContributor;
-import org.apereo.cas.initializr.contrib.project.OverlaySpringFactoriesContributor;
 import org.apereo.cas.initializr.contrib.project.OverlayWebXmlContributor;
 import org.apereo.cas.initializr.contrib.project.ProjectLicenseContributor;
 import org.apereo.cas.initializr.contrib.docker.jib.OverlayGradleJibContributor;
@@ -89,8 +88,7 @@ public class CasInitializrConfiguration {
     @Bean
     public ChainingSingleResourceProjectContributor overlayOverrideSpringConfigContributor() {
         var chain = new ChainingSingleResourceProjectContributor();
-        chain.addContributor(new OverlayOverrideConfigurationContributor());
-        chain.addContributor(new OverlaySpringFactoriesContributor());
+        chain.addContributor(new OverlayOverrideConfigurationContributor(applicationContext));
         return chain;
     }
 

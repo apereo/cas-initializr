@@ -22,7 +22,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.actuate.info.InfoContributor;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -60,8 +59,8 @@ public class CasInitializrApplication {
 
     @Bean
     public ProjectMetadataController projectMetadataController(final InitializrMetadataProvider metadataProvider,
-                                                        final DependencyMetadataProvider dependencyMetadataProvider,
-                                                        final ConfigurableApplicationContext applicationContext) {
+                                                               final DependencyMetadataProvider dependencyMetadataProvider,
+                                                               final ConfigurableApplicationContext applicationContext) {
         return new OverlayProjectMetadataController(metadataProvider, dependencyMetadataProvider, applicationContext);
     }
 
@@ -78,8 +77,7 @@ public class CasInitializrApplication {
     @Bean
     @Autowired
     public WebMvcConfigurer rateLimitingWebMvcConfigurer(
-        @Qualifier("rateLimitInterceptor")
-        final HandlerInterceptor rateLimitInterceptor) {
+        @Qualifier("rateLimitInterceptor") final HandlerInterceptor rateLimitInterceptor) {
         return new WebMvcConfigurer() {
             @Override
             public void addInterceptors(final InterceptorRegistry registry) {
