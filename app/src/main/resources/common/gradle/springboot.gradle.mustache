@@ -16,7 +16,13 @@ repositories {
 }
 
 configurations {
-    bootRunConfig.extendsFrom compileClasspath
+    bootRunConfig {
+        extendsFrom compileClasspath
+        
+        exclude(group: "org.springframework.boot", module: "spring-boot-starter-logging")
+        exclude(group: "ch.qos.logback", module: "logback-core")
+        exclude(group: "ch.qos.logback", module: "logback-classic")
+    }
 }
 
 dependencies {
@@ -43,10 +49,7 @@ dependencies {
     bootRunConfig "org.apereo.cas:cas-server-webapp-tomcat"
     bootRunConfig "org.apereo.cas:cas-server-webapp-init-tomcat"
 
-    bootRunConfig("org.springframework.cloud:spring-cloud-starter-bootstrap") {
-        exclude(group: "ch.qos.logback", module: "logback-core")
-        exclude(group: "ch.qos.logback", module: "logback-classic")
-    }
+    bootRunConfig "org.springframework.cloud:spring-cloud-starter-bootstrap"
     bootRunConfig "org.springframework.boot:spring-boot-devtools"
 }
 
