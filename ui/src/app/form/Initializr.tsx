@@ -13,7 +13,6 @@ import JSZip from "jszip";
 
 import * as FileSaver from 'file-saver';
 
-import qs from 'query-string';
 import { useDefaultValues } from '../store/OptionReducer';
 import { API_PATH } from '../App.constant';
 import { Preview } from '../preview/Preview';
@@ -30,7 +29,6 @@ export const downloadAsZip = (fileName: string, data: any) => {
 };
 
 export default function Initializr() {
-
     const apiLoaded = useApiLoaded();
     const versionsLoaded = useVersionsLoaded();
     const canDownload = useCanDownload();
@@ -40,7 +38,7 @@ export default function Initializr() {
 
     const [loading, setLoading] = React.useState(false);
 
-    const fetchArchive = async (overlay: Overlay, type: string = 'tgz') => {
+    const fetchArchive = async (overlay: Overlay, type: string = "tgz") => {
         const string = getOverlayQuery(overlay);
         return await fetch(`${API_PATH}starter.${type}?${string}`);
     };
@@ -51,16 +49,19 @@ export default function Initializr() {
         if (response.ok) {
             const file = await response.blob();
             setLoading(false);
-            downloadAsZip(overlay.name ? overlay.name : defaults.name || 'cas', file);
+            downloadAsZip(
+                overlay.name ? overlay.name : defaults.name || "cas",
+                file
+            );
         }
     };
 
     const explore = async (overlay: Overlay) => {
         setLoading(true);
-        const response = await fetchArchive(overlay, 'zip');
+        const response = await fetchArchive(overlay, "zip");
         if (response.ok) {
             const file = await response.blob();
-            
+
             try {
                 const zipJs = new JSZip();
                 const { files } = await zipJs.loadAsync(file).catch(() => {
@@ -79,11 +80,12 @@ export default function Initializr() {
     useHotkeys("ctrl+space", () => explore(overlay), [overlay]);
     useHotkeys("ctrl+enter", () => download(overlay), [overlay]);
 
+    /*eslint-disable react-hooks/exhaustive-deps*/
     React.useEffect(() => {
         const { dependencies, ...overlay } = getOverlayFromQs();
         dispatch(setCustomization(overlay as Overlay));
         dispatch(setDependencies(dependencies));
-    }, [])
+    }, []);
 
     return (
         <Fragment>
@@ -129,9 +131,7 @@ export default function Initializr() {
                                     />
                                 </Grid>
                                 <Grid item xs={4}>
-                                    <ShareOverlay
-                                        overlay={overlay}
-                                    />
+                                    <ShareOverlay overlay={overlay} />
                                 </Grid>
                             </Grid>
                             {loading && (

@@ -17,7 +17,7 @@ export interface SimpleDialogProps {
 }
 
 export default function ShareOverlayDialog({ onClose, open, url }: SimpleDialogProps) {
-
+    /*eslint-disable @typescript-eslint/no-unused-vars*/
     const [value, copy] = useCopyToClipboard();
 
     const [copied, setCopied] = React.useState(false);
