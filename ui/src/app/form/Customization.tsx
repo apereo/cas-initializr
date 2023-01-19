@@ -8,6 +8,8 @@ import {
     Typography,
     Stack,
     Divider,
+    Checkbox,
+    FormControlLabel,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import MuiAccordion, { AccordionProps } from "@mui/material/Accordion";
@@ -61,8 +63,16 @@ export default function Customization() {
     const formData = watch();
 
     React.useEffect(() => {
-        dispatch(setCustomization(formData));
+        const { dockerSupported, helmSupported, herokuSupported } = formData;
+        dispatch(setCustomization({
+            ...formData,
+            dockerSupported: dockerSupported ? 'true' : 'false',
+            helmSupported: helmSupported ? 'true' : 'false',
+            herokuSupported: herokuSupported ? 'true' : 'false'
+        }));
     }, [formData, dispatch]);
+
+    React.useEffect(() => console.log(formData), [formData]);
 
     return (
         <>
@@ -140,7 +150,7 @@ export default function Customization() {
                                     )}
                                 />
                             </FormControl>
-                            <Accordion>
+                            <Accordion expanded={true}>
                                 <AccordionSummary
                                     expandIcon={<ExpandMoreIcon />}
                                     aria-controls="panel1a-content"
@@ -194,6 +204,106 @@ export default function Customization() {
                                             {...register("description")}
                                         />
                                     </FormControl>
+                                    <Controller
+                                        control={control}
+                                        name="dockerSupported"
+                                        render={({
+                                            field: {
+                                                onChange,
+                                                onBlur,
+                                                value,
+                                                ref,
+                                            },
+                                        }) => (
+                                            <FormControlLabel
+                                                control={
+                                                    <Checkbox
+                                                        checked={
+                                                            value === "true"
+                                                                ? true
+                                                                : false
+                                                        }
+                                                        onChange={(
+                                                            event: React.ChangeEvent<HTMLInputElement>
+                                                        ) =>
+                                                            onChange(
+                                                                event.target.checked.toString()
+                                                            )
+                                                        }
+                                                    />
+                                                }
+                                                label="Docker supported"
+                                                labelPlacement="end"
+                                            />
+                                        )}
+                                    />
+
+                                    <Controller
+                                        control={control}
+                                        name="helmSupported"
+                                        render={({
+                                            field: {
+                                                onChange,
+                                                onBlur,
+                                                value,
+                                                ref,
+                                            },
+                                        }) => (
+                                            <FormControlLabel
+                                                control={
+                                                    <Checkbox
+                                                        checked={
+                                                            value === "true"
+                                                                ? true
+                                                                : false
+                                                        }
+                                                        onChange={(
+                                                            event: React.ChangeEvent<HTMLInputElement>
+                                                        ) =>
+                                                            onChange(
+                                                                event.target.checked.toString()
+                                                            )
+                                                        }
+                                                    />
+                                                }
+                                                label="Helm supported"
+                                                labelPlacement="end"
+                                            />
+                                        )}
+                                    />
+                                    <Controller
+                                        control={control}
+                                        name="herokuSupported"
+                                        render={({
+                                            field: {
+                                                onChange,
+                                                onBlur,
+                                                value,
+                                                ref,
+                                            },
+                                        }) => (
+                                            <FormControlLabel
+                                                control={
+                                                    <Checkbox
+                                                        checked={
+                                                            value === "true"
+                                                                ? true
+                                                                : false
+                                                        }
+                                                        onChange={(
+                                                            event: React.ChangeEvent<HTMLInputElement>
+                                                        ) =>
+                                                            onChange(
+                                                                event.target.checked.toString()
+                                                            )
+                                                        }
+                                                    />
+                                                }
+                                                label="Heroku supported"
+                                                labelPlacement="end"
+                                            />
+                                        )}
+                                    />
                                 </AccordionDetails>
                             </Accordion>
                         </React.Fragment>

@@ -12,4 +12,7 @@ export interface Overlay {
     name: string;
     description: string;
     packageName: string;
+    dockerSupported: string;
+    helmSupported: string;
+    herokuSupported: string;
 }

@@ -41,6 +41,9 @@ export const OverlaySlice = createSlice({
         language: "",
         packaging: "",
         dependencies: [] as string[],
+        dockerSupported: 'true',
+        helmSupported: 'false',
+        herokuSupported: 'false'
     },
     reducers: {
         setDependencies(state, action: PayloadAction<string[]>) {
@@ -59,7 +62,10 @@ export const OverlaySlice = createSlice({
                 javaVersion,
                 bootVersion,
                 language,
-                packaging
+                packaging,
+                dockerSupported,
+                helmSupported,
+                herokuSupported,
             } = action.payload;
             state.type = type;
             state.casVersion = casVersion;
@@ -73,6 +79,9 @@ export const OverlaySlice = createSlice({
             state.bootVersion = bootVersion;
             state.language = language;
             state.packaging = packaging;
+            state.dockerSupported = dockerSupported;
+            state.helmSupported = helmSupported;
+            state.herokuSupported = herokuSupported;
         },
     },
 });
