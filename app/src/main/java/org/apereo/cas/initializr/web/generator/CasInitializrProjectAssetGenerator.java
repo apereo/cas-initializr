@@ -6,6 +6,7 @@ import io.spring.initializr.generator.project.ProjectAssetGenerator;
 import io.spring.initializr.generator.project.ProjectDirectoryFactory;
 import io.spring.initializr.generator.project.ProjectGenerationContext;
 import io.spring.initializr.generator.project.contributor.ProjectContributor;
+import io.spring.initializr.generator.spring.code.MainSourceCodeProjectContributor;
 import lombok.val;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.lib.ConfigConstants;
@@ -69,7 +70,11 @@ public class CasInitializrProjectAssetGenerator implements ProjectAssetGenerator
             var description = context.getBean(OverlayProjectDescription.class);
             var projectRoot = resolveProjectDirectoryFactory(context).createProjectDirectory(description);
             var projectDirectory = initializerProjectDirectory(projectRoot, description);
-            var contributors = context.getBeanProvider(ProjectContributor.class).orderedStream().collect(Collectors.toList());
+            var contributors = context.getBeanProvider(ProjectContributor.class)
+                .orderedStream()
+                .collect(Collectors.toList());
+
+            contributors.removeIf(r -> r.getClass().equals(MainSourceCodeProjectContributor.class));
             for (var contributor : contributors) {
                 contributor.contribute(projectDirectory);
             }
