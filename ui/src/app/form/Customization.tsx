@@ -234,7 +234,7 @@ export default function Customization() {
                                                         }
                                                     />
                                                 }
-                                                label="Docker supported"
+                                                label="Docker"
                                                 labelPlacement="end"
                                             />
                                         )}
@@ -271,7 +271,7 @@ export default function Customization() {
                                                         }
                                                     />
                                                 }
-                                                label="Helm supported"
+                                                label="Helm"
                                                 labelPlacement="end"
                                             />
                                         )}
@@ -307,7 +307,7 @@ export default function Customization() {
                                                         }
                                                     />
                                                 }
-                                                label="Heroku supported"
+                                                label="Heroku"
                                                 labelPlacement="end"
                                             />
                                         )}
