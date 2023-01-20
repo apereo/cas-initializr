@@ -26,6 +26,8 @@ import {
 import { CasVersionOption, TypeOptionValue } from "../data/Option";
 import { useAppDispatch } from "../store/hooks";
 import { setCustomization } from "../store/OverlayReducer";
+import { getOverlayFromQs } from "../data/Url";
+import { defaults } from "lodash";
 
 const Accordion = styled((props: AccordionProps) => (
     <MuiAccordion disableGutters {...props} />
@@ -54,7 +56,10 @@ export default function Customization() {
 
     /*eslint-disable react-hooks/exhaustive-deps*/
     React.useEffect(() => {
-        reset({ ...defaultValues, type });
+        const { dependencies, ...overlay } = getOverlayFromQs();
+        const o = defaults(overlay as Overlay, defaultValues);
+
+        reset({ ...o, type });
     }, [defaultValues, reset]);
 
     const types = useCasTypes();
@@ -63,16 +68,10 @@ export default function Customization() {
     const formData = watch();
 
     React.useEffect(() => {
-        const { dockerSupported, helmSupported, herokuSupported } = formData;
         dispatch(setCustomization({
             ...formData,
-            dockerSupported: dockerSupported ? 'true' : 'false',
-            helmSupported: helmSupported ? 'true' : 'false',
-            herokuSupported: herokuSupported ? 'true' : 'false'
         }));
-    }, [formData, dispatch]);
-
-    React.useEffect(() => console.log(formData), [formData]);
+    }, [formData]);
 
     return (
         <>
@@ -150,7 +149,7 @@ export default function Customization() {
                                     )}
                                 />
                             </FormControl>
-                            <Accordion expanded={true}>
+                            <Accordion>
                                 <AccordionSummary
                                     expandIcon={<ExpandMoreIcon />}
                                     aria-controls="panel1a-content"
@@ -227,7 +226,10 @@ export default function Customization() {
                                                             event: React.ChangeEvent<HTMLInputElement>
                                                         ) =>
                                                             onChange(
-                                                                event.target.checked.toString()
+                                                                event.target
+                                                                    .checked
+                                                                    ? "true"
+                                                                    : "false"
                                                             )
                                                         }
                                                     />
@@ -261,7 +263,10 @@ export default function Customization() {
                                                             event: React.ChangeEvent<HTMLInputElement>
                                                         ) =>
                                                             onChange(
-                                                                event.target.checked.toString()
+                                                                event.target
+                                                                    .checked
+                                                                    ? "true"
+                                                                    : "false"
                                                             )
                                                         }
                                                     />
@@ -294,7 +299,10 @@ export default function Customization() {
                                                             event: React.ChangeEvent<HTMLInputElement>
                                                         ) =>
                                                             onChange(
-                                                                event.target.checked.toString()
+                                                                event.target
+                                                                    .checked
+                                                                    ? "true"
+                                                                    : "false"
                                                             )
                                                         }
                                                     />

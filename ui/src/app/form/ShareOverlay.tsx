@@ -20,6 +20,8 @@ export default function ShareOverlay({ overlay }: ShareOverlayProps) {
         [overlay]
     );
 
+    // React.useEffect(() => console.log(overlay), [overlay]);
+
     return (
         <>
             <Button
