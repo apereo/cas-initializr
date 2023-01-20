@@ -31,7 +31,7 @@ Set -Dlog4j2.contextSelector=org.apache.logging.log4j.core.selector.BasicContext
         </Console>
 
         <RollingFile name="file" fileName="${baseDir}/cas.log" append="true"
-                     filePattern="${baseDir}/cas-%d{yyyy-MM-dd-HH}-%i.log"
+                     filePattern="${baseDir}/cas-%d{yyyy-MM-dd-HH}-%i.log.gz"
                      immediateFlush="false">
             <PatternLayout pattern="%highlight{%d %p [%c] - &lt;%m&gt;%n}"
                            alwaysWriteExceptions="${sys:log.file.stacktraces}" />
@@ -49,7 +49,7 @@ Set -Dlog4j2.contextSelector=org.apache.logging.log4j.core.selector.BasicContext
         </RollingFile>
 
         <RollingFile name="stacktracefile" fileName="${baseDir}/cas_stacktrace.log" append="true"
-                     filePattern="${baseDir}/cas_stacktrace-%d{yyyy-MM-dd-HH}-%i.log"
+                     filePattern="${baseDir}/cas_stacktrace-%d{yyyy-MM-dd-HH}-%i.log.gz"
                      immediateFlush="false">
             <PatternLayout pattern="%highlight{%d %p [%c] - &lt;%m&gt;%n}" />
             <Policies>
@@ -66,7 +66,7 @@ Set -Dlog4j2.contextSelector=org.apache.logging.log4j.core.selector.BasicContext
         </RollingFile>
 
         <RollingFile name="auditlogfile" fileName="${baseDir}/cas_audit.log" append="true"
-                     filePattern="${baseDir}/cas_audit-%d{yyyy-MM-dd-HH}-%i.log"
+                     filePattern="${baseDir}/cas_audit-%d{yyyy-MM-dd-HH}-%i.log.gz"
                      immediateFlush="false">
             <PatternLayout pattern="%highlight{%d %p [%c] - %m%n}" />
             <Policies>
