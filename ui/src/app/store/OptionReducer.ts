@@ -183,8 +183,6 @@ export const CasDefaultSelector = createSelector(
         );
         const sorted = reverse(sortBy(stable, ["version"]));
 
-        console.log(state);
-
         return {
             type: state.type.default,
             packaging: state.packaging.default,

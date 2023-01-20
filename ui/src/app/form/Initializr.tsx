@@ -19,7 +19,7 @@ import { Preview } from '../preview/Preview';
 import { Download } from '@mui/icons-material';
 import { useAppDispatch } from '../store/hooks';
 import { setPreviewSelected, setPreviewState, setPreviewTree } from '../store/PreviewReducer';
-import { setDependencies, setCustomization } from '../store/OverlayReducer';
+import { setDependencies } from '../store/OverlayReducer';
 
 import { getTree } from "../file/tree";
 
@@ -33,7 +33,7 @@ export default function Initializr() {
     const versionsLoaded = useVersionsLoaded();
     const canDownload = useCanDownload();
     const overlay = useOverlay();
-    const defaults = useDefaultValues();
+    const defaultValues = useDefaultValues();
     const dispatch = useAppDispatch();
 
     const [loading, setLoading] = React.useState(false);
@@ -50,7 +50,7 @@ export default function Initializr() {
             const file = await response.blob();
             setLoading(false);
             downloadAsZip(
-                overlay.name ? overlay.name : defaults.name || "cas",
+                overlay.name ? overlay.name : defaultValues.name || "cas",
                 file
             );
         }
@@ -82,11 +82,9 @@ export default function Initializr() {
 
     /*eslint-disable react-hooks/exhaustive-deps*/
     React.useEffect(() => {
-        const { dependencies, ...overlay } = getOverlayFromQs();
-        dispatch(setCustomization(overlay as Overlay));
+        const { dependencies = [] } = getOverlayFromQs();
         dispatch(setDependencies(dependencies));
-    }, []);
-
+    }, [defaultValues]);
     return (
         <Fragment>
             <Backdrop

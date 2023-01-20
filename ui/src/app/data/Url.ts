@@ -9,6 +9,9 @@ export const getOverlayFromQs = (): Overlay => {
 };
 
 export const getOverlayQuery = (overlay: Overlay, type: string = "tgz") => {
+
+    // console.log(overlay);
+
     const used = pickBy(overlay, (value: any) => value !== "" && !isNil(value));
     return qs.stringify(used, { arrayFormat: "comma" });
 };
