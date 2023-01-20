@@ -29,7 +29,6 @@ const mapVersions: { [id: string]: string } = {
 const stateSelector = (state: RootState): any => state.option;
 const overlaySelector = (state: RootState): any => state.overlay;
 
-
 export const OptionSlice = createSlice({
     name: "Option",
     initialState: () =>
@@ -83,6 +82,18 @@ export const OptionSlice = createSlice({
                 type: "",
                 values: [],
             },
+            dockerSupported: {
+                type: "",
+                default: 'true'
+            },
+            helmSupported: {
+                type: "",
+                default: 'false'
+            },
+            herokuSupported: {
+                type: "",
+                default: 'false'
+            }
         } as OptionState),
     reducers: {
         setApiOptions(state, action: PayloadAction<ApiOptions>) {
@@ -99,6 +110,9 @@ export const OptionSlice = createSlice({
                 name,
                 description,
                 packageName,
+                dockerSupported,
+                helmSupported,
+                herokuSupported,
             } = action.payload;
 
             state.type = type;
@@ -113,6 +127,9 @@ export const OptionSlice = createSlice({
             state.name = name;
             state.description = description;
             state.packageName = packageName;
+            state.dockerSupported = dockerSupported || {default: 'true'};
+            state.helmSupported = helmSupported || { default: 'false' };
+            state.herokuSupported = herokuSupported || {default: 'false'};
         },
         setCasVersionOptions(state, action: PayloadAction<CasVersionOption[]>) {
             const { payload: versions } = action;
@@ -166,6 +183,8 @@ export const CasDefaultSelector = createSelector(
         );
         const sorted = reverse(sortBy(stable, ["version"]));
 
+        console.log(state);
+
         return {
             type: state.type.default,
             packaging: state.packaging.default,
@@ -178,6 +197,9 @@ export const CasDefaultSelector = createSelector(
             description: state.description.default,
             packageName: state.packageName.default,
             casVersion: sorted?.length ? sorted[0].version : "",
+            dockerSupported: state.dockerSupported.default,
+            helmSupported: state.helmSupported.default,
+            herokuSupported: state.herokuSupported.default,
         };
     }
 );

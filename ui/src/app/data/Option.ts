@@ -62,4 +62,7 @@ export interface ApiOptions {
     name: Option;
     description: Option;
     packageName: Option;
+    dockerSupported: Option;
+    helmSupported: Option;
+    herokuSupported: Option;
 }
