@@ -5,7 +5,7 @@ import { RootState } from "./RootReducer";
 import { Overlay } from "../data/Overlay";
 import { useDependencyList } from "./OptionReducer";
 import { Dependency } from "../data/Dependency";
-import { isEmpty, isNil } from "lodash";
+import { isEmpty, isNil, orderBy } from "lodash";
 
 export interface OverlayState extends Overlay {
     casVersion: string;
@@ -104,9 +104,9 @@ export function useMappedOverlayDependencies() {
     const selected = useOverlayDependencies();
     const list = useDependencyList();
 
-    return selected.map((s: string) =>
+    return orderBy(selected.map((s: string) =>
         list.find((d: Dependency) => d.id === s)
-    );
+    ), ['name'], 'asc');
 }
 
 export function useOverlay() {
