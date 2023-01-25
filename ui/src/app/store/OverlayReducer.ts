@@ -1,3 +1,4 @@
+import React from 'react';
 import { createSlice, createSelector, PayloadAction } from "@reduxjs/toolkit";
 import { useSelector } from "react-redux";
 
@@ -6,6 +7,10 @@ import { Overlay } from "../data/Overlay";
 import { useDependencyList } from "./OptionReducer";
 import { Dependency } from "../data/Dependency";
 import { isEmpty, isNil } from "lodash";
+
+export const preselected = [
+    'webapp-tomcat'
+];
 
 export interface OverlayState extends Overlay {
     casVersion: string;
@@ -40,13 +45,16 @@ export const OverlaySlice = createSlice({
         bootVersion: "",
         language: "",
         packaging: "",
-        dependencies: [] as string[],
+        dependencies: [
+            ...preselected
+        ] as string[],
         dockerSupported: 'true',
         helmSupported: 'false',
         herokuSupported: 'false'
     },
     reducers: {
         setDependencies(state, action: PayloadAction<string[]>) {
+            console.log(action);
             state.dependencies = action.payload;
         },
         setCustomization(state, action: PayloadAction<Overlay>) {
@@ -104,9 +112,9 @@ export function useMappedOverlayDependencies() {
     const selected = useOverlayDependencies();
     const list = useDependencyList();
 
-    return selected.map((s: string) =>
+    return React.useMemo(() => selected.map((s: string) =>
         list.find((d: Dependency) => d.id === s)
-    );
+    ), [selected, list]);
 }
 
 export function useOverlay() {
