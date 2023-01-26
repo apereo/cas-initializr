@@ -1,7 +1,7 @@
 import { createSlice, createSelector, PayloadAction } from "@reduxjs/toolkit";
 import { useSelector } from "react-redux";
 import { useMemo } from 'react';
-import { reverse, sortBy, uniq } from "lodash";
+import { orderBy, reverse, sortBy, uniq } from "lodash";
 import { RootState } from "./RootReducer";
 
 import {
@@ -208,10 +208,14 @@ export function useDependencyList(): Dependency[] {
     const parsed = useMemo(() => {
         return deps?.reduce(
             (collection: DependencyOptionValue[], type: DependencyGroup) => {
-                const p = type.values.map((dep: DependencyOptionValue) => ({
-                    ...dep,
-                    type: type.name,
-                })) as DependencyOptionValue[];
+                const p = orderBy(
+                    type.values.map((dep: DependencyOptionValue) => ({
+                        ...dep,
+                        type: type.name,
+                    })),
+                    ["name"],
+                    "asc"
+                ) as DependencyOptionValue[];
 
                 return [...collection, ...p];
             },
