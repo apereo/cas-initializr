@@ -15,6 +15,8 @@ import { TransitionProps } from "@mui/material/transitions";
 import { Tree } from "./Tree";
 import { Code } from "./Code";
 import { Box } from "@mui/system";
+import { Action, useCommand } from "../core/Keyboard";
+import { useHotkeys } from "react-hotkeys-hook";
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -43,6 +45,12 @@ export function Preview({ handleDownload, handlePreview }: PreviewProps) {
 
     const drawerWidth: string = '25%';
 
+    const { label, keys } = useCommand(
+        Action.EXPLORE
+    );
+
+    useHotkeys(keys, () => handlePreview(), [keys]);
+
     return (
         <>
             <Button
@@ -51,7 +59,7 @@ export function Preview({ handleDownload, handlePreview }: PreviewProps) {
                 variant="contained"
                 startIcon={<VisibilitySharp />}
             >
-                Preview
+                { label }
             </Button>
             <Dialog
                 fullScreen

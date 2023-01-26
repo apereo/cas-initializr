@@ -22,6 +22,8 @@ import { setPreviewSelected, setPreviewState, setPreviewTree } from '../store/Pr
 import { setDependencies } from '../store/OverlayReducer';
 
 import { getTree } from "../file/tree";
+import { Action, useCommand } from '../core/Keyboard';
+import DownloadOverlay from './DownloadOverlay';
 
 export const downloadAsZip = (fileName: string, data: any) => {
     // const blob = new Blob([data], { type: 'text/zip;charset=utf-8' });
@@ -57,6 +59,7 @@ export default function Initializr() {
     };
 
     const explore = async (overlay: Overlay) => {
+
         setLoading(true);
         const response = await fetchArchive(overlay, "zip");
         if (response.ok) {
@@ -77,8 +80,8 @@ export default function Initializr() {
         }
     };
 
-    useHotkeys("ctrl+space", () => explore(overlay), [overlay]);
-    useHotkeys("ctrl+enter", () => download(overlay), [overlay]);
+    
+    
 
     /*eslint-disable react-hooks/exhaustive-deps*/
     React.useEffect(() => {
@@ -111,16 +114,10 @@ export default function Initializr() {
                             <Divider style={{ margin: "1rem 0rem" }} />
                             <Grid container spacing={2}>
                                 <Grid item xs={4}>
-                                    <Button
-                                        fullWidth
-                                        variant="contained"
-                                        type="submit"
-                                        onClick={() => download(overlay)}
+                                    <DownloadOverlay
+                                        handleDownload={() => download(overlay)}
                                         disabled={!canDownload || loading}
-                                        startIcon={<Download />}
-                                    >
-                                        Download
-                                    </Button>
+                                    />
                                 </Grid>
                                 <Grid item xs={4}>
                                     <Preview

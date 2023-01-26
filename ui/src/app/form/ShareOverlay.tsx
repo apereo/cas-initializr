@@ -7,6 +7,8 @@ import ShareOverlayDialog from "./ShareOverlayDialog";
 import { Overlay } from "../data/Overlay";
 import { getOverlayQuery } from "../data/Url";
 import { APP_PATH } from "../App.constant";
+import { Action, useCommand } from "../core/Keyboard";
+import { useHotkeys } from "react-hotkeys-hook";
 
 export interface ShareOverlayProps {
     overlay: Overlay
@@ -20,6 +22,10 @@ export default function ShareOverlay({ overlay }: ShareOverlayProps) {
         [overlay]
     );
 
+    const { label, keys } = useCommand(Action.SHARE);
+
+    useHotkeys(keys, () => setOpen(true), {preventDefault: true}, [keys]);
+
     // React.useEffect(() => console.log(overlay), [overlay]);
 
     return (
@@ -30,7 +36,7 @@ export default function ShareOverlay({ overlay }: ShareOverlayProps) {
                 variant="contained"
                 startIcon={<Link />}
             >
-                Share
+                {label}
             </Button>
             <ShareOverlayDialog
                 url={url}
