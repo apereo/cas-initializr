@@ -7,7 +7,7 @@ import ShareOverlay from "./ShareOverlay";
 
 import { useApiLoaded, useVersionsLoaded } from '../store/AppReducer';
 import { Overlay } from '../data/Overlay';
-import { useCanDownload, useOverlay } from '../store/OverlayReducer';
+import { preselected, useCanDownload, useOverlay } from '../store/OverlayReducer';
 import { getOverlayFromQs, getOverlayQuery } from '../data/Url';
 import JSZip from "jszip";
 
@@ -85,9 +85,10 @@ export default function Initializr() {
 
     /*eslint-disable react-hooks/exhaustive-deps*/
     React.useEffect(() => {
-        const { dependencies = [] } = getOverlayFromQs();
+        const { dependencies = [...preselected] } = getOverlayFromQs();
         dispatch(setDependencies(dependencies));
     }, [defaultValues]);
+
     return (
         <Fragment>
             <Backdrop
