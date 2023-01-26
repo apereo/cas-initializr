@@ -6,7 +6,7 @@ import { RootState } from "./RootReducer";
 import { Overlay } from "../data/Overlay";
 import { useDependencyList } from "./OptionReducer";
 import { Dependency } from "../data/Dependency";
-import { isEmpty, isNil } from "lodash";
+import { isEmpty, isNil, orderBy } from "lodash";
 
 export const preselected = [
     'webapp-tomcat'
@@ -112,9 +112,17 @@ export function useMappedOverlayDependencies() {
     const selected = useOverlayDependencies();
     const list = useDependencyList();
 
-    return React.useMemo(() => selected.map((s: string) =>
-        list.find((d: Dependency) => d.id === s)
-    ), [selected, list]);
+    return React.useMemo(
+        () =>
+            orderBy(
+                selected.map((s: string) =>
+                    list.find((d: Dependency) => d.id === s)
+                ),
+                ["name"],
+                "asc"
+            ),
+        [selected, list]
+    );
 }
 
 export function useOverlay() {
