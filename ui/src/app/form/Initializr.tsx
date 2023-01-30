@@ -1,6 +1,5 @@
 import React, {Fragment} from 'react';
-import { Backdrop, Button, CircularProgress, Divider, Grid } from '@mui/material';
-import { useHotkeys } from "react-hotkeys-hook";
+import { Backdrop, CircularProgress, Divider, Grid } from '@mui/material';
 import Customization from './Customization';
 import Dependencies from './Dependencies';
 import ShareOverlay from "./ShareOverlay";
@@ -16,13 +15,11 @@ import * as FileSaver from 'file-saver';
 import { useDefaultValues } from '../store/OptionReducer';
 import { API_PATH } from '../App.constant';
 import { Preview } from '../preview/Preview';
-import { Download } from '@mui/icons-material';
 import { useAppDispatch } from '../store/hooks';
 import { setPreviewSelected, setPreviewState, setPreviewTree } from '../store/PreviewReducer';
 import { setDependencies } from '../store/OverlayReducer';
 
 import { getTree } from "../file/tree";
-import { Action, useCommand } from '../core/Keyboard';
 import DownloadOverlay from './DownloadOverlay';
 
 export const downloadAsZip = (fileName: string, data: any) => {
@@ -80,9 +77,6 @@ export default function Initializr() {
         }
     };
 
-    
-    
-
     /*eslint-disable react-hooks/exhaustive-deps*/
     React.useEffect(() => {
         const { dependencies = [...preselected] } = getOverlayFromQs();
@@ -124,10 +118,14 @@ export default function Initializr() {
                                     <Preview
                                         handlePreview={() => explore(overlay)}
                                         handleDownload={() => download(overlay)}
+                                        disabled={!canDownload || loading}
                                     />
                                 </Grid>
                                 <Grid item xs={4}>
-                                    <ShareOverlay overlay={overlay} />
+                                    <ShareOverlay
+                                        overlay={overlay}
+                                        disabled={!canDownload || loading}
+                                    />
                                 </Grid>
                             </Grid>
                             {loading && (

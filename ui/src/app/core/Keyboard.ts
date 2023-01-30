@@ -1,13 +1,15 @@
-import React from 'react';
-
 import KeyboardCommandKeyIcon from "@mui/icons-material/KeyboardCommandKey";
 import KeyboardControlKeyIcon from "@mui/icons-material/KeyboardControlKey";
 
 import { useOs } from 'react-modern-hooks';
+import { OverridableComponent } from '@mui/material/OverridableComponent';
+import { SvgIconTypeMap } from '@mui/material';
 
 export interface KeyboardCommand {
     label: string;
     keys: string;
+    modifier: string;
+    modifierIcon: OverridableComponent<SvgIconTypeMap<{}, "svg">>;
 }
 
 export enum Action {
@@ -23,29 +25,34 @@ export function useIsIOS () {
 }
 
 export function useCommand (command: Action): KeyboardCommand {
+    const ios = useIsIOS();
     let label = 'NONE';
     let keys = 'space';
-
-    const ios = useIsIOS();
+    let modifier = 'ctrl';
+    let modifierIcon = ios ? KeyboardCommandKeyIcon : KeyboardControlKeyIcon;
 
     switch (command) {
         case Action.EXPLORE:
-            label = `Preview (${ios ? "cmd" : "ctrl"}+E)`;
-            keys = `${ios ? "mod" : "ctrl"}+E`;
+            label = `Preview`;
+            modifier = ios ? "mod" : "ctrl";
+            keys = `E`;
             break;
         case Action.DOWNLOAD:
-            label = `Download (${ios ? "cmd" : "ctrl"}+enter)`;
-            keys = `${ios ? "mod" : "ctrl"}+enter`;
+            label = `Download`;
+            modifier = ios ? "mod" : "ctrl";
+            keys = `D`;
             break;
         case Action.SHARE:
-            label = `Share (${ios ? "cmd" : "ctrl"}+S)`;
-            keys = `${ios ? "mod" : "ctrl"}+S`;
+            label = `Share`;
+            modifier = ios ? "mod" : "ctrl"
+            keys = `S`;
             break;
         case Action.CLEAR:
-            label = `Clear (${ios ? "cmd" : "ctrl"}+D)`;
-            keys = `${ios ? "mod" : "ctrl"}+D`;
+            label = `Clear`;
+            modifier = ios ? "mod" : "ctrl";
+            keys = `B`;
             break;
     }
 
-    return { label, keys };
+    return { label, keys, modifier, modifierIcon };
 }

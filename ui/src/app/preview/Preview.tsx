@@ -30,9 +30,10 @@ const Transition = React.forwardRef(function Transition(
 export interface PreviewProps {
     handleDownload: () => void;
     handlePreview: () => void;
+    disabled: boolean;
 }
 
-export function Preview({ handleDownload, handlePreview }: PreviewProps) {
+export function Preview({ handleDownload, handlePreview, disabled }: PreviewProps) {
     const dispatch = useAppDispatch();
     const open = useIsPreviewing();
 
@@ -45,11 +46,16 @@ export function Preview({ handleDownload, handlePreview }: PreviewProps) {
 
     const drawerWidth: string = '25%';
 
-    const { label, keys } = useCommand(
+    const { label, keys, modifier, modifierIcon } = useCommand(
         Action.EXPLORE
     );
 
-    useHotkeys(keys, () => handlePreview(), [keys]);
+    useHotkeys(
+        `${modifier}+${keys}`,
+        () => handlePreview(),
+        { preventDefault: true },
+        [keys, handlePreview]
+    );
 
     return (
         <>
@@ -58,8 +64,11 @@ export function Preview({ handleDownload, handlePreview }: PreviewProps) {
                 onClick={() => handlePreview()}
                 variant="contained"
                 startIcon={<VisibilitySharp />}
+                disabled={disabled}
             >
-                { label }
+                {label} (
+                {React.createElement(modifierIcon, { fontSize: "small" })}+
+                {keys})
             </Button>
             <Dialog
                 fullScreen

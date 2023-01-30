@@ -11,10 +11,11 @@ import { Action, useCommand } from "../core/Keyboard";
 import { useHotkeys } from "react-hotkeys-hook";
 
 export interface ShareOverlayProps {
-    overlay: Overlay
+    overlay: Overlay;
+    disabled: boolean;
 }
 
-export default function ShareOverlay({ overlay }: ShareOverlayProps) {
+export default function ShareOverlay({ overlay, disabled }: ShareOverlayProps) {
     const [open, setOpen] = React.useState(false);
 
     const url = React.useMemo(
@@ -22,9 +23,9 @@ export default function ShareOverlay({ overlay }: ShareOverlayProps) {
         [overlay]
     );
 
-    const { label, keys } = useCommand(Action.SHARE);
+    const { label, keys, modifier, modifierIcon } = useCommand(Action.SHARE);
 
-    useHotkeys(keys, () => setOpen(true), {preventDefault: true}, [keys]);
+    useHotkeys(`${modifier}+${keys}`, () => setOpen(true), {preventDefault: true}, [keys]);
 
     // React.useEffect(() => console.log(overlay), [overlay]);
 
@@ -34,14 +35,16 @@ export default function ShareOverlay({ overlay }: ShareOverlayProps) {
                 fullWidth
                 onClick={() => setOpen(true)}
                 variant="contained"
+                disabled={disabled}
                 startIcon={<Link />}
             >
-                {label}
+                {label} ({React.createElement(modifierIcon, {fontSize: 'small'})}+{keys})
             </Button>
             <ShareOverlayDialog
                 url={url}
                 onClose={() => setOpen(false)}
-                open={open} />
+                open={open}
+            />
         </>
     );
 }

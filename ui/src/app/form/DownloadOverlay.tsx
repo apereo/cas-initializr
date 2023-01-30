@@ -11,9 +11,14 @@ export interface PreviewProps {
 }
 
 export default function DownloadOverlay({ handleDownload, disabled }: PreviewProps) {
-    const { label, keys } = useCommand(Action.DOWNLOAD);
+    const { label, keys, modifier, modifierIcon } = useCommand(Action.DOWNLOAD);
 
-    useHotkeys(keys, () => handleDownload(), { preventDefault: true }, [keys]);
+    useHotkeys(
+        `${modifier}+${keys}`,
+        () => handleDownload(),
+        { preventDefault: true },
+        [keys]
+    );
 
     // React.useEffect(() => console.log(overlay), [overlay]);
 
@@ -27,7 +32,9 @@ export default function DownloadOverlay({ handleDownload, disabled }: PreviewPro
                 disabled={disabled}
                 startIcon={<Download />}
             >
-                {label}
+                {label} (
+                {React.createElement(modifierIcon, { fontSize: "small" })}+
+                {keys})
             </Button>
         </>
     );
