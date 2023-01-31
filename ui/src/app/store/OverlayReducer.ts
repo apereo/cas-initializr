@@ -26,6 +26,7 @@ export interface OverlayState extends Overlay {
     name: string;
     description: string;
     packageName: string;
+    deploymentType: string;
 }
 
 const stateSelector = (state: RootState) => state.overlay;
@@ -50,7 +51,8 @@ export const OverlaySlice = createSlice({
         ] as string[],
         dockerSupported: 'true',
         helmSupported: 'false',
-        herokuSupported: 'false'
+        herokuSupported: 'false',
+        deploymentType: 'web'
     },
     reducers: {
         setDependencies(state, action: PayloadAction<string[]>) {
@@ -73,6 +75,7 @@ export const OverlaySlice = createSlice({
                 dockerSupported,
                 helmSupported,
                 herokuSupported,
+                deploymentType,
             } = action.payload;
             state.type = type;
             state.casVersion = casVersion;
@@ -89,6 +92,7 @@ export const OverlaySlice = createSlice({
             state.dockerSupported = dockerSupported;
             state.helmSupported = helmSupported;
             state.herokuSupported = herokuSupported;
+            state.deploymentType = deploymentType;
         },
     },
 });

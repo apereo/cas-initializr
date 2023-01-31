@@ -65,4 +65,5 @@ export interface ApiOptions {
     dockerSupported: Option;
     helmSupported: Option;
     herokuSupported: Option;
+    deploymentType: Option;
 }

@@ -215,8 +215,8 @@ export default function MainAppBar() {
             </Drawer>
             <AppBar
                 position="fixed"
-                elevation={0}
-                color="transparent"
+                elevation={1}
+                color="primary"
                 sx={{ top: "auto", bottom: 0 }}
             >
                 <Toolbar>
