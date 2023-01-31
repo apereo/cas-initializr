@@ -93,6 +93,10 @@ export const OptionSlice = createSlice({
             herokuSupported: {
                 type: "",
                 default: 'false'
+            },
+            deploymentType: {
+                type: "",
+                default: 'web'
             }
         } as OptionState),
     reducers: {
@@ -113,6 +117,7 @@ export const OptionSlice = createSlice({
                 dockerSupported,
                 helmSupported,
                 herokuSupported,
+                deploymentType,
             } = action.payload;
 
             state.type = type;
@@ -130,6 +135,7 @@ export const OptionSlice = createSlice({
             state.dockerSupported = dockerSupported || {default: 'true'};
             state.helmSupported = helmSupported || { default: 'false' };
             state.herokuSupported = herokuSupported || {default: 'false'};
+            state.deploymentType = deploymentType || { default: 'web' };
         },
         setCasVersionOptions(state, action: PayloadAction<CasVersionOption[]>) {
             const { payload: versions } = action;
@@ -198,6 +204,7 @@ export const CasDefaultSelector = createSelector(
             dockerSupported: state.dockerSupported.default,
             helmSupported: state.helmSupported.default,
             herokuSupported: state.herokuSupported.default,
+            deploymentType: state.deploymentType.default,
         };
     }
 );
