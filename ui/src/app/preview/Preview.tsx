@@ -15,6 +15,8 @@ import { TransitionProps } from "@mui/material/transitions";
 import { Tree } from "./Tree";
 import { Code } from "./Code";
 import { Box } from "@mui/system";
+import { Action, useCommand } from "../core/Keyboard";
+import { useHotkeys } from "react-hotkeys-hook";
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -28,9 +30,10 @@ const Transition = React.forwardRef(function Transition(
 export interface PreviewProps {
     handleDownload: () => void;
     handlePreview: () => void;
+    disabled: boolean;
 }
 
-export function Preview({ handleDownload, handlePreview }: PreviewProps) {
+export function Preview({ handleDownload, handlePreview, disabled }: PreviewProps) {
     const dispatch = useAppDispatch();
     const open = useIsPreviewing();
 
@@ -43,6 +46,17 @@ export function Preview({ handleDownload, handlePreview }: PreviewProps) {
 
     const drawerWidth: string = '25%';
 
+    const { label, keys, modifier, modifierIcon } = useCommand(
+        Action.EXPLORE
+    );
+
+    useHotkeys(
+        `${modifier}+${keys}`,
+        () => handlePreview(),
+        { preventDefault: true },
+        [keys, handlePreview]
+    );
+
     return (
         <>
             <Button
@@ -50,8 +64,11 @@ export function Preview({ handleDownload, handlePreview }: PreviewProps) {
                 onClick={() => handlePreview()}
                 variant="contained"
                 startIcon={<VisibilitySharp />}
+                disabled={disabled}
             >
-                Preview
+                {label} (
+                {React.createElement(modifierIcon, { fontSize: "small" })}+
+                {keys})
             </Button>
             <Dialog
                 fullScreen

@@ -17,6 +17,7 @@ import {
     useMappedOverlayDependencies,
     useOverlayDependencies,
 } from "../store/OverlayReducer";
+import { Action, useCommand } from "../core/Keyboard";
 
 export default function Dependencies() {
     const selectedDependencies = useMappedOverlayDependencies();
@@ -31,7 +32,13 @@ export default function Dependencies() {
         dispatch(setDependencies([]));
     };
 
-    useHotkeys("ctrl+D", () => clear(), [clear]);
+    
+
+    const { label, keys, modifier, modifierIcon } = useCommand(Action.CLEAR);
+
+    useHotkeys(`${modifier}+${keys}`, () => clear(), { preventDefault: true }, [
+        clear,
+    ]);
 
     return (
         <>
@@ -49,10 +56,15 @@ export default function Dependencies() {
                 />
                 {selected?.length > 0 && (
                     <Button
+                        variant="outlined"
                         onClick={() => clear()}
-                        endIcon={<DeleteForeverIcon />}
+                        startIcon={<DeleteForeverIcon />}
                     >
-                        Clear All
+                        {label} (
+                        {React.createElement(modifierIcon, {
+                            fontSize: "small",
+                        })}
+                        +{keys})
                     </Button>
                 )}
             </div>

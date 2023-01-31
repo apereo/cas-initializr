@@ -54,7 +54,6 @@ export const OverlaySlice = createSlice({
     },
     reducers: {
         setDependencies(state, action: PayloadAction<string[]>) {
-            console.log(action);
             state.dependencies = action.payload;
         },
         setCustomization(state, action: PayloadAction<Overlay>) {
