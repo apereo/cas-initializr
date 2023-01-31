@@ -3,7 +3,7 @@ import {
     ThemeProvider,
     createTheme,
 } from "@mui/material/styles";
-import { Box, Divider, PaletteMode } from '@mui/material';
+import { Box, Divider, Grid, PaletteMode } from '@mui/material';
 import { Provider } from "react-redux";
 
 import './App.scss';
@@ -51,14 +51,22 @@ function App() {
                                 color: CasTheme.palette.text.primary,
                             }}
                         >
-                            <MainAppBar />
-                            <Divider
-                                style={{
-                                    marginRight: "1.5rem",
-                                    marginLeft: "1.5rem",
-                                }}
-                            ></Divider>
-                            <Initializr />
+                            <Grid
+                                container
+                                direction="column"
+                                alignItems="center"
+                            >
+                                <Grid item xs={12}>
+                                    <MainAppBar />
+                                    <Divider
+                                        style={{
+                                            marginRight: "1.5rem",
+                                            marginLeft: "1.5rem",
+                                        }}
+                                    ></Divider>
+                                    <Initializr />
+                                </Grid>
+                            </Grid>
                         </Box>
                     </DataContext>
                 </Provider>
