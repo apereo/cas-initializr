@@ -53,7 +53,6 @@ function ItemRenderer(props: ListChildComponentProps) {
             <ListItemButton
                 role={undefined}
                 onClick={() => handleToggle(id)}
-                dense
             >
                 <ListItemIcon>
                     <Checkbox

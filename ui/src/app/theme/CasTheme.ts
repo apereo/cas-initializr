@@ -6,6 +6,11 @@ import { cyan, teal, grey } from "@mui/material/colors";
 import { PaletteMode } from '@mui/material';
 
 export const getDesignTokens = (mode: PaletteMode) => ({
+    typography: {
+        // In Chinese and Japanese the characters are usually larger,
+        // so a smaller fontsize may be appropriate.
+        fontSize: 15,
+    },
     palette: {
         mode,
         ...(mode === "light"

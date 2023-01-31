@@ -108,20 +108,20 @@ export default function Initializr() {
                             <Customization />
                             <Divider style={{ margin: "1rem 0rem" }} />
                             <Grid container spacing={2}>
-                                <Grid item xs={4}>
+                                <Grid item xl={4} xs={12}>
                                     <DownloadOverlay
                                         handleDownload={() => download(overlay)}
                                         disabled={!canDownload || loading}
                                     />
                                 </Grid>
-                                <Grid item xs={4}>
+                                <Grid item xl={4} xs={12}>
                                     <Preview
                                         handlePreview={() => explore(overlay)}
                                         handleDownload={() => download(overlay)}
                                         disabled={!canDownload || loading}
                                     />
                                 </Grid>
-                                <Grid item xs={4}>
+                                <Grid item xl={4} xs={12}>
                                     <ShareOverlay
                                         overlay={overlay}
                                         disabled={!canDownload || loading}
@@ -140,7 +140,7 @@ export default function Initializr() {
                                 </div>
                             )}
                         </Grid>
-                        <Grid item xs={6} style={{ padding: "1rem" }}>
+                        <Grid item xs={6}>
                             <Dependencies />
                         </Grid>
                     </>
