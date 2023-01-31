@@ -50,7 +50,7 @@ export function useCommand (command: Action): KeyboardCommand {
         case Action.CLEAR:
             label = `Clear`;
             modifier = ios ? "mod" : "ctrl";
-            keys = `B`;
+            keys = `C`;
             break;
     }
 

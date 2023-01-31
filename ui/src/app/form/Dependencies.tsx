@@ -1,10 +1,12 @@
 import React, { Fragment } from "react";
 import {
     Button,
+    Grid,
     IconButton,
     List,
     ListItem,
     ListItemText,
+    Tooltip,
 } from "@mui/material";
 import { useHotkeys } from "react-hotkeys-hook";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
@@ -32,8 +34,6 @@ export default function Dependencies() {
         dispatch(setDependencies([]));
     };
 
-    
-
     const { label, keys, modifier, modifierIcon } = useCommand(Action.CLEAR);
 
     useHotkeys(`${modifier}+${keys}`, () => clear(), { preventDefault: true }, [
@@ -42,33 +42,43 @@ export default function Dependencies() {
 
     return (
         <>
-            <div
-                style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                }}
+            <Grid
+                container
+                justifyContent="space-between"
+                alignItems="center"
+                spacing={1}
             >
-                <DependencySelector
-                    onSelectedChange={(sel: string[]) =>
-                        dispatch(setDependencies(sel))
-                    }
-                />
+                <Grid item md={6}>
+                    <DependencySelector
+                        onSelectedChange={(sel: string[]) =>
+                            dispatch(setDependencies(sel))
+                        }
+                    />
+                </Grid>
+
                 {selected?.length > 0 && (
-                    <Button
-                        variant="outlined"
-                        onClick={() => clear()}
-                        startIcon={<DeleteForeverIcon />}
+                    <Grid
+                        item
+                        md={6}
+                        sx={{
+                            textAlign: "end",
+                        }}
                     >
-                        {label} (
-                        {React.createElement(modifierIcon, {
-                            fontSize: "small",
-                        })}
-                        +{keys})
-                    </Button>
+                        <Button
+                            variant="outlined"
+                            onClick={() => clear()}
+                            startIcon={<DeleteForeverIcon />}
+                        >
+                            {label} (
+                            {React.createElement(modifierIcon, {
+                                fontSize: "small",
+                            })}
+                            +{keys})
+                        </Button>
+                    </Grid>
                 )}
-            </div>
-            <List dense>
+            </Grid>
+            <List>
                 {selectedDependencies.map(
                     (s: Dependency | undefined, idx: number) => (
                         <Fragment key={idx}>
@@ -84,10 +94,15 @@ export default function Dependencies() {
                                         </IconButton>
                                     }
                                 >
-                                    <ListItemText
-                                        primary={s.name}
-                                        secondary={s.description}
-                                    />
+                                    <Tooltip
+                                        title={s.id}
+                                        placement="top-start"
+                                    >
+                                        <ListItemText
+                                            primary={s.name}
+                                            secondary={s.description}
+                                        />
+                                    </Tooltip>
                                 </ListItem>
                             ) : (
                                 <Fragment></Fragment>

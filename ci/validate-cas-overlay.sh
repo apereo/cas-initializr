@@ -130,3 +130,4 @@ echo "Build Container Image w/ Docker Compose"
 docker-compose build
 
 [ "$CI" = "true" ] && pkill java
+exit 0

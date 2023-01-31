@@ -75,14 +75,18 @@ export default function Customization() {
 
     return (
         <>
-            <Typography variant="subtitle1" style={{ marginBottom: "1rem" }}>
+            <Typography
+                variant="h5"
+                component="h2"
+                style={{ marginBottom: "1rem" }}
+            >
                 Build your CAS deployment
             </Typography>
             <Divider style={{ marginBottom: "2rem" }} />
             <form>
                 <Stack spacing={2}>
                     <FormControl fullWidth>
-                        <InputLabel id="version-select-label">
+                        <InputLabel id="type-select-label">
                             Type *
                         </InputLabel>
                         <Controller
