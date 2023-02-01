@@ -174,7 +174,7 @@ initializr:
           description: Apereo CAS Consent Support via DynamoDb
           bom: cas-bom
           compatibilityRange: 6.5.0
-        - name: Attribute Consent via CouchDb
+        - name: Attribute Consent via Apache CouchDb
           id: support-consent-couchdb
           groupId: org.apereo.cas
           artifactId: cas-server-support-consent-couchdb
@@ -313,49 +313,49 @@ initializr:
             - captcha
     - name: Acceptable Usage Policy
       content:  
-        - name: Couchbase
+        - name: Acceptable Usage Policy via Couchbase
           id: support-aup-couchbase
           groupId: org.apereo.cas
           artifactId: cas-server-support-aup-couchbase
           description: Apereo CAS AUP Couchbase Support
           bom: cas-bom
-        - name: CouchDb
+        - name: Acceptable Usage Policy via Apache CouchDb
           id: support-aup-couchdb
           groupId: org.apereo.cas
           artifactId: cas-server-support-aup-couchdb
           description: Apereo CAS AUP CouchDb Support
           bom: cas-bom
-        - name: JDBC
+        - name: Acceptable Usage Policy via JDBC
           id: support-aup-jdbc
           groupId: org.apereo.cas
           artifactId: cas-server-support-aup-jdbc
           description: Apereo CAS AUP JDBC Support
           bom: cas-bom
-        - name: LDAP & Active Directory
+        - name: Acceptable Usage Policy via LDAP & Active Directory
           id: support-aup-ldap
           groupId: org.apereo.cas
           artifactId: cas-server-support-aup-ldap
           description: Apereo CAS AUP LDAP Support
           bom: cas-bom
-        - name: MongoDb
+        - name: Acceptable Usage Policy via MongoDb
           id: support-aup-mongo
           groupId: org.apereo.cas
           artifactId: cas-server-support-aup-mongo
           description: Apereo CAS AUP Mongo Support
           bom: cas-bom
-        - name: Redis
+        - name: Acceptable Usage Policy via Redis
           id: support-aup-redis
           groupId: org.apereo.cas
           artifactId: cas-server-support-aup-redis
           description: Apereo CAS AUP Redis Support
           bom: cas-bom
-        - name: REST
+        - name: Acceptable Usage Policy via REST
           id: support-aup-rest
           groupId: org.apereo.cas
           artifactId: cas-server-support-aup-rest
           description: Apereo CAS AUP REST Support
           bom: cas-bom
-        - name: Webflow
+        - name: Acceptable Usage Policy Webflow
           id: support-aup-webflow
           groupId: org.apereo.cas
           artifactId: cas-server-support-aup-webflow
@@ -470,16 +470,42 @@ initializr:
           artifactId: cas-server-core-logging
           description: Apereo CAS Core Logging
           bom: cas-bom
+    - name: Trusted Devices
+      content:
+        - name: Trusted Remote
+          id: support-trusted
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-trusted
+          description: Apereo CAS Trusted User Support
+          bom: cas-bom
     - name: Authentication
       content: 
-        - name: YubiKey
-          id: support-yubikey
+        - name: Apache Cassandra
+          id: support-cassandra-authentication
           groupId: org.apereo.cas
-          artifactId: cas-server-support-yubikey
-          description: Apereo CAS YubiKey Support
+          artifactId: cas-server-support-cassandra-authentication
+          description: Apereo CAS Apache Cassandra Authentication Support
           bom: cas-bom
           aliases:
-            - yubikey
+            - cassandraauth 
+        - name: Azure Active Directory
+          id: support-azuread-authentication
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-azuread-authentication
+          description: Apereo CAS Microsoft Azure Active Directory Authentication
+          bom: cas-bom
+        - name: AWS Cognito
+          id: support-aws-cognito-authentication
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-aws-cognito-authentication
+          description: Apereo CAS Amazon Web Services Cognito Authentication
+          bom: cas-bom
+        - name: AWS Cloud Directory
+          id: support-cloud-directory-authentication
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-cloud-directory-authentication
+          description: Apereo CAS Amazon Cloud Directory Authentication Support
+          bom: cas-bom
         - name: X.509
           id: support-x509-webflow
           groupId: org.apereo.cas
@@ -488,12 +514,14 @@ initializr:
           bom: cas-bom
           aliases:
             - x509
-        - name: Trusted Remote
-          id: support-trusted
+        - name: Remote User
+          id: support-generic-remote-webflow
           groupId: org.apereo.cas
-          artifactId: cas-server-support-trusted
-          description: Apereo CAS Trusted User Support
+          artifactId: cas-server-support-generic-remote-webflow
+          description: Apereo CAS Remote Address Authentication Webflow Support
           bom: cas-bom
+          aliases:
+            - remote
         - name: Apache Syncope
           id: support-syncope-authentication
           groupId: org.apereo.cas
@@ -584,7 +612,7 @@ initializr:
           artifactId: cas-server-support-audit-jdbc
           description: Apereo CAS JDBC Audit Support
           bom: cas-bom
-        - name: CouchDb
+        - name: Apache CouchDb
           id: support-audit-couchdb
           groupId: org.apereo.cas
           artifactId: cas-server-support-audit-couchdb
@@ -598,7 +626,15 @@ initializr:
           bom: cas-bom
     - name: Multifactor Authentication
       content: 
-        - name: cas-server-support-inwebo-mfa
+        - name: YubiKey
+          id: support-yubikey
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-yubikey
+          description: Apereo CAS YubiKey Support
+          bom: cas-bom
+          aliases:
+            - yubikey
+        - name: InWebo
           id: support-inwebo-mfa
           groupId: org.apereo.cas
           artifactId: cas-server-support-inwebo-mfa
@@ -606,7 +642,7 @@ initializr:
           bom: cas-bom
           aliases:
             - inwebo
-        - name: cas-server-support-radius-mfa
+        - name: Radius
           id: support-radius-mfa
           groupId: org.apereo.cas
           artifactId: cas-server-support-radius-mfa
@@ -653,6 +689,46 @@ initializr:
           bom: cas-bom
           aliases:
             - authy            
+    -name: SAML1 Protocol
+      content:
+        - name: cas-server-support-saml
+          id: support-saml
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-saml
+          description: Apereo CAS SAML Server and Validation Support
+          bom: cas-bom
+          aliases:
+            - saml1
+    - name: SAML2 Protocol
+      content: 
+        - name: SAML2 Identity Provider Discovery
+          id: support-saml-idp-discovery
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-saml-idp-discovery
+          description: Apereo CAS SAML Identity Provider Discovery Support
+          bom: cas-bom
+          aliases:
+            - idp-discovery
+        - name: SAML2 Identity Provider
+          id: support-saml-idp
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-saml-idp
+          description: Apereo CAS SAML Identity Provider Support
+          bom: cas-bom
+          aliases:
+            - saml2
+            - saml
+            - saml-idp
+        - name: Google Apps for Education
+          id: support-saml-googleapps
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-saml-googleapps
+          description: Apereo CAS SAML Server Google Apps SAML Support
+          bom: cas-bom
+          compatibilityRange: "[6.3.0,7.0.0)"
+          aliases:
+            - googleapps
+            - gapps
     - name: Account Management
       content: 
         - name: Account Registration
@@ -666,31 +742,45 @@ initializr:
             - acct-mgmt
     - name: Monitoring & Observability
       content: 
-        - name: Sentry
+        - name: Monitoring Hazelcast
+          id: support-hazelcast-monitor
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-hazelcast-monitor
+          description: Apereo CAS Hazelcast Monitoring Support
+          bom: cas-bom
+        - name: JavaMelody Monitoring
+          id: support-javamelody
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-javamelody
+          description: Apereo CAS JavaMelody Support
+          bom: cas-bom
+          aliases:
+            - melody
+        - name: Sentry Monitoring
           id: support-sentry
           groupId: org.apereo.cas
           artifactId: cas-server-support-sentry
           description: Apereo CAS Sentry Monitoring and Tracking Support
           bom: cas-bom
-        - name: Memcached
+        - name: Monitoring Memcached
           id: support-memcached-monitor
           groupId: org.apereo.cas
           artifactId: cas-server-support-memcached-monitor
           description: Apereo CAS Memcached Monitor Integration
           bom: cas-bom
-        - name: LDAP & Active Directory
+        - name: Monitoring LDAP & Active Directory
           id: support-ldap-monitor
           groupId: org.apereo.cas
           artifactId: cas-server-support-ldap-monitor
           description: Apereo CAS LDAP Monitor Support
           bom: cas-bom
-        - name: Simple
+        - name: Simple Monitoring
           id: core-monitor
           groupId: org.apereo.cas
           artifactId: cas-server-core-monitor
           description: Apereo CAS Core Monitor Support
           bom: cas-bom
-        - name: JDBC Monitoring
+        - name: Monitoring JDBC
           id: support-jdbc-monitor
           groupId: org.apereo.cas
           artifactId: cas-server-support-jdbc-monitor
