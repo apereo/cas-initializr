@@ -377,28 +377,107 @@ initializr:
           artifactId: cas-server-core-events-configuration
           description: Apereo CAS Core Events - Configuration Events
           bom: cas-bom
+        - name: Configuration Management for Kubernetes
+          id: support-configuration-cloud-kubernetes
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-configuration-cloud-kubernetes
+          description: Apereo CAS Configuration - Cloud Kubernetes
+          bom: cas-bom
+          compatibilityRange: 6.5.0
+        - name: Configuration Management via AMQP
+          id: support-configuration-cloud-amqp
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-configuration-cloud-amqp
+          description: Apereo CAS Configuration - Cloud Bus AMQP
+          bom: cas-bom
+        - name: Configuration Management via AWS S3
+          id: support-configuration-cloud-aws-s3
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-configuration-cloud-aws-s3
+          description: Apereo CAS Configuration - AWS S3 Objects
+          bom: cas-bom
+        - name: Configuration Management via AWS SecretManager
+          id: support-configuration-cloud-aws-secretsmanager
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-configuration-cloud-aws-secretsmanager
+          description: Apereo CAS Configuration - AWS Secrets Manager
+          bom: cas-bom
+        - name: Configuration Management via AWS SSM
+          id: support-configuration-cloud-aws-ssm
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-configuration-cloud-aws-ssm
+          description: Apereo CAS Configuration - AWS Parameter Store
+          bom: cas-bom
+        - name: Configuration Management Azure KeyVault
+          id: support-configuration-cloud-azure-keyvault
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-configuration-cloud-azure-keyvault
+          description: Apereo CAS Configuration - Microsoft Azure KeyVault
+          bom: cas-bom
+        - name: Configuration Management via DynamoDb
+          id: support-configuration-cloud-dynamodb
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-configuration-cloud-dynamodb
+          description: Apereo CAS Configuration - DynamoDb
+          bom: cas-bom
+        - name: Configuration Management via JDBC
+          id: support-configuration-cloud-jdbc
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-configuration-cloud-jdbc
+          description: Apereo CAS Configuration - JDBC
+          bom: cas-bom
+        - name: Configuration Management via Apache Kafka
+          id: support-configuration-cloud-kafka
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-configuration-cloud-kafka
+          description: Apereo CAS Configuration - Cloud Bus Kafka
+          bom: cas-bom
+        - name: Configuration Management via MongoDb
+          id: support-configuration-cloud-mongo
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-configuration-cloud-mongo
+          description: Apereo CAS Configuration - MongoDb
+          bom: cas-bom
+        - name: Configuration Management via REST
+          id: support-configuration-cloud-rest
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-configuration-cloud-rest
+          description: Apereo CAS Configuration - REST Support
+          bom: cas-bom
+        - name: Configuration Management via HashiCorp Vault
+          id: support-configuration-cloud-vault
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-configuration-cloud-vault
+          description: Apereo CAS Configuration - HashiCorp Vault
+          bom: cas-bom
+        - name: Configuration Management via Apache ZooKeeper
+          id: support-configuration-cloud-zookeeper
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-configuration-cloud-zookeeper
+          description: Apereo CAS Configuration - Apache Zookeeper
+          bom: cas-bom
     - name: Events
       content:  
-        - name: Core
+        - name: Authentication Events  
           id: core-events
           groupId: org.apereo.cas
           artifactId: cas-server-core-events
           description: Apereo CAS Core Events
           bom: cas-bom
-        - name: Redis
+        - name: Authentication Events via Redis
           id: support-events-redis
           groupId: org.apereo.cas
           artifactId: cas-server-support-events-redis
           description: Apereo CAS Events Consumer Redis
           bom: cas-bom
           compatibilityRange: 6.5.0
-        - name: CouchDb
+        - name: Authentication Events via CouchDb
           id: support-events-couchdb
           groupId: org.apereo.cas
           artifactId: cas-server-support-events-couchdb
           description: Apereo CAS Events Consumer CouchDb
           bom: cas-bom
-        - name: DynamoDb
+        - name: Authentication Events via DynamoDb
           id: support-events-dynamodb
           groupId: org.apereo.cas
           artifactId: cas-server-support-events-dynamodb
@@ -406,13 +485,13 @@ initializr:
           bom: cas-bom
           aliaeses:
             - dyanamodbevents
-        - name: InfluxDb
+        - name: Authentication Events via InfluxDb
           id: support-events-influxdb
           groupId: org.apereo.cas
           artifactId: cas-server-support-events-influxdb
           description: Apereo CAS Event InfluxDb Repository
           bom: cas-bom
-        - name: JPA & JDBC
+        - name: Authentication Events via JPA & JDBC
           id: support-events-jpa
           groupId: org.apereo.cas
           artifactId: cas-server-support-events-jpa
@@ -424,7 +503,7 @@ initializr:
           artifactId: cas-server-support-events-memory
           description: Apereo CAS Event Memory Repository
           bom: cas-bom
-        - name: MongoDb
+        - name: Authentication Events via MongoDb
           id: support-events-mongo
           groupId: org.apereo.cas
           artifactId: cas-server-support-events-mongo
@@ -480,6 +559,12 @@ initializr:
           bom: cas-bom
     - name: Authentication
       content: 
+        - name: Apache CouchDb
+          id: support-couchdb-authentication
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-couchdb-authentication
+          description: Apereo CAS CouchDb Authentication Support
+          bom: cas-bom
         - name: Apache Cassandra
           id: support-cassandra-authentication
           groupId: org.apereo.cas
@@ -650,6 +735,51 @@ initializr:
           bom: cas-bom
           aliases:
             - radiusmfa
+        - name: Google Authenticator
+          id: support-gauth
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-gauth
+          description: Apereo CAS Google Authenticator Support
+          bom: cas-bom
+          aliases:
+            - gauth
+        - name: Google Authenticator via Apache CouchDb
+          id: support-gauth-couchdb
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-gauth-couchdb
+          description: Apereo CAS Google Authenticator CouchDb
+          bom: cas-bom
+        - name: Google Authenticator via JDBC
+          id: support-gauth-jpa
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-gauth-jpa
+          description: Apereo CAS Google Authenticator JPA
+          bom: cas-bom
+        - name: Google Authenticator via LDAP & Active Directory
+          id: support-gauth-ldap
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-gauth-ldap
+          description: Apereo CAS Google Authenticator LDAP
+          bom: cas-bom
+        - name: Google Authenticator via DynamoDb
+          id: support-gauth-dynamodb
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-gauth-dynamodb
+          description: Apereo CAS Google Authenticator DynamoDb
+          bom: cas-bom
+          compatibilityRange: 6.5.0
+        - name: Google Authenticator via MongoDb
+          id: support-gauth-mongo
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-gauth-mongo
+          description: Apereo CAS Google Authenticator Mongo
+          bom: cas-bom
+        - name: Google Authenticator via Redis
+          id: support-gauth-redis
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-gauth-redis
+          description: Apereo CAS Google Authenticator Redis
+          bom: cas-bom
         - name: Duo Security
           id: support-duo
           groupId: org.apereo.cas
@@ -689,7 +819,7 @@ initializr:
           bom: cas-bom
           aliases:
             - authy            
-    -name: SAML1 Protocol
+    - name: SAML1 Protocol
       content:
         - name: cas-server-support-saml
           id: support-saml
