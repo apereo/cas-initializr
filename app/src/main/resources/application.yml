@@ -1568,6 +1568,14 @@ initializr:
           artifactId: cas-server-support-saml-sp-integrations
           description: Apereo CAS SAML SP Integrations
           bom: cas-bom
+        - name: cas-server-support-shibboleth
+          id: support-shibboleth
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-shibboleth
+          description: Apereo CAS Shibboleth IdP/SP Extensions
+          bom: cas-bom
+          aliases:
+            - shibboleth
     - name: SAML2 Metadata Management
       content:
         - name: SAML2 Metadata via AWS S3
@@ -1611,6 +1619,20 @@ initializr:
           groupId: org.apereo.cas
           artifactId: cas-server-support-saml-idp-metadata-rest
           description: Apereo CAS SAML Identity Provider Metadata Resolution Via REST
+          bom: cas-bom
+    - name: Memcached Support
+      content:
+        - name: Memcached via AWS Elasticache
+          id: support-memcached-aws-elasticache
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-memcached-aws-elasticache
+          description: Apereo CAS Memcached Support via AWS Elasticache
+          bom: cas-bom
+        - name: Memcached via SPY
+          id: support-memcached-spy
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-memcached-spy
+          description: Apereo CAS Memcached Support via Memcached
           bom: cas-bom
     - name: Account Management
       content: 
@@ -1683,6 +1705,103 @@ initializr:
           bom: cas-bom
           aliases:
             - metrics
+    - name: Hazelcast Discovery
+      content:
+        - name: Hazelcast Discovery via GCP
+          id: support-hazelcast-discovery-gcp
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-hazelcast-discovery-gcp
+          description: Apereo CAS Hazelcast Discovery Google Cloud Platform Support
+          bom: cas-bom
+          compatibilityRange: 6.5.0
+        - name: Hazelcast Discovery via AWS
+          id: support-hazelcast-discovery-aws
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-hazelcast-discovery-aws
+          description: Apereo CAS Hazelcast Discovery AWS Support
+          bom: cas-bom
+        - name: Hazelcast Discovery via Azure
+          id: support-hazelcast-discovery-azure
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-hazelcast-discovery-azure
+          description: Apereo CAS Hazelcast Discovery Azure Support
+          bom: cas-bom
+        - name: Hazelcast Discovery via Apache ZooKeeper
+          id: support-hazelcast-discovery-zookeeper
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-hazelcast-discovery-zookeeper
+          description: Apereo CAS Hazelcast Discovery with Apache Zookeeper Support
+          bom: cas-bom
+          compatibilityRange: 6.5.0
+        - name: Hazelcast Discovery via Apache jClouds
+          id: support-hazelcast-discovery-jclouds
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-hazelcast-discovery-jclouds
+          description: Apereo CAS Hazelcast Discovery JClouds Support
+          bom: cas-bom
+        - name: Hazelcast Discovery via Apache Kubernetes
+          id: support-hazelcast-discovery-kubernetes
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-hazelcast-discovery-kubernetes
+          description: Apereo CAS Hazelcast Discovery Kubernetes Support
+          bom: cas-bom
+        - name: Hazelcast Discovery via Docker Swarm
+          id: support-hazelcast-discovery-swarm
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-hazelcast-discovery-swarm
+          description: Apereo CAS Hazelcast Discovery Docker Swarm Support
+          bom: cas-bom
+    - name: GeoLocation
+      content:
+        - name: IP GeoLocation
+          id: support-geolocation-ip
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-geolocation-ip
+          description: Apereo CAS GeoLocation IP Tracking Support
+          bom: cas-bom
+        - name: GeoLocation
+          id: support-geolocation
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-geolocation
+          description: Apereo CAS GeoLocation Tracking Support
+          bom: cas-bom
+          aliases:
+            - geolocation
+            - geo
+        - name: GoogleMaps GeoLocation
+          id: support-geolocation-googlemaps
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-geolocation-googlemaps
+          description: Apereo CAS GeoLocation Tracking Support
+          bom: cas-bom
+          aliases:
+            - gmaps
+        - name: MaxMind GeoLocation
+          id: support-geolocation-maxmind
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-geolocation-maxmind
+          description: Apereo CAS GeoLocation Tracking Maxmind Support
+          bom: cas-bom
+          aliases:
+            - maxmind
+    - name: Authentication Interrupts
+      content:
+        - name: Authentication Interrupts
+          id: support-interrupt-webflow
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-interrupt-webflow
+          description: Apereo CAS Notification/Interrupt Webflow
+          bom: cas-bom
+          aliases:
+            - interrupt
+    - name: User Interface
+      content:
+        - name: Themes Collection
+          id: support-themes-collection
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-themes-collection
+          description: Apereo CAS Themes Collection
+          bom: cas-bom
     - name: Relational Databases (JDBC & JPA)
       content:
         - name: Database Drivers
