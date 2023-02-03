@@ -816,8 +816,81 @@ initializr:
           bom: cas-bom
           aliases:
             - qr
+    - name: Provisioning
+      content:
+        - name: SCIM
+          id: support-scim
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-scim
+          description: Apereo CAS SCIM 2 Provisioning Support
+          bom: cas-bom
+          aliases:
+            - scim
+    - name: Integrations
+      content:
+        - name: ACME & Let's Encrypt
+          id: acme
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-acme
+          description: Apereo CAS ACME Support
+          bom: cas-bom
+          aliases:
+            - acme4j
+            - letsencrypt
+        - name: AWS Support
+          id: support-aws
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-aws
+          description: Apereo CAS Amazon Web Services Support
+          bom: cas-bom
+        - name: Spring BootAdmin Client
+          id: support-bootadmin-client
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-bootadmin-client
+          description: Apereo CAS Spring Boot Admin Client
+          bom: cas-bom
+          aliases:
+            - bootadmin
+        - name: Consul Client
+          id: support-consul-client
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-consul-client
+          description: Apereo CAS Spring Cloud Consul Client
+          bom: cas-bom
+          aliases:
+            - consule
+        - name: Eureka Discovery Client
+          id: support-eureka-client
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-eureka-client
+          description: Apereo CAS Spring Cloud Eureka Client
+          bom: cas-bom
+          aliases:
+            - eureka
+        - name: FCM Notifications
+          id: support-notifications-fcm
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-notifications-fcm
+          description: Apereo CAS Server FCM Notifications Support
+          bom: cas-bom
+          aliases:
+            - fcm
     - name: Reporting
       content: 
+        - name: Google Analytics
+          id: support-google-analytics
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-google-analytics
+          description: Apereo CAS Support for Google Analytics
+          bom: cas-bom
+        - name: Discovery Profile
+          id: support-discovery-profile
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-discovery-profile
+          description: Apereo CAS Discovery Support
+          bom: cas-bom
+          aliases:
+            - discovery
         - name: Reports & Actuators
           id: support-reports
           groupId: org.apereo.cas
@@ -1634,6 +1707,16 @@ initializr:
           artifactId: cas-server-support-memcached-spy
           description: Apereo CAS Memcached Support via Memcached
           bom: cas-bom
+    - name: Risk-based Authentication
+      content:
+        - name: Electrofence
+          id: support-electrofence
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-electrofence
+          description: Apereo CAS Risk-based Authentication Support
+          bom: cas-bom
+          aliases:
+            - electrofence
     - name: Account Management
       content: 
         - name: Account Registration
@@ -1647,6 +1730,14 @@ initializr:
             - acct-mgmt
     - name: Monitoring & Observability
       content: 
+        - name: JMX Monitoring
+          id: support-jmx
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-jmx
+          description: Apereo CAS JMX Support
+          bom: cas-bom
+          aliases:
+            - jmx
         - name: Monitoring MongoDb
           id: support-mongo-monitor
           groupId: org.apereo.cas
