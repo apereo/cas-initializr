@@ -551,21 +551,102 @@ initializr:
           bom: cas-bom
     - name: Trusted Devices
       content:
-        - name: Trusted Remote
+        - name: Trusted Remote User
           id: support-trusted
           groupId: org.apereo.cas
           artifactId: cas-server-support-trusted
           description: Apereo CAS Trusted User Support
           bom: cas-bom
+    - name: Password Management
+      content:
+        - name: Password Management via JDBC & JPA
+          id: support-pm-jdbc
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-pm-jdbc
+          description: Apereo CAS Password Management JDBC Support
+          bom: cas-bom
+        - name: Password Management via LDAP & Active Directory
+          id: support-pm-ldap
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-pm-ldap
+          description: Apereo CAS Password Management LDAP Support
+          bom: cas-bom
+        - name: Password Management via REST
+          id: support-pm-rest
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-pm-rest
+          description: Apereo CAS Password Management LDAP Support
+          bom: cas-bom
+        - name: Password Management Webflow
+          id: support-pm-webflow
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-pm-webflow
+          description: Apereo CAS Password Management - Core
+          bom: cas-bom
+          aliases:
+            - pm      
+    - name: Delegated Authentication
+      content:
+        - name: Delegated (Proxy) Authentication
+          id: support-pac4j-webflow
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-pac4j-webflow
+          description: Apereo CAS Pac4j Webflow Support
+          bom: cas-bom
+          aliases:
+            - pac4j
+            - delegation
     - name: Authentication
       content: 
-        - name: Apache CouchDb
+        - name: JWT & Token Authentication
+          id: support-token-webflow
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-token-webflow
+          description: Apereo CAS Token Authentication Webflow Support
+          bom: cas-bom
+        - name: REST Authentication
+          id: support-rest-authentication
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-rest-authentication
+          description: Apereo CAS Rest Authentication Support
+          bom: cas-bom
+          aliases:
+            - restauth
+        - name: Redis Authentication
+          id: support-redis-authentication
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-redis-authentication
+          description: Apereo CAS Redis Authentication
+          bom: cas-bom
+          aliases:
+            - redisauth
+        - name: MongoDb Authentication
+          id: support-mongo
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-mongo
+          description: Apereo CAS Mongo Authentication Support
+          bom: cas-bom
+        - name: LDAP Authentication
+          id: support-ldap
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-ldap
+          description: Apereo CAS LDAP Support
+          bom: cas-bom
+          aliases:
+            - ldap
+        - name: JDBC & JPA Authentication
+          id: support-jdbc
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-jdbc
+          description: Apereo CAS JDBC Support
+          bom: cas-bom
+        - name: Apache CouchDb Authentication
           id: support-couchdb-authentication
           groupId: org.apereo.cas
           artifactId: cas-server-support-couchdb-authentication
           description: Apereo CAS CouchDb Authentication Support
           bom: cas-bom
-        - name: Apache Cassandra
+        - name: Apache Cassandra Authentication
           id: support-cassandra-authentication
           groupId: org.apereo.cas
           artifactId: cas-server-support-cassandra-authentication
@@ -573,25 +654,25 @@ initializr:
           bom: cas-bom
           aliases:
             - cassandraauth 
-        - name: Azure Active Directory
+        - name: Azure Active Directory Authentication
           id: support-azuread-authentication
           groupId: org.apereo.cas
           artifactId: cas-server-support-azuread-authentication
           description: Apereo CAS Microsoft Azure Active Directory Authentication
           bom: cas-bom
-        - name: AWS Cognito
+        - name: AWS Cognito Authentication
           id: support-aws-cognito-authentication
           groupId: org.apereo.cas
           artifactId: cas-server-support-aws-cognito-authentication
           description: Apereo CAS Amazon Web Services Cognito Authentication
           bom: cas-bom
-        - name: AWS Cloud Directory
+        - name: AWS Cloud Directory Authentication
           id: support-cloud-directory-authentication
           groupId: org.apereo.cas
           artifactId: cas-server-support-cloud-directory-authentication
           description: Apereo CAS Amazon Cloud Directory Authentication Support
           bom: cas-bom
-        - name: X.509
+        - name: X.509 & CAC Authentication
           id: support-x509-webflow
           groupId: org.apereo.cas
           artifactId: cas-server-support-x509-webflow
@@ -599,7 +680,7 @@ initializr:
           bom: cas-bom
           aliases:
             - x509
-        - name: Remote User
+        - name: Remote User Authentication
           id: support-generic-remote-webflow
           groupId: org.apereo.cas
           artifactId: cas-server-support-generic-remote-webflow
@@ -607,7 +688,7 @@ initializr:
           bom: cas-bom
           aliases:
             - remote
-        - name: Apache Syncope
+        - name: Apache Syncope Authentication
           id: support-syncope-authentication
           groupId: org.apereo.cas
           artifactId: cas-server-support-syncope-authentication
@@ -615,7 +696,7 @@ initializr:
           bom: cas-bom
           aliases:
             - syncope
-        - name: SPNEGO
+        - name: SPNEGO Authentication
           id: support-spnego-webflow
           groupId: org.apereo.cas
           artifactId: cas-server-support-spnego-webflow
@@ -623,7 +704,7 @@ initializr:
           bom: cas-bom
           aliases:
             - spnego
-        - name: SOAP
+        - name: SOAP Authentication
           id: support-soap-authentication
           groupId: org.apereo.cas
           artifactId: cas-server-support-soap-authentication
@@ -631,7 +712,7 @@ initializr:
           bom: cas-bom
           aliases:
             - soap
-        - name: Radius
+        - name: Radius Authentication
           id: support-radius
           groupId: org.apereo.cas
           artifactId: cas-server-support-radius
@@ -639,7 +720,15 @@ initializr:
           bom: cas-bom
           aliases:
             - radius
-        - name: cas-server-support-gua
+        - name: OKTA Authentication
+          id: support-okta-authentication
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-okta-authentication
+          description: Apereo CAS Okta Authentication
+          bom: cas-bom
+          aliases:
+            - okta
+        - name: Graphical User Authentication
           id: support-gua
           groupId: org.apereo.cas
           artifactId: cas-server-support-gua
@@ -647,7 +736,7 @@ initializr:
           bom: cas-bom
           aliases:
             - gua
-        - name: Basic
+        - name: Basic Authentication
           id: support-basic
           groupId: org.apereo.cas
           artifactId: cas-server-support-basic
@@ -709,32 +798,152 @@ initializr:
           artifactId: cas-server-support-audit-couchbase
           description: Apereo CAS Couchbase Audit Support
           bom: cas-bom
-    - name: Multifactor Authentication
+    - name: Service Registries
       content: 
-        - name: YubiKey
-          id: support-yubikey
+        - name: Service Registry via YAML Files
+          id: support-yaml-service-registry
           groupId: org.apereo.cas
-          artifactId: cas-server-support-yubikey
-          description: Apereo CAS YubiKey Support
+          artifactId: cas-server-support-yaml-service-registry
+          description: Apereo CAS YAML Service Registry
+          bom: cas-bom
+        - name: Service Registry via REST
+          id: support-rest-service-registry
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-rest-service-registry
+          description: Apereo CAS RESTful Service Registry
           bom: cas-bom
           aliases:
-            - yubikey
-        - name: InWebo
-          id: support-inwebo-mfa
+            - restsvc
+        - name: Service Registry via LDAP
+          id: support-ldap-service-registry
           groupId: org.apereo.cas
-          artifactId: cas-server-support-inwebo-mfa
-          description: Apereo CAS Inweb MFA Support
+          artifactId: cas-server-support-ldap-service-registry
+          description: Apereo CAS LDAP Service Registry Support
           bom: cas-bom
           aliases:
-            - inwebo
-        - name: Radius
-          id: support-radius-mfa
+            - ldapsvc
+        - name: Service Registry via JSON Files
+          id: support-json-service-registry
           groupId: org.apereo.cas
-          artifactId: cas-server-support-radius-mfa
-          description: Apereo CAS RADIUS RSA MFA Support
+          artifactId: cas-server-support-json-service-registry
+          description: Apereo CAS JSON Service Registry
           bom: cas-bom
           aliases:
-            - radiusmfa
+            - jsonsvc
+        - name: Service Registry via JDBC & JPA
+          id: support-jpa-service-registry
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-jpa-service-registry
+          description: Apereo CAS JPA Service Registry Support
+          bom: cas-bom
+          aliases:
+            - jpasvc
+        - name: Service Registry via MongoDb
+          id: support-mongo-service-registry
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-mongo-service-registry
+          description: Apereo CAS Mongo Integration
+          bom: cas-bom
+          aliases:
+            - mongosvc
+        - name: Service Registry via AWS DynamoDb
+          id: support-dynamodb-service-registry
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-dynamodb-service-registry
+          description: Apereo CAS DynamoDb Service Registry
+          bom: cas-bom
+          aliaeses:
+            - dyanamodbsvc
+        - name: Service Registry via Apache CouchDb
+          id: support-couchdb-service-registry
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-couchdb-service-registry
+          description: Apereo CAS CouchDB Service Registry
+          bom: cas-bom
+        - name: Service Registry via Couchbase
+          id: support-couchbase-service-registry
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-couchbase-service-registry
+          description: Apereo CAS Couchbase Service Registry
+          bom: cas-bom
+          aliases:
+            - couchbasesvc
+        - name: Service Registry via Azure CosmosDb
+          id: support-cosmosdb-service-registry
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-cosmosdb-service-registry
+          description: Apereo CAS Azure Cosmos DB Service Registry
+          bom: cas-bom
+        - name: Service Registry via Apache Cassandra
+          id: support-cassandra-service-registry
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-cassandra-service-registry
+          description: Apereo CAS Cassandra Service Registry
+          bom: cas-bom
+          aliases:
+            - cassandrasvc
+    - name: WebAuthN & FIDO2 Multifactor Authentication
+      content:
+        - name: WebAuthN Multifactor Authentication via LDAP
+          id: support-webauthn-ldap
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-webauthn-ldap
+          description: Apereo CAS WebAuthN LDAP Support
+          bom: cas-bom
+          compatibilityRange: 6.5.0
+          aliases:
+            - webauthn-ldap
+        - name: WebAuthN Multifactor Authentication via JDBC & JPA
+          id: support-webauthn-jpa
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-webauthn-jpa
+          description: Apereo CAS WebAuthN JPA Support
+          bom: cas-bom
+          aliases:
+            - webauthn-jpa
+        - name: WebAuthN Multifactor Authentication via Redis
+          id: support-webauthn-redis
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-webauthn-redis
+          description: Apereo CAS WebAuthN Redis Support
+          bom: cas-bom
+          aliases:
+            - webauthn-redis
+        - name: WebAuthN Multifactor Authentication via MongoDb
+          id: support-webauthn-mongo
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-webauthn-mongo
+          description: Apereo CAS WebAuthN MongoDb Support
+          bom: cas-bom
+          aliases:
+            - webauthn-mongo
+        - name: WebAuthN Multifactor Authentication via AWS DynamoDb
+          id: support-webauthn-dynamodb
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-webauthn-dynamodb
+          description: Apereo CAS WebAuthN DynamoDb Support
+          bom: cas-bom
+          aliases:
+            - webauthn-dynamodb
+        - name: WebAuthN Multifactor Authentication via REST
+          id: support-webauthn-rest
+          groupId: org.apereo.cas
+          description: Apereo CAS WebAuthN REST Support
+          artifactId: cas-server-support-webauthn-rest
+          bom: cas-bom
+          aliases:
+            - webauthn-rest
+        - name: FIDO2 & WebAuthN
+          id: support-webauthn
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-webauthn
+          description: Apereo CAS FIDO2 WebAuthn Support
+          bom: cas-bom
+          aliases:
+            - webauthn
+            - fido2
+    - name: Google Authenticator Multifactor Authentication
+      content:
         - name: Google Authenticator
           id: support-gauth
           groupId: org.apereo.cas
@@ -779,7 +988,113 @@ initializr:
           groupId: org.apereo.cas
           artifactId: cas-server-support-gauth-redis
           description: Apereo CAS Google Authenticator Redis
+          bom: cas-bom      
+    - name: U2F Multifactor Authentication
+      content:
+        - name: U2F
+          id: support-u2f
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-u2f
+          description: Apereo CAS U2F Support
           bom: cas-bom
+          aliases:
+            - u2f
+        - name: U2F via Apache CouchDb
+          id: support-u2f-couchdb
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-u2f-couchdb
+          description: Apereo CAS U2F FIDO CouchDb Support
+          bom: cas-bom
+        - name: U2F via AWS DynamoDb
+          id: support-u2f-dynamodb
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-u2f-dynamodb
+          description: Apereo CAS U2F FIDO DynamoDb Support
+          bom: cas-bom
+        - name: U2F via JDBC & JPA
+          id: support-u2f-jpa
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-u2f-jpa
+          description: Apereo CAS U2F FIDO Jpa Support
+          bom: cas-bom
+        - name: U2F via MongoDb
+          id: support-u2f-mongo
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-u2f-mongo
+          description: Apereo CAS U2F FIDO MongoDb Support
+          bom: cas-bom
+        - name: U2F via Redis
+          id: support-u2f-redis
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-u2f-redis
+          description: Apereo CAS U2F FIDO Redis Support
+          bom: cas-bom
+    - name: YubiKey Multifactor Authentication
+      content:
+        - name: YubiKey Multifactor Authentication
+          id: support-yubikey
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-yubikey
+          description: Apereo CAS YubiKey Support
+          bom: cas-bom
+          aliases:
+            - yubikey
+        - name: YubiKey Multifactor Authentication via Apache CouchDb
+          id: support-yubikey-couchdb
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-yubikey-couchdb
+          description: Apereo CAS YubiKey CouchDb Support
+          bom: cas-bom
+        - name: YubiKey Multifactor Authentication via AWS DynamoDb
+          id: support-yubikey-dynamodb
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-yubikey-dynamodb
+          description: Apereo CAS YubiKey DynamoDb Support
+          bom: cas-bom
+          aliases:
+            - yubikey-dynamodb
+        - name: YubiKey Multifactor Authentication via JDBC & JPA
+          id: support-yubikey-jpa
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-yubikey-jpa
+          description: Apereo CAS YubiKey Jpa Support
+          bom: cas-bom
+          aliases:
+            - yubikey-jpa
+        - name: YubiKey Multifactor Authentication via MongoDb
+          id: support-yubikey-mongo
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-yubikey-mongo
+          description: Apereo CAS YubiKey MongoDb Support
+          bom: cas-bom
+          aliases:
+            - yubikey-mongo
+        - name: YubiKey Multifactor Authentication via Redis
+          id: support-yubikey-redis
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-yubikey-redis
+          description: Apereo CAS YubiKey Redis Support
+          bom: cas-bom
+          aliases:
+            - yubikey-redis
+    - name: Multifactor Authentication
+      content: 
+        - name: InWebo
+          id: support-inwebo-mfa
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-inwebo-mfa
+          description: Apereo CAS Inweb MFA Support
+          bom: cas-bom
+          aliases:
+            - inwebo
+        - name: Radius
+          id: support-radius-mfa
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-radius-mfa
+          description: Apereo CAS RADIUS RSA MFA Support
+          bom: cas-bom
+          aliases:
+            - radiusmfa
         - name: Duo Security
           id: support-duo
           groupId: org.apereo.cas
@@ -794,23 +1109,6 @@ initializr:
           artifactId: cas-server-support-simple-mfa
           description: Apereo CAS Simple Multifactor Authentication Support
           bom: cas-bom
-        - name: FIDO2 & WebAuthN
-          id: support-webauthn
-          groupId: org.apereo.cas
-          artifactId: cas-server-support-webauthn
-          description: Apereo CAS FIDO2 WebAuthn Support
-          bom: cas-bom
-          aliases:
-            - webauthn
-            - fido2
-        - name: U2F
-          id: support-u2f
-          groupId: org.apereo.cas
-          artifactId: cas-server-support-u2f
-          description: Apereo CAS U2F Support
-          bom: cas-bom
-          aliases:
-            - u2f
         - name: Authy
           id: support-authy
           groupId: org.apereo.cas
@@ -872,6 +1170,12 @@ initializr:
             - acct-mgmt
     - name: Monitoring & Observability
       content: 
+        - name: Monitoring MongoDb
+          id: support-mongo-monitor
+          groupId: org.apereo.cas
+          artifactId: cas-server-support-mongo-monitor
+          description: Apereo CAS MongoDB Monitoring
+          bom: cas-bom
         - name: Monitoring Hazelcast
           id: support-hazelcast-monitor
           groupId: org.apereo.cas
