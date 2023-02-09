@@ -170,8 +170,11 @@ dependencies {
     {{#dependencies}}
     implementation "{{groupId}}:{{artifactId}}"
     {{/dependencies}}
-
+ 
     {{#casServer}}
+    /**
+    * Do NOT modify the lines below or else you will risk breaking the build.
+    */
     implementation "org.apereo.cas:cas-server-core-api-configuration-model"
     implementation "org.apereo.cas:cas-server-webapp-init"
 
@@ -185,23 +188,18 @@ dependencies {
         }
     }
     {{/casServer}}
-
     {{#springBootAdminServer}}
     compileOnly "org.apereo.cas:cas-server-webapp-init-bootadmin-server"
     {{/springBootAdminServer}}
-
     {{#configServer}}
     compileOnly "org.apereo.cas:cas-server-webapp-init-config-server"
     {{/configServer}}
-
     {{#managementServer}}
     compileOnly "org.apereo.cas:cas-mgmt-webapp-init"
     {{/managementServer}}
-    
     {{#discoveryServer}}
     compileOnly "org.apereo.cas:cas-server-webapp-init-eureka-server"
     {{/discoveryServer}}
-    
     developmentOnly "org.springframework.boot:spring-boot-devtools:${project.springBootVersion}"
 }
 

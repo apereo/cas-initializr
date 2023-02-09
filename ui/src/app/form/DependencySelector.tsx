@@ -14,20 +14,24 @@ import {
     Divider,
     InputLabel,
     FormControl,
+    Menu,
+    MenuItem,
+    ListSubheader,
+    List,
 } from "@mui/material";
-import ButtonGroup from "@mui/material/ButtonGroup";
 import React from "react";
 import { Dependency } from "../data/Dependency";
 import {
     useDependencyList,
     useDependencyListTypes,
 } from "../store/OptionReducer";
-import { Close, HighlightOff } from "@mui/icons-material";
+import { Close, FilterAlt, HighlightOff } from "@mui/icons-material";
 import Fuse from "fuse.js";
-import { FixedSizeList, ListChildComponentProps } from "react-window";
+import { Components, GroupedVirtuoso } from "react-virtuoso";
 import { useOverlayDependencies } from "../store/OverlayReducer";
 
 import { useHotkeys } from "react-hotkeys-hook";
+import { groupBy } from "lodash";
 
 const options: Fuse.IFuseOptions<Dependency> = {
     includeScore: true,
@@ -43,49 +47,48 @@ export function useFuseSearchEngine(
     return React.useMemo(() => new Fuse(list, options), [list, options]);
 }
 
-function ItemRenderer(props: ListChildComponentProps) {
-    const { data, index, style } = props;
-    const record = data[index];
-
-    const { checked, id, type, description, name, handleToggle } = record;
-    return (
-        <ListItem style={style}>
-            <ListItemButton
-                role={undefined}
-                onClick={() => handleToggle(id)}
-            >
-                <ListItemIcon>
-                    <Checkbox
-                        edge="start"
-                        tabIndex={-1}
-                        checked={checked}
-                        disableRipple
-                    />
-                </ListItemIcon>
-                <ListItemText
-                    primary={
-                        <>
-                            {name}
-                            <Chip
-                                label={type}
-                                size="small"
-                                color="primary"
-                                style={{
-                                    marginLeft: "1rem",
-                                }}
-                            />
-                        </>
-                    }
-                    secondary={description}
-                />
-            </ListItemButton>
-        </ListItem>
-    );
-}
-
 export interface DependencySelectorProps {
     onSelectedChange(selected: string[]): void;
 }
+
+const ITEM_HEIGHT = 48;
+
+const VList: Components['List'] = React.forwardRef(({ style, children }: any, listRef) => {
+    return (
+        <List
+            style={{ padding: 0, ...style, margin: 0, width: '640px' }}
+            component="div"
+            ref={listRef}
+        >
+            {children}
+        </List>
+    );
+});
+
+const VItem: Components['Item'] = ({ children, ...props }: any) => {
+    return (
+        <ListItem component="div" {...props} style={{ margin: 0 }}>
+            {children}
+        </ListItem>
+    );
+};
+
+const VGroup: Components['Group'] = ({ children, style, ...props }: any) => {
+    return (
+        <ListSubheader
+            component="div"
+            {...props}
+            style={{
+                ...style,
+                margin: 0,
+            }}
+        >
+            {children}
+        </ListSubheader>
+    );
+};
+
+const MUIComponents = { List: VList, Item: VItem, Group: VGroup };
 
 export default function DependencySelector({ onSelectedChange }: DependencySelectorProps ) {
     const available = useDependencyList();
@@ -95,6 +98,8 @@ export default function DependencySelector({ onSelectedChange }: DependencySelec
     const [open, setOpen] = React.useState(false);
     const [search, setSearch] = React.useState<string>("");
     const [limited, setLimited] = React.useState<Dependency[]>([...available]);
+    const [groups, setGroups] = React.useState<string[]>([]);
+    const [groupCount, setGroupCount] = React.useState<number[]>([]);
     const [filterType, setFilterType] = React.useState<string | null>(null);
     const [filtered, setFiltered] = React.useState<Dependency[]>([...available]);
 
@@ -121,7 +126,11 @@ export default function DependencySelector({ onSelectedChange }: DependencySelec
     }, [filtered, engine]);
 
     React.useEffect(() => {
-        setLimited(getSearchResults(search));
+        const results = getSearchResults(search);
+        const grouped = groupBy(results, (item) => item.type);
+        setLimited(results);
+        setGroups(Object.keys(grouped));
+        setGroupCount(Object.values(grouped).map((item) => item.length));
     }, [search, available, getSearchResults]);
 
     const depTypes = useDependencyListTypes();
@@ -131,6 +140,21 @@ export default function DependencySelector({ onSelectedChange }: DependencySelec
     }, [filterType, available]);
 
     useHotkeys("ctrl+B", () => handleClickOpen(), [handleClickOpen]);
+
+    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+
+    const menuOpen = Boolean(anchorEl);
+    const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+    const handleMenuClose = () => {
+        setAnchorEl(null);
+    };
+
+    const selectFilterType = (type: string | null) => {
+        setFilterType(type);
+        handleMenuClose();
+    };
 
     return (
         <>
@@ -164,7 +188,7 @@ export default function DependencySelector({ onSelectedChange }: DependencySelec
                 <div
                     style={{ padding: "1rem 1.5rem 0", marginBottom: "1.5rem" }}
                 >
-                    <FormControl fullWidth sx={{ m: 1 }}>
+                    <FormControl fullWidth sx={{ marginBottom: 1 }}>
                         <InputLabel htmlFor="dep-search-select-helper-label">
                             Search
                         </InputLabel>
@@ -188,38 +212,81 @@ export default function DependencySelector({ onSelectedChange }: DependencySelec
                             }
                         />
                     </FormControl>
-                    <ButtonGroup
-                        variant="contained"
-                        aria-label="outlined primary button group"
-                        style={{ marginLeft: "0.5rem" }}
-                        size="small"
+                    <div
+                        style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                        }}
                     >
-                        <Button onClick={() => setFilterType(null)}>All</Button>
-                        {depTypes.map((type: string) => (
-                            <Button
-                                key={type}
-                                disabled={type === filterType}
-                                onClick={() => setFilterType(type)}
-                            >
-                                {type}
-                            </Button>
-                        ))}
-                    </ButtonGroup>
+                        <Button
+                            id="basic-button"
+                            aria-controls={open ? "basic-menu" : undefined}
+                            aria-haspopup="true"
+                            aria-expanded={open ? "true" : undefined}
+                            onClick={handleClick}
+                            startIcon={<FilterAlt />}
+                            variant="contained"
+                        >
+                            Filter
+                        </Button>
+                        <Menu
+                            id="basic-menu"
+                            anchorEl={anchorEl}
+                            open={menuOpen}
+                            onClose={handleMenuClose}
+                            MenuListProps={{
+                                "aria-labelledby": "basic-button",
+                            }}
+                            PaperProps={{
+                                style: {
+                                    maxHeight: ITEM_HEIGHT * 10.5,
+                                    width: "30ch",
+                                },
+                            }}
+                        >
+                            {depTypes.map((type: string) => (
+                                <MenuItem
+                                    key={type}
+                                    selected={type === filterType}
+                                    onClick={() => selectFilterType(type)}
+                                >
+                                    {type}
+                                </MenuItem>
+                            ))}
+                        </Menu>
+                        {filterType && <Chip sx={{marginLeft: '1rem'}} onDelete={() => selectFilterType(null)} label={filterType} />}
+                    </div>
                 </div>
                 <Divider />
-                <FixedSizeList
-                    itemData={limited.map((i) => ({
-                        ...i,
-                        handleToggle,
-                        checked: selected.indexOf(i.id) > -1,
-                    }))}
-                    height={1000}
-                    itemCount={limited.length}
-                    itemSize={72}
-                    width={640}
-                >
-                    {ItemRenderer}
-                </FixedSizeList>
+                <GroupedVirtuoso
+                    style={{ height: 1000 }}
+                    groupCounts={groupCount}
+                    components={MUIComponents}
+                    groupContent={(index: any) => <div>{groups[index]}</div>}
+                    itemContent={(index) => {
+                        const record = limited[index];
+                        const checked = selected.indexOf(record.id) > -1;
+
+                        const { id, description, name } = record;
+                        return (
+                            <ListItemButton onClick={() => handleToggle(id)}>
+                                <ListItemIcon>
+                                    <Checkbox
+                                        edge="start"
+                                        tabIndex={-1}
+                                        checked={checked}
+                                        disableRipple
+                                    />
+                                </ListItemIcon>
+                                <ListItemText
+                                    primary={<>{name}</>}
+                                    secondary={description}
+                                />
+                            </ListItemButton>
+                        );
+                    }}
+                />
             </Drawer>
         </>
     );
