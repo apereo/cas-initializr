@@ -270,7 +270,7 @@ initializr:
           bom: cas-bom
           aliases:
             - clickatell
-        - name: cas-server-support-sms-twilio
+        - name: Twilio
           id: support-sms-twilio
           groupId: org.apereo.cas
           artifactId: cas-server-support-sms-twilio

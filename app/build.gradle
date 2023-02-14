@@ -155,11 +155,13 @@ tasks.register('copyWrapperExecutables', Copy) {
 }
 
 def copyUIStatic = tasks.register('copyUIStatic', Copy) {
+    dependsOn tasks.findByPath(":ui:compileJava")
     from tasks.findByPath(":ui:buildWebapp").outputs
     into "${buildDir}/resources/main/static"
 }
 
 def copyUITemplates = tasks.register('copyUITemplates', Copy) {
+    dependsOn tasks.findByPath(":ui:compileJava")
     from tasks.findByPath(":ui:buildWebapp").outputs
     into "${buildDir}/resources/main/templates"
 }
