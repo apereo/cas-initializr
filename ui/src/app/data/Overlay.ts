@@ -15,4 +15,5 @@ export interface Overlay {
     dockerSupported: string;
     helmSupported: string;
     herokuSupported: string;
+    deploymentType: string;
 }
