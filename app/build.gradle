@@ -34,6 +34,14 @@ springBoot {
     mainClass.set("org.apereo.cas.CasInitializrApplication")
 }
 
+sourceSets {
+    main {
+        resources {
+            srcDir new File("${buildDir}/resources/main")
+        }
+    }
+}
+
 dependencies {
     implementation "org.jooq:jool:0.9.14"
     implementation "commons-io:commons-io:2.11.0"
@@ -45,6 +53,9 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-thymeleaf"
     implementation "org.springframework.boot:spring-boot-starter-actuator"
 
+    implementation("javax.cache:cache-api")
+    implementation("org.ehcache:ehcache")
+    
     implementation "io.spring.initializr:initializr-web"
     implementation "io.spring.initializr:initializr-actuator"
     implementation "io.spring.initializr:initializr-generator-spring"
@@ -156,12 +167,14 @@ tasks.register('copyWrapperExecutables', Copy) {
 
 def copyUIStatic = tasks.register('copyUIStatic', Copy) {
     dependsOn tasks.findByPath(":ui:compileJava")
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     from tasks.findByPath(":ui:buildWebapp").outputs
     into "${buildDir}/resources/main/static"
 }
 
 def copyUITemplates = tasks.register('copyUITemplates', Copy) {
     dependsOn tasks.findByPath(":ui:compileJava")
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     from tasks.findByPath(":ui:buildWebapp").outputs
     into "${buildDir}/resources/main/templates"
 }
@@ -169,7 +182,6 @@ def copyUITemplates = tasks.register('copyUITemplates', Copy) {
 rootProject.tasks["wrapper"].finalizedBy([copyWrapper, copyWrapperExecutables])
 build.dependsOn([copyWrapper, copyWrapperExecutables])
 
-def taskNames = gradle.startParameter.taskNames
-if (taskNames.contains("build")) {
-    processResources.dependsOn([copyUITemplates, copyUIStatic])
-}
+processResources.dependsOn = [bootBuildInfo, copyUITemplates, copyUIStatic] 
+processResources.duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+bootRun.dependsOn([copyUITemplates, copyUIStatic])

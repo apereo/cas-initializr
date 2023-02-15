@@ -1,5 +1,7 @@
 package org.apereo.cas.initializr.metadata;
 
+import org.apereo.cas.initializr.config.CasInitializrProperties;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -9,32 +11,43 @@ import io.spring.initializr.metadata.InitializrMetadata;
 import io.spring.initializr.web.support.InitializrMetadataUpdateStrategy;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.RegExUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.net.URL;
+import java.util.Comparator;
 import java.util.List;
-import java.util.UUID;
 
 @Slf4j
+@RequiredArgsConstructor
 public class CasOverlayInitializrMetadataUpdateStrategy implements InitializrMetadataUpdateStrategy {
-    private static final String METADATA_URL = "https://apereocas-42e7.restdb.io/rest/casmodules";
-
     private static final ObjectMapper MAPPER = new ObjectMapper()
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+    private final CasInitializrProperties initializrProperties;
 
     @Override
     public InitializrMetadata update(final InitializrMetadata current) {
         try {
-            var url = new URL(METADATA_URL);
-            var uc = url.openConnection();
-            uc.setRequestProperty("x-api-key", System.getenv("RESTDB_CAS_API_KEY"));
-            var dependencyMap = MAPPER.readValue(uc.getInputStream(),
-                new TypeReference<List<CasDependency>>() {
-                });
-            dependencyMap.forEach(entry -> addDependencyToMetadata(current, entry));
-            addDependencyToMetadata(current, dependencyMap.get(0));
+            if (StringUtils.isNotBlank(initializrProperties.getMetadataUrl()) &&
+                StringUtils.isNotBlank(initializrProperties.getMetadataApiKey())) {
+                var url = new URL(initializrProperties.getMetadataUrl());
+                var uc = url.openConnection();
+                uc.setRequestProperty("x-api-key", initializrProperties.getMetadataApiKey());
+                var dependencyMap = MAPPER.readValue(uc.getInputStream(),
+                    new TypeReference<List<CasDependency>>() {
+                    });
+                dependencyMap.sort(Comparator.comparing(o -> o.getDetails().getCategory()));
+                dependencyMap.forEach(entry -> addDependencyToMetadata(current, entry));
+                current.getDependencies().validate();
+            } else {
+                log.warn("Initializr metadata URL or api key are undefined");
+            }
         } catch (final Exception e) {
             log.error(e.getMessage(), e);
         }
@@ -54,15 +67,20 @@ public class CasOverlayInitializrMetadataUpdateStrategy implements InitializrMet
                 return newGroup;
             });
 
-        var dependency = new Dependency();
-        dependency.setBom("cas-bom");
-        dependency.setDescription(entry.getDescription());
-        dependency.setName(entry.getDetails().getTitle());
-        dependency.setId(UUID.randomUUID().toString());
-        dependency.setFacets(entry.getDetails().getFacets());
-        dependency.setArtifactId(entry.getName());
-        dependency.setGroupId(entry.getGroup());
-        group.getContent().add(dependency);
+        if (group.getContent().stream().noneMatch(d -> d.getName().equals(entry.getDetails().getTitle()))) {
+            var dependency = new Dependency();
+            dependency.setBom("cas-bom");
+            dependency.setDescription(entry.getDescription());
+            dependency.setName(entry.getDetails().getTitle());
+
+            var id = RegExUtils.removeAll(entry.getName(), "^cas-server-");
+            dependency.setId(id);
+            dependency.setFacets(ObjectUtils.defaultIfNull(entry.getDetails().getFacets(), List.of()));
+            dependency.setArtifactId(entry.getName());
+            dependency.setGroupId(entry.getGroup());
+            dependency.setAliases(ObjectUtils.defaultIfNull(entry.getDetails().getAliases(), List.of()));
+            group.getContent().add(dependency);
+        }
     }
 
     @Getter
