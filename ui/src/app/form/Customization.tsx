@@ -166,6 +166,46 @@ export default function Customization() {
                                         fullWidth
                                         style={{ marginBottom: "2rem" }}
                                     >
+                                        <InputLabel id="deployment-select-label">
+                                            Deployment Type
+                                        </InputLabel>
+                                        <Controller
+                                            control={control}
+                                            name="deploymentType"
+                                            render={({
+                                                field: {
+                                                    onChange,
+                                                    onBlur,
+                                                    value,
+                                                    ref,
+                                                },
+                                            }) => (
+                                                <Select
+                                                    labelId="deployment-select-label"
+                                                    id="deployment-select"
+                                                    label="Deployment Type"
+                                                    value={value}
+                                                    onChange={onChange}
+                                                    inputRef={ref}
+                                                    required
+                                                >
+                                                    <MenuItem value={"web"}>
+                                                        Web
+                                                    </MenuItem>
+                                                    <MenuItem
+                                                        value={"native"}
+                                                        disabled={true}
+                                                    >
+                                                        Native
+                                                    </MenuItem>
+                                                </Select>
+                                            )}
+                                        />
+                                    </FormControl>
+                                    <FormControl
+                                        fullWidth
+                                        style={{ marginBottom: "2rem" }}
+                                    >
                                         <TextField
                                             id="group-input"
                                             label="Group"
