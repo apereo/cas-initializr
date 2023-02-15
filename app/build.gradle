@@ -34,13 +34,13 @@ springBoot {
     mainClass.set("org.apereo.cas.CasInitializrApplication")
 }
 
-sourceSets {
-    main {
-        resources {
-            srcDir new File("${buildDir}/resources/main")
-        }
-    }
-}
+//sourceSets {
+//    main {
+//        resources {
+//            srcDir new File("${buildDir}/resources/main")
+//        }
+//    }
+//}
 
 dependencies {
     implementation "org.jooq:jool:0.9.14"
@@ -167,14 +167,14 @@ tasks.register('copyWrapperExecutables', Copy) {
 
 def copyUIStatic = tasks.register('copyUIStatic', Copy) {
     dependsOn tasks.findByPath(":ui:compileJava")
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+//    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     from tasks.findByPath(":ui:buildWebapp").outputs
     into "${buildDir}/resources/main/static"
 }
 
 def copyUITemplates = tasks.register('copyUITemplates', Copy) {
     dependsOn tasks.findByPath(":ui:compileJava")
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+//    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     from tasks.findByPath(":ui:buildWebapp").outputs
     into "${buildDir}/resources/main/templates"
 }
@@ -183,5 +183,5 @@ rootProject.tasks["wrapper"].finalizedBy([copyWrapper, copyWrapperExecutables])
 build.dependsOn([copyWrapper, copyWrapperExecutables])
 
 processResources.dependsOn = [bootBuildInfo, copyUITemplates, copyUIStatic] 
-processResources.duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+//processResources.duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 bootRun.dependsOn([copyUITemplates, copyUIStatic])
