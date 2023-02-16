@@ -3,7 +3,6 @@ import Fuse from 'fuse.js';
 
 export function highlight (value: string, indices = [], i: number = 1): any {
     const pair = indices[indices.length - i];
-
     return !pair ? (
         value
     ) : (
