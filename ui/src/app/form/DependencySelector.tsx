@@ -26,26 +26,14 @@ import {
     useDependencyListTypes,
 } from "../store/OptionReducer";
 import { Close, FilterAlt, HighlightOff } from "@mui/icons-material";
-import Fuse from "fuse.js";
+
 import { Components, GroupedVirtuoso } from "react-virtuoso";
 import { useOverlayDependencies } from "../store/OverlayReducer";
 
 import { useHotkeys } from "react-hotkeys-hook";
 import { groupBy } from "lodash";
-
-const options: Fuse.IFuseOptions<Dependency> = {
-    includeScore: true,
-    // Search in `author` and in `tags` array
-    minMatchCharLength: 3,
-    keys: ["id", "name"],
-};
-
-export function useFuseSearchEngine(
-    list: Dependency[],
-    options: Fuse.IFuseOptions<Dependency>
-) {
-    return React.useMemo(() => new Fuse(list, options), [list, options]);
-}
+import FuseHighlight from './Highlight';
+import { useFuse } from "../data/useFuse";
 
 export interface DependencySelectorProps {
     onSelectedChange(selected: string[]): void;
@@ -91,25 +79,49 @@ const VGroup: Components['Group'] = ({ children, style, ...props }: any) => {
 const MUIComponents = { List: VList, Item: VItem, Group: VGroup };
 
 export default function DependencySelector({ onSelectedChange }: DependencySelectorProps ) {
+    /* DATA FETCHING */
     const available = useDependencyList();
     const selected = useOverlayDependencies();
+    const depTypes = useDependencyListTypes();
 
-    const engine = useFuseSearchEngine(available, options);
+    /* STATE */
+    
     const [open, setOpen] = React.useState(false);
-    const [search, setSearch] = React.useState<string>("");
-    const [limited, setLimited] = React.useState<Dependency[]>([...available]);
-    const [groups, setGroups] = React.useState<string[]>([]);
-    const [groupCount, setGroupCount] = React.useState<number[]>([]);
     const [filterType, setFilterType] = React.useState<string | null>(null);
-    const [filtered, setFiltered] = React.useState<Dependency[]>([...available]);
+    const [searchQuery, setSearchQuery] = React.useState<string>('');
 
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
+    /* SEARCH */
 
-    const handleClose = () => {
-        setOpen(false);
-    };
+    const filtered = React.useMemo(() => filterType !== null
+                ? [...available].filter(
+                      (d: Dependency) => d.type === filterType
+                  )
+                : [...available], [filterType, available])
+;
+    const { hits, search } = useFuse<Dependency>(filtered, true, {
+        includeScore: true,
+        threshold: 0,
+        ignoreLocation: true,
+        useExtendedSearch: true,
+        includeMatches: true,
+        minMatchCharLength: 3,
+        keys: ["id", "name"],
+    });
+
+    const grouped = React.useMemo(() => groupBy([...hits], ({ item }) => item.type), [hits]);
+    const groups = React.useMemo(() => Object.keys(grouped), [grouped]);
+    const groupCount = React.useMemo(() => Object.values(grouped).map(({length}) => length), [grouped]);
+
+    React.useEffect(() => {
+        console.log(hits);
+    }, [hits]);
+
+    React.useEffect(() => {
+        search(searchQuery);
+    }, [searchQuery, search])
+
+
+    /* FILTER BY TYPE */
 
     const handleToggle = (val: string) => {
         onSelectedChange(
@@ -119,27 +131,12 @@ export default function DependencySelector({ onSelectedChange }: DependencySelec
         );
     };
 
-    const getSearchResults = React.useCallback((search: string) => {
-        return search.length > 0
-            ? engine.search(search).map((r) => r.item)
-            : [...filtered];
-    }, [filtered, engine]);
+    const selectFilterType = (type: string | null) => {
+        setFilterType(type);
+        handleMenuClose();
+    };
 
-    React.useEffect(() => {
-        const results = getSearchResults(search);
-        const grouped = groupBy(results, (item) => item.type);
-        setLimited(results);
-        setGroups(Object.keys(grouped));
-        setGroupCount(Object.values(grouped).map((item) => item.length));
-    }, [search, available, getSearchResults]);
-
-    const depTypes = useDependencyListTypes();
-
-    React.useEffect(() => {
-        setFiltered(filterType !== null ? [...available].filter((d: Dependency) => d.type === filterType) : [...available]);
-    }, [filterType, available]);
-
-    useHotkeys("ctrl+B", () => handleClickOpen(), [handleClickOpen]);
+    /* MENU */
 
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
@@ -151,10 +148,17 @@ export default function DependencySelector({ onSelectedChange }: DependencySelec
         setAnchorEl(null);
     };
 
-    const selectFilterType = (type: string | null) => {
-        setFilterType(type);
-        handleMenuClose();
+    /* HOTKEYS / OPEN & CLOSE */
+
+    const handleClickOpen = () => {
+        setOpen(true);
     };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    useHotkeys("ctrl+B", () => handleClickOpen(), [handleClickOpen]);
 
     return (
         <>
@@ -196,14 +200,16 @@ export default function DependencySelector({ onSelectedChange }: DependencySelec
                             id="dep-search-select-helper-label"
                             fullWidth
                             label="Search"
-                            value={search}
-                            onChange={(ev) => setSearch(ev.target.value)}
+                            value={searchQuery}
+                            onChange={(ev) =>
+                                setSearchQuery(ev.target.value.trim())
+                            }
                             endAdornment={
                                 <InputAdornment position="end">
                                     <IconButton
                                         aria-label="toggle password visibility"
-                                        onClick={() => setSearch("")}
-                                        onMouseDown={() => setSearch("")}
+                                        onClick={() => setSearchQuery("")}
+                                        onMouseDown={() => setSearchQuery("")}
                                         edge="end"
                                     >
                                         <HighlightOff />
@@ -255,38 +261,67 @@ export default function DependencySelector({ onSelectedChange }: DependencySelec
                                 </MenuItem>
                             ))}
                         </Menu>
-                        {filterType && <Chip sx={{marginLeft: '1rem'}} onDelete={() => selectFilterType(null)} label={filterType} />}
+                        {filterType && (
+                            <Chip
+                                sx={{ marginLeft: "1rem" }}
+                                onDelete={() => selectFilterType(null)}
+                                label={filterType}
+                            />
+                        )}
                     </div>
                 </div>
                 <Divider />
-                <GroupedVirtuoso
-                    style={{ height: 1000 }}
-                    groupCounts={groupCount}
-                    components={MUIComponents}
-                    groupContent={(index: any) => <div>{groups[index]}</div>}
-                    itemContent={(index) => {
-                        const record = limited[index];
-                        const checked = selected.indexOf(record.id) > -1;
+                {hits?.length < 1 ? (
+                    <div
+                        style={{
+                            padding: "1rem 1.5rem 0",
+                            marginBottom: "1.5rem",
+                            width: '600px'
+                        }}
+                    >
+                        {`No Results Found`}
+                    </div>
+                ) : (
+                    <GroupedVirtuoso
+                        style={{ height: 1000 }}
+                        groupCounts={groupCount}
+                        components={MUIComponents}
+                        groupContent={(index: any) => (
+                            <div>{groups[index]}</div>
+                        )}
+                        itemContent={(index) => {
+                            const record = hits[index];
+                            const { item } = record;
 
-                        const { id, description, name } = record;
-                        return (
-                            <ListItemButton onClick={() => handleToggle(id)}>
-                                <ListItemIcon>
-                                    <Checkbox
-                                        edge="start"
-                                        tabIndex={-1}
-                                        checked={checked}
-                                        disableRipple
+                            const checked = selected.indexOf(item.id) > -1;
+
+                            const { id, description } = item;
+                            return (
+                                <ListItemButton
+                                    onClick={() => handleToggle(id)}
+                                >
+                                    <ListItemIcon>
+                                        <Checkbox
+                                            edge="start"
+                                            tabIndex={-1}
+                                            checked={checked}
+                                            disableRipple
+                                        />
+                                    </ListItemIcon>
+                                    <ListItemText
+                                        primary={
+                                            <FuseHighlight
+                                                hit={record}
+                                                attribute="name"
+                                            />
+                                        }
+                                        secondary={description}
                                     />
-                                </ListItemIcon>
-                                <ListItemText
-                                    primary={<>{name}</>}
-                                    secondary={description}
-                                />
-                            </ListItemButton>
-                        );
-                    }}
-                />
+                                </ListItemButton>
+                            );
+                        }}
+                    />
+                )}
             </Drawer>
         </>
     );
