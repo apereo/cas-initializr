@@ -107,7 +107,7 @@ public class CasInitializrConfiguration {
     }
 
     @Bean
-    public InitializrMetadataUpdateStrategy initializrMetadataUpdateStrategy() {
-        return new CasOverlayInitializrMetadataUpdateStrategy();
+    public InitializrMetadataUpdateStrategy initializrMetadataUpdateStrategy(final CasInitializrProperties initializrProperties) {
+        return new CasOverlayInitializrMetadataUpdateStrategy(initializrProperties);
     }
 }
