@@ -19,7 +19,7 @@ export default function ShareOverlay({ overlay, disabled }: ShareOverlayProps) {
     const [open, setOpen] = React.useState(false);
 
     const url = React.useMemo(
-        () => `${APP_PATH}?${getOverlayQuery(overlay)}`,
+        () => `${APP_PATH}/starter.zip?${getOverlayQuery(overlay)}`,
         [overlay]
     );
 

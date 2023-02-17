@@ -79,8 +79,14 @@ export default function Initializr() {
 
     /*eslint-disable react-hooks/exhaustive-deps*/
     React.useEffect(() => {
-        const { dependencies = [...preselected] } = getOverlayFromQs();
+        let { dependencies = [...preselected] } = getOverlayFromQs();
+        if (!Array.isArray(dependencies) && typeof dependencies === 'string') {
+            dependencies = [dependencies];
+        }
+        
         dispatch(setDependencies(dependencies));
+
+        
     }, [defaultValues]);
 
     return (
