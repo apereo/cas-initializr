@@ -96,25 +96,23 @@ export default function DependencySelector({ onSelectedChange }: DependencySelec
                 ? [...available].filter(
                       (d: Dependency) => d.type === filterType
                   )
-                : [...available], [filterType, available])
-;
-    const { hits, search } = useFuse<Dependency>(filtered, true, {
+                : [...available], [filterType, available]);
+    
+    const options = React.useMemo(() => ({
         includeScore: true,
         threshold: 0,
         ignoreLocation: true,
-        useExtendedSearch: true,
+        useExtendedSearch: false,
         includeMatches: true,
-        minMatchCharLength: 3,
-        keys: ["id", "name"],
-    });
+        minMatchCharLength: searchQuery.length,
+        findAllMatches: false,
+        keys: ["name"],
+    }), [searchQuery]);
+    const { hits, search } = useFuse<Dependency>(filtered, true, options);
 
     const grouped = React.useMemo(() => groupBy([...hits], ({ item }) => item.type), [hits]);
     const groups = React.useMemo(() => Object.keys(grouped), [grouped]);
     const groupCount = React.useMemo(() => Object.values(grouped).map(({length}) => length), [grouped]);
-
-    React.useEffect(() => {
-        console.log(hits);
-    }, [hits]);
 
     React.useEffect(() => {
         search(searchQuery);
@@ -166,7 +164,7 @@ export default function DependencySelector({ onSelectedChange }: DependencySelec
                 + Add Dependencies
             </Button>
 
-            <Drawer open={open} onClose={handleClose} anchor="right" id="foo">
+            <Drawer open={open} onClose={handleClose} anchor="right" id="dependencies-drawer" sx={{width: '600px'}}>
                 <div
                     style={{
                         padding: "1rem 1.5rem 0",
@@ -192,7 +190,7 @@ export default function DependencySelector({ onSelectedChange }: DependencySelec
                 <div
                     style={{ padding: "1rem 1.5rem 0", marginBottom: "1.5rem" }}
                 >
-                    <FormControl fullWidth sx={{ marginBottom: 1 }}>
+                    <FormControl sx={{ marginBottom: 1, width: '600px' }}>
                         <InputLabel htmlFor="dep-search-select-helper-label">
                             Search
                         </InputLabel>
