@@ -48,7 +48,7 @@ curl http://localhost:8080/starter.zip -o cas.zip
 #### Generate a CAS overlay package as a compressed tarball that contains indicated modules/dependencies selected by their identifier:
 
 ```bash
-curl http://localhost:8080/starter.tgz -d dependencies=core | tar -xzvf -
+curl http://localhost:8080/starter.tgz -d dependencies=oidc | tar -xzvf -
 ```
 
 #### Generate a CAS overlay for a specific version:
@@ -56,7 +56,7 @@ curl http://localhost:8080/starter.tgz -d dependencies=core | tar -xzvf -
 Must specify the appropriate spring boot version for the specified casVersion.
 
 ```bash
-curl http://localhost:8080/starter.tgz -d "dependencies=core,oidc&casVersion=6.3.3&bootVersion=2.3.7.RELEASE" | tar  -xzvf -
+curl http://localhost:8080/starter.tgz -d "dependencies=oidc&casVersion=6.3.3&bootVersion=2.3.7.RELEASE" | tar  -xzvf -
 ```
 
 #### Generate overlay projects for other CAS related applications:
@@ -74,7 +74,7 @@ Type can be one of:
 #### Generate a CAS Overlay using latest cas-initializr deployed on heroku.com:
 
 ```bash
-curl https://casinit.herokuapp.com/starter.tgz -d "dependencies=core,bootadmin,metrics,gitsvc,jsonsvc,redis" | tar  -xzvf -
+curl https://casinit.herokuapp.com/starter.tgz -d "dependencies=oidc,jsonsvc" | tar  -xzvf -
 ```
 
 ## Dependency List
