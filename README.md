@@ -3,6 +3,8 @@
 CAS Initializr provides a build system and an API to dynamically generate 
 CAS overlays. The project is based on [Spring Initializr](https://github.com/spring-io/initializr).
 
+This service is ultimately deployed on Heroku and is available at: https://casinit.herokuapp.com
+
 ## Build
 
 You will need JDK 11 to run the CAS Initializr locally.
@@ -35,9 +37,18 @@ The service will be available on `http://localhost:8080`.
 
 ## User Interface
 
-CAS Initializr also presents a user interface, available at `https://casinit.herokuapp.com/ui`.
+CAS Initializr also presents a user interface, available at `$INITIALIZR_URL/ui`.
 
 ## Dependency Metadata & Ownership
+
+The metadata lists the capabilities of the CAS Initializr, that is the available options for all request parameters 
+(dependencies, type, bootVersion, etc.) The CAS Initializr user interface uses that information to initialize the select options and the tree of available dependencies.
+
+You can grab the metadata on the root endpoint with the appropriate Accept header:
+
+```bash
+curl -H 'Accept: application/json' $INITIALIZR_URL
+```     
 
 CAS Initializr fetches and consumes module and dependency metadata from an *internal* source or database, owned by the CAS project itself. 
 This source is managed and controlled by the CAS project itself where dependency metadata and list of feature modules are curated, enriched 
@@ -70,30 +81,33 @@ configuration options, features and flexibility that sit outside that use case a
 
 ## Generating a project
 
-#### Generate a vanilla CAS overlay:
+- Generate a vanilla CAS overlay:
 
 ```bash
-curl https://casinit.herokuapp.com/starter.zip -o cas.zip
+curl $INITIALIZR_URL/starter.zip -o cas.zip
 ```
 
-#### Generate a CAS overlay package as a compressed tarball that contains indicated modules/dependencies selected by their identifier:
+- Generate a CAS overlay package as a compressed tarball that contains indicated modules/dependencies selected by their identifier:
 
 ```bash
-curl https://casinit.herokuapp.com/starter.tgz -d dependencies=oidc | tar -xzvf -
+curl $INITIALIZR_URL/starter.tgz \
+  -d dependencies=oidc | tar -xzvf -
 ```
 
-#### Generate a CAS overlay for a specific version:
+- Generate a CAS overlay for a specific version:
 
 Must specify the appropriate spring boot version for the specified casVersion.
 
 ```bash
-curl https://casinit.herokuapp.com/starter.tgz -d "dependencies=oidc&casVersion=6.3.3&bootVersion=2.3.7.RELEASE" | tar  -xzvf -
+curl $INITIALIZR_URL/starter.tgz \
+  -d "dependencies=oidc&casVersion=6.3.3&bootVersion=2.3.7.RELEASE" | tar  -xzvf -
 ```
 
-#### Generate overlay projects for other CAS related applications:
+- Generate overlay projects for other CAS related applications:
 
 ```bash
-curl https://casinit.herokuapp.com/starter.tgz -d "type=cas-management-overlay" | tar  -xzvf -
+curl $INITIALIZR_URL/starter.tgz \
+  -d "type=cas-management-overlay" | tar  -xzvf -
 ```
 Type can be one of:
   - `cas-overlay` (default)
@@ -102,10 +116,11 @@ Type can be one of:
   - `cas-discovery-server-overlay`
   - `cas-management-overlay`
 
-#### Generate a CAS Overlay using latest cas-initializr deployed on heroku.com:
+- Generate a CAS Overlay using latest cas-initializr deployed on heroku.com:
 
 ```bash
-curl https://casinit.herokuapp.com/starter.tgz -d "dependencies=oidc,jsonsvc" | tar  -xzvf -
+curl $INITIALIZR_URL/starter.tgz \
+  -d "dependencies=oidc,jsonsvc" | tar  -xzvf -
 ```
 
 ## Dependency List
@@ -114,7 +129,7 @@ Dependencies that can be requested must be specified by their identifier. To see
 all dependencies supported and available by this service, you can invoke the following command:
 
 ```bash
-curl https://casinit.herokuapp.com/dependencies
+curl $INITIALIZR_URL/dependencies
 ```
 
 Typically, dependency identifiers match CAS dependency/module artifact names without the `cas-server-` prefix.
@@ -122,30 +137,11 @@ Typically, dependency identifiers match CAS dependency/module artifact names wit
 To see the CAS versions and projects are that supported by the CAS Initializr, you may invoke the following command:
 
 ```bash
-curl https://casinit.herokuapp.com/actuator/supportedVersions
+curl $INITIALIZR_URL/actuator/supportedVersions
 ```
 
 You may also see a full list of dependencies and their aliases as well as supported versions via:
 
 ```bash
-curl https://casinit.herokuapp.com/actuator/info
-```
-
-## Service metadata
-
-The metadata lists the capabilities of the service, 
-that is the available options for all request parameters 
-(dependencies, type, bootVersion, etc.) A client to the service 
-uses that information to initialize the select options and the tree of available dependencies.
-
-You can grab the metadata on the root endpoint with the appropriate Accept header:
-
-```bash
-curl -H 'Accept: application/json' https://casinit.herokuapp.com
-```     
-
-Or using `HTTPie`:
-
-```bash
-http https://casinit.herokuapp.com Accept:application/json
+curl $INITIALIZR_URL/actuator/info
 ```
