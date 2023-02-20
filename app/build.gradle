@@ -181,10 +181,6 @@ def copyUITemplates = tasks.register('copyUITemplates', Copy) {
 
 rootProject.tasks["wrapper"].finalizedBy([copyWrapper, copyWrapperExecutables])
 
-
-def taskNames = gradle.startParameter.taskNames
-if (taskNames.contains("build")) {
-    processResources.dependsOn([copyUITemplates, copyUIStatic])
-    build.dependsOn([copyWrapper, copyWrapperExecutables])
-}
+processResources.dependsOn([copyUITemplates, copyUIStatic])
+build.dependsOn([copyWrapper, copyWrapperExecutables])
 bootRun.dependsOn([copyUITemplates, copyUIStatic])
