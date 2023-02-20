@@ -35,7 +35,7 @@ The service will be available on `http://localhost:8080`.
 
 ## User Interface
 
-CAS Initializr also presents a user interface, available at `http://localhost:8080/ui`.
+CAS Initializr also presents a user interface, available at `https://casinit.herokuapp.com/ui`.
 
 ## Dependency Metadata & Ownership
 
