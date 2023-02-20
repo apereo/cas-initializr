@@ -100,7 +100,7 @@ Must specify the appropriate spring boot version for the specified casVersion.
 
 ```bash
 curl $INITIALIZR_URL/starter.tgz \
-  -d "dependencies=oidc&casVersion=6.3.3&bootVersion=2.3.7.RELEASE" | tar  -xzvf -
+  -d "dependencies=oidc&casVersion=6.6.5&bootVersion=2.7.3" | tar  -xzvf -
 ```
 
 - Generate overlay projects for other CAS related applications:
