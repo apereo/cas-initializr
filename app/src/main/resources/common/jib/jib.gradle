@@ -1,5 +1,11 @@
 apply plugin: "com.google.cloud.tools.jib"
 
+['jibDockerBuild', 'jibBuildTar', 'jib'].each { taskName ->
+    getTasksByName(taskName, true).each(it -> {
+        it.notCompatibleWithConfigurationCache("Jib is not compatible with configuration cache; See https://github.com/GoogleContainerTools/jib/issues/3132");
+    }); 
+}
+
 def imagePlatforms = project.dockerImagePlatform.split(",")
 def dockerUsername = providers.systemProperty("dockerUsername").getOrNull()
 def dockerPassword = providers.systemProperty("dockerPassword").getOrNull()
