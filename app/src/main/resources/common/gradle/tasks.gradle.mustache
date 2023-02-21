@@ -131,6 +131,15 @@ task zip(type: Zip) {
 }
 
 task createKeystore(group: "CAS", description: "Create CAS keystore") {
+    def dn = "CN=cas.example.org,OU=Example,OU=Org,C=US"
+    if (project.hasProperty("certificateDn")) {
+        dn = project.getProperty("certificateDn")
+    }
+    def subjectAltName = "dns:example.org,dns:localhost,ip:127.0.0.1"
+    if (project.hasProperty("certificateSubAltName")) {
+        subjectAltName = project.getProperty("certificateSubAltName")
+    }
+
     doFirst {
         def certDir = project.getProperty("certDir")
         def serverKeyStore = project.getProperty("serverKeystore")
@@ -140,15 +149,6 @@ task createKeystore(group: "CAS", description: "Create CAS keystore") {
         def serverCert = "$certDir/$exportedServerCert"
 
         mkdir certDir
-
-        def dn = "CN=cas.example.org,OU=Example,OU=Org,C=US"
-        if (project.hasProperty("certificateDn")) {
-            dn = project.getProperty("certificateDn")
-        }
-        def subjectAltName = "dns:example.org,dns:localhost,ip:127.0.0.1"
-        if (project.hasProperty("certificateSubAltName")) {
-            subjectAltName = project.getProperty("certificateSubAltName")
-        }
         // this will fail if thekeystore exists and has cert with cas alias already (so delete if you want to recreate)
         logger.info "Generating keystore for CAS with DN ${dn}"
         exec {
@@ -173,10 +173,12 @@ task createKeystore(group: "CAS", description: "Create CAS keystore") {
 
 task unzipWAR(type: Copy, group: "CAS", description: "Explodes the CAS web application archive") {
     dependsOn 'build'
+    def destination = "${buildDir}/app"
+
     from zipTree("build/libs/{{appName}}.war")
-    into "${buildDir}/app"
+    into "${destination}"
     doLast {
-        println "Unzipped WAR into ${buildDir}/app"
+        println "Unzipped WAR into ${destination}"
     }
 }
 
@@ -221,7 +223,7 @@ task unzip(type: Copy, group: "CAS", description: "Explodes the CAS archive and 
     }
 }
 
-task downloadShell(group: "Shell", description: "Download CAS shell jar from snapshot or release maven repo") {
+task downloadShell(group: "Shell", description: "Download CAS shell jar from snapshot or release maven repo", type: Download) {
     def shellDir = project.providers.gradleProperty("shellDir").get()
     def casVersion = project.providers.gradleProperty("cas.version").get()
     def downloadFile
@@ -238,12 +240,10 @@ task downloadShell(group: "Shell", description: "Download CAS shell jar from sna
         downloadFile = "https://repo1.maven.org/maven2/org/apereo/cas/cas-server-support-shell/${casVersion}/cas-server-support-shell-${casVersion}.jar"
     }
     new File("${shellDir}").mkdir()
-        logger.info "Downloading file: ${downloadFile}"
-        download {
-            src downloadFile
-            dest new File("${shellDir}", "cas-server-support-shell-${casVersion}.jar")
-            overwrite false
-        }
+    logger.info "Downloading file: ${downloadFile}"
+    src downloadFile
+    dest new File("${shellDir}", "cas-server-support-shell-${casVersion}.jar")
+    overwrite false
 }
 
 task runShell(group: "Shell", description: "Run the CAS shell") {
@@ -268,25 +268,27 @@ task debugShell(group: "Shell", description: "Run the CAS shell with debug optio
 task listTemplateViews(group: "CAS", description: "List all CAS views") {
     dependsOn unzip
 
+    def templateViews = fileTree(explodedResourcesDir).matching {
+        include "**/*.html"
+    }
+    .collect {
+        return it.path.replace(explodedResourcesDir, "")
+    }
+    .toSorted()
+
     doFirst {
-        fileTree(explodedResourcesDir).matching {
-            include "**/*.html"
-        }
-        .collect {
-            return it.path.replace(explodedResourcesDir, "")
-        }
-        .toSorted()
-        .each { println it }
+        templateViews.each { println it }
     }
 }
 
 task getResource(group: "CAS", description: "Fetch a CAS resource and move it into the overlay") {
     dependsOn unzip
 
+    def resourceName = project.providers.gradleProperty("resourceName").getOrNull()
+    def resourcesDirectory = fileTree(explodedResourcesDir)
+    
     doFirst {
-        def resourceName = project.getProperty("resourceName")
-
-        def results = fileTree(explodedResourcesDir).matching {
+        def results = resourcesDirectory.matching {
             include "**/${resourceName}.*"
             include "**/${resourceName}"
         }
@@ -319,8 +321,9 @@ task getResource(group: "CAS", description: "Fetch a CAS resource and move it in
 }
 
 task createTheme(group: "CAS", description: "Create theme directory structure in the overlay") {
+    def theme = project.providers.gradleProperty("theme").getOrNull()
+
     doFirst {
-        def theme = project.getProperty("theme")
         def builder = new FileTreeBuilder()
         new File("src/main/resources/${theme}.properties").delete()
 
