@@ -222,45 +222,45 @@ task unzip(type: Copy, group: "CAS", description: "Explodes the CAS archive and 
 }
 
 task downloadShell(group: "Shell", description: "Download CAS shell jar from snapshot or release maven repo") {
-    doFirst {
-        mkdir "${project.shellDir}"
-    }
-    doLast {
-        def downloadFile
-        if (isRunningCasServerSnapshot()) {
-            def snapshotDir = "https://oss.sonatype.org/content/repositories/snapshots/org/apereo/cas/cas-server-support-shell/${project.'cas.version'}/"
-            def files = new org.apache.ivy.util.url.ApacheURLLister().listFiles(new URL(snapshotDir))
-            files = files.sort { it.path }
-            files.each {
-                if (it.path.endsWith(".jar")) {
-                    downloadFile = it
-                }
+    def shellDir = project.providers.gradleProperty("shellDir").get()
+    def casVersion = project.providers.gradleProperty("cas.version").get()
+    def downloadFile
+    if (casVersion.contains("-SNAPSHOT")) {
+        def snapshotDir = "https://oss.sonatype.org/content/repositories/snapshots/org/apereo/cas/cas-server-support-shell/${casVersion}/"
+        def files = new org.apache.ivy.util.url.ApacheURLLister().listFiles(new URL(snapshotDir))
+        files = files.sort { it.path }
+        files.each {
+            if (it.path.endsWith(".jar")) {
+                downloadFile = it
             }
-        } else {
-            downloadFile = "https://repo1.maven.org/maven2/org/apereo/cas/cas-server-support-shell/${project.'cas.version'}/cas-server-support-shell-${project.'cas.version'}.jar"
         }
+    } else {
+        downloadFile = "https://repo1.maven.org/maven2/org/apereo/cas/cas-server-support-shell/${casVersion}/cas-server-support-shell-${casVersion}.jar"
+    }
+    new File("${shellDir}").mkdir()
         logger.info "Downloading file: ${downloadFile}"
         download {
             src downloadFile
-            dest new File("${project.shellDir}", "cas-server-support-shell-${project.'cas.version'}.jar")
+            dest new File("${shellDir}", "cas-server-support-shell-${casVersion}.jar")
             overwrite false
         }
-    }
 }
 
 task runShell(group: "Shell", description: "Run the CAS shell") {
     dependsOn downloadShell
+    def casVersion = project.providers.gradleProperty("cas.version").get()
     doLast {
-        println "Run the following command to launch the shell:\n\tjava -jar ${project.shellDir}/cas-server-support-shell-${project.'cas.version'}.jar"
+        println "Run the following command to launch the shell:\n\tjava -jar ${project.shellDir}/cas-server-support-shell-${casVersion}.jar"
     }
 }
 
 task debugShell(group: "Shell", description: "Run the CAS shell with debug options, wait for debugger on port 5005") {
     dependsOn downloadShell
+    def casVersion = project.providers.gradleProperty("cas.version").get()
     doLast {
         println """
         Run the following command to launch the shell:\n\t
-        java -Xrunjdwp:transport=dt_socket,address=5000,server=y,suspend=y -jar ${project.shellDir}/cas-server-support-shell-${project.'cas.version'}.jar
+        java -Xrunjdwp:transport=dt_socket,address=5000,server=y,suspend=y -jar ${project.shellDir}/cas-server-support-shell-${casVersion}.jar
         """
     }
 }
@@ -317,11 +317,6 @@ task getResource(group: "CAS", description: "Fetch a CAS resource and move it in
         println "Copied file ${resourceFile} to ${toResourceFile}"
     }
 }
-
-def isRunningCasServerSnapshot() {
-    return "${project.'cas.version'}".contains("-SNAPSHOT")
-}
-
 
 task createTheme(group: "CAS", description: "Create theme directory structure in the overlay") {
     doFirst {
