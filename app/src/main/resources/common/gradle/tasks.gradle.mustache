@@ -286,7 +286,8 @@ task getResource(group: "CAS", description: "Fetch a CAS resource and move it in
 
     def resourceName = project.providers.gradleProperty("resourceName").getOrNull()
     def resourcesDirectory = fileTree(explodedResourcesDir)
-    
+    def projectDirectory = projectDir
+
     doFirst {
         def results = resourcesDirectory.matching {
             include "**/${resourceName}.*"
@@ -307,15 +308,13 @@ task getResource(group: "CAS", description: "Fetch a CAS resource and move it in
 
         def fromFile = explodedResourcesDir
         def resourcesDir = "src/main/resources"
-        mkdir resourcesDir
+        new File(resourcesDir).mkdir()
 
         def resourceFile = results[0].canonicalPath
-        def toResourceFile = resourceFile.replace(fromFile, resourcesDir)
-
-        def parent = file(toResourceFile).getParent()
-        mkdir parent
-
-        Files.copy(Paths.get(resourceFile), Paths.get(toResourceFile), StandardCopyOption.REPLACE_EXISTING)
+        def toResourceFile = new File("${projectDirectory}", resourceFile.replace(fromFile, resourcesDir))
+        toResourceFile.getParentFile().mkdirs()
+     
+        Files.copy(Paths.get(resourceFile), Paths.get(toResourceFile.absolutePath), StandardCopyOption.REPLACE_EXISTING)
         println "Copied file ${resourceFile} to ${toResourceFile}"
     }
 }
