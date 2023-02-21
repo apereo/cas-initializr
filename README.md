@@ -50,10 +50,10 @@ You can grab the metadata on the root endpoint with the appropriate Accept heade
 curl -H 'Accept: application/json' $INITIALIZR_URL
 ```     
 
-CAS Initializr fetches and consumes module and dependency metadata from an *internal* source or database, owned by the CAS project itself. 
+CAS Initializr fetches and consumes module and dependency metadata from an *internal* source or database, owned by the CAS project. 
 This source is managed and controlled by the CAS project itself where dependency metadata and list of feature modules are curated, enriched 
 and then published. Remember that CAS Initializr does its work in service to the CAS project itself; it has no other customer or 
-client, is not designed as general-purpose library or service and does not strictly-speaking serve any other use case. This means that 
+client, is not designed as a general-purpose library or service and does not strictly-speaking serve any other use case. This means that 
 if you intend to run the project locally for your own purposes or in any other way that does not align with the current deployment parameters, 
 you will need to teach your CAS Initializr instance about your modules and dependencies and own that task going forward. 
 
