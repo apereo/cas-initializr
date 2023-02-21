@@ -125,14 +125,6 @@ war {
     enabled = false
 }
 
-sourceSets {
-    bootRunSources {
-        resources {
-            srcDirs new File("//etc/cas/templates/"), new File("${project.getProjectDir()}/src/main/resources/")
-        }
-    }
-}
-
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(project.targetCompatibility)
