@@ -2,7 +2,8 @@ apply plugin: "com.google.cloud.tools.jib"
 
 ['jibDockerBuild', 'jibBuildTar', 'jib'].each { taskName ->
     getTasksByName(taskName, true).each(it -> {
-        it.notCompatibleWithConfigurationCache("Jib is not compatible with configuration cache; See https://github.com/GoogleContainerTools/jib/issues/3132");
+        it.notCompatibleWithConfigurationCache("Jib is not compatible with configuration cache");
+        it.enabled = !gradle.startParameter.isConfigurationCacheRequested()
     }); 
 }
 
@@ -11,6 +12,14 @@ def dockerUsername = providers.systemProperty("dockerUsername").getOrNull()
 def dockerPassword = providers.systemProperty("dockerPassword").getOrNull()
 
 jib {
+    if (gradle.startParameter.isConfigurationCacheRequested()) {
+        def fg = 31
+        def bg = 49
+        def style = "${(char)27}[$fg;$bg"+"m"
+        println(style + "Running Jib tasks will require the command-line option: --no-configuration-cache")
+        println(style + "Jib does not support the Gradle configuration cache; Please see https://github.com/GoogleContainerTools/jib/issues/3132")
+        println(style + "Jib tasks are disabled.")
+    }
     from {
         image = project.baseDockerImage
         platforms {

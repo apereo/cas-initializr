@@ -34,7 +34,7 @@ function updateImage() {
   cd tmp/$type
   echo
   echo "Building War and Jib Docker Image for ${type}"
-  ./gradlew clean build jibBuildTar --refresh-dependencies
+  ./gradlew clean build jibBuildTar --refresh-dependencies --no-configuration-cache
 
   echo "Loading ${type} image into k3s"
   sudo k3s ctr image import build/jib-image.tar
