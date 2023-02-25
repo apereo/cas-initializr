@@ -9,7 +9,7 @@ function downloadTomcat() {
   tomcatMajorVersion=$(echo "$tomcatVersion" | cut -d. -f1)
   tomcatDir="tomcat-${tomcatMajorVersion}"
   
-  tomcatUrl="https://downloads.apache.org/tomcat/${tomcatDir}/${tomcatVersionTag}/bin/apache-tomcat-${tomcatVersion}.zip"
+  tomcatUrl="https://archive.apache.org/dist/tomcat/${tomcatDir}/${tomcatVersionTag}/bin/apache-tomcat-${tomcatVersion}.zip"
 
   export CATALINA_HOME=./apache-tomcat-${tomcatVersion}
   rm -Rf "${CATALINA_HOME}" > /dev/null 2>&1
