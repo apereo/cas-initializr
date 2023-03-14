@@ -19,7 +19,7 @@ public class CasInitializrProperties {
 
     private List<SupportedVersion> supportedVersions = new ArrayList<>();
 
-    private String metadataUrl = "https://apereocas-42e7.restdb.io/rest/casmodules";
+    private String metadataUrl;
 
     private String metadataApiKey;
 }

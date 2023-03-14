@@ -1,5 +1,6 @@
 cas-initializr:
-  metadata-api-key: ${RESTDB_CAS_API_KEY:true}
+  metadata-api-key: ${CAS_PROJECT_DB_API_KEY:}
+  metadata-url: ${CAS_PROJECT_DB_URL_ENDPOINT:}
 server:
   port: ${PORT:8080}
   ssl:

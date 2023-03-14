@@ -3,7 +3,6 @@ name: Initializr Helm Charts
 env:
   TERM: xterm-256color
   JDK_CURRENT: 17
-  RESTDB_CAS_API_KEY: ${{ secrets.RESTDB_CAS_API_KEY }}
   JDK_DISTRO: 'temurin'
 
 ##########################################################################

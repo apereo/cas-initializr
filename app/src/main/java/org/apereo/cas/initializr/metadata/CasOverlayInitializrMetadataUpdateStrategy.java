@@ -15,13 +15,19 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.RegExUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.web.client.RestTemplate;
 
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -36,14 +42,24 @@ public class CasOverlayInitializrMetadataUpdateStrategy implements InitializrMet
         try {
             if (StringUtils.isNotBlank(initializrProperties.getMetadataUrl()) &&
                 StringUtils.isNotBlank(initializrProperties.getMetadataApiKey())) {
-                var url = new URL(initializrProperties.getMetadataUrl());
-                var uc = url.openConnection();
-                uc.setRequestProperty("x-api-key", initializrProperties.getMetadataApiKey());
-                var dependencyMap = MAPPER.readValue(uc.getInputStream(),
-                    new TypeReference<List<CasDependency>>() {
-                    });
-                dependencyMap.sort(Comparator.comparing(o -> o.getDetails().getCategory()));
-                dependencyMap.forEach(entry -> addDependencyToMetadata(current, entry));
+
+                var url = new URL(initializrProperties.getMetadataUrl().concat("/action/find"));
+                var uc = (HttpURLConnection) url.openConnection();
+                uc.setRequestMethod("POST");
+                uc.setRequestProperty("Content-Type", "application/json");
+                uc.setRequestProperty("api-key", initializrProperties.getMetadataApiKey());
+                uc.setDoOutput(true);
+                var coords = "{\"collection\":\"casmodules\",\"database\":\"apereocas\",\"dataSource\":\"cascluster\"}";
+                var out = coords.getBytes(StandardCharsets.UTF_8);
+                uc.setFixedLengthStreamingMode(out.length);
+                uc.connect();
+                try(var os = uc.getOutputStream()) {
+                    os.write(out);
+                }
+                var dependencyMap = MAPPER.readValue(uc.getInputStream(), Map.class);
+                var allDependencies = MAPPER.convertValue(dependencyMap.get("documents"), new TypeReference<List<CasDependency>>() {});
+                allDependencies.sort(Comparator.comparing(o -> o.getDetails().getCategory()));
+                allDependencies.forEach(entry -> addDependencyToMetadata(current, entry));
                 current.getDependencies().validate();
             } else {
                 log.warn("Initializr metadata URL or api key are undefined");

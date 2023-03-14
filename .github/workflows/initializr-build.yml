@@ -6,7 +6,6 @@ env:
   DOCKER_USER: ${{ secrets.DOCKER_USER }}
   DOCKER_PWD: ${{ secrets.DOCKER_PWD }}
   GH_TOKEN: ${{ secrets.GH_TOKEN }}
-  RESTDB_CAS_API_KEY: ${{ secrets.RESTDB_CAS_API_KEY }}
 
 ##########################################################################
 
