@@ -43,7 +43,10 @@ public class CasOverlayInitializrMetadataUpdateStrategy implements InitializrMet
             if (StringUtils.isNotBlank(initializrProperties.getMetadataUrl()) &&
                 StringUtils.isNotBlank(initializrProperties.getMetadataApiKey())) {
 
-                var url = new URL(initializrProperties.getMetadataUrl().concat("/action/find"));
+                var findUrl = initializrProperties.getMetadataUrl().trim().concat("/action/find");
+                log.debug("Fetching CAS modules from {}", findUrl);
+                
+                var url = new URL(findUrl);
                 var uc = (HttpURLConnection) url.openConnection();
                 uc.setRequestMethod("POST");
                 uc.setRequestProperty("Content-Type", "application/json");
