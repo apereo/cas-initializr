@@ -222,8 +222,8 @@ jobs:
         if: ${{ matrix.versions.validate == true }}
         with:
           name: binary-artifacts
-      # - name: Setup tmate session
-      #   uses: mxschmitt/action-tmate@v3
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
       - name: Validate Overlay
         if: ${{ matrix.versions.validate == true }}
         run: |
