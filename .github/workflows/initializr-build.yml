@@ -6,6 +6,8 @@ env:
   DOCKER_USER: ${{ secrets.DOCKER_USER }}
   DOCKER_PWD: ${{ secrets.DOCKER_PWD }}
   GH_TOKEN: ${{ secrets.GH_TOKEN }}
+  CAS_PROJECT_DB_URL_ENDPOINT: ${{ secrets.CAS_PROJECT_DB_URL_ENDPOINT }}
+  CAS_PROJECT_DB_API_KEY: ${{ secrets.CAS_PROJECT_DB_API_KEY }}
 
 ##########################################################################
 
@@ -110,7 +112,7 @@ jobs:
         run: echo "supported-versions=$(./gradlew --no-daemon -q versions-cas-mgmt)" >> $GITHUB_OUTPUT
   ##########################################################################
   sync-cas-mgmt-overlay:
-    needs: [ supported-versions-cas-mgmt ]
+    needs: [ supported-versions-cas-mgmt,validate-cas-mgmt-overlay ]
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -137,7 +139,7 @@ jobs:
         run: ./ci/sync-overlay.sh ${{ matrix.versions.version }} ${{ matrix.versions.boot-version }} ${{ matrix.versions.branch }} cas-management-overlay
   ##########################################################################
   sync-cas-overlay:
-    needs: [ supported-versions-cas ]
+    needs: [ supported-versions-cas,validate-cas-overlay ]
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -258,7 +260,7 @@ jobs:
           ./ci/validate-cas-configserver-overlay.sh --cas ${{ matrix.versions.version }} \
             --apache-tomcat ${{ matrix.versions.tomcat-version }}
   sync-cas-configserver-overlay:
-    needs: [ supported-versions-cas ]
+    needs: [ supported-versions-cas,validate-cas-configserver-overlay ]
     runs-on: ubuntu-latest
     strategy:
       matrix:
