@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath "org.yaml:snakeyaml:1.33"
+        classpath "org.yaml:snakeyaml:2.0"
     }
 }
 
@@ -43,9 +43,9 @@ springBoot {
 //}
 
 dependencies {
-    implementation "org.jooq:jool:0.9.14"
+    implementation "org.jooq:jool:0.9.15"
     implementation "commons-io:commons-io:2.11.0"
-    implementation "org.eclipse.jgit:org.eclipse.jgit:6.4.0.202211300538-r"
+    implementation "org.eclipse.jgit:org.eclipse.jgit:6.5.0.202303070854-r"
     implementation "com.github.vladimir-bukhtoyarov:bucket4j-core:7.6.0"
     implementation "com.github.spullara.mustache.java:compiler:0.9.10"
     

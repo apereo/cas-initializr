@@ -6,7 +6,7 @@ set -e
 
 cd tmp/cas-overlay
 
-imageTag=$(./gradlew casVersion --q)
+imageTag=$(./gradlew casVersion --q --no-configuration-cache)
 echo "Image tag is ${imageTag}"
 
 cd helm
