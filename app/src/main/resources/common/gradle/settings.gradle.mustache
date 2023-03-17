@@ -2,11 +2,11 @@ rootProject.name = '{{artifactId}}'
 
 dependencyResolutionManagement {
     repositories {
-        if (rootProject.privateRepoUrl) {
+        if (settings.hasProperty('privateRepoUrl')) {
             maven {
-                url rootProject.privateRepoUrl
+                url settings.privateRepoUrl
                 credentials {
-                    username = rootProject.privateRepoUsername
+                    username = settings.privateRepoUsername
                     password = System.env.PRIVATE_REPO_TOKEN
                 }
             }
