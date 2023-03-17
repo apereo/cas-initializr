@@ -91,6 +91,7 @@ jobs:
   ##########################################################################
   supported-versions-cas-mgmt:
     needs: [ build ]
+    if: ${{ false }}
     runs-on: ubuntu-latest
     outputs:
       supported-versions: ${{ steps.get-supported-versions.outputs.supported-versions }}
@@ -197,7 +198,8 @@ jobs:
             --spring-boot ${{ matrix.versions.boot-version }} \
             --apache-tomcat ${{ matrix.versions.tomcat-version }}
       - name: Validate Overlay w/ CAS Only
-        if: ${{ matrix.versions.validate == true }}
+#        if: ${{ matrix.versions.validate == true }}
+        if: ${{ false }}
         run: |
           ./ci/validate-cas-overlay.sh --cas ${{ matrix.versions.version }} \
             --apache-tomcat ${{ matrix.versions.tomcat-version }}

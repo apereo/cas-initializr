@@ -6,5 +6,7 @@
       ":semanticCommits",
       ":semanticCommitTypeAll(renovatebot)"
     ],
-    "labels": ["dependencies", "bot"]
+    "labels": ["dependencies", "bot"],
+    "rebaseWhen" : "never",
+    "automerge": false
   }
