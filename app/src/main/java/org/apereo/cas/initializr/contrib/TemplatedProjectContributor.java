@@ -110,10 +110,10 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
     public void contribute(final Path projectRoot) throws IOException {
         if (resourcePattern.endsWith("/**")) {
             val resources = resolver.getResources(resourcePattern);
+            
             for (val resource : resources) {
                 if (resource.isReadable()) {
-                    val filename = StringUtils.remove(resource.getFilename(), ".mustache");
-                    val output = projectRoot.resolve(StringUtils.appendIfMissing(relativePath, "/") + filename);
+                    val output = determineOutputResourcePath(projectRoot, resource);
                     log.info("Output file {}", output.toFile().getAbsolutePath());
                     createFileAndParentDirectories(output);
                     var templateVariables = getProjectTemplateVariables();
@@ -126,6 +126,15 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         } else {
             processTemplatedFile(projectRoot.resolve(relativePath));
         }
+    }
+
+    protected Path determineOutputResourcePath(final Path projectRoot, final Resource resource) throws IOException {
+        val filename = determineOutputResourceFileName(resource);
+        return projectRoot.resolve(StringUtils.appendIfMissing(relativePath, "/") + filename);
+    }
+
+    protected String determineOutputResourceFileName(final Resource resource) throws IOException {
+        return StringUtils.remove(resource.getFilename(), ".mustache");
     }
 
     private Map<String, Object> getProjectTemplateVariables() {
@@ -227,7 +236,7 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
 
         val dockerSupported = getOverlayProjectDescription().isDockerSupported();
         templateVariables.put("dockerSupported", dockerSupported);
-
+        
         templateVariables.put("containerImageName", StringUtils.remove(type, "-overlay"));
         templateVariables.put("containerImageOrg", "apereo");
 
@@ -243,6 +252,7 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
             templateVariables.put("appName", "cas-management");
         }
         if (type.equalsIgnoreCase(CasOverlayBuildSystem.ID)) {
+            templateVariables.put("puppeteerSupported", getOverlayProjectDescription().isPuppeteerSupported());
             templateVariables.put("casServer", Boolean.TRUE);
             templateVariables.put("appName", "cas");
         }

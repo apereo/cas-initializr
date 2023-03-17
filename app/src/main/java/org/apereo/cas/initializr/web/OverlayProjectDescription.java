@@ -21,6 +21,7 @@ public class OverlayProjectDescription extends MutableProjectDescription {
 
     private boolean herokuSupported;
 
+    private boolean puppeteerSupported;
 
     public String resolveCasVersion(final BillOfMaterials billOfMaterials) {
         return StringUtils.defaultIfBlank(this.casVersion, billOfMaterials.getVersion());

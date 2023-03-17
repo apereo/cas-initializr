@@ -356,6 +356,42 @@ export default function Customization() {
                                             />
                                         )}
                                     />
+                                    <Controller
+                                        control={control}
+                                        name="puppeteerSupported"
+                                        render={({
+                                                     field: {
+                                                         onChange,
+                                                         onBlur,
+                                                         value,
+                                                         ref,
+                                                     },
+                                                 }) => (
+                                            <FormControlLabel
+                                                control={
+                                                    <Checkbox
+                                                        checked={
+                                                            value === "true"
+                                                                ? true
+                                                                : false
+                                                        }
+                                                        onChange={(
+                                                            event: React.ChangeEvent<HTMLInputElement>
+                                                        ) =>
+                                                            onChange(
+                                                                event.target
+                                                                    .checked
+                                                                    ? "true"
+                                                                    : "false"
+                                                            )
+                                                        }
+                                                    />
+                                                }
+                                                label="Puppeteer"
+                                                labelPlacement="end"
+                                            />
+                                        )}
+                                    />
                                 </AccordionDetails>
                             </Accordion>
                         </React.Fragment>
