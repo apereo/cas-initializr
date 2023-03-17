@@ -2,75 +2,10 @@ import org.apache.tools.ant.taskdefs.condition.*
 import org.gradle.internal.logging.text.*
 import org.apereo.cas.metadata.*
 import java.nio.file.*
-import static org.gradle.internal.logging.text.StyledTextOutput.Style
-
-dependencies {
-{{^springDependencyMgmt}}
-    /**
-    * Do NOT modify the lines below or else you will risk breaking dependency management.
-    */
-    {{#managementServer}}
-    implementation enforcedPlatform("org.apereo.cas:cas-mgmt-support-bom:${project.'casmgmt.version'}")
-    implementation enforcedPlatform("org.apereo.cas:cas-server-support-bom:${project.'cas.version'}")
-    {{/managementServer}}
-    {{^managementServer}}
-    implementation enforcedPlatform("org.apereo.cas:cas-server-support-bom:${project.'cas.version'}")
-    {{/managementServer}}
-    implementation platform(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES)
-{{/springDependencyMgmt}}
-
-    /**
-    * CAS dependencies and modules may be listed here.
-    *
-    * There is no need to specify the version number for each dependency
-    * since versions are all resolved and controlled by the dependency management
-    * plugin via the CAS bom.
-    * 
-    * For example:
-    *   implementation "org.apereo.cas:cas-server-example-module"
-    **/
-{{#dependencies}}
-    implementation "{{groupId}}:{{artifactId}}"
-{{/dependencies}}
-
-
-
-{{#casServer}}
-    /**********************************************************************
-    * Do NOT modify the lines below or else you will risk breaking the build.
-    ***********************************************************************/
-    implementation "org.apereo.cas:cas-server-core-api-configuration-model"
-    implementation "org.apereo.cas:cas-server-webapp-init"
-
-    if (project.hasProperty("casModules")) {
-        def dependencies = project.getProperty("casModules").split(",")
-        dependencies.each {
-            def projectsToAdd = rootProject.subprojects.findAll { project ->
-                project.name == "cas-server-core-${it}" || project.name == "cas-server-support-${it}"
-            }
-            projectsToAdd.each {implementation it}
-        }
-    }
-{{/casServer}}
-
-{{#springBootAdminServer}}
-    compileOnly "org.apereo.cas:cas-server-webapp-init-bootadmin-server"
-{{/springBootAdminServer}}
-{{#configServer}}
-    compileOnly "org.apereo.cas:cas-server-webapp-init-config-server"
-{{/configServer}}
-{{#managementServer}}
-    compileOnly "org.apereo.cas:cas-mgmt-webapp-init"
-{{/managementServer}}
-{{#discoveryServer}}
-    compileOnly "org.apereo.cas:cas-server-webapp-init-eureka-server"
-{{/discoveryServer}}
-    developmentOnly "org.springframework.boot:spring-boot-devtools:${project.springBootVersion}"
-}
-
+import static org.gradle.internal.logging.text.StyledTextOutput.*
 
 /**********************************************
-    Do not modify anything below this section
+    Do not modify the below section
     unless you really know what you are doing!
 ************************************************/
 buildscript {
@@ -115,6 +50,10 @@ buildscript {
     }
 }
 
+/**********************************************
+* Do not modify the below section
+* unless you really know what you are doing!
+************************************************/
 {{#springDependencyMgmt}}
 apply plugin: "io.spring.dependency-management"
 {{/springDependencyMgmt}}
@@ -129,6 +68,10 @@ apply from: rootProject.file("gradle/jib.gradle")
 apply from: rootProject.file("gradle/tasks.gradle")
 
 {{#springDependencyMgmt}}
+/**********************************************
+* Do not modify the below section
+* unless you really know what you are doing!
+************************************************/
 dependencyManagement {
     imports {
         {{#managementServer}}
@@ -139,6 +82,10 @@ dependencyManagement {
 }
 {{/springDependencyMgmt}}
 
+/**********************************************
+* Do not modify the below section
+* unless you really know what you are doing!
+************************************************/
 configurations.all {
     resolutionStrategy {
         cacheChangingModulesFor 0, "seconds"
@@ -155,6 +102,69 @@ configurations.all {
     exclude(group: "org.slf4j", module: "slf4j-simple")
     exclude(group: "org.slf4j", module: "jcl-over-slf4j")
     exclude(group: "org.apache.logging.log4j", module: "log4j-to-slf4j")
+}
+
+dependencies {
+{{^springDependencyMgmt}}
+    /**
+    * Do NOT modify the lines below or else you will risk breaking dependency management.
+    */
+    {{#managementServer}}
+    implementation enforcedPlatform("org.apereo.cas:cas-mgmt-support-bom:${project.'casmgmt.version'}")
+    implementation enforcedPlatform("org.apereo.cas:cas-server-support-bom:${project.'cas.version'}")
+    {{/managementServer}}
+    {{^managementServer}}
+    implementation enforcedPlatform("org.apereo.cas:cas-server-support-bom:${project.'cas.version'}")
+    {{/managementServer}}
+    implementation platform(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES)
+{{/springDependencyMgmt}}
+
+    /**
+    * CAS dependencies and modules may be listed here.
+    *
+    * There is no need to specify the version number for each dependency
+    * since versions are all resolved and controlled by the dependency management
+    * plugin via the CAS bom.
+    *
+    * For example:
+    *   implementation "org.apereo.cas:cas-server-example-module"
+    **/
+{{#dependencies}}
+    implementation "{{groupId}}:{{artifactId}}"
+{{/dependencies}}
+
+
+
+{{#casServer}}
+    /**********************************************************************
+    * Do NOT modify the lines below or else you will risk breaking the build.
+    ***********************************************************************/
+    implementation "org.apereo.cas:cas-server-core-api-configuration-model"
+    implementation "org.apereo.cas:cas-server-webapp-init"
+
+    if (project.hasProperty("casModules")) {
+        def dependencies = project.getProperty("casModules").split(",")
+        dependencies.each {
+            def projectsToAdd = rootProject.subprojects.findAll { project ->
+                project.name == "cas-server-core-${it}" || project.name == "cas-server-support-${it}" }
+            projectsToAdd.each {implementation it}
+        }
+    }
+{{/casServer}}
+
+{{#springBootAdminServer}}
+    compileOnly "org.apereo.cas:cas-server-webapp-init-bootadmin-server"
+{{/springBootAdminServer}}
+{{#configServer}}
+    compileOnly "org.apereo.cas:cas-server-webapp-init-config-server"
+{{/configServer}}
+{{#managementServer}}
+    compileOnly "org.apereo.cas:cas-mgmt-webapp-init"
+{{/managementServer}}
+{{#discoveryServer}}
+    compileOnly "org.apereo.cas:cas-server-webapp-init-eureka-server"
+{{/discoveryServer}}
+    developmentOnly "org.springframework.boot:spring-boot-devtools:${project.springBootVersion}"
 }
 
 war {
