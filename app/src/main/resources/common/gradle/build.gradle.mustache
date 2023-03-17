@@ -4,6 +4,75 @@ import org.apereo.cas.metadata.*
 import java.nio.file.*
 import static org.gradle.internal.logging.text.StyledTextOutput.Style
 
+dependencies {
+{{^springDependencyMgmt}}
+    /**
+    * Do NOT modify the lines below or else you will risk breaking dependency management.
+    */
+    {{#managementServer}}
+    implementation enforcedPlatform("org.apereo.cas:cas-mgmt-support-bom:${project.'casmgmt.version'}")
+    implementation enforcedPlatform("org.apereo.cas:cas-server-support-bom:${project.'cas.version'}")
+    {{/managementServer}}
+    {{^managementServer}}
+    implementation enforcedPlatform("org.apereo.cas:cas-server-support-bom:${project.'cas.version'}")
+    {{/managementServer}}
+    implementation platform(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES)
+{{/springDependencyMgmt}}
+
+    /**
+    * CAS dependencies and modules may be listed here.
+    *
+    * There is no need to specify the version number for each dependency
+    * since versions are all resolved and controlled by the dependency management
+    * plugin via the CAS bom.
+    * 
+    * For example:
+    *   implementation "org.apereo.cas:cas-server-example-module"
+    **/
+{{#dependencies}}
+    implementation "{{groupId}}:{{artifactId}}"
+{{/dependencies}}
+
+
+
+{{#casServer}}
+    /**********************************************************************
+    * Do NOT modify the lines below or else you will risk breaking the build.
+    ***********************************************************************/
+    implementation "org.apereo.cas:cas-server-core-api-configuration-model"
+    implementation "org.apereo.cas:cas-server-webapp-init"
+
+    if (project.hasProperty("casModules")) {
+        def dependencies = project.getProperty("casModules").split(",")
+        dependencies.each {
+            def projectsToAdd = rootProject.subprojects.findAll { project ->
+                project.name == "cas-server-core-${it}" || project.name == "cas-server-support-${it}"
+            }
+            projectsToAdd.each {implementation it}
+        }
+    }
+{{/casServer}}
+
+{{#springBootAdminServer}}
+    compileOnly "org.apereo.cas:cas-server-webapp-init-bootadmin-server"
+{{/springBootAdminServer}}
+{{#configServer}}
+    compileOnly "org.apereo.cas:cas-server-webapp-init-config-server"
+{{/configServer}}
+{{#managementServer}}
+    compileOnly "org.apereo.cas:cas-mgmt-webapp-init"
+{{/managementServer}}
+{{#discoveryServer}}
+    compileOnly "org.apereo.cas:cas-server-webapp-init-eureka-server"
+{{/discoveryServer}}
+    developmentOnly "org.springframework.boot:spring-boot-devtools:${project.springBootVersion}"
+}
+
+
+/**********************************************
+    Do not modify anything below this section
+    unless you really know what you are doing!
+************************************************/
 buildscript {
     repositories {
         if (project.privateRepoUrl) {
@@ -46,43 +115,11 @@ buildscript {
     }
 }
 
-repositories {
-    if (project.privateRepoUrl) {
-      maven {
-        url project.privateRepoUrl
-        credentials {
-          username = project.privateRepoUsername
-          password = System.env.PRIVATE_REPO_TOKEN
-        }
-      }
-    }
-    mavenLocal()
-    mavenCentral()
-    maven { url 'https://oss.sonatype.org/content/repositories/releases' }
-    maven {
-        url 'https://oss.sonatype.org/content/repositories/snapshots'
-        mavenContent { snapshotsOnly() }
-    }
-    maven {
-        url 'https://build.shibboleth.net/nexus/content/repositories/releases/'
-        mavenContent { releasesOnly() }
-    }
-    maven {
-        url "https://build.shibboleth.net/nexus/content/repositories/snapshots"
-        mavenContent { snapshotsOnly() }
-    }
-    maven {
-        url "https://repo.spring.io/milestone"
-        mavenContent { releasesOnly() }
-    }
-}
-
 {{#springDependencyMgmt}}
 apply plugin: "io.spring.dependency-management"
 {{/springDependencyMgmt}}
 apply plugin: "io.freefair.war-overlay"
 apply plugin: "war"
-apply plugin: "org.springframework.boot"
 apply plugin: "io.freefair.lombok"
 
 apply from: rootProject.file("gradle/springboot.gradle")
@@ -130,68 +167,3 @@ java {
         languageVersion = JavaLanguageVersion.of(project.targetCompatibility)
     }
 }
-
-{{#dockerSupported}}
-bootBuildImage {
-    imageName = "${project.'containerImageOrg'}/${project.'containerImageName'}:${project.version}"
-}
-{{/dockerSupported}}
-
-dependencies {
-    {{^springDependencyMgmt}}
-    /**
-    * Do NOT modify the lines below or else you will risk breaking dependency management.
-    */
-    {{#managementServer}}
-    implementation enforcedPlatform("org.apereo.cas:cas-mgmt-support-bom:${project.'casmgmt.version'}")
-    implementation enforcedPlatform("org.apereo.cas:cas-server-support-bom:${project.'cas.version'}")
-    {{/managementServer}}
-    {{^managementServer}}
-    implementation enforcedPlatform("org.apereo.cas:cas-server-support-bom:${project.'cas.version'}")
-    {{/managementServer}}
-    implementation platform(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES)
-    {{/springDependencyMgmt}}
-
-    /**
-     * CAS dependencies and modules may be listed here.
-     *
-     * There is no need to specify the version number for each dependency
-     * since versions are all resolved and controlled by the dependency management
-     * plugin via the CAS bom.
-     **/
-    {{#dependencies}}
-    implementation "{{groupId}}:{{artifactId}}"
-    {{/dependencies}}
- 
-    {{#casServer}}
-    /**
-    * Do NOT modify the lines below or else you will risk breaking the build.
-    */
-    implementation "org.apereo.cas:cas-server-core-api-configuration-model"
-    implementation "org.apereo.cas:cas-server-webapp-init"
-
-    if (project.hasProperty("casModules")) {
-        def dependencies = project.getProperty("casModules").split(",")
-        dependencies.each {
-            def projectsToAdd = rootProject.subprojects.findAll {project ->
-                project.name == "cas-server-core-${it}" || project.name == "cas-server-support-${it}"
-            }
-            projectsToAdd.each {implementation it}
-        }
-    }
-    {{/casServer}}
-    {{#springBootAdminServer}}
-    compileOnly "org.apereo.cas:cas-server-webapp-init-bootadmin-server"
-    {{/springBootAdminServer}}
-    {{#configServer}}
-    compileOnly "org.apereo.cas:cas-server-webapp-init-config-server"
-    {{/configServer}}
-    {{#managementServer}}
-    compileOnly "org.apereo.cas:cas-mgmt-webapp-init"
-    {{/managementServer}}
-    {{#discoveryServer}}
-    compileOnly "org.apereo.cas:cas-server-webapp-init-eureka-server"
-    {{/discoveryServer}}
-    developmentOnly "org.springframework.boot:spring-boot-devtools:${project.springBootVersion}"
-}
-

@@ -1,19 +1,11 @@
 {{#casServer}}
 apply plugin: "org.springframework.boot"
 
-repositories {
-    maven {
-        url "https://repo.spring.io/milestone"
+{{#dockerSupported}}
+    bootBuildImage {
+    imageName = "${project.'containerImageOrg'}/${project.'containerImageName'}:${project.version}"
     }
-    mavenLocal()
-    mavenCentral()
-    maven { url 'https://oss.sonatype.org/content/repositories/releases' }
-    maven {
-        url 'https://oss.sonatype.org/content/repositories/snapshots'
-        mavenContent { snapshotsOnly() }
-    }
-    maven { url 'https://build.shibboleth.net/nexus/content/repositories/releases/' }
-}
+{{/dockerSupported}}
 
 sourceSets {
     bootRunSources {
