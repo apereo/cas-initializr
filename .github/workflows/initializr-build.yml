@@ -114,6 +114,7 @@ jobs:
   sync-cas-mgmt-overlay:
     needs: [ supported-versions-cas-mgmt,validate-cas-mgmt-overlay ]
     runs-on: ubuntu-latest
+    if: ${{ false }}
     strategy:
       matrix:
         versions: ${{fromJSON(needs.supported-versions-cas-mgmt.outputs.supported-versions)}}
@@ -141,6 +142,7 @@ jobs:
   sync-cas-overlay:
     needs: [ supported-versions-cas,validate-cas-overlay ]
     runs-on: ubuntu-latest
+    if: ${{ false }}
     strategy:
       matrix:
         versions: ${{fromJSON(needs.supported-versions-cas.outputs.supported-versions)}}
@@ -199,9 +201,11 @@ jobs:
         run: |
           ./ci/validate-cas-overlay.sh --cas ${{ matrix.versions.version }} \
             --apache-tomcat ${{ matrix.versions.tomcat-version }}
+  ##########################################################################
   validate-cas-mgmt-overlay:
     needs: [ supported-versions-cas-mgmt ]
     runs-on: ubuntu-latest
+    if: ${{ false }}
     strategy:
       matrix:
         versions: ${{fromJSON(needs.supported-versions-cas-mgmt.outputs.supported-versions)}}
@@ -222,16 +226,16 @@ jobs:
         if: ${{ matrix.versions.validate == true }}
         with:
           name: binary-artifacts
-#      - name: Setup tmate session
-#        uses: mxschmitt/action-tmate@v3
       - name: Validate Overlay
         if: ${{ matrix.versions.validate == true }}
         run: |
           ./ci/validate-cas-mgmt-overlay.sh --cas ${{ matrix.versions.version }} \
             --apache-tomcat ${{ matrix.versions.tomcat-version }}
+  ##########################################################################
   validate-cas-configserver-overlay:
     needs: [ supported-versions-cas ]
     runs-on: ubuntu-latest
+    if: ${{ false }}
     strategy:
       matrix:
         versions: ${{fromJSON(needs.supported-versions-cas.outputs.supported-versions)}}
@@ -252,16 +256,16 @@ jobs:
         if: ${{ matrix.versions.validate == true }}
         with:
           name: binary-artifacts
-      # - name: Setup tmate session
-      #   uses: mxschmitt/action-tmate@v3
       - name: Validate Overlay
         if: ${{ matrix.versions.validate == true }}
         run: |
           ./ci/validate-cas-configserver-overlay.sh --cas ${{ matrix.versions.version }} \
             --apache-tomcat ${{ matrix.versions.tomcat-version }}
+  ##########################################################################
   sync-cas-configserver-overlay:
     needs: [ supported-versions-cas,validate-cas-configserver-overlay ]
     runs-on: ubuntu-latest
+    if: ${{ false }}
     strategy:
       matrix:
         versions: ${{fromJSON(needs.supported-versions-cas.outputs.supported-versions)}}
@@ -285,9 +289,11 @@ jobs:
       - name: Sync Overlay
         if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
         run: ./ci/sync-overlay.sh ${{ matrix.versions.version }} ${{ matrix.versions.boot-version }} ${{ matrix.versions.branch }} cas-config-server-overlay
+  ##########################################################################
   validate-cas-discoveryserver-overlay:
     needs: [ supported-versions-cas ]
     runs-on: ubuntu-latest
+    if: ${{ false }}
     strategy:
       matrix:
         versions: ${{fromJSON(needs.supported-versions-cas.outputs.supported-versions)}}
@@ -313,9 +319,11 @@ jobs:
         run: |
           ./ci/validate-cas-discoveryserver-overlay.sh --cas ${{ matrix.versions.version }} \
             --apache-tomcat ${{ matrix.versions.tomcat-version }}
+  ##########################################################################
   validate-cas-bootadminserver-overlay:
     needs: [ supported-versions-cas ]
     runs-on: ubuntu-latest
+    if: ${{ false }}
     strategy:
       matrix:
         versions: ${{fromJSON(needs.supported-versions-cas.outputs.supported-versions)}}
@@ -341,9 +349,11 @@ jobs:
         run: |
           ./ci/validate-cas-bootadminserver-overlay.sh --cas ${{ matrix.versions.version }} \
             --apache-tomcat ${{ matrix.versions.tomcat-version }}
+  ##########################################################################
   publish:
     needs: [ build ]
     runs-on: ubuntu-latest
+    if: ${{ false }}
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK
@@ -365,7 +375,3 @@ jobs:
           imageTag=(`./gradlew initializrVersion --q`)
           echo "Pushing Docker image with tag $imageTag"
           docker push apereo/cas-initializr:"$imageTag"
-#      - name: Setup tmate session
-#        if: ${{ failure() }}
-#        uses: mxschmitt/action-tmate@v3
-#        timeout-minutes: 10

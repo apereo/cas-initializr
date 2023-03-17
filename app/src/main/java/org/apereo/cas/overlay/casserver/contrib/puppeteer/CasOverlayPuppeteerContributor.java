@@ -4,6 +4,7 @@ import org.apereo.cas.initializr.contrib.TemplatedProjectContributor;
 
 import lombok.val;
 import org.springframework.context.ApplicationContext;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
 import java.io.File;
@@ -27,7 +28,10 @@ public class CasOverlayPuppeteerContributor extends TemplatedProjectContributor 
     protected String determineOutputResourceFileName(final Resource resource) throws IOException {
         val relativePathFile = new File(getRelativePath());
         var filename = super.determineOutputResourceFileName(resource);
-        val resourceParentName = resource.getFile().getParentFile().getName();
+        val parentFile = resource.isFile()
+            ? resource.getFile().getParentFile()
+            : new File(((ClassPathResource) resource).getPath()).getParentFile();
+        val resourceParentName = parentFile.getName();
         if (!resourceParentName.equals(relativePathFile.getName())) {
             filename = "/" + resourceParentName + "/" + filename;
         }
