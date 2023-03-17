@@ -91,7 +91,7 @@ jobs:
   ##########################################################################
   supported-versions-cas-mgmt:
     needs: [ build ]
-    if: ${{ false }}
+    # if: ${{ false }}
     runs-on: ubuntu-latest
     outputs:
       supported-versions: ${{ steps.get-supported-versions.outputs.supported-versions }}
@@ -115,7 +115,7 @@ jobs:
   sync-cas-mgmt-overlay:
     needs: [ supported-versions-cas-mgmt,validate-cas-mgmt-overlay ]
     runs-on: ubuntu-latest
-    if: ${{ false }}
+    # if: ${{ false }}
     strategy:
       matrix:
         versions: ${{fromJSON(needs.supported-versions-cas-mgmt.outputs.supported-versions)}}
@@ -143,7 +143,7 @@ jobs:
   sync-cas-overlay:
     needs: [ supported-versions-cas,validate-cas-overlay ]
     runs-on: ubuntu-latest
-    if: ${{ false }}
+    # if: ${{ false }}
     strategy:
       matrix:
         versions: ${{fromJSON(needs.supported-versions-cas.outputs.supported-versions)}}
@@ -198,8 +198,8 @@ jobs:
             --spring-boot ${{ matrix.versions.boot-version }} \
             --apache-tomcat ${{ matrix.versions.tomcat-version }}
       - name: Validate Overlay w/ CAS Only
-#        if: ${{ matrix.versions.validate == true }}
-        if: ${{ false }}
+        if: ${{ matrix.versions.validate == true }}
+        # if: ${{ false }}
         run: |
           ./ci/validate-cas-overlay.sh --cas ${{ matrix.versions.version }} \
             --apache-tomcat ${{ matrix.versions.tomcat-version }}
@@ -207,7 +207,7 @@ jobs:
   validate-cas-mgmt-overlay:
     needs: [ supported-versions-cas-mgmt ]
     runs-on: ubuntu-latest
-    if: ${{ false }}
+    # if: ${{ false }}
     strategy:
       matrix:
         versions: ${{fromJSON(needs.supported-versions-cas-mgmt.outputs.supported-versions)}}
@@ -237,7 +237,7 @@ jobs:
   validate-cas-configserver-overlay:
     needs: [ supported-versions-cas ]
     runs-on: ubuntu-latest
-    if: ${{ false }}
+    # if: ${{ false }}
     strategy:
       matrix:
         versions: ${{fromJSON(needs.supported-versions-cas.outputs.supported-versions)}}
@@ -267,7 +267,7 @@ jobs:
   sync-cas-configserver-overlay:
     needs: [ supported-versions-cas,validate-cas-configserver-overlay ]
     runs-on: ubuntu-latest
-    if: ${{ false }}
+    # if: ${{ false }}
     strategy:
       matrix:
         versions: ${{fromJSON(needs.supported-versions-cas.outputs.supported-versions)}}
@@ -295,7 +295,7 @@ jobs:
   validate-cas-discoveryserver-overlay:
     needs: [ supported-versions-cas ]
     runs-on: ubuntu-latest
-    if: ${{ false }}
+    # if: ${{ false }}
     strategy:
       matrix:
         versions: ${{fromJSON(needs.supported-versions-cas.outputs.supported-versions)}}
@@ -325,7 +325,7 @@ jobs:
   validate-cas-bootadminserver-overlay:
     needs: [ supported-versions-cas ]
     runs-on: ubuntu-latest
-    if: ${{ false }}
+    # if: ${{ false }}
     strategy:
       matrix:
         versions: ${{fromJSON(needs.supported-versions-cas.outputs.supported-versions)}}
@@ -355,7 +355,7 @@ jobs:
   publish:
     needs: [ build ]
     runs-on: ubuntu-latest
-    if: ${{ false }}
+    # if: ${{ false }}
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK
