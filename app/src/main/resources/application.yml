@@ -30,6 +30,7 @@ management:
 logging:
   level:
     org:
+      ehcache: warn
       springframework:
         web: debug
       apereo:
