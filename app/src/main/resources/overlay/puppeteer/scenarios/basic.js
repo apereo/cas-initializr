@@ -21,7 +21,7 @@ const logger = pino({
     try {
         const page = await browser.newPage();
 
-        const casHost = process.env.CAS_HOST || "https://localhost:8443";
+        const casHost = process.env.PUPPETEER_CAS_HOST || "https://localhost:8443";
         await page.goto(`${casHost}/cas/login`);
 
         await page.waitForSelector("#username", {visible: true});

@@ -70,7 +70,7 @@ kill -9 $pid
 #ps -ef
 echo "Running Puppeteer test scenarios"
 chmod +x ./puppeteer/run.sh
-export CAS_HOST="http://localhost:8090"
+export PUPPETEER_CAS_HOST="http://localhost:8090"
 export CAS_ARGS="--spring.profiles.active=none --server.ssl.enabled=false --server.port=8090"
 
 ./puppeteer/run.sh

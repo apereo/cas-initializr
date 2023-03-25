@@ -43,7 +43,7 @@ java $RUN_ARGS -jar $casWebApplicationFile $CAS_ARGS &
 pid=$!
 echo "Waiting for CAS under process id ${pid}"
 sleep 25
-casLogin="${CAS_HOST:-https://localhost:8443}/cas/login"
+casLogin="${PUPPETEER_CAS_HOST:-https://localhost:8443}/cas/login"
 echo "Checking CAS status at ${casLogin}"
 curl -k -L --output /dev/null --silent --fail $casLogin
 if [[ $? -ne 0 ]]; then
