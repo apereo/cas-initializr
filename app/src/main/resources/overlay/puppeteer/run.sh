@@ -39,10 +39,10 @@ echo -n "NPM version: " && npm --version
 echo -n "Node version: " && node --version
 
 echo "Launching CAS at $casWebApplicationFile with arguments $RUN_ARGS and options $CAS_ARGS"
-java $RUN_ARGS -jar $casWebApplicationFile $CAS_ARGS &> /dev/null &
+java $RUN_ARGS -jar $casWebApplicationFile $CAS_ARGS &
 pid=$!
 echo "Waiting for CAS under process id ${pid}"
-sleep 15
+sleep 25
 casLogin="${CAS_HOST:-https://localhost:8443}/cas/login"
 echo "Checking CAS status at ${casLogin}"
 curl -k -L --output /dev/null --silent --fail $casLogin

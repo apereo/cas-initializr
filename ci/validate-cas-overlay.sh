@@ -51,7 +51,7 @@ else
     exit 1
 fi
 [ "$CI" = "true" ] && pkill java
-ps -ef
+#ps -ef
 
 echo "Running CAS Overlay as an executable WAR file"
 ./gradlew clean build -Pexecutable=true --no-daemon
