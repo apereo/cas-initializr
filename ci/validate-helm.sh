@@ -18,24 +18,33 @@ if [[ $NAMESPACE != "default" ]]; then
 fi
 
 echo "Creating Keystore and secret for keystore"
+set +e
 ./create-cas-server-keystore-secret.sh $NAMESPACE > tmp.out 2>&1
 if [[ $? -ne 0 ]]; then
   cat tmp.out
+  exit 1
 fi
+set -e
 rm tmp.out
 
 echo "Creating tls secret for ingress to use"
+set +e
 ./create-ingress-tls.sh $NAMESPACE > tmp.out 2>&1
 if [[ $? -ne 0 ]]; then
   cat tmp.out
+  exit 1
 fi
+set -e
 rm tmp.out
 
 echo "Creating truststore with server/ingress certs and put in configmap"
+set +e
 ./create-truststore.sh $NAMESPACE > tmp.out 2>&1
 if [[ $? -ne 0 ]]; then
   cat tmp.out
+  exit 1
 fi
+set -e
 rm tmp.out
 
 # Set KUBECONFIG for helm
