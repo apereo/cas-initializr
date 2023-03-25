@@ -12,7 +12,7 @@ SAN=dns:cas.example.org,dns:casadmin.example.org,dns:cas-server-boot-admin,dns:c
 
 if [ ! -f "$KEYSTORE" ] ; then
   pushd ..
-  ./gradlew createKeyStore -PcertDir=./etc/cas -PcertificateDn="${SUBJECT}" -PcertificateSubAltName="${SAN}"
+  ./gradlew --no-configuration-cache createKeyStore -PcertDir=./etc/cas -PcertificateDn="${SUBJECT}" -PcertificateSubAltName="${SAN}"
   popd
 fi
 

@@ -547,6 +547,7 @@ containerSecurityContext:
 cas:
   service:
     type: ClusterIP
+    publishNotReadyAddresses: true
     port: 8443
   listenPortHttps: 8443
   listenPortJvmDebug: 5005
