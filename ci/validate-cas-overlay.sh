@@ -67,11 +67,12 @@ echo -e "\n\nReady!"
 echo "Killing process $pid"
 kill -9 $pid
 [ "$CI" = "true" ] && pkill java
-ps -ef
-
+#ps -ef
 echo "Running Puppeteer test scenarios"
 chmod +x ./puppeteer/run.sh
 export CAS_HOST="http://localhost:8090"
+export CAS_ARGS="--spring.profiles.active=none --server.ssl.enabled=false --server.port=8090"
+
 ./puppeteer/run.sh
 [ $? -eq 0 ] && echo "Pupppeteer ran successfully." || exit 1
 [ "$CI" = "true" ] && pkill java

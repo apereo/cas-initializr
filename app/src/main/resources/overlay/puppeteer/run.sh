@@ -1,7 +1,7 @@
 #!/bin/bash
 
 RUN_ARGS="-Xms512m -Xmx2048m -Xss128m -server -Dlog.console.stacktraces=true"
-CAS_ARGS=""
+CAS_ARGS="${CAS_ARGS:-}"
 
 RED="\e[31m"
 GREEN="\e[32m"
@@ -38,7 +38,7 @@ fi
 echo -n "NPM version: " && npm --version
 echo -n "Node version: " && node --version
 
-echo "Launching CAS..."
+echo "Launching CAS at $casWebApplicationFile with arguments $RUN_ARGS and options $CAS_ARGS"
 java $RUN_ARGS -jar $casWebApplicationFile $CAS_ARGS &> /dev/null &
 pid=$!
 echo "Waiting for CAS under process id ${pid}"
