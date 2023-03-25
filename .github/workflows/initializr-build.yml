@@ -377,3 +377,10 @@ jobs:
           imageTag=(`./gradlew initializrVersion --q`)
           echo "Pushing Docker image with tag $imageTag"
           docker push apereo/cas-initializr:"$imageTag"
+  ##########################################################################
+  complete:
+    needs: [ build,publish,validate-cas-overlay,validate-cas-mgmt-overlay,validate-cas-configserver-overlay,validate-cas-discoveryserver-overlay,validate-cas-bootadminserver-overlay ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Successful Build
+        run: echo "Build is a complete success"

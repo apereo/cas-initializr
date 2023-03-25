@@ -1,13 +1,7 @@
 pull_request_rules:
-- name: automatic merge by renovate
+- name: Automatically merge pull requests by renovate
   conditions:
-    - status-success=build
-    - status-success=validate-cas-overlay
-    - status-success=validate-cas-mgmt-overlay
-    - status-success=validate-cas-configserver-overlay
-    - status-success=validate-cas-discoveryserver-overlay
-    - status-success=validate-cas-bootadmin-overlay
-    - status-success=publish
+    - status-success=complete
     - base=master
     - author=renovate
     - label=dependencies
