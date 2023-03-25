@@ -69,6 +69,13 @@ kill -9 $pid
 [ "$CI" = "true" ] && pkill java
 ps -ef
 
+echo "Running Puppeteer test scenarios"
+chmod +x ./puppeteer/run.sh
+export CAS_HOST="http://localhost:8090"
+./puppeteer/run.sh
+[ $? -eq 0 ] && echo "Pupppeteer ran successfully." || exit 1
+[ "$CI" = "true" ] && pkill java
+
 echo "Running CAS Overlay with bootRun"
 ./gradlew --no-daemon clean build bootRun -Dserver.ssl.enabled=false -Dserver.port=8091 &
 pid=$!

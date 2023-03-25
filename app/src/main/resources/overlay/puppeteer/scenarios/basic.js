@@ -20,7 +20,9 @@ const logger = pino({
 
     try {
         const page = await browser.newPage();
-        await page.goto('https://localhost:8443/cas/login');
+
+        const casHost = process.env.CAS_HOST || "https://localhost:8443";
+        await page.goto(`${casHost}/cas/login`);
 
         await page.waitForSelector("#username", {visible: true});
         await page.$eval("#username", el => el.value = '');
