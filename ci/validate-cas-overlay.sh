@@ -90,7 +90,7 @@ echo -e "\n\nReady!"
 echo "Killing process $pid"
 kill -9 $pid
 [ "$CI" = "true" ] && pkill java
-ps -ef
+# ps -ef
 chmod -R 777 ./*.sh >/dev/null 2>&1
 
 #echo "Building Docker image with Spring Boot"

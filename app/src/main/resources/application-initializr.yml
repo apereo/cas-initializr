@@ -24,8 +24,8 @@ cas-initializr:
       tomcat-version: ${apacheTomcat9LatestVersion}
       java-version: 11
       container-base-image: eclipse-temurin:11-jdk
-    - version: 6.5.9
-      platform-version: 6.5.9
+    - version: 6.5.9.1
+      platform-version: 6.5.9.1
       boot-version: 2.6.3
       branch: 6.5
       sync: false
