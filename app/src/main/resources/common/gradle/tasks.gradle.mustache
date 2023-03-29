@@ -27,10 +27,9 @@ task run(group: "build", description: "Run the CAS web application in embedded c
     dependsOn 'build'
     doLast {
         def casRunArgs = Arrays.asList("-server -noverify -Xmx2048M -XX:+TieredCompilation -XX:TieredStopAtLevel=1".split(" "))
-        javaexec {
-            main = "-jar"
+        project.javaexec {
             jvmArgs = casRunArgs
-            args = ["build/libs/{{appName}}.war"]
+            classpath = project.files("build/libs/{{appName}}.war")
             systemProperties = System.properties
             logger.info "Started ${commandLine}"
         }
@@ -62,11 +61,10 @@ task debug(group: "CAS", description: "Debug the CAS web application in embedded
     doLast {
         logger.info "Debugging process is started in a suspended state, listening on port 5005."
         def casArgs = Arrays.asList("-Xmx2048M".split(" "))
-        javaexec {
-            main = "-jar"
+        project.javaexec {
             jvmArgs = casArgs
             debug = true
-            args = ["build/libs/{{appName}}.war"]
+            classpath = project.files("build/libs/{{appName}}.war")
             systemProperties = System.properties
             logger.info "Started ${commandLine}"
         }
