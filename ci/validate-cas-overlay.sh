@@ -40,7 +40,7 @@ echo "Building CAS Overlay"
 echo "Running CAS Overlay with Gradle"
 ./gradlew run -Dspring.profiles.active=none -Dserver.ssl.enabled=false -Dserver.port=8080 &
 pid=$!
-sleep 60
+sleep 80
 rc=$(curl -L -k -u casuser:password -o /dev/null --connect-timeout 60 -s  -I -w "%{http_code}" http://localhost:8080/cas/login)
 kill -9 $pid
 if [ "$rc" == 200 ]; then
