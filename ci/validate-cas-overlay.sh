@@ -34,10 +34,29 @@ curl http://localhost:8080/starter.tgz --connect-timeout 30 -d "${parameters}" |
 kill -9 $pid
 [ "$CI" = "true" ] && pkill java
 
+echo "Building CAS Overlay"
 ./gradlew clean build --warning-mode all --no-daemon
+
+echo "Running CAS Overlay with Gradle"
+./gradlew run -Dspring.profiles.active=none -Dserver.ssl.enabled=false -Dserver.port=8080 &
+pid=$!
+sleep 20
+rc=$(curl -L -k -u casuser:password -o /dev/null --connect-timeout 60 -s  -I -w "%{http_code}" http://localhost:8080/cas/login)
+kill -9 $pid
+if [ "$rc" == 200 ]; then
+    echo "Deployed the CAS web application successfully."
+else
+    echo "Failed to deploy the CAS web application with status $rc."
+    exit 1
+fi
+[ "$CI" = "true" ] && pkill java
+
+
+echo "Downloading Apache Tomcat $TOMCAT_VERSION"
 downloadTomcat "$TOMCAT_VERSION"
 mv build/libs/cas.war ${CATALINA_HOME}/webapps/cas.war
 
+echo "Starting Apache Tomcat $TOMCAT_VERSION to deploy ${CATALINA_HOME}/webapps/cas.war"
 ${CATALINA_HOME}/bin/startup.sh & >/dev/null 2>&1
 pid=$!
 sleep 30
