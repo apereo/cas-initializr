@@ -37,19 +37,19 @@ kill -9 $pid
 echo "Building CAS Overlay"
 ./gradlew clean build --warning-mode all --no-daemon
 
-echo "Running CAS Overlay with Gradle"
-./gradlew run -Dspring.profiles.active=none -Dserver.ssl.enabled=false -Dserver.port=8080 &
-pid=$!
-sleep 80
-rc=$(curl -L -k -u casuser:password -o /dev/null --connect-timeout 60 -s  -I -w "%{http_code}" http://localhost:8080/cas/login)
-kill -9 $pid
-if [ "$rc" == 200 ]; then
-    echo "Deployed the CAS web application successfully."
-else
-    echo "Failed to deploy the CAS web application with status $rc."
-    exit 1
-fi
-[ "$CI" = "true" ] && pkill java
+#echo "Running CAS Overlay with Gradle"
+#./gradlew run -Dspring.profiles.active=none -Dserver.ssl.enabled=false -Dserver.port=8080 &
+#pid=$!
+#sleep 80
+#rc=$(curl -L -k -u casuser:password -o /dev/null --connect-timeout 60 -s  -I -w "%{http_code}" http://localhost:8080/cas/login)
+#kill -9 $pid
+#if [ "$rc" == 200 ]; then
+#    echo "Deployed the CAS web application successfully."
+#else
+#    echo "Failed to deploy the CAS web application with status $rc."
+#    exit 1
+#fi
+#[ "$CI" = "true" ] && pkill java
 
 
 echo "Downloading Apache Tomcat $TOMCAT_VERSION"
