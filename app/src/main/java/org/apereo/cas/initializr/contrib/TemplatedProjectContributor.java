@@ -116,11 +116,19 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
                     val output = determineOutputResourcePath(projectRoot, resource);
                     log.info("Output file {}", output.toFile().getAbsolutePath());
                     createFileAndParentDirectories(output);
-                    var templateVariables = getProjectTemplateVariables();
-                    var template = renderTemplate(resource, templateVariables);
-                    var project = applicationContext.getBean(OverlayProjectDescription.class);
-                    template = postProcessRenderedTemplate(template, project, templateVariables);
-                    createTemplateFile(output, template);
+                    if (resource.getFilename().endsWith(".mustache")) {
+                        var templateVariables = getProjectTemplateVariables();
+                        var template = renderTemplate(resource, templateVariables);
+                        var project = applicationContext.getBean(OverlayProjectDescription.class);
+                        template = postProcessRenderedTemplate(template, project, templateVariables);
+                        createTemplateFile(output, template);
+                    } else if (!output.toFile().exists()) {
+                        Files.createFile(output);
+                        FileCopyUtils.copy(resource.getInputStream(), Files.newOutputStream(output));
+                    }
+                    if (output.endsWith(".sh") || output.endsWith(".bat")) {
+                        output.toFile().setExecutable(true);
+                    }
                 }
             }
         } else {
@@ -206,6 +214,7 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
                 templateVariables.put("tomcatVersion", version.getTomcatVersion());
                 templateVariables.put("javaVersion", version.getJavaVersion());
                 templateVariables.put("containerBaseImageName", version.getContainerBaseImage());
+                templateVariables.put("gradleVersion", version.getGradleVersion());
             }, () -> {
                 throw new UnsupportedVersionException(project.getCasVersion(),
                     "Unsupported version " + project.getCasVersion() + " for project type " + project.getBuildSystem().overlayType());

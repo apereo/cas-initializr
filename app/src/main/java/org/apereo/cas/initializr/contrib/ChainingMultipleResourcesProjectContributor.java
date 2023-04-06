@@ -10,16 +10,16 @@ import java.util.Comparator;
 import java.util.List;
 
 public class ChainingMultipleResourcesProjectContributor implements ProjectContributor {
-    private final List<MultipleResourcesProjectContributor> contributors = new ArrayList<>();
+    private final List<ProjectContributor> contributors = new ArrayList<>();
 
-    public void addContributor(final MultipleResourcesProjectContributor c) {
+    public void addContributor(final ProjectContributor c) {
         contributors.add(c);
     }
 
     @Override
     public void contribute(final Path projectRoot) {
         this.contributors.stream()
-            .sorted(Comparator.comparing(MultipleResourcesProjectContributor::getOrder))
+            .sorted(Comparator.comparing(ProjectContributor::getOrder))
             .forEach(Unchecked.consumer(c -> c.contribute(projectRoot)));
     }
 }

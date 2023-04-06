@@ -28,5 +28,7 @@ public class SupportedVersion {
 
     private String tomcatVersion;
 
+    private String gradleVersion;
+
     private String javaVersion;
 }

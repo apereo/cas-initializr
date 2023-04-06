@@ -46,6 +46,8 @@ public class CasOverlayInitializrMetadataUpdateStrategy implements InitializrMet
                 var url = new URL(findUrl);
                 var uc = (HttpURLConnection) url.openConnection();
                 uc.setRequestMethod("POST");
+                uc.setConnectTimeout(5000);
+                uc.setReadTimeout(5000);
                 uc.setRequestProperty("Content-Type", "application/json");
                 uc.setRequestProperty("api-key", initializrProperties.getMetadataApiKey());
                 uc.setDoOutput(true);

@@ -1,20 +1,16 @@
 package org.apereo.cas.initializr.contrib.gradle;
 
+import org.apereo.cas.initializr.contrib.TemplatedProjectContributor;
+
 import io.spring.initializr.generator.project.contributor.MultipleResourcesProjectContributor;
+import org.springframework.context.ApplicationContext;
 
 import java.io.IOException;
 import java.nio.file.Path;
 
-public class GradleWrapperConfigurationContributor extends MultipleResourcesProjectContributor {
+public class GradleWrapperConfigurationContributor extends TemplatedProjectContributor {
 
-    public GradleWrapperConfigurationContributor() {
-        super("classpath:common/gradle/wrapper",
-            filename -> filename.equals("gradlew") || filename.equals("gradlew.bat"));
-    }
-
-    @Override
-    public void contribute(final Path projectRoot) throws IOException {
-        var root = projectRoot.resolve("gradle/wrapper");
-        super.contribute(root);
+    public GradleWrapperConfigurationContributor(final ApplicationContext applicationContext) {
+        super(applicationContext, "./gradle/wrapper", "classpath:common/gradle/wrapper/**");
     }
 }
