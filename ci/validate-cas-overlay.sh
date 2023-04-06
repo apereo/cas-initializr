@@ -28,7 +28,7 @@ java -jar app/build/libs/app.jar &
 pid=$!
 sleep 30
 mkdir tmp
-cd tmp
+cd tmp || exit
 echo "Requesting CAS overlay for ${parameters}"
 curl http://localhost:8080/starter.tgz --connect-timeout 30 -d "${parameters}" | tar -xzvf -
 kill -9 $pid
