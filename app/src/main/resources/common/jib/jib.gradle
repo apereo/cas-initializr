@@ -1,3 +1,6 @@
+import org.gradle.internal.logging.text.StyledTextOutputFactory;
+import static org.gradle.internal.logging.text.StyledTextOutput.Style;
+
 apply plugin: "com.google.cloud.tools.jib"
 
 ['jibDockerBuild', 'jibBuildTar', 'jib'].each { taskName ->
@@ -13,12 +16,10 @@ def dockerPassword = providers.systemProperty("dockerPassword").getOrNull()
 
 jib {
     if (gradle.startParameter.isConfigurationCacheRequested()) {
-        def fg = 31
-        def bg = 49
-        def style = "${(char)27}[$fg;$bg"+"m"
-        println(style + "Running Jib tasks will require the command-line option: --no-configuration-cache")
-        println(style + "Jib does not support the Gradle configuration cache; Please see https://github.com/GoogleContainerTools/jib/issues/3132")
-        println(style + "Jib tasks are disabled.")
+        def out = services.get(StyledTextOutputFactory).create("cas")
+        out.withStyle(Style.Info).println("Running Jib tasks will require the command-line option: --no-configuration-cache")
+        out.withStyle(Style.Info).println("Jib does not support the Gradle configuration cache; Please see https://github.com/GoogleContainerTools/jib/issues/3132")
+        out.withStyle(Style.Info).println("Jib tasks are disabled.")
     }
     from {
         image = project.baseDockerImage

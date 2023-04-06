@@ -1,6 +1,15 @@
 {{#casServer}}
+import static org.gradle.internal.logging.text.StyledTextOutput.Style
+
 import org.apereo.cas.metadata.*
+import org.gradle.internal.logging.text.*
+
+import groovy.json.*
+
 import java.nio.file.*
+import java.util.*
+import java.security.*
+
 buildscript {
     repositories {
         mavenLocal()
@@ -221,6 +230,7 @@ task unzip(type: Copy, group: "CAS", description: "Explodes the CAS archive and 
     }
 }
 
+{{#shellSupported}}
 task downloadShell(group: "Shell", description: "Download CAS shell jar from snapshot or release maven repo", type: Download) {
     def shellDir = project.providers.gradleProperty("shellDir").get()
     def casVersion = project.providers.gradleProperty("cas.version").get()
@@ -262,6 +272,7 @@ task debugShell(group: "Shell", description: "Run the CAS shell with debug optio
         """
     }
 }
+{{/shellSupported}}
 
 task listTemplateViews(group: "CAS", description: "List all CAS views") {
     dependsOn unzip
@@ -359,7 +370,6 @@ cas.standard.js.file=/themes/${theme}/js/cas.js
         }
     }
 }
-
 {{/casServer}}
 
 def skipValidation = project.hasProperty("validate") && project.property("validate").equals("false")
@@ -378,3 +388,90 @@ if (!skipValidation) {
     processResources.dependsOn(validateConfiguration)
 }
 
+{{#casServer}}
+task duct(group: "CAS", description: "Test ticket registry functionality via the CAS REST API") {
+    def service = project.findProperty("duct.service") ?: "https://apereo.github.io"
+    def casServerNodes = providers.gradlePropertiesPrefixedBy("duct.cas").get()
+    def username = project.findProperty("duct.username") ?: "casuser"
+    def password = project.findProperty("duct.password") ?: "Mellon"
+    def debug = Boolean.parseBoolean(project.findProperty("duct.debug") ?: "false")
+    doLast {
+        def out = services.get(StyledTextOutputFactory).create("cas")
+
+        def getCasServerNode = {
+            def casServerNodesArray = casServerNodes.values().toArray()
+            return casServerNodesArray[new SecureRandom().nextInt(casServerNodesArray.length)] as String
+        }
+
+        while(true) {
+            def casServerPrefix1 = getCasServerNode()
+            def casServerPrefix2 = getCasServerNode()
+            while (casServerPrefix1.equals(casServerPrefix2)) {
+                casServerPrefix2 = getCasServerNode()
+            }
+            
+            if (debug) {
+                out.withStyle(Style.Normal).println("CAS Server 1: ${casServerPrefix1}")
+                out.withStyle(Style.Normal).println("CAS Server 2: ${casServerPrefix2}")
+                out.withStyle(Style.Normal).println("Fetching ticket-granting ticket @ ${casServerPrefix1} for ${username}...")
+            }
+            def connection = new URL("${casServerPrefix1}/v1/tickets").openConnection()
+            connection.setRequestMethod("POST")
+            connection.setDoOutput(true)
+            connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded")
+            connection.getOutputStream().write("username=${username}&password=${password}".getBytes("UTF-8"))
+            def rc = connection.getResponseCode()
+            
+            if (rc == 201) {
+                def tgt = connection.getHeaderFields().get("Location").get(0).find('TGT-.*')
+
+                if (debug) {
+                    out.withStyle(Style.Normal).println("Received ticket-granting ticket ${tgt} @ ${casServerPrefix2} for ${username}...")
+                    out.withStyle(Style.Normal).println("Fetching service ticket @ ${casServerPrefix2} for ${tgt} and service ${service}...")
+                }
+                connection = new URL("${casServerPrefix2}/v1/tickets/${tgt}").openConnection()
+                connection.setRequestMethod("POST")
+                connection.setDoOutput(true)
+                connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded")
+                connection.getOutputStream().write("service=${service}".getBytes("UTF-8"))
+                rc = connection.getResponseCode()
+                
+                if (rc == 200) {
+                    def st = connection.getInputStream().getText()
+                    if (debug) {
+                        out.withStyle(Style.Normal).println("Received service ticket ${st} @ ${casServerPrefix1} for ${service}...")
+                        out.withStyle(Style.Normal).println("Validating service ticket ${st} @ ${casServerPrefix1} for service ${service}...")
+                    }
+                    connection = new URL("${casServerPrefix1}/p3/serviceValidate?service=${service}&ticket=${st}&format=json").openConnection()
+                    connection.setRequestMethod("GET")
+                    connection.setDoOutput(true)
+                    connection.setRequestProperty("Content-Type", "application/json")
+                    rc = connection.getResponseCode()
+                    
+                    if (rc == 200) {
+                        def serverResponse = connection.getInputStream().getText()
+                        def response = new JsonSlurper().parseText(serverResponse)
+                        
+                        if (response.serviceResponse["authenticationSuccess"] != null) {
+                            out.withStyle(Style.Success).println("Service ticket ${st} is successfully validated @ ${casServerPrefix1}")
+                        } else {
+                            out.withStyle(Style.Failure).println("Service ticket ${st} cannot be validated @ ${casServerPrefix1} for ${tgt}")
+                            if (debug) {
+                                out.withStyle(Style.Failure).println(serverResponse)
+                            }
+                        }
+                    } else {
+                        out.withStyle(Style.Failure).println("${rc}: Unable to validate service ticket ${st} @ ${casServerPrefix1} for ${tgt}")
+                    }
+                } else {
+                    out.withStyle(Style.Failure).println("${rc}: Unable to fetch service ticket @ ${casServerPrefix2} for ${tgt}")
+                }
+            } else {
+                out.withStyle(Style.Failure).println("${rc}: Unable to fetch ticket-granting ticket @ ${casServerPrefix1}")
+            }
+
+            Thread.sleep(500)
+        }
+    }
+}
+{{/casServer}}

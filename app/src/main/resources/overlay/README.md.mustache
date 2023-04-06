@@ -1,3 +1,4 @@
+{{#shellSupported}}
 # CAS Command-line Shell
 
 To launch into the CAS command-line shell:
@@ -5,6 +6,7 @@ To launch into the CAS command-line shell:
 ```bash
 ./gradlew[.bat] downloadShell runShell
 ```
+{{/shellSupported}}
 
 # Retrieve Overlay Resources
 
@@ -100,3 +102,39 @@ The following defaults are assumed:
 
 You may of course need to make adjustments to account for your specific environment and deployment settings, URLs, etc.
 {{/puppeteerSupported}}
+
+# Duct
+
+`duct` is a Gradle task to do quick smoke tests of multi-node CAS high-availability deployments. In particular, it tests correctness of ticket
+sharing between multiple individual CAS server nodes backed by distributed ticket registries such as Hazelcast, Redis, etc.
+
+This task requires CAS server nodes to **enable the CAS REST module**. It will **NOT** work without it.
+
+The task accepts the following properties:
+
+- Arbitrary number of CAS server nodes (minimum being two) specified via the `duct.cas.X` properties.
+- URL of the service application registered with CAS specified via `duct.service`, for which tickets will be requested.
+- `duct.username` and `duct.password` to use for authentication, when requesting ticket-granting tickets.
+
+It automates the following scenario:
+
+- Authenticate and issue a service ticket on one CAS node
+- Validate this service ticket on the another node
+- Repeat (You may cancel and stop the task at any time with `Ctrl+C`)
+
+If the task succeeds, then we effectively have proven that the distributed ticket registry has been set up and deployed
+correctly and that there are no connectivity issues between CAS nodes.
+
+To run the task, you may use:
+
+```bash
+./gradlew duct
+    -Pduct.cas.1=https://node1.example.org/cas \
+    -Pduct.cas.2=https://node2.example.org/cas \
+    -Pduct.cas.3=https://node3.example.org/cas \
+    -Pduct.cas.4=https://node4.example.org/cas \
+    -Pduct.service=https://apereo.github.io \
+    -Pduct.username=casuser \
+    -Pduct.password=Mellon \
+    -Pduct.debug=false
+```

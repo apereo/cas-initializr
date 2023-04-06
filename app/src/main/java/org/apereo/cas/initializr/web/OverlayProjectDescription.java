@@ -35,4 +35,8 @@ public class OverlayProjectDescription extends MutableProjectDescription {
     public OverlayBuildSystem getBuildSystem() {
         return (OverlayBuildSystem) super.getBuildSystem();
     }
+
+    public Object isCasCommandlineShellRequested() {
+        return getRequestedDependencies().containsKey("support-shell");
+    }
 }

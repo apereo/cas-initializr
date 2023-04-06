@@ -19,7 +19,7 @@ while (( "$#" )); do
     esac
 done
 
-parameters="casVersion=${CAS_VERSION}"
+parameters="casVersion=${CAS_VERSION}&dependencies=support-shell"
 if [ -z "${BOOT_VERSION}" ]; then
   parameters="${parameters}&bootVersion=${BOOT_VERSION}"
 fi
@@ -93,7 +93,7 @@ export PUPPETEER_CAS_HOST="http://localhost:8090"
 export CAS_ARGS="--spring.profiles.active=none --server.ssl.enabled=false --server.port=8090"
 
 ./puppeteer/run.sh
-[ $? -eq 0 ] && echo "Pupppeteer ran successfully." || exit 1
+[ $? -eq 0 ] && echo "Puppeteer ran successfully." || exit 1
 [ "$CI" = "true" ] && pkill java
 
 echo "Running CAS Overlay with bootRun"
