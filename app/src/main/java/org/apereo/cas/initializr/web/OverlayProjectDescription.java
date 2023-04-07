@@ -23,6 +23,8 @@ public class OverlayProjectDescription extends MutableProjectDescription {
 
     private boolean puppeteerSupported;
 
+    private boolean commandlineShellSupported;
+
     public String resolveCasVersion(final BillOfMaterials billOfMaterials) {
         return StringUtils.defaultIfBlank(this.casVersion, billOfMaterials.getVersion());
     }
@@ -34,9 +36,5 @@ public class OverlayProjectDescription extends MutableProjectDescription {
     @Override
     public OverlayBuildSystem getBuildSystem() {
         return (OverlayBuildSystem) super.getBuildSystem();
-    }
-
-    public Object isCasCommandlineShellRequested() {
-        return getRequestedDependencies().containsKey("support-shell");
     }
 }

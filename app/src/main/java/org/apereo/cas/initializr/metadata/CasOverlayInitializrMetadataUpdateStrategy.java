@@ -46,6 +46,8 @@ public class CasOverlayInitializrMetadataUpdateStrategy implements InitializrMet
                 var url = new URL(findUrl);
                 var uc = (HttpURLConnection) url.openConnection();
                 uc.setRequestMethod("POST");
+                uc.setConnectTimeout(5000);
+                uc.setReadTimeout(5000);
                 uc.setRequestProperty("Content-Type", "application/json");
                 uc.setRequestProperty("api-key", initializrProperties.getMetadataApiKey());
                 uc.setDoOutput(true);
@@ -72,30 +74,33 @@ public class CasOverlayInitializrMetadataUpdateStrategy implements InitializrMet
 
     private static void addDependencyToMetadata(final InitializrMetadata current, final CasDependency entry) {
         var allGroups = current.getDependencies().getContent();
-        var group = allGroups
-            .stream()
-            .filter(g -> g.getName().equals(entry.getDetails().getCategory()))
-            .findFirst()
-            .orElseGet(() -> {
-                var newGroup = DependencyGroup.create(entry.getDetails().getCategory());
-                newGroup.setBom("cas-bom");
-                allGroups.add(newGroup);
-                return newGroup;
-            });
+        if (entry.getDetails().isSelectable()) {
+            var group = allGroups
+                .stream()
+                .filter(g -> g.getName().equals(entry.getDetails().getCategory()))
+                .findFirst()
+                .orElseGet(() -> {
+                    var newGroup = DependencyGroup.create(entry.getDetails().getCategory());
+                    newGroup.setBom("cas-bom");
+                    allGroups.add(newGroup);
+                    return newGroup;
+                });
 
-        if (group.getContent().stream().noneMatch(d -> d.getName().equals(entry.getDetails().getTitle()))) {
-            var dependency = new Dependency();
-            dependency.setBom("cas-bom");
-            dependency.setDescription(entry.getDescription());
-            dependency.setName(entry.getDetails().getTitle());
+            if (group.getContent().stream().noneMatch(d -> d.getName().equals(entry.getDetails().getTitle()))) {
+                var dependency = new Dependency();
+                dependency.setBom("cas-bom");
+                dependency.setDescription(entry.getDescription());
+                dependency.setName(entry.getDetails().getTitle());
 
-            var id = RegExUtils.removeAll(entry.getName(), "^cas-server-");
-            dependency.setId(id);
-            dependency.setFacets(ObjectUtils.defaultIfNull(entry.getDetails().getFacets(), List.of()));
-            dependency.setArtifactId(entry.getName());
-            dependency.setGroupId(entry.getGroup());
-            dependency.setAliases(ObjectUtils.defaultIfNull(entry.getDetails().getAliases(), List.of()));
-            group.getContent().add(dependency);
+                var id = RegExUtils.removeAll(entry.getName(), "^cas-server-");
+
+                dependency.setId(id);
+                dependency.setFacets(ObjectUtils.defaultIfNull(entry.getDetails().getFacets(), List.of()));
+                dependency.setArtifactId(entry.getName());
+                dependency.setGroupId(entry.getGroup());
+                dependency.setAliases(ObjectUtils.defaultIfNull(entry.getDetails().getAliases(), List.of()));
+                group.getContent().add(dependency);
+            }
         }
     }
 
@@ -111,6 +116,8 @@ public class CasOverlayInitializrMetadataUpdateStrategy implements InitializrMet
         private List<String> aliases;
 
         private List<String> facets;
+
+        private boolean selectable = true;
     }
 
     @Getter

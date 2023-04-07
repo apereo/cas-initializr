@@ -79,7 +79,7 @@ public class CasInitializrConfiguration {
     @Bean
     public ChainingMultipleResourcesProjectContributor gradleWrapperContributor() {
         var chain = new ChainingMultipleResourcesProjectContributor();
-        chain.addContributor(new GradleWrapperConfigurationContributor());
+        chain.addContributor(new GradleWrapperConfigurationContributor(applicationContext));
         chain.addContributor(new GradleWrapperExecutablesContributor());
         return chain;
     }

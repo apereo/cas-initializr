@@ -16,5 +16,6 @@ export interface Overlay {
     helmSupported: string;
     herokuSupported: string;
     puppeteerSupported: string;
+    commandlineShellSupported: string;
     deploymentType: string;
 }

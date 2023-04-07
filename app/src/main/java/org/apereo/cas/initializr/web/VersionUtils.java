@@ -17,7 +17,10 @@ public class VersionUtils {
         return casBranch[0] + '.' + casBranch[1];
     }
 
-    public static Version parse(final String versionText) {
+    public static Version parse(String versionText) {
+        if (versionText.matches("\\d.\\d")) {
+            versionText += ".0";
+        }
         if (versionText.matches("\\d.\\d.\\d.\\d")) {
             return Version.parse(versionText.substring(0, versionText.lastIndexOf('.')));
         }
