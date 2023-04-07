@@ -44,6 +44,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -217,6 +218,15 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
                 templateVariables.put("javaVersion", version.getJavaVersion());
                 templateVariables.put("containerBaseImageName", version.getContainerBaseImage());
                 templateVariables.put("gradleVersion", version.getGradleVersion());
+                var gradleVersion = Version.parse(version.getGradleVersion());
+                IntStream.rangeClosed(7, 10).forEach(value -> {
+                    if (gradleVersion.getMajor() == value) {
+                        templateVariables.put("gradleVersion" + value, Boolean.TRUE);
+                    }
+                    if (gradleVersion.getMajor() >= value) {
+                        templateVariables.put("gradleVersion" + value + "Compatible", Boolean.TRUE);
+                    }
+                });
             }, () -> {
                 throw new UnsupportedVersionException(project.getCasVersion(),
                     "Unsupported version " + project.getCasVersion() + " for project type " + project.getBuildSystem().overlayType());
