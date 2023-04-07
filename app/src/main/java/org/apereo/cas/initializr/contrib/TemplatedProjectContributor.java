@@ -264,7 +264,7 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         }
         if (type.equalsIgnoreCase(CasOverlayBuildSystem.ID)) {
             templateVariables.put("puppeteerSupported", getOverlayProjectDescription().isPuppeteerSupported());
-            templateVariables.put("shellSupported", getOverlayProjectDescription().isCasCommandlineShellRequested());
+            templateVariables.put("shellSupported", getOverlayProjectDescription().isCommandlineShellSupported());
             templateVariables.put("casServer", Boolean.TRUE);
             templateVariables.put("appName", "cas");
         }

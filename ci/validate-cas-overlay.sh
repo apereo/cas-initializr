@@ -19,7 +19,7 @@ while (( "$#" )); do
     esac
 done
 
-parameters="casVersion=${CAS_VERSION}&dependencies=support-shell"
+parameters="casVersion=${CAS_VERSION}"
 if [ -z "${BOOT_VERSION}" ]; then
   parameters="${parameters}&bootVersion=${BOOT_VERSION}"
 fi

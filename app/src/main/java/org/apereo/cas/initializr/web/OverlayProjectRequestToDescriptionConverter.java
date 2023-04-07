@@ -154,6 +154,7 @@ public class OverlayProjectRequestToDescriptionConverter implements ProjectReque
         description.setDockerSupported(getBooleanParameter(request, "dockerSupported", Boolean.TRUE));
         description.setHerokuSupported(getBooleanParameter(request, "herokuSupported", Boolean.TRUE));
         description.setPuppeteerSupported(getBooleanParameter(request, "puppeteerSupported", Boolean.TRUE));
+        description.setCommandlineShellSupported(getBooleanParameter(request, "commandlineShellSupported", Boolean.TRUE));
 
         resolvedDependencies.forEach(dependency -> description.addDependency(dependency.getId(),
             MetadataBuildItemMapper.toDependency(dependency)));
