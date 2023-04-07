@@ -122,8 +122,10 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
                         var project = applicationContext.getBean(OverlayProjectDescription.class);
                         template = postProcessRenderedTemplate(template, project, templateVariables);
                         createTemplateFile(output, template);
-                    } else if (!output.toFile().exists()) {
-                        Files.createFile(output);
+                    } else {
+                        if (!output.toFile().exists()) {
+                            Files.createFile(output);
+                        }
                         FileCopyUtils.copy(resource.getInputStream(), Files.newOutputStream(output));
                     }
                     if (output.endsWith(".sh") || output.endsWith(".bat")) {

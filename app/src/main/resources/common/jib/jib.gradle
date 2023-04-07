@@ -17,7 +17,8 @@ def dockerPassword = providers.systemProperty("dockerPassword").getOrNull()
 jib {
     if (gradle.startParameter.isConfigurationCacheRequested()) {
         def out = services.get(StyledTextOutputFactory).create("cas")
-        out.withStyle(Style.Info).println("Running Jib tasks will require the command-line option: --no-configuration-cache")
+        out.withStyle(Style.Info).println("You are seeing this message because the Gradle configuration cache is turned on")
+        out.withStyle(Style.Info).println("Running Jib tasks to produce Docker images will require the command-line option: --no-configuration-cache")
         out.withStyle(Style.Info).println("Jib does not support the Gradle configuration cache; Please see https://github.com/GoogleContainerTools/jib/issues/3132")
         out.withStyle(Style.Info).println("Jib tasks are disabled.")
     }
