@@ -218,7 +218,7 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
                 templateVariables.put("javaVersion", version.getJavaVersion());
                 templateVariables.put("containerBaseImageName", version.getContainerBaseImage());
                 templateVariables.put("gradleVersion", version.getGradleVersion());
-                var gradleVersion = Version.parse(version.getGradleVersion());
+                var gradleVersion = VersionUtils.parse(version.getGradleVersion());
                 IntStream.rangeClosed(7, 10).forEach(value -> {
                     if (gradleVersion.getMajor() == value) {
                         templateVariables.put("gradleVersion" + value, Boolean.TRUE);
