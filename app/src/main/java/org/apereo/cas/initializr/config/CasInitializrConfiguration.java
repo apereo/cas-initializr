@@ -132,6 +132,14 @@ public class CasInitializrConfiguration {
                 .setExpiryPolicyFactory(CreatedExpiryPolicy.factoryOf(cacheDuration));
             log.info("Initialize metadata is cached for 1 day");
             cacheManager.createCache("initializr.metadata", config);
+            
+            var propertiesConfig = new MutableConfiguration<>()
+                .setStoreByValue(false)
+                .setManagementEnabled(true)
+                .setStatisticsEnabled(true)
+                .setExpiryPolicyFactory(CreatedExpiryPolicy.factoryOf(cacheDuration));
+            log.info("CAS properties metadata is cached for 1 day");
+            cacheManager.createCache("cas.properties", propertiesConfig);
         };
     }
 }

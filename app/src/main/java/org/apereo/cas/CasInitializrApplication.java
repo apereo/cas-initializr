@@ -3,6 +3,7 @@ package org.apereo.cas;
 import org.apereo.cas.initializr.config.CasInitializrProperties;
 import org.apereo.cas.initializr.event.CasInitializrEventListener;
 import org.apereo.cas.initializr.info.DependencyAliasesInfoContributor;
+import org.apereo.cas.initializr.metadata.OverlayConfigurationPropertiesProvider;
 import org.apereo.cas.initializr.rate.RateLimitInterceptor;
 import org.apereo.cas.initializr.web.OverlayProjectGenerationController;
 import org.apereo.cas.initializr.web.OverlayProjectMetadataController;
@@ -58,12 +59,17 @@ public class CasInitializrApplication {
         return new OverlayProjectGenerationController(metadataProvider, invoker);
     }
 
+    @Bean
+    public OverlayConfigurationPropertiesProvider overlayConfigurationPropertiesProvider(final CasInitializrProperties props) {
+        return new OverlayConfigurationPropertiesProvider(props);
+    }
 
     @Bean
     public ProjectMetadataController projectMetadataController(final InitializrMetadataProvider metadataProvider,
                                                                final DependencyMetadataProvider dependencyMetadataProvider,
+                                                               final OverlayConfigurationPropertiesProvider propertiesProvider,
                                                                final ConfigurableApplicationContext applicationContext) {
-        return new OverlayProjectMetadataController(metadataProvider, dependencyMetadataProvider, applicationContext);
+        return new OverlayProjectMetadataController(metadataProvider, dependencyMetadataProvider, propertiesProvider, applicationContext);
     }
 
     @Bean
