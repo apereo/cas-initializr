@@ -24,6 +24,9 @@ if [ -z "${BOOT_VERSION}" ]; then
   parameters="${parameters}&bootVersion=${BOOT_VERSION}"
 fi
 
+CAS_MAJOR_VERSION=`echo $CAS_VERSION | cut -d. -f1`
+CAS_MINOR_VERSION=`echo $CAS_VERSION | cut -d. -f2`
+
 java -jar app/build/libs/app.jar &
 pid=$!
 sleep 30
@@ -83,9 +86,11 @@ until curl -k -L --output /dev/null --silent --fail http://localhost:8090/cas/lo
 done
 echo -e "\n\nReady!"
 
-echo "Running duct against CAS Overlay"
-./gradlew --no-daemon duct -Pduct.service=https://apereo.github.io -Pduct.cas.1=http://localhost:8090/cas -Pduct.debug=true -Pduct.count=1
-[ $? -eq 0 ] && echo "Gradle command ran successfully." || exit 1
+if [ "$CAS_MAJOR_VERSION" -ge 7 ]; then
+    echo "Running duct against CAS Overlay $CAS_VERSION"
+    ./gradlew --no-daemon duct -Pduct.service=https://apereo.github.io -Pduct.cas.1=http://localhost:8090/cas -Pduct.debug=true -Pduct.count=1
+    [ $? -eq 0 ] && echo "Gradle command ran successfully." || exit 1
+fi
 
 echo "Killing process $pid"
 kill -9 $pid
@@ -116,8 +121,10 @@ kill -9 $pid
 # ps -ef
 chmod -R 777 ./*.sh >/dev/null 2>&1
 
-#echo "Building Docker image with Spring Boot"
-#./gradlew --no-daemon bootBuildImage
+if [ "$CAS_MAJOR_VERSION" -ge 7 ]; then
+    echo "Building Docker image with Spring Boot"
+    ./gradlew --no-daemon bootBuildImage
+fi
 
 echo "Building Docker image with Jib"
 publishDockerImage
