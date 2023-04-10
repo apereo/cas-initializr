@@ -121,16 +121,16 @@ export function useMappedOverlayDependencies() {
     const selected = useOverlayDependencies();
     const list = useDependencyList();
 
-    return React.useMemo(
-        () =>
-            orderBy(
-                selected.map((s: string) =>
-                    list.find((d: Dependency) => d.id === s)
-                ),
+    return React.useMemo<Dependency[]>(
+        () => {
+            let l: any[] = selected.map((s: string) => list.find((d: Dependency) => d.id === s));
+            l = l.filter((d: Dependency | undefined) => !!d);
+            return orderBy<Dependency>(
+                l,
                 ["name"],
                 "asc"
-            ),
-        [selected, list]
+            );
+        }, [selected, list]
     );
 }
 
