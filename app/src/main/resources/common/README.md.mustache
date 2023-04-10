@@ -119,6 +119,7 @@ Run the CAS web application as a *standalone* executable WAR:
 
 Deploy the binary web application file in `build/libs` after a successful build to a servlet container of choice.
 
+{{#dockerSupported}}
 # Docker
 
 The following strategies outline how to build and deploy CAS Docker images.
@@ -132,7 +133,6 @@ The overlay embraces the [Jib Gradle Plugin](https://github.com/GoogleContainerT
 ./gradlew build jibDockerBuild
 ```
 
-{{#hasDockerFile}}
 ## Dockerfile
 
 You can also use the native Docker tooling and the provided `Dockerfile` to build and run.
@@ -149,5 +149,4 @@ For convenience, an additional `docker-compose.yml` is also provided to orchestr
 docker-compose build
 ```
 
-{{/hasDockerFile}}
-
+{{/dockerSupported}}
