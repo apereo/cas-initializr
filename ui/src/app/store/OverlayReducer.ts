@@ -54,7 +54,7 @@ export const OverlaySlice = createSlice({
         commandlineShellSupported: 'true',
         helmSupported: 'false',
         herokuSupported: 'false',
-        deploymentType: 'web'
+        deploymentType: 'executable'
     },
     reducers: {
         setDependencies(state, action: PayloadAction<string[]>) {
