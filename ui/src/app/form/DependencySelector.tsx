@@ -19,7 +19,7 @@ import {
     ListSubheader,
     List,
 } from "@mui/material";
-import React from "react";
+import React, { useCallback, useRef } from "react";
 import { Dependency } from "../data/Dependency";
 import {
     useDependencyList,
@@ -89,6 +89,7 @@ export default function DependencySelector({ onSelectedChange }: DependencySelec
     const [open, setOpen] = React.useState(false);
     const [filterType, setFilterType] = React.useState<string | null>(null);
     const [searchQuery, setSearchQuery] = React.useState<string>('');
+    const searchRef = useRef<HTMLElement>();
 
     /* SEARCH */
 
@@ -119,6 +120,14 @@ export default function DependencySelector({ onSelectedChange }: DependencySelec
     }, [searchQuery, search])
 
 
+    const clearAndFocus = useCallback(() => {
+        setSearchQuery('');
+        setTimeout(() => {
+            searchRef.current?.focus();
+            console.log(searchRef.current?.focus);
+        }, 0);
+    }, [setSearchQuery])
+
     /* FILTER BY TYPE */
 
     const handleToggle = (val: string) => {
@@ -127,6 +136,7 @@ export default function DependencySelector({ onSelectedChange }: DependencySelec
                 ? [...selected.filter((d) => d !== val)]
                 : [...selected, val]
         );
+        clearAndFocus();
     };
 
     const selectFilterType = (type: string | null) => {
@@ -199,6 +209,7 @@ export default function DependencySelector({ onSelectedChange }: DependencySelec
                             fullWidth
                             label="Search"
                             value={searchQuery}
+                            inputRef={ searchRef }
                             onChange={(ev) =>
                                 setSearchQuery(ev.target.value.trim())
                             }
