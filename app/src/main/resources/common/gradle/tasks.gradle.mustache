@@ -5,6 +5,7 @@ import org.apereo.cas.metadata.*
 import org.gradle.internal.logging.text.*
 
 import groovy.json.*
+import groovy.time.*
 
 import java.nio.file.*
 import java.util.*
@@ -396,6 +397,9 @@ task duct(group: "CAS", description: "Test ticket registry functionality via the
     def username = project.findProperty("duct.username") ?: "casuser"
     def password = project.findProperty("duct.password") ?: "Mellon"
     def debug = Boolean.parseBoolean(project.findProperty("duct.debug") ?: "false")
+    def duration = Long.parseLong(project.findProperty("duct.duration") ?: "-1")
+    def count = Long.parseLong(project.findProperty("duct.count") ?: "-1")
+
     doLast {
         def out = services.get(StyledTextOutputFactory).create("cas")
 
@@ -404,11 +408,20 @@ task duct(group: "CAS", description: "Test ticket registry functionality via the
             return casServerNodesArray[new SecureRandom().nextInt(casServerNodesArray.length)] as String
         }
 
-        while(true) {
+        def startTime = new Date()
+        def keepGoing = true
+        def executionCount = 0
+
+        while(keepGoing) {
+            executionCount++
+
             def casServerPrefix1 = getCasServerNode()
             def casServerPrefix2 = getCasServerNode()
-            while (casServerPrefix1.equals(casServerPrefix2)) {
-                casServerPrefix2 = getCasServerNode()
+
+            if (casServerNodes.size() >= 2) {
+                while (casServerPrefix1.equals(casServerPrefix2)) {
+                    casServerPrefix2 = getCasServerNode()
+                }
             }
             
             if (debug) {
@@ -471,7 +484,14 @@ task duct(group: "CAS", description: "Test ticket registry functionality via the
                 out.withStyle(Style.Failure).println("${rc}: Unable to fetch ticket-granting ticket @ ${casServerPrefix1}")
             }
 
-            Thread.sleep(500)
+            if (keepGoing && duration > 0) {
+                def executionDuration = TimeCategory.minus(new Date(), startTime)
+                keepGoing = executionDuration.getSeconds() < duration
+            }
+            if (keepGoing) {
+                keepGoing = executionCount < count
+            }
+            Thread.sleep(250)
         }
     }
 }
