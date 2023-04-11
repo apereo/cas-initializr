@@ -265,7 +265,7 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
 
         if (type.equalsIgnoreCase(CasOverlayBuildSystem.ID) || type.equalsIgnoreCase(CasManagementOverlayBuildSystem.ID)) {
             handleApplicationServerType(project, templateVariables);
-            templateVariables.put("hasDockerFile", dockerSupported);
+            templateVariables.put("dockerSupported", dockerSupported);
         }
 
         if (type.equalsIgnoreCase(CasManagementOverlayBuildSystem.ID)) {

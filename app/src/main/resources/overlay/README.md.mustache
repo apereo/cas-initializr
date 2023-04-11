@@ -112,7 +112,7 @@ This task requires CAS server nodes to **enable the CAS REST module**. It will *
 
 The task accepts the following properties:
 
-- Arbitrary number of CAS server nodes (minimum being two) specified via the `duct.cas.X` properties.
+- Arbitrary number of CAS server nodes specified via the `duct.cas.X` properties.
 - URL of the service application registered with CAS specified via `duct.service`, for which tickets will be requested.
 - `duct.username` and `duct.password` to use for authentication, when requesting ticket-granting tickets.
 
@@ -135,6 +135,11 @@ To run the task, you may use:
     -Pduct.cas.4=https://node4.example.org/cas \
     -Pduct.service=https://apereo.github.io \
     -Pduct.username=casuser \
-    -Pduct.password=Mellon \
-    -Pduct.debug=false
+    -Pduct.password=Mellon
 ```
+
+You may also supply the following options:
+
+- `duct.debug`: Boolean flag to output debug and verbose logging.
+- `duct.duration`: Number of seconds, i.e. `30` to execute the scenario.
+- `duct.count`: Number of iterations, i.e. `5` to execute the scenario.
