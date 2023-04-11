@@ -19,10 +19,13 @@ while (( "$#" )); do
     esac
 done
 
-parameters="casVersion=${CAS_VERSION}"
+parameters="casVersion=${CAS_VERSION}&dependencies=rest"
 if [ -z "${BOOT_VERSION}" ]; then
   parameters="${parameters}&bootVersion=${BOOT_VERSION}"
 fi
+
+CAS_MAJOR_VERSION=`echo $CAS_VERSION | cut -d. -f1`
+CAS_MINOR_VERSION=`echo $CAS_VERSION | cut -d. -f2`
 
 java -jar app/build/libs/app.jar &
 pid=$!
@@ -50,7 +53,6 @@ else
     exit 1
 fi
 [ "$CI" = "true" ] && pkill java
-
 
 echo "Downloading Apache Tomcat $TOMCAT_VERSION"
 downloadTomcat "$TOMCAT_VERSION"
@@ -83,6 +85,13 @@ until curl -k -L --output /dev/null --silent --fail http://localhost:8090/cas/lo
    sleep 5
 done
 echo -e "\n\nReady!"
+
+if [ "$CAS_MAJOR_VERSION" -ge 7 ]; then
+    echo "Running duct against CAS Overlay $CAS_VERSION"
+    ./gradlew --no-daemon duct -Pduct.service=https://apereo.github.io -Pduct.cas.1=http://localhost:8090/cas -Pduct.debug=true -Pduct.count=1
+    [ $? -eq 0 ] && echo "Gradle command ran successfully." || exit 1
+fi
+
 echo "Killing process $pid"
 kill -9 $pid
 [ "$CI" = "true" ] && pkill java
@@ -112,8 +121,10 @@ kill -9 $pid
 # ps -ef
 chmod -R 777 ./*.sh >/dev/null 2>&1
 
-#echo "Building Docker image with Spring Boot"
-#./gradlew --no-daemon bootBuildImage
+if [ "$CAS_MAJOR_VERSION" -ge 7 ]; then
+    echo "Building Docker image with Spring Boot"
+    ./gradlew --no-daemon bootBuildImage
+fi
 
 echo "Building Docker image with Jib"
 publishDockerImage
