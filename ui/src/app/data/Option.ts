@@ -20,6 +20,7 @@ export interface CasVersionOption {
     platformVersion: string;
     tomcatVersion: string;
     javaVersion: string;
+    gradleVersion: string;
 }
 
 export interface DependencyOptionValue extends OptionValue {
