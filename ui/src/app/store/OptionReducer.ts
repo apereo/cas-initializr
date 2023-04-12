@@ -256,7 +256,11 @@ export function useCasVersions(): CasVersionOption[] {
     return useSelector(CasVersionsSelector);
 }
 
+export function useCasVersion(version: string): CasVersionOption | undefined {
+    const versions = useCasVersions();
 
+    return versions.find((v: CasVersionOption) => v.version === version);
+}
 
 export function useCasVersionsForType(type: string): CasVersionOption[] {
     const versions = useCasVersions();

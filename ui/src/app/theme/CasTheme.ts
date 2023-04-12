@@ -3,7 +3,7 @@ import { ThemeOptions } from '@mui/material/styles';
 import { createTheme } from '@mui/material/styles';
 
 import { cyan, teal, grey } from "@mui/material/colors";
-import { PaletteMode } from '@mui/material';
+import { PaletteMode, alpha } from '@mui/material';
 
 export const getDesignTokens = (mode: PaletteMode) => ({
     typography: {
@@ -35,6 +35,7 @@ export const getDesignTokens = (mode: PaletteMode) => ({
                   background: {
                       default: grey[900],
                       paper: grey[900],
+                      info: alpha(grey[800], 0.4),
                   },
                   text: {
                       primary: "#fff",
