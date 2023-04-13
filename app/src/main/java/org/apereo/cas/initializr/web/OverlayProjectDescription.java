@@ -6,10 +6,12 @@ import io.spring.initializr.generator.project.MutableProjectDescription;
 import io.spring.initializr.metadata.BillOfMaterials;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
 
 @Getter
 @Setter
+@ToString
 public class OverlayProjectDescription extends MutableProjectDescription {
     private String casVersion;
 
