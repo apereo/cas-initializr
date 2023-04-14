@@ -104,7 +104,7 @@ export const OptionSlice = createSlice({
             },
             deploymentType: {
                 type: "",
-                default: 'web'
+                default: 'executable'
             }
         } as OptionState),
     reducers: {
@@ -147,7 +147,7 @@ export const OptionSlice = createSlice({
             state.herokuSupported = herokuSupported || {default: 'false'};
             state.puppeteerSupported = puppeteerSupported || {default: 'true'};
             state.commandlineShellSupported = commandlineShellSupported || {default: 'true'};
-            state.deploymentType = deploymentType || { default: 'web' };
+            state.deploymentType = deploymentType || { default: 'executable' };
         },
         setCasVersionOptions(state, action: PayloadAction<CasVersionOption[]>) {
             const { payload: versions } = action;
