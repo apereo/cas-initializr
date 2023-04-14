@@ -68,19 +68,22 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         return builder.build().toString();
     }
 
-    private static void handleApplicationServerType(final ProjectDescription project, final Map<String, Object> defaults) {
+    private static void handleApplicationServerType(final OverlayProjectDescription project, final Map<String, Object> defaults) {
         var dependencies = project.getRequestedDependencies();
+
         var appServer = "-tomcat";
         if (dependencies.containsKey("webapp-jetty")) {
             appServer = "-jetty";
         } else if (dependencies.containsKey("webapp-undertow")) {
             appServer = "-undertow";
         }
-        if (dependencies.containsKey("webapp")) {
+
+        if (dependencies.containsKey("webapp") || project.getDeploymentType() == OverlayProjectDescription.DeploymentTypes.WEB) {
             appServer = "";
         }
 
         defaults.put("appServer", appServer);
+        defaults.put("executable", project.getDeploymentType() == OverlayProjectDescription.DeploymentTypes.EXECUTABLE);
     }
 
     protected static void createTemplateFile(final Path output, final String template) throws IOException {
