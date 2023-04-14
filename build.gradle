@@ -8,28 +8,30 @@ allprojects {
 tasks.register('initializrVersion') {
     group "Initializr"
     description "Display current Initializr version"
+    def version = project.providers.gradleProperty("version").get()
     doLast {
-        println rootProject.version
+        println version
     }
 }
 
 tasks.register('springBootVersion') {
     group "Initializr"
     description "Display current Spring Boot version"
+    def springBootInitializrVersion = project.providers.gradleProperty("springBootInitializrVersion").get()
     doLast {
-        println rootProject.springBootInitializrVersion
+        println springBootInitializrVersion
     }
 }
 
 tasks.register('zip', Zip) {
     group "Initializr"
-    
     from projectDir
     exclude '.idea', '.gradle', 'tmp', '.git', '**/build/**', '**/bin/**', '**/out/**', '**/.settings/**'
     destinationDirectory = buildDir
+    zip64 = true
     archiveFileName = "${project.name}.zip"
+    def zipFile = file("${buildDir}/${it.archiveFileName.get()}")
     doLast {
-        def zipFile = file("${buildDir}/${it.archiveFileName.get()}")
         if (zipFile.exists()) {
             println "Zip archive is available at ${zipFile.absolutePath}"
         }

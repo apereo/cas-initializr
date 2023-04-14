@@ -40,6 +40,8 @@ export default function Dependencies() {
         clear,
     ]);
 
+    const dependencies: Dependency[] = React.useMemo(() => selectedDependencies.filter(d => !!d), [selectedDependencies]);
+
     return (
         <>
             <Grid
@@ -79,8 +81,8 @@ export default function Dependencies() {
                 )}
             </Grid>
             <List>
-                {selectedDependencies.map(
-                    (s: Dependency | undefined, idx: number) => (
+                {dependencies.map(
+                    (s: Dependency, idx: number) => (
                         <Fragment key={idx}>
                             {s !== undefined ? (
                                 <ListItem

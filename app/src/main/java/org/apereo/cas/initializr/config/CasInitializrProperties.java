@@ -19,4 +19,7 @@ public class CasInitializrProperties {
 
     private List<SupportedVersion> supportedVersions = new ArrayList<>();
 
+    private String metadataUrl;
+
+    private String metadataApiKey;
 }

@@ -44,6 +44,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -110,22 +111,41 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
     public void contribute(final Path projectRoot) throws IOException {
         if (resourcePattern.endsWith("/**")) {
             val resources = resolver.getResources(resourcePattern);
+            
             for (val resource : resources) {
                 if (resource.isReadable()) {
-                    val filename = StringUtils.remove(resource.getFilename(), ".mustache");
-                    val output = projectRoot.resolve(StringUtils.appendIfMissing(relativePath, "/") + filename);
+                    val output = determineOutputResourcePath(projectRoot, resource);
                     log.info("Output file {}", output.toFile().getAbsolutePath());
                     createFileAndParentDirectories(output);
-                    var templateVariables = getProjectTemplateVariables();
-                    var template = renderTemplate(resource, templateVariables);
-                    var project = applicationContext.getBean(OverlayProjectDescription.class);
-                    template = postProcessRenderedTemplate(template, project, templateVariables);
-                    createTemplateFile(output, template);
+                    if (resource.getFilename().endsWith(".mustache")) {
+                        var templateVariables = getProjectTemplateVariables();
+                        var template = renderTemplate(resource, templateVariables);
+                        var project = applicationContext.getBean(OverlayProjectDescription.class);
+                        template = postProcessRenderedTemplate(template, project, templateVariables);
+                        createTemplateFile(output, template);
+                    } else {
+                        if (!output.toFile().exists()) {
+                            Files.createFile(output);
+                        }
+                        FileCopyUtils.copy(resource.getInputStream(), Files.newOutputStream(output));
+                    }
+                    if (output.endsWith(".sh") || output.endsWith(".bat")) {
+                        output.toFile().setExecutable(true);
+                    }
                 }
             }
         } else {
             processTemplatedFile(projectRoot.resolve(relativePath));
         }
+    }
+
+    protected Path determineOutputResourcePath(final Path projectRoot, final Resource resource) throws IOException {
+        val filename = determineOutputResourceFileName(resource);
+        return projectRoot.resolve(StringUtils.appendIfMissing(relativePath, "/") + filename);
+    }
+
+    protected String determineOutputResourceFileName(final Resource resource) throws IOException {
+        return StringUtils.remove(resource.getFilename(), ".mustache");
     }
 
     private Map<String, Object> getProjectTemplateVariables() {
@@ -197,6 +217,16 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
                 templateVariables.put("tomcatVersion", version.getTomcatVersion());
                 templateVariables.put("javaVersion", version.getJavaVersion());
                 templateVariables.put("containerBaseImageName", version.getContainerBaseImage());
+                templateVariables.put("gradleVersion", version.getGradleVersion());
+                var gradleVersion = VersionUtils.parse(version.getGradleVersion());
+                IntStream.rangeClosed(7, 10).forEach(value -> {
+                    if (gradleVersion.getMajor() == value) {
+                        templateVariables.put("gradleVersion" + value, Boolean.TRUE);
+                    }
+                    if (gradleVersion.getMajor() >= value) {
+                        templateVariables.put("gradleVersion" + value + "Compatible", Boolean.TRUE);
+                    }
+                });
             }, () -> {
                 throw new UnsupportedVersionException(project.getCasVersion(),
                     "Unsupported version " + project.getCasVersion() + " for project type " + project.getBuildSystem().overlayType());
@@ -227,7 +257,7 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
 
         val dockerSupported = getOverlayProjectDescription().isDockerSupported();
         templateVariables.put("dockerSupported", dockerSupported);
-
+        
         templateVariables.put("containerImageName", StringUtils.remove(type, "-overlay"));
         templateVariables.put("containerImageOrg", "apereo");
 
@@ -235,7 +265,7 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
 
         if (type.equalsIgnoreCase(CasOverlayBuildSystem.ID) || type.equalsIgnoreCase(CasManagementOverlayBuildSystem.ID)) {
             handleApplicationServerType(project, templateVariables);
-            templateVariables.put("hasDockerFile", dockerSupported);
+            templateVariables.put("dockerSupported", dockerSupported);
         }
 
         if (type.equalsIgnoreCase(CasManagementOverlayBuildSystem.ID)) {
@@ -243,10 +273,12 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
             templateVariables.put("appName", "cas-management");
         }
         if (type.equalsIgnoreCase(CasOverlayBuildSystem.ID)) {
+            templateVariables.put("puppeteerSupported", getOverlayProjectDescription().isPuppeteerSupported());
+            templateVariables.put("shellSupported", getOverlayProjectDescription().isCommandlineShellSupported());
             templateVariables.put("casServer", Boolean.TRUE);
             templateVariables.put("appName", "cas");
         }
-        if (type.equalsIgnoreCase(CasSpringBootAdminServerOverlayBuildSystem.ID)) {
+            if (type.equalsIgnoreCase(CasSpringBootAdminServerOverlayBuildSystem.ID)) {
             templateVariables.put("springBootAdminServer", Boolean.TRUE);
             templateVariables.put("appName", "casbootadminserver");
         }

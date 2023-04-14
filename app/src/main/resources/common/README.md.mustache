@@ -69,18 +69,6 @@ To collect the list of all project modules and dependencies in the overlay:
 ./gradlew[.bat] dependencies
 ```                                                                       
 
-To see a full list of all project dependencies that are available for configuration and use:
-
-```bash
-curl {{initializrUrl}}/dependencies
-```     
-
-Or:
-
-```bash
-curl {{initializrUrl}}/actuator/info
-```
-
 # Deployment
 
 On a successful deployment via the following methods, the server will be available at:
@@ -131,6 +119,7 @@ Run the CAS web application as a *standalone* executable WAR:
 
 Deploy the binary web application file in `build/libs` after a successful build to a servlet container of choice.
 
+{{#dockerSupported}}
 # Docker
 
 The following strategies outline how to build and deploy CAS Docker images.
@@ -144,7 +133,6 @@ The overlay embraces the [Jib Gradle Plugin](https://github.com/GoogleContainerT
 ./gradlew build jibDockerBuild
 ```
 
-{{#hasDockerFile}}
 ## Dockerfile
 
 You can also use the native Docker tooling and the provided `Dockerfile` to build and run.
@@ -161,5 +149,4 @@ For convenience, an additional `docker-compose.yml` is also provided to orchestr
 docker-compose build
 ```
 
-{{/hasDockerFile}}
-
+{{/dockerSupported}}

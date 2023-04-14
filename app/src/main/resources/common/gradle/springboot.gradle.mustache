@@ -15,6 +15,14 @@ repositories {
     maven { url 'https://build.shibboleth.net/nexus/content/repositories/releases/' }
 }
 
+sourceSets {
+    bootRunSources {
+        resources {
+            srcDirs new File("//etc/cas/templates/"), new File("${project.getProjectDir()}/src/main/resources/")
+        }
+    }
+}
+
 configurations {
     bootRunConfig {
         extendsFrom compileClasspath
@@ -55,8 +63,8 @@ dependencies {
 
 bootRun {
     classpath = configurations.bootRunConfig + sourceSets.main.compileClasspath + sourceSets.main.runtimeClasspath
+    sourceResources sourceSets.bootRunSources
     doFirst {
-        sourceResources sourceSets.bootRunSources
         systemProperties = System.properties
     }
 
@@ -157,3 +165,4 @@ bootWar {
     }
 }
 
+bootBuildInfo.mustRunAfter(compileJava)

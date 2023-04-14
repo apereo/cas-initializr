@@ -86,6 +86,14 @@ export const OptionSlice = createSlice({
                 type: "",
                 default: 'true'
             },
+            puppeteerSupported: {
+                type: "",
+                default: 'true'
+            },
+            commandlineShellSupported: {
+                type: "",
+                default: 'true'
+            },
             helmSupported: {
                 type: "",
                 default: 'false'
@@ -117,6 +125,8 @@ export const OptionSlice = createSlice({
                 dockerSupported,
                 helmSupported,
                 herokuSupported,
+                puppeteerSupported,
+                commandlineShellSupported,
                 deploymentType,
             } = action.payload;
 
@@ -135,6 +145,8 @@ export const OptionSlice = createSlice({
             state.dockerSupported = dockerSupported || {default: 'true'};
             state.helmSupported = helmSupported || { default: 'false' };
             state.herokuSupported = herokuSupported || {default: 'false'};
+            state.puppeteerSupported = puppeteerSupported || {default: 'true'};
+            state.commandlineShellSupported = commandlineShellSupported || {default: 'true'};
             state.deploymentType = deploymentType || { default: 'web' };
         },
         setCasVersionOptions(state, action: PayloadAction<CasVersionOption[]>) {
@@ -204,6 +216,8 @@ export const CasDefaultSelector = createSelector(
             dockerSupported: state.dockerSupported.default,
             helmSupported: state.helmSupported.default,
             herokuSupported: state.herokuSupported.default,
+            puppeteerSupported: state.puppeteerSupported.default,
+            commandlineShellSupported: state.commandlineShellSupported.default,
             deploymentType: state.deploymentType.default,
         };
     }
@@ -242,11 +256,15 @@ export function useCasVersions(): CasVersionOption[] {
     return useSelector(CasVersionsSelector);
 }
 
+export function useCasVersion(version: string): CasVersionOption | undefined {
+    const versions = useCasVersions();
 
+    return versions.find((v: CasVersionOption) => v.version === version);
+}
 
 export function useCasVersionsForType(type: string): CasVersionOption[] {
     const versions = useCasVersions();
-    
+
     return useMemo(() => {
         const id = mapVersions.hasOwnProperty(type) ? mapVersions[type] : null;
 

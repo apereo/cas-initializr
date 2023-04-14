@@ -3,6 +3,7 @@ package org.apereo.cas;
 import org.apereo.cas.initializr.config.CasInitializrProperties;
 import org.apereo.cas.initializr.event.CasInitializrEventListener;
 import org.apereo.cas.initializr.info.DependencyAliasesInfoContributor;
+import org.apereo.cas.initializr.metadata.OverlayConfigurationPropertiesProvider;
 import org.apereo.cas.initializr.rate.RateLimitInterceptor;
 import org.apereo.cas.initializr.web.OverlayProjectGenerationController;
 import org.apereo.cas.initializr.web.OverlayProjectMetadataController;
@@ -23,6 +24,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.actuate.info.InfoContributor;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -38,6 +40,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  */
 @SpringBootApplication(scanBasePackages = "org.apereo.cas.initializr")
 @EnableConfigurationProperties(CasInitializrProperties.class)
+@EnableCaching
 public class CasInitializrApplication {
 
     public static void main(final String[] args) {
@@ -56,12 +59,17 @@ public class CasInitializrApplication {
         return new OverlayProjectGenerationController(metadataProvider, invoker);
     }
 
+    @Bean
+    public OverlayConfigurationPropertiesProvider overlayConfigurationPropertiesProvider(final CasInitializrProperties props) {
+        return new OverlayConfigurationPropertiesProvider(props);
+    }
 
     @Bean
     public ProjectMetadataController projectMetadataController(final InitializrMetadataProvider metadataProvider,
                                                                final DependencyMetadataProvider dependencyMetadataProvider,
+                                                               final OverlayConfigurationPropertiesProvider propertiesProvider,
                                                                final ConfigurableApplicationContext applicationContext) {
-        return new OverlayProjectMetadataController(metadataProvider, dependencyMetadataProvider, applicationContext);
+        return new OverlayProjectMetadataController(metadataProvider, dependencyMetadataProvider, propertiesProvider, applicationContext);
     }
 
     @Bean

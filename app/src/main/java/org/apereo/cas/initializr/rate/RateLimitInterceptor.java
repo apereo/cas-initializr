@@ -17,13 +17,13 @@ public class RateLimitInterceptor implements HandlerInterceptor {
     private final Bucket tokenBucket;
 
     /**
-     * 60 requests per minute.
+     * 30 requests per minute.
      * As requests are consuming tokens, we are also replenishing them
      * at some fixed rate, such that we never exceed the capacity of the bucket.
      */
     public RateLimitInterceptor() {
         this.tokenBucket = Bucket4j.builder()
-            .addLimit(Bandwidth.classic(60, Refill.intervally(60, Duration.ofMinutes(1))))
+            .addLimit(Bandwidth.classic(30, Refill.intervally(30, Duration.ofMinutes(1))))
             .build();
     }
 

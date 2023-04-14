@@ -27,7 +27,7 @@ mkdir tmp
 cd tmp
 curl http://localhost:8080/starter.tgz --connect-timeout 60 \
     -d casVersion=${CAS_VERSION} -d bootVersion=${BOOT_VERSION} \
-    -d type=cas-management-overlay -d dependencies="jpasvc" | tar -xzvf -
+    -d type=cas-management-overlay | tar -xzvf -
 kill -9 $pid
 
 echo "Building CAS Mgmt Overlay"

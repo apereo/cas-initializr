@@ -1,11 +1,11 @@
 
 task exportConfigMetadata(group: "CAS", description: "Export collection of CAS properties") {
+    def file = new File(project.rootDir, 'config-metadata.properties')
+    def queryType = ConfigurationMetadataCatalogQuery.QueryTypes.CAS
+    if (project.hasProperty("queryType")) {
+        queryType = ConfigurationMetadataCatalogQuery.QueryTypes.valueOf(project.findProperty("queryType"))
+    }
     doLast {
-        def file = new File(project.rootDir, 'config-metadata.properties')
-        def queryType = ConfigurationMetadataCatalogQuery.QueryTypes.CAS
-        if (project.hasProperty("queryType")) {
-            queryType = ConfigurationMetadataCatalogQuery.QueryTypes.valueOf(project.findProperty("queryType"))
-        }
         file.withWriter('utf-8') { writer ->
             def props = CasConfigurationMetadataCatalog.query(
                 ConfigurationMetadataCatalogQuery.builder()

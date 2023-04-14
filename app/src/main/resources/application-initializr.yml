@@ -24,8 +24,9 @@ cas-initializr:
       tomcat-version: ${apacheTomcat9LatestVersion}
       java-version: 11
       container-base-image: eclipse-temurin:11-jdk
-    - version: 6.5.9
-      platform-version: 6.5.9
+      gradle-version: 7.6
+    - version: 6.5.9.1
+      platform-version: 6.5.9.1
       boot-version: 2.6.3
       branch: 6.5
       sync: false
@@ -34,7 +35,8 @@ cas-initializr:
       tomcat-version: ${apacheTomcat9LatestVersion}
       java-version: 11
       container-base-image: eclipse-temurin:11-jdk
-    - version: 6.6.4
+      gradle-version: 7.4
+    - version: 6.6.7
       platform-version: 6.6.0
       boot-version: 2.7.3
       sync: true
@@ -44,6 +46,7 @@ cas-initializr:
       tomcat-version: ${apacheTomcat9LatestVersion}
       java-version: 11
       container-base-image: eclipse-temurin:11-jdk
+      gradle-version: 7.5.1
     - version: ${casLatestVersion}
       platform-version: ${casLatestVersion}
       boot-version: ${springBootLatestVersion}
@@ -54,3 +57,4 @@ cas-initializr:
       tomcat-version: ${apacheTomcat10LatestVersion}
       java-version: 17
       container-base-image: eclipse-temurin:17-jdk
+      gradle-version: 8.0.2

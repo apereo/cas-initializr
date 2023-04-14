@@ -10,6 +10,7 @@ import {
     Divider,
     Checkbox,
     FormControlLabel,
+    Paper,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import MuiAccordion, { AccordionProps } from "@mui/material/Accordion";
@@ -22,6 +23,7 @@ import {
     useCasTypes,
     useSortedCasVersionsForType,
     useDefaultValues,
+    useCasVersion,
 } from "../store/OptionReducer";
 import { CasVersionOption, TypeOptionValue } from "../data/Option";
 import { useAppDispatch } from "../store/hooks";
@@ -66,6 +68,8 @@ export default function Customization() {
     const versions = useSortedCasVersionsForType(type);
 
     const formData = watch();
+
+    const selectedVersion = useCasVersion(formData.casVersion);
 
     React.useEffect(() => {
         dispatch(setCustomization({
@@ -153,6 +157,19 @@ export default function Customization() {
                                     )}
                                 />
                             </FormControl>
+                            { selectedVersion &&
+                            <Paper
+                                sx={{
+                                    p: 2
+                                }}
+                            >
+                                <Typography variant="subtitle1" component="h3" mt={0}>Platform Requirements</Typography>
+                                <Divider sx={{ backgroundColor: 'background.paper', mx: 0, my: 2 }} />
+                                <Typography variant="body2" my={1}><strong>Java Version:</strong> {selectedVersion.javaVersion}</Typography>
+                                <Typography variant="body2" my={1}><strong>Gradle Version:</strong> {selectedVersion.gradleVersion}</Typography>
+                                <Typography variant="body2" mt={1}><strong>Tomcat Version:</strong> {selectedVersion.tomcatVersion}</Typography>
+                            </Paper>
+                            }
                             <Accordion>
                                 <AccordionSummary
                                     expandIcon={<ExpandMoreIcon />}
@@ -352,6 +369,78 @@ export default function Customization() {
                                                     />
                                                 }
                                                 label="Heroku"
+                                                labelPlacement="end"
+                                            />
+                                        )}
+                                    />
+                                    <Controller
+                                        control={control}
+                                        name="commandlineShellSupported"
+                                        render={({
+                                                     field: {
+                                                         onChange,
+                                                         onBlur,
+                                                         value,
+                                                         ref,
+                                                     },
+                                                 }) => (
+                                            <FormControlLabel
+                                                control={
+                                                    <Checkbox
+                                                        checked={
+                                                            value === "true"
+                                                                ? true
+                                                                : false
+                                                        }
+                                                        onChange={(
+                                                            event: React.ChangeEvent<HTMLInputElement>
+                                                        ) =>
+                                                            onChange(
+                                                                event.target
+                                                                    .checked
+                                                                    ? "true"
+                                                                    : "false"
+                                                            )
+                                                        }
+                                                    />
+                                                }
+                                                label="Shell"
+                                                labelPlacement="end"
+                                            />
+                                        )}
+                                    />
+                                    <Controller
+                                        control={control}
+                                        name="puppeteerSupported"
+                                        render={({
+                                                     field: {
+                                                         onChange,
+                                                         onBlur,
+                                                         value,
+                                                         ref,
+                                                     },
+                                                 }) => (
+                                            <FormControlLabel
+                                                control={
+                                                    <Checkbox
+                                                        checked={
+                                                            value === "true"
+                                                                ? true
+                                                                : false
+                                                        }
+                                                        onChange={(
+                                                            event: React.ChangeEvent<HTMLInputElement>
+                                                        ) =>
+                                                            onChange(
+                                                                event.target
+                                                                    .checked
+                                                                    ? "true"
+                                                                    : "false"
+                                                            )
+                                                        }
+                                                    />
+                                                }
+                                                label="Puppeteer"
                                                 labelPlacement="end"
                                             />
                                         )}
