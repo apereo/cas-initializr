@@ -22,6 +22,7 @@ import lombok.val;
 import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.util.StringUtils;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -156,8 +157,30 @@ public class OverlayProjectRequestToDescriptionConverter implements ProjectReque
         description.setPuppeteerSupported(getBooleanParameter(request, "puppeteerSupported", Boolean.TRUE));
         description.setCommandlineShellSupported(getBooleanParameter(request, "commandlineShellSupported", Boolean.TRUE));
 
-        resolvedDependencies.forEach(dependency -> description.addDependency(dependency.getId(),
-            MetadataBuildItemMapper.toDependency(dependency)));
+        if (request.getParameters().containsKey("dependencyCoordinates")) {
+            val coordinates = (Object[]) request.getParameters().get("dependencyCoordinates");
+            Arrays.stream(coordinates).forEach(coords -> {
+                var gav = coords.toString().split(":");
+                var dependency = new Dependency();
+                if (gav.length == 1) {
+                    dependency.setGroupId("org.apereo.cas");
+                    dependency.setArtifactId(gav[0]);
+                    dependency.setId(gav[0]);
+                    dependency.setName(gav[0]);
+                } else {
+                    dependency.setGroupId(gav[0]);
+                    dependency.setArtifactId(gav[1]);
+                    dependency.setId(gav[1]);
+                    dependency.setName(gav[1]);
+                    if (gav.length == 3) {
+                        dependency.setVersion(gav[2]);
+                    }
+                }
+                resolvedDependencies.add(dependency);
+            });
+        }
+        resolvedDependencies.forEach(dependency -> description.addDependency(dependency.getId(), MetadataBuildItemMapper.toDependency(dependency)));
+        log.info("Requested overlay project description {}", description);
     }
 
     private Boolean getBooleanParameter(final OverlayProjectRequest request, final String name, final Boolean defaultValue) {

@@ -1,6 +1,5 @@
 package org.apereo.cas.initializr.contrib;
 
-import io.spring.initializr.generator.project.contributor.MultipleResourcesProjectContributor;
 import io.spring.initializr.generator.project.contributor.ProjectContributor;
 import org.jooq.lambda.Unchecked;
 
