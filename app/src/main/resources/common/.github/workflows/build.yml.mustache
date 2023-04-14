@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 1
     steps:
-      - uses: styfle/cancel-workflow-action
+      - uses: styfle/cancel-workflow-action@0.11.0
         with:
           access_token: ${{ github.token }}
   build:
@@ -28,11 +28,12 @@ jobs:
         os: [ ubuntu-latest ]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout
+      - uses: actions/checkout@v3
       - name: Set up JDK
-        uses: actions/setup-java
+        uses: actions/setup-java@v3
         with:
           java-version: ${{ env.JDK_CURRENT }}
+          distribution: 'temurin'
       - name: Build
         run: ./gradlew clean build
 <%={{ }}=%>
