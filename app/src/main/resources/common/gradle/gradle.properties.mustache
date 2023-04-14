@@ -40,18 +40,20 @@ dockerImagePlatform=amd64:linux
 containerImage={{containerImageOrg}}/{{containerImageName}}
 {{/dockerSupported}}
 
+{{#appServer}}
 # Include launch script for executable WAR artifact
 # Setting this to true allows the final web application
 # to be fully executable on its own
-executable=false
+executable={{executable}}
+{{/appServer}}
 
-{{#appServer}}
+{{#casServer}}
 # Use -tomcat, -jetty, -undertow for deployment to other embedded containers
 # if the overlay application supports or provides the chosen type.
 # You should set this to blank if you want to deploy to an external container.
 # and want to set up, download and manage the container (i.e. Apache Tomcat) yourself.
 appServer={{appServer}}
-{{/appServer}}
+{{/casServer}}
 
 # Settings to generate keystore
 # used by the build to assist with creating

@@ -157,6 +157,11 @@ public class OverlayProjectRequestToDescriptionConverter implements ProjectReque
         description.setPuppeteerSupported(getBooleanParameter(request, "puppeteerSupported", Boolean.TRUE));
         description.setCommandlineShellSupported(getBooleanParameter(request, "commandlineShellSupported", Boolean.TRUE));
 
+        if (request.getParameters().containsKey("deploymentType")) {
+            var deploymentType = OverlayProjectDescription.DeploymentTypes.valueOf(getStringParameter(request, "deploymentType").toUpperCase());
+            description.setDeploymentType(deploymentType);
+        }
+
         if (request.getParameters().containsKey("dependencyCoordinates")) {
             val coordinates = (Object[]) request.getParameters().get("dependencyCoordinates");
             Arrays.stream(coordinates).forEach(coords -> {
@@ -193,6 +198,17 @@ public class OverlayProjectRequestToDescriptionConverter implements ProjectReque
         }
         return defaultValue;
 
+    }
+
+    private String getStringParameter(final OverlayProjectRequest request, final String name) {
+        if (request.getParameters().containsKey(name)) {
+            var value = request.getParameters().get(name);
+            if (value.getClass().isArray()) {
+                value = ((Object[]) value)[0];
+            }
+            return value.toString();
+        }
+        return "";
     }
 
     private void validate(final OverlayProjectRequest request, final InitializrMetadata metadata) {
