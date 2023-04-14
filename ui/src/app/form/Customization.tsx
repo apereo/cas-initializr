@@ -213,10 +213,10 @@ export default function Customization() {
                                                     <Tooltip arrow placement="top" title="Build the CAS server as an executable web application, also referred to as a Fat Jar, that ships with an embedded servlet container such as Apache Tomcat which is managed and auto-configured by CAS.">
                                                         <FormControlLabel value="executable" control={<Radio />} label="Executable" />
                                                     </Tooltip>
-                                                    <Tooltip arrow placement="top" title="Use ahead-of-time technology using the likes of GraalVM to build and transform CAS into a standalone native executable. The resulting CAS deployment has faster startup time and lower runtime memory overhead compared to a JVM-based deployment.">
+                                                    <Tooltip arrow placement="top" title="Build the CAS server as a traditional web application that is then deployed into an external servlet container of choice, such as Apache Tomcat, that is downloaded, configured and tuned by you.">
                                                         <FormControlLabel value="web" control={<Radio />} label="Web" />
                                                     </Tooltip>
-                                                    <Tooltip arrow placement="top" title="Build the CAS server as a traditional web application that is then deployed into an external servlet container of choice, such as Apache Tomcat, that is downloaded, configured and tuned by you.">
+                                                    <Tooltip arrow placement="top" title="Use ahead-of-time technology using the likes of GraalVM to build and transform CAS into a standalone native executable. The resulting CAS deployment has faster startup time and lower runtime memory overhead compared to a JVM-based deployment.">
                                                         <FormControlLabel value="native" control={<Radio />} label="Native" disabled />
                                                     </Tooltip>
                                                 </RadioGroup>
@@ -284,8 +284,6 @@ export default function Customization() {
                                                     <Checkbox
                                                         checked={
                                                             value === "true"
-                                                                ? true
-                                                                : false
                                                         }
                                                         onChange={(
                                                             event: React.ChangeEvent<HTMLInputElement>
@@ -321,8 +319,6 @@ export default function Customization() {
                                                     <Checkbox
                                                         checked={
                                                             value === "true"
-                                                                ? true
-                                                                : false
                                                         }
                                                         onChange={(
                                                             event: React.ChangeEvent<HTMLInputElement>
@@ -357,8 +353,6 @@ export default function Customization() {
                                                     <Checkbox
                                                         checked={
                                                             value === "true"
-                                                                ? true
-                                                                : false
                                                         }
                                                         onChange={(
                                                             event: React.ChangeEvent<HTMLInputElement>
@@ -393,8 +387,6 @@ export default function Customization() {
                                                     <Checkbox
                                                         checked={
                                                             value === "true"
-                                                                ? true
-                                                                : false
                                                         }
                                                         onChange={(
                                                             event: React.ChangeEvent<HTMLInputElement>
@@ -429,8 +421,6 @@ export default function Customization() {
                                                     <Checkbox
                                                         checked={
                                                             value === "true"
-                                                                ? true
-                                                                : false
                                                         }
                                                         onChange={(
                                                             event: React.ChangeEvent<HTMLInputElement>
