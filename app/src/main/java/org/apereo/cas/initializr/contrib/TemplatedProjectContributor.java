@@ -26,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ApplicationContext;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.util.FileCopyUtils;
@@ -33,6 +34,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
@@ -221,6 +223,8 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
                 templateVariables.put("javaVersion", version.getJavaVersion());
                 templateVariables.put("containerBaseImageName", version.getContainerBaseImage());
                 templateVariables.put("gradleVersion", version.getGradleVersion());
+                templateVariables.put("branch", version.getBranch());
+
                 var gradleVersion = VersionUtils.parse(version.getGradleVersion());
                 IntStream.rangeClosed(7, 10).forEach(value -> {
                     if (gradleVersion.getMajor() == value) {
@@ -275,6 +279,7 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
             templateVariables.put("managementServer", Boolean.TRUE);
             templateVariables.put("appName", "cas-management");
         }
+        templateVariables.put("githubActionsSupported", getOverlayProjectDescription().isGithubActionsSupported());
         if (type.equalsIgnoreCase(CasOverlayBuildSystem.ID)) {
             templateVariables.put("puppeteerSupported", getOverlayProjectDescription().isPuppeteerSupported());
             templateVariables.put("shellSupported", getOverlayProjectDescription().isCommandlineShellSupported());
@@ -329,6 +334,19 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
             writer.write(appendTemplate);
             return writer.toString();
         }
+    }
+
+    protected String getOutputResourcePathWithParent(final Resource resource,
+                                                     String filename) throws IOException {
+        val relativePathFile = new File(getRelativePath());
+        val parentFile = resource.isFile()
+            ? resource.getFile().getParentFile()
+            : new File(((ClassPathResource) resource).getPath()).getParentFile();
+        val resourceParentName = parentFile.getName();
+        if (!resourceParentName.equals(relativePathFile.getName())) {
+            filename = "/" + resourceParentName + "/" + filename;
+        }
+        return filename;
     }
 
     @Getter
