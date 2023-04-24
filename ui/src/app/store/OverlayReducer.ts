@@ -4,9 +4,10 @@ import { useSelector } from "react-redux";
 
 import { RootState } from "./RootReducer";
 import { Overlay } from "../data/Overlay";
-import { useDependencyList } from "./OptionReducer";
+import { useDependencyList, usePropertyList } from "./OptionReducer";
 import { Dependency } from "../data/Dependency";
 import { isEmpty, isNil, orderBy } from "lodash";
+import { Property } from '../data/Property';
 
 export const preselected = [
     'webapp-tomcat'
@@ -17,6 +18,7 @@ export interface OverlayState extends Overlay {
     type: string;
     packaging: string;
     dependencies: string[];
+    properties: string[];
     javaVersion: string;
     language: string;
     bootVersion: string;
@@ -49,6 +51,7 @@ export const OverlaySlice = createSlice({
         dependencies: [
             ...preselected
         ] as string[],
+        properties: [] as string[],
         dockerSupported: 'true',
         puppeteerSupported: 'true',
         githubActionsSupported: 'true',
@@ -60,6 +63,9 @@ export const OverlaySlice = createSlice({
     reducers: {
         setDependencies(state, action: PayloadAction<string[]>) {
             state.dependencies = action.payload;
+        },
+        setProperties(state, action: PayloadAction<string[]>) {
+            state.properties = action.payload;
         },
         setCustomization(state, action: PayloadAction<Overlay>) {
             const {
@@ -111,6 +117,11 @@ export const OverlayDependenciesSelector = createSelector(
     (state: OverlayState) => state.dependencies
 );
 
+export const OverlayPropertiesSelector = createSelector(
+    stateSelector,
+    (state: OverlayState) => state.properties
+);
+
 export const OverlaySelector = createSelector(
     stateSelector,
     (state: OverlayState) => ({...state})
@@ -118,6 +129,10 @@ export const OverlaySelector = createSelector(
 
 export function useOverlayDependencies() {
     return useSelector(OverlayDependenciesSelector);
+}
+
+export function useOverlayProperties() {
+    return useSelector(OverlayPropertiesSelector);
 }
 
 export function useMappedOverlayDependencies() {
@@ -137,6 +152,23 @@ export function useMappedOverlayDependencies() {
     );
 }
 
+export function useMappedOverlayProperties() {
+    const selected = useOverlayProperties();
+    const list = usePropertyList();
+
+    return React.useMemo<Property[]>(
+        () => {
+            let l: any[] = selected.map((s: string) => list.find((d: Property) => d.name === s));
+            l = l.filter((d: Property | undefined) => !!d);
+            return orderBy<Property>(
+                l,
+                ["name"],
+                "asc"
+            );
+        }, [selected, list]
+    );
+}
+
 export function useOverlay() {
     return useSelector(OverlaySelector);
 }
@@ -146,6 +178,11 @@ export function useCanDownload() {
     return !isNil(type) && !isEmpty(type) && !isNil(casVersion) && !isEmpty(casVersion);
 }
 
-export const { setDependencies, setCustomization } = OverlaySlice.actions;
+export function useSelectedCasVersion() {
+    const { casVersion } = useOverlay();
+    return casVersion;
+}
+
+export const { setDependencies, setCustomization, setProperties } = OverlaySlice.actions;
 
 export default OverlaySlice;

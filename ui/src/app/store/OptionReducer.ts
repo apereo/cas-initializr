@@ -10,12 +10,19 @@ import {
     DependencyGroup,
     DependencyOptionValue,
     TypeOptionValue,
+    PropertyOption,
+    PropertyGroup,
+    PropertyOptionValue,
 } from "../data/Option";
 import { Dependency } from "../data/Dependency";
 import { Overlay } from "../data/Overlay";
+import { Property } from "../data/Property";
+import { useGetPropertiesQuery } from "./PropertyApi";
+import { useSelectedCasVersion } from "./OverlayReducer";
 
 export interface OptionState extends ApiOptions {
     casVersion: CasVersionOption[];
+    properties: PropertyOption;
 }
 
 const mapVersions: { [id: string]: string } = {
@@ -79,6 +86,10 @@ export const OptionSlice = createSlice({
                 default: "",
             },
             dependencies: {
+                type: "",
+                values: [],
+            },
+            properties: {
                 type: "",
                 values: [],
             },
@@ -159,6 +170,11 @@ export const OptionSlice = createSlice({
             const { payload: versions } = action;
             state.casVersion = versions;
         },
+
+        setPropertyOptions(state, action: PayloadAction<PropertyOption>) {
+            const { payload: properties } = action;
+            state.properties = properties;
+        },
     },
 });
 
@@ -166,6 +182,13 @@ export const OptionDependenciesSelector = createSelector(
     stateSelector,
     (state: OptionState): DependencyGroup[] => {
         return state.dependencies.values ? state.dependencies.values : [];
+    }
+);
+
+export const OptionPropertiesSelector = createSelector(
+    stateSelector,
+    (state: OptionState): PropertyGroup[] => {
+        return state.properties.values ? state.properties.values : [];
     }
 );
 
@@ -258,6 +281,14 @@ export function useDependencyListTypes(): string[] {
     const deps = useDependencyList();
     return uniq(deps.map((d) => d.type));
 }
+
+export function usePropertyList(): Property[] {
+    const version = useSelectedCasVersion();
+    const { data } = useGetPropertiesQuery(version);
+    return (data ? data : []) as Property[];
+}
+
+
 
 export function useCasVersions(): CasVersionOption[] {
     return useSelector(CasVersionsSelector);

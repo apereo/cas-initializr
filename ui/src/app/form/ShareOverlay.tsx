@@ -27,7 +27,7 @@ export default function ShareOverlay({ overlay, disabled }: ShareOverlayProps) {
 
     useHotkeys(`${modifier}+${keys}`, () => setOpen(true), {preventDefault: true}, [keys]);
 
-    // React.useEffect(() => console.log(overlay), [overlay]);
+    React.useEffect(() => console.log(overlay), [overlay]);
 
     return (
         <>

@@ -1,12 +1,12 @@
 import React, {Fragment} from 'react';
-import { Backdrop, CircularProgress, Divider, Grid } from '@mui/material';
+import { Backdrop, Box, CircularProgress, Divider, Grid, Tab, Tabs } from '@mui/material';
 import Customization from './Customization';
 import Dependencies from './Dependencies';
 import ShareOverlay from "./ShareOverlay";
 
 import { useApiLoaded, useVersionsLoaded } from '../store/AppReducer';
 import { Overlay } from '../data/Overlay';
-import { preselected, useCanDownload, useOverlay } from '../store/OverlayReducer';
+import { preselected, useCanDownload, useOverlay, useSelectedCasVersion } from '../store/OverlayReducer';
 import { getOverlayFromQs, getOverlayQuery } from '../data/Url';
 import JSZip from "jszip";
 
@@ -21,11 +21,45 @@ import { setDependencies } from '../store/OverlayReducer';
 
 import { getTree } from "../file/tree";
 import DownloadOverlay from './DownloadOverlay';
+import Properties from './Properties';
 
 export const downloadAsZip = (fileName: string, data: any) => {
     // const blob = new Blob([data], { type: 'text/zip;charset=utf-8' });
     FileSaver.saveAs(data, `${fileName}.tar.gz`);
 };
+
+function a11yProps(index: number) {
+    return {
+        id: `simple-tab-${index}`,
+        'aria-controls': `simple-tabpanel-${index}`,
+    };
+}
+
+interface TabPanelProps {
+    children?: React.ReactNode;
+    index: number;
+    value: number;
+  }
+
+function TabPanel(props: TabPanelProps) {
+    const { children, value, index, ...other } = props;
+  
+    return (
+      <div
+        role="tabpanel"
+        hidden={value !== index}
+        id={`simple-tabpanel-${index}`}
+        aria-labelledby={`simple-tab-${index}`}
+        {...other}
+      >
+        {value === index && (
+          <Box sx={{ py: 3, px: 0 }}>
+            {children}
+          </Box>
+        )}
+      </div>
+    );
+  }
 
 export default function Initializr() {
     const apiLoaded = useApiLoaded();
@@ -34,6 +68,7 @@ export default function Initializr() {
     const overlay = useOverlay();
     const defaultValues = useDefaultValues();
     const dispatch = useAppDispatch();
+    const version = useSelectedCasVersion();
 
     const [loading, setLoading] = React.useState(false);
 
@@ -82,6 +117,13 @@ export default function Initializr() {
         const { dependencies = [...preselected] } = getOverlayFromQs();
         dispatch(setDependencies(dependencies));
     }, [defaultValues]);
+
+    const [value, setValue] = React.useState(0);
+
+    const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+        setValue(newValue);
+    };
+    
 
     return (
         <Fragment>
@@ -141,7 +183,18 @@ export default function Initializr() {
                             )}
                         </Grid>
                         <Grid item xs={6}>
-                            <Dependencies />
+                            <Box sx={{ borderBottom: 1, borderColor: 'divider', mt: 1 }}>
+                                <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+                                    <Tab label="Dependencies" {...a11yProps(0)} />
+                                    <Tab label="Configuration Settings" {...a11yProps(1)} disabled={ !version } />
+                                </Tabs>
+                            </Box>
+                            <TabPanel value={value} index={0}>
+                                <Dependencies />
+                            </TabPanel>
+                            <TabPanel value={value} index={1}>
+                                <Properties />
+                            </TabPanel>
                         </Grid>
                     </>
                 ) : (
