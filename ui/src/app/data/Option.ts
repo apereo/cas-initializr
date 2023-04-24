@@ -67,6 +67,7 @@ export interface ApiOptions {
     helmSupported: Option;
     herokuSupported: Option;
     puppeteerSupported: Option;
+    githubActionsSupported: Option;
     commandlineShellSupported: Option;
     deploymentType: Option;
 }

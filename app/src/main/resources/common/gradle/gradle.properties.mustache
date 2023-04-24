@@ -47,13 +47,11 @@ containerImage={{containerImageOrg}}/{{containerImageName}}
 executable={{executable}}
 {{/appServer}}
 
-{{#casServer}}
 # Use -tomcat, -jetty, -undertow for deployment to other embedded containers
 # if the overlay application supports or provides the chosen type.
 # You should set this to blank if you want to deploy to an external container.
 # and want to set up, download and manage the container (i.e. Apache Tomcat) yourself.
 appServer={{appServer}}
-{{/casServer}}
 
 # Settings to generate keystore
 # used by the build to assist with creating

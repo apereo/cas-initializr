@@ -32,6 +32,8 @@ public class OverlayProjectDescription extends MutableProjectDescription {
 
     private boolean puppeteerSupported;
 
+    private boolean githubActionsSupported;
+
     private boolean commandlineShellSupported;
 
     private DeploymentTypes deploymentType = DeploymentTypes.EXECUTABLE;

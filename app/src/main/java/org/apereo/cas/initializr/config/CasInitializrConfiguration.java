@@ -4,6 +4,7 @@ import org.apereo.cas.initializr.contrib.ChainingMultipleResourcesProjectContrib
 import org.apereo.cas.initializr.contrib.ChainingSingleResourceProjectContributor;
 import org.apereo.cas.initializr.contrib.docker.jib.OverlayGradleJibContributor;
 import org.apereo.cas.initializr.contrib.docker.jib.OverlayGradleJibEntrypointContributor;
+import org.apereo.cas.initializr.contrib.github.GithubResourcesContributor;
 import org.apereo.cas.initializr.contrib.gradle.GradleWrapperConfigurationContributor;
 import org.apereo.cas.initializr.contrib.gradle.GradleWrapperExecutablesContributor;
 import org.apereo.cas.initializr.contrib.gradle.OverlayGradleSettingsContributor;
@@ -76,6 +77,13 @@ public class CasInitializrConfiguration {
         return chain;
     }
 
+    @Bean
+    public ChainingSingleResourceProjectContributor githubContributor() {
+        var chain = new ChainingSingleResourceProjectContributor();
+        chain.addContributor(new GithubResourcesContributor(applicationContext));
+        return chain;
+    }
+    
     @Bean
     public ChainingMultipleResourcesProjectContributor gradleWrapperContributor() {
         var chain = new ChainingMultipleResourcesProjectContributor();

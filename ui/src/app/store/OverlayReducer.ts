@@ -51,6 +51,7 @@ export const OverlaySlice = createSlice({
         ] as string[],
         dockerSupported: 'true',
         puppeteerSupported: 'true',
+        githubActionsSupported: 'true',
         commandlineShellSupported: 'true',
         helmSupported: 'false',
         herokuSupported: 'false',
@@ -78,6 +79,7 @@ export const OverlaySlice = createSlice({
                 helmSupported,
                 herokuSupported,
                 puppeteerSupported,
+                githubActionsSupported,
                 commandlineShellSupported,
                 deploymentType,
             } = action.payload;
@@ -97,6 +99,7 @@ export const OverlaySlice = createSlice({
             state.helmSupported = helmSupported;
             state.herokuSupported = herokuSupported;
             state.puppeteerSupported = puppeteerSupported;
+            state.githubActionsSupported = githubActionsSupported;
             state.commandlineShellSupported = commandlineShellSupported;
             state.deploymentType = deploymentType;
         },

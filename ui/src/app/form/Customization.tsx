@@ -439,6 +439,40 @@ export default function Customization() {
                                             />
                                         )}
                                     />
+                                    <Controller
+                                        control={control}
+                                        name="githubActionsSupported"
+                                        render={({
+                                                     field: {
+                                                         onChange,
+                                                         onBlur,
+                                                         value,
+                                                         ref,
+                                                     },
+                                                 }) => (
+                                            <FormControlLabel
+                                                control={
+                                                    <Checkbox
+                                                        checked={
+                                                            value === "true"
+                                                        }
+                                                        onChange={(
+                                                            event: React.ChangeEvent<HTMLInputElement>
+                                                        ) =>
+                                                            onChange(
+                                                                event.target
+                                                                    .checked
+                                                                    ? "true"
+                                                                    : "false"
+                                                            )
+                                                        }
+                                                    />
+                                                }
+                                                label="GitHub Actions"
+                                                labelPlacement="end"
+                                            />
+                                        )}
+                                    />
                                 </AccordionDetails>
                             </Accordion>
                         </React.Fragment>
