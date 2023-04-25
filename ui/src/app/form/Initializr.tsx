@@ -106,6 +106,7 @@ export default function Initializr() {
                 columnSpacing={{ xs: 1, sm: 2, md: 3 }}
                 sx={{
                     padding: "2rem",
+                    paddingBottom: "5rem",
                 }}
             >
                 {apiLoaded && versionsLoaded ? (

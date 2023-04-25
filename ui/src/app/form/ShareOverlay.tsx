@@ -6,7 +6,7 @@ import { Link } from "@mui/icons-material";
 import ShareOverlayDialog from "./ShareOverlayDialog";
 import { Overlay } from "../data/Overlay";
 import { getOverlayQuery } from "../data/Url";
-import { APP_PATH } from "../App.constant";
+import { API_PATH, APP_ORIGIN, APP_PATH } from "../App.constant";
 import { Action, useCommand } from "../core/Keyboard";
 import { useHotkeys } from "react-hotkeys-hook";
 
@@ -18,8 +18,15 @@ export interface ShareOverlayProps {
 export default function ShareOverlay({ overlay, disabled }: ShareOverlayProps) {
     const [open, setOpen] = React.useState(false);
 
-    const url = React.useMemo(
-        () => `${APP_PATH}/starter.zip?${getOverlayQuery(overlay)}`,
+    const type: string = "tgz";
+
+    const uiUrl = React.useMemo(
+        () => `${APP_PATH}/ui?${getOverlayQuery(overlay)}`,
+        [overlay]
+    );
+
+    const curlUrl = React.useMemo(
+        () => `${APP_ORIGIN}${API_PATH}starter.${type}?${getOverlayQuery(overlay)}`,
         [overlay]
     );
 
@@ -41,7 +48,8 @@ export default function ShareOverlay({ overlay, disabled }: ShareOverlayProps) {
                 {label} ({React.createElement(modifierIcon, {fontSize: 'small'})}+{keys})
             </Button>
             <ShareOverlayDialog
-                url={url}
+                uiUrl={ uiUrl }
+                curlUrl={ curlUrl }
                 onClose={() => setOpen(false)}
                 open={open}
             />
