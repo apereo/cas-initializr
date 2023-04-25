@@ -50,9 +50,12 @@ export const OverlaySlice = createSlice({
             ...preselected
         ] as string[],
         dockerSupported: 'true',
+        puppeteerSupported: 'true',
+        githubActionsSupported: 'true',
+        commandlineShellSupported: 'true',
         helmSupported: 'false',
         herokuSupported: 'false',
-        deploymentType: 'web'
+        deploymentType: 'executable'
     },
     reducers: {
         setDependencies(state, action: PayloadAction<string[]>) {
@@ -75,6 +78,9 @@ export const OverlaySlice = createSlice({
                 dockerSupported,
                 helmSupported,
                 herokuSupported,
+                puppeteerSupported,
+                githubActionsSupported,
+                commandlineShellSupported,
                 deploymentType,
             } = action.payload;
             state.type = type;
@@ -92,6 +98,9 @@ export const OverlaySlice = createSlice({
             state.dockerSupported = dockerSupported;
             state.helmSupported = helmSupported;
             state.herokuSupported = herokuSupported;
+            state.puppeteerSupported = puppeteerSupported;
+            state.githubActionsSupported = githubActionsSupported;
+            state.commandlineShellSupported = commandlineShellSupported;
             state.deploymentType = deploymentType;
         },
     },
@@ -115,16 +124,16 @@ export function useMappedOverlayDependencies() {
     const selected = useOverlayDependencies();
     const list = useDependencyList();
 
-    return React.useMemo(
-        () =>
-            orderBy(
-                selected.map((s: string) =>
-                    list.find((d: Dependency) => d.id === s)
-                ),
+    return React.useMemo<Dependency[]>(
+        () => {
+            let l: any[] = selected.map((s: string) => list.find((d: Dependency) => d.id === s));
+            l = l.filter((d: Dependency | undefined) => !!d);
+            return orderBy<Dependency>(
+                l,
                 ["name"],
                 "asc"
-            ),
-        [selected, list]
+            );
+        }, [selected, list]
     );
 }
 

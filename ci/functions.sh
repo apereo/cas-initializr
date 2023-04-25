@@ -9,7 +9,7 @@ function downloadTomcat() {
   tomcatMajorVersion=$(echo "$tomcatVersion" | cut -d. -f1)
   tomcatDir="tomcat-${tomcatMajorVersion}"
   
-  tomcatUrl="https://downloads.apache.org/tomcat/${tomcatDir}/${tomcatVersionTag}/bin/apache-tomcat-${tomcatVersion}.zip"
+  tomcatUrl="https://archive.apache.org/dist/tomcat/${tomcatDir}/${tomcatVersionTag}/bin/apache-tomcat-${tomcatVersion}.zip"
 
   export CATALINA_HOME=./apache-tomcat-${tomcatVersion}
   rm -Rf "${CATALINA_HOME}" > /dev/null 2>&1
@@ -28,7 +28,7 @@ function publishDockerImage() {
     echo "${DOCKER_PWD}" | docker login --username "$DOCKER_USER" --password-stdin
 
     echo -e "\nPublishing Docker image...\n"
-    ./gradlew jib -PdockerImagePlatform="amd64:linux,arm64:linux" \
+    ./gradlew jib --no-configuration-cache -PdockerImagePlatform="amd64:linux,arm64:linux" \
         -DdockerUsername="$DOCKER_USER" -DdockerPassword="$DOCKER_PWD"
     [ $? -eq 0 ] && echo "Gradle command ran successfully." || exit 1
   else

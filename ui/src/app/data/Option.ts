@@ -20,6 +20,7 @@ export interface CasVersionOption {
     platformVersion: string;
     tomcatVersion: string;
     javaVersion: string;
+    gradleVersion: string;
 }
 
 export interface DependencyOptionValue extends OptionValue {
@@ -65,5 +66,8 @@ export interface ApiOptions {
     dockerSupported: Option;
     helmSupported: Option;
     herokuSupported: Option;
+    puppeteerSupported: Option;
+    githubActionsSupported: Option;
+    commandlineShellSupported: Option;
     deploymentType: Option;
 }

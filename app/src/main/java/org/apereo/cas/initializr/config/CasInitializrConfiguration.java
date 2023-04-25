@@ -1,17 +1,10 @@
 package org.apereo.cas.initializr.config;
 
-import org.apereo.cas.initializr.contrib.project.ApplicationYamlPropertiesContributor;
 import org.apereo.cas.initializr.contrib.ChainingMultipleResourcesProjectContributor;
 import org.apereo.cas.initializr.contrib.ChainingSingleResourceProjectContributor;
-import org.apereo.cas.initializr.contrib.project.IgnoreRulesContributor;
-import org.apereo.cas.initializr.contrib.project.JenvJavaVersionContributor;
-import org.apereo.cas.initializr.contrib.project.LocalEtcCasDirectoryContributor;
-import org.apereo.cas.initializr.contrib.project.OverlayLombokConfigContributor;
-import org.apereo.cas.initializr.contrib.project.OverlayOverrideConfigurationContributor;
-import org.apereo.cas.initializr.contrib.project.OverlayWebXmlContributor;
-import org.apereo.cas.initializr.contrib.project.ProjectLicenseContributor;
 import org.apereo.cas.initializr.contrib.docker.jib.OverlayGradleJibContributor;
 import org.apereo.cas.initializr.contrib.docker.jib.OverlayGradleJibEntrypointContributor;
+import org.apereo.cas.initializr.contrib.github.GithubResourcesContributor;
 import org.apereo.cas.initializr.contrib.gradle.GradleWrapperConfigurationContributor;
 import org.apereo.cas.initializr.contrib.gradle.GradleWrapperExecutablesContributor;
 import org.apereo.cas.initializr.contrib.gradle.OverlayGradleSettingsContributor;
@@ -19,17 +12,34 @@ import org.apereo.cas.initializr.contrib.gradle.OverlayGradleSpringBootContribut
 import org.apereo.cas.initializr.contrib.gradle.OverlayGradleTasksContributor;
 import org.apereo.cas.initializr.contrib.heroku.HerokuProcFileContributor;
 import org.apereo.cas.initializr.contrib.heroku.HerokuSystemPropertiesFileContributor;
+import org.apereo.cas.initializr.contrib.project.ApplicationYamlPropertiesContributor;
+import org.apereo.cas.initializr.contrib.project.IgnoreRulesContributor;
+import org.apereo.cas.initializr.contrib.project.JenvJavaVersionContributor;
+import org.apereo.cas.initializr.contrib.project.LocalEtcCasDirectoryContributor;
+import org.apereo.cas.initializr.contrib.project.OverlayLombokConfigContributor;
+import org.apereo.cas.initializr.contrib.project.OverlayOverrideConfigurationContributor;
+import org.apereo.cas.initializr.contrib.project.OverlayWebXmlContributor;
+import org.apereo.cas.initializr.contrib.project.ProjectLicenseContributor;
 import org.apereo.cas.initializr.metadata.CasOverlayInitializrMetadataUpdateStrategy;
 import org.apereo.cas.initializr.web.ui.InitializrHomeController;
 
 import io.spring.initializr.generator.project.ProjectGenerationConfiguration;
 import io.spring.initializr.generator.project.contributor.ProjectContributor;
 import io.spring.initializr.web.support.InitializrMetadataUpdateStrategy;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.cache.JCacheManagerCustomizer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
+
+import javax.cache.configuration.MutableConfiguration;
+import javax.cache.expiry.CreatedExpiryPolicy;
+import javax.cache.expiry.Duration;
 
 @ProjectGenerationConfiguration
+@Slf4j
 public class CasInitializrConfiguration {
     @Autowired
     private ConfigurableApplicationContext applicationContext;
@@ -68,9 +78,16 @@ public class CasInitializrConfiguration {
     }
 
     @Bean
+    public ChainingSingleResourceProjectContributor githubContributor() {
+        var chain = new ChainingSingleResourceProjectContributor();
+        chain.addContributor(new GithubResourcesContributor(applicationContext));
+        return chain;
+    }
+    
+    @Bean
     public ChainingMultipleResourcesProjectContributor gradleWrapperContributor() {
         var chain = new ChainingMultipleResourcesProjectContributor();
-        chain.addContributor(new GradleWrapperConfigurationContributor());
+        chain.addContributor(new GradleWrapperConfigurationContributor(applicationContext));
         chain.addContributor(new GradleWrapperExecutablesContributor());
         return chain;
     }
@@ -107,7 +124,30 @@ public class CasInitializrConfiguration {
     }
 
     @Bean
-    public InitializrMetadataUpdateStrategy initializrMetadataUpdateStrategy() {
-        return new CasOverlayInitializrMetadataUpdateStrategy();
+    public InitializrMetadataUpdateStrategy initializrMetadataUpdateStrategy(final CasInitializrProperties initializrProperties) {
+        return new CasOverlayInitializrMetadataUpdateStrategy(initializrProperties);
+    }
+
+    @Bean
+    @Order(Ordered.HIGHEST_PRECEDENCE)
+    public JCacheManagerCustomizer initializrMetadataCacheManagerCustomizer() {
+        return cacheManager -> {
+            var cacheDuration = Duration.ONE_DAY;
+            var config = new MutableConfiguration<>()
+                .setStoreByValue(false)
+                .setManagementEnabled(true)
+                .setStatisticsEnabled(true)
+                .setExpiryPolicyFactory(CreatedExpiryPolicy.factoryOf(cacheDuration));
+            log.info("Initialize metadata is cached for 1 day");
+            cacheManager.createCache("initializr.metadata", config);
+            
+            var propertiesConfig = new MutableConfiguration<>()
+                .setStoreByValue(false)
+                .setManagementEnabled(true)
+                .setStatisticsEnabled(true)
+                .setExpiryPolicyFactory(CreatedExpiryPolicy.factoryOf(cacheDuration));
+            log.info("CAS properties metadata is cached for 1 day");
+            cacheManager.createCache("cas.properties", propertiesConfig);
+        };
     }
 }

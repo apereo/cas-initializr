@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath "org.yaml:snakeyaml:1.33"
+        classpath "org.yaml:snakeyaml:2.0"
     }
 }
 
@@ -34,16 +34,28 @@ springBoot {
     mainClass.set("org.apereo.cas.CasInitializrApplication")
 }
 
+//sourceSets {
+//    main {
+//        resources {
+//            srcDir new File("${buildDir}/resources/main")
+//        }
+//    }
+//}
+
 dependencies {
-    implementation "org.jooq:jool:0.9.14"
+    implementation "org.jooq:jool:0.9.15"
     implementation "commons-io:commons-io:2.11.0"
-    implementation "org.eclipse.jgit:org.eclipse.jgit:6.4.0.202211300538-r"
+    implementation "org.eclipse.jgit:org.eclipse.jgit:6.5.0.202303070854-r"
     implementation "com.github.vladimir-bukhtoyarov:bucket4j-core:7.6.0"
     implementation "com.github.spullara.mustache.java:compiler:0.9.10"
     
     implementation "org.springframework.boot:spring-boot-starter-web"
     implementation "org.springframework.boot:spring-boot-starter-thymeleaf"
     implementation "org.springframework.boot:spring-boot-starter-actuator"
+
+
+    implementation("javax.cache:cache-api")
+    implementation("org.ehcache:ehcache")
 
     implementation "io.spring.initializr:initializr-web"
     implementation "io.spring.initializr:initializr-actuator"
@@ -54,6 +66,7 @@ dependencies {
     runtimeOnly "org.springframework.boot:spring-boot-starter-tomcat"
 
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+    
 }
 
 bootBuildImage {
@@ -77,23 +90,38 @@ bootRun {
 
 
 processResources {
+    /*
+        To support the Gradle configuration cache...
+    */
+    def version = project.providers.gradleProperty("version").get()
+    def gradleDependencyManagementPluginVersion = project.providers.gradleProperty("gradleDependencyManagementPluginVersion").get()
+    def gradleFreeFairPluginVersion = project.providers.gradleProperty("gradleFreeFairPluginVersion").get()
+    def gradleDownloadTaskPluginVersion = project.providers.gradleProperty("gradleDownloadTaskPluginVersion").get()
+    def jibVersion = project.providers.gradleProperty("jibVersion").get()
+
+    def springBootLatestVersion = project.providers.gradleProperty("springBootLatestVersion").get()
+    def apacheTomcat9LatestVersion = project.providers.gradleProperty("apacheTomcat9LatestVersion").get()
+    def apacheTomcat10LatestVersion = project.providers.gradleProperty("apacheTomcat10LatestVersion").get()
+    def casLatestVersion = project.providers.gradleProperty("casLatestVersion").get()
+    def casManagementLatestVersion = project.providers.gradleProperty("casManagementLatestVersion").get()
+
     filesMatching("**/application-*.yml") {
         expand (
-                springBootLatestVersion: project.springBootLatestVersion,
-                apacheTomcat9LatestVersion: project.apacheTomcat9LatestVersion,
-                apacheTomcat10LatestVersion: project.apacheTomcat10LatestVersion,
-                casLatestVersion: project.casLatestVersion,
-                casManagementLatestVersion: project.casManagementLatestVersion
+                springBootLatestVersion: springBootLatestVersion,
+                apacheTomcat9LatestVersion: apacheTomcat9LatestVersion,
+                apacheTomcat10LatestVersion: apacheTomcat10LatestVersion,
+                casLatestVersion: casLatestVersion,
+                casManagementLatestVersion: casManagementLatestVersion
         )
     }
 
     filesMatching(['**/*.yml', '**/*.properties', '**/*.md', '**/*.mustache']) {
         filter org.apache.tools.ant.filters.ReplaceTokens, tokens: [
-                "version"                                : project.property("version"),
-                "gradleDependencyManagementPluginVersion": project.property("gradleDependencyManagementPluginVersion"),
-                "gradleFreeFairPluginVersion"            : project.property("gradleFreeFairPluginVersion"),
-                "gradleDownloadTaskPluginVersion"        : project.property("gradleDownloadTaskPluginVersion"),
-                "jibVersion"                             : project.property("jibVersion")
+                "version"                                : version,
+                "gradleDependencyManagementPluginVersion": gradleDependencyManagementPluginVersion,
+                "gradleFreeFairPluginVersion"            : gradleFreeFairPluginVersion,
+                "gradleDownloadTaskPluginVersion"        : gradleDownloadTaskPluginVersion,
+                "jibVersion"                             : jibVersion
         ]
     }
 }
@@ -103,9 +131,9 @@ supportedTypes.forEach({ type ->
     project.tasks.create(name: "versions-${type}",
                          description: "Display supported versions",
                          dependsOn: build) {
+        def file = file("${project.buildDir}/resources/main/application-initializr.yml")
         doLast {
             def yaml = new org.yaml.snakeyaml.Yaml()
-            def file = file("${project.buildDir}/resources/main/application-initializr.yml")
             def config = yaml.load(file.newInputStream())
             def supportedVersions = config.'cas-initializr'.'supported-versions'
             def results = supportedVersions.findAll { ver -> ver.type == type }
@@ -116,26 +144,33 @@ supportedTypes.forEach({ type ->
 
 tasks.register('latestCasVersion') {
     description "Display latest CAS version"
+
+    def casLatestVersion = project.providers.gradleProperty("casLatestVersion").get()
+    def springBootLatestVersion = project.providers.gradleProperty("springBootLatestVersion").get()
     doLast {
-        def results = [version: project.property("casLatestVersion"),
-                       'boot-version': project.property("springBootLatestVersion")]
+        def results = [version: casLatestVersion,
+                       'boot-version': springBootLatestVersion]
         println(groovy.json.JsonOutput.toJson(results))
     }
 }
 
 tasks.register('latestCasMgmtVersion') {
     description "Display latest CAS Management version"
+    def casManagementLatestVersion = project.providers.gradleProperty("casManagementLatestVersion").get()
     doLast {
-        def results = [version: project.property("casManagementLatestVersion")]
+        project.
+        def results = [version: casManagementLatestVersion]
         println(groovy.json.JsonOutput.toJson(results))
     }
 }
 
 tasks.register('latestCasVersions') {
     description "Display latest CAS versions"
+    def casManagementLatestVersion = project.providers.gradleProperty("casManagementLatestVersion").get()
+    def casLatestVersion = project.providers.gradleProperty("casLatestVersion").get()
     doLast {
-        def results = ['cas-version': project.property("casLatestVersion"),
-                       'cas-mgmt-version': project.property("casManagementLatestVersion")]
+        def results = ['cas-version': casLatestVersion,
+                       'cas-mgmt-version': casManagementLatestVersion]
         println(groovy.json.JsonOutput.toJson(results))
     }
 }
@@ -155,19 +190,29 @@ tasks.register('copyWrapperExecutables', Copy) {
 }
 
 def copyUIStatic = tasks.register('copyUIStatic', Copy) {
+    dependsOn tasks.findByPath(":ui:compileJava")
+//    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     from tasks.findByPath(":ui:buildWebapp").outputs
     into "${buildDir}/resources/main/static"
 }
 
 def copyUITemplates = tasks.register('copyUITemplates', Copy) {
+    dependsOn tasks.findByPath(":ui:compileJava")
+//    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     from tasks.findByPath(":ui:buildWebapp").outputs
     into "${buildDir}/resources/main/templates"
 }
 
 rootProject.tasks["wrapper"].finalizedBy([copyWrapper, copyWrapperExecutables])
-build.dependsOn([copyWrapper, copyWrapperExecutables])
 
-def taskNames = gradle.startParameter.taskNames
-if (taskNames.contains("build")) {
+bootBuildInfo.mustRunAfter(compileJava)
+
+def enableDepends = gradle.startParameter.taskNames.any 
+    {task -> task.equalsIgnoreCase('build') || task.equalsIgnoreCase('bootRun') }
+
+if (enableDepends) {
     processResources.dependsOn([copyUITemplates, copyUIStatic])
+    bootRun.dependsOn([copyUITemplates, copyUIStatic])
 }
+
+build.dependsOn([copyWrapper, copyWrapperExecutables])

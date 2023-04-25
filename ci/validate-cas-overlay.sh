@@ -19,25 +19,46 @@ while (( "$#" )); do
     esac
 done
 
-parameters="casVersion=${CAS_VERSION}"
+parameters="casVersion=${CAS_VERSION}&dependencyCoordinates=cas-server-support-rest"
 if [ -z "${BOOT_VERSION}" ]; then
   parameters="${parameters}&bootVersion=${BOOT_VERSION}"
 fi
+
+CAS_MAJOR_VERSION=`echo $CAS_VERSION | cut -d. -f1`
+CAS_MINOR_VERSION=`echo $CAS_VERSION | cut -d. -f2`
 
 java -jar app/build/libs/app.jar &
 pid=$!
 sleep 30
 mkdir tmp
-cd tmp
+cd tmp || exit
 echo "Requesting CAS overlay for ${parameters}"
 curl http://localhost:8080/starter.tgz --connect-timeout 30 -d "${parameters}" | tar -xzvf -
 kill -9 $pid
 [ "$CI" = "true" ] && pkill java
 
+echo "Building CAS Overlay"
 ./gradlew clean build --warning-mode all --no-daemon
+
+echo "Running CAS Overlay with Gradle"
+./gradlew run -Dspring.profiles.active=none -Dserver.ssl.enabled=false -Dserver.port=8080 &
+pid=$!
+sleep 80
+rc=$(curl -L -k -u casuser:password -o /dev/null --connect-timeout 60 -s  -I -w "%{http_code}" http://localhost:8080/cas/login)
+kill -9 $pid
+if [ "$rc" == 200 ]; then
+    echo "Deployed the CAS web application successfully."
+else
+    echo "Failed to deploy the CAS web application with status $rc."
+    exit 1
+fi
+[ "$CI" = "true" ] && pkill java
+
+echo "Downloading Apache Tomcat $TOMCAT_VERSION"
 downloadTomcat "$TOMCAT_VERSION"
 mv build/libs/cas.war ${CATALINA_HOME}/webapps/cas.war
 
+echo "Starting Apache Tomcat $TOMCAT_VERSION to deploy ${CATALINA_HOME}/webapps/cas.war"
 ${CATALINA_HOME}/bin/startup.sh & >/dev/null 2>&1
 pid=$!
 sleep 30
@@ -51,7 +72,7 @@ else
     exit 1
 fi
 [ "$CI" = "true" ] && pkill java
-ps -ef
+#ps -ef
 
 echo "Running CAS Overlay as an executable WAR file"
 ./gradlew clean build -Pexecutable=true --no-daemon
@@ -64,10 +85,25 @@ until curl -k -L --output /dev/null --silent --fail http://localhost:8090/cas/lo
    sleep 5
 done
 echo -e "\n\nReady!"
+
+if [ "$CAS_MAJOR_VERSION" -ge 7 ]; then
+    echo "Running duct against CAS Overlay $CAS_VERSION"
+    ./gradlew --no-daemon duct -Pduct.service=https://apereo.github.io -Pduct.cas.1=http://localhost:8090/cas -Pduct.debug=true -Pduct.count=1
+    [ $? -eq 0 ] && echo "Gradle command ran successfully." || exit 1
+fi
+
 echo "Killing process $pid"
 kill -9 $pid
 [ "$CI" = "true" ] && pkill java
-ps -ef
+#ps -ef
+echo "Running Puppeteer test scenarios"
+chmod +x ./puppeteer/run.sh
+export PUPPETEER_CAS_HOST="http://localhost:8090"
+export CAS_ARGS="--spring.profiles.active=none --server.ssl.enabled=false --server.port=8090"
+
+./puppeteer/run.sh
+[ $? -eq 0 ] && echo "Puppeteer ran successfully." || exit 1
+[ "$CI" = "true" ] && pkill java
 
 echo "Running CAS Overlay with bootRun"
 ./gradlew --no-daemon clean build bootRun -Dserver.ssl.enabled=false -Dserver.port=8091 &
@@ -82,11 +118,13 @@ echo -e "\n\nReady!"
 echo "Killing process $pid"
 kill -9 $pid
 [ "$CI" = "true" ] && pkill java
-ps -ef
+# ps -ef
 chmod -R 777 ./*.sh >/dev/null 2>&1
 
-#echo "Building Docker image with Spring Boot"
-#./gradlew --no-daemon bootBuildImage
+if [ "$CAS_MAJOR_VERSION" -ge 7 ]; then
+    echo "Building Docker image with Spring Boot"
+    ./gradlew --no-daemon bootBuildImage
+fi
 
 echo "Building Docker image with Jib"
 publishDockerImage

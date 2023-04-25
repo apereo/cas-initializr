@@ -2,10 +2,11 @@
     "extends": [
       "config:base",
       ":preserveSemverRanges",
-      ":rebaseStalePrs",
       ":disableRateLimiting",
       ":semanticCommits",
       ":semanticCommitTypeAll(renovatebot)"
     ],
-    "labels": ["dependencies", "bot"]
+    "labels": ["dependencies", "bot"],
+    "rebaseWhen" : "never",
+    "automerge": false
   }

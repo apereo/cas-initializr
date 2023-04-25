@@ -10,6 +10,7 @@ import org.apereo.cas.overlay.casserver.contrib.CasOverlayConfigurationDirectori
 import org.apereo.cas.overlay.casserver.contrib.CasOverlayLoggingConfigurationContributor;
 import org.apereo.cas.overlay.casserver.contrib.docker.CasOverlayDockerContributor;
 import org.apereo.cas.overlay.casserver.contrib.helm.CasOverlayHelmContributor;
+import org.apereo.cas.overlay.casserver.contrib.puppeteer.CasOverlayPuppeteerContributor;
 import org.apereo.cas.overlay.casserver.customize.DefaultDependenciesBuildCustomizer;
 
 import io.spring.initializr.generator.buildsystem.BuildItemResolver;
@@ -33,6 +34,11 @@ public class CasOverlayProjectGenerationConfiguration {
     @Bean
     public CasOverlayDockerContributor casOverlayDockerContributor() {
         return new CasOverlayDockerContributor(applicationContext);
+    }
+
+    @Bean
+    public CasOverlayPuppeteerContributor casOverlayPuppeteerContributor() {
+        return new CasOverlayPuppeteerContributor(applicationContext);
     }
 
     @Bean

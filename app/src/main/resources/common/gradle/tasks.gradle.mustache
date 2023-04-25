@@ -1,6 +1,16 @@
 {{#casServer}}
+import static org.gradle.internal.logging.text.StyledTextOutput.Style
+
 import org.apereo.cas.metadata.*
+import org.gradle.internal.logging.text.*
+
+import groovy.json.*
+import groovy.time.*
+
 import java.nio.file.*
+import java.util.*
+import java.security.*
+
 buildscript {
     repositories {
         mavenLocal()
@@ -27,10 +37,9 @@ task run(group: "build", description: "Run the CAS web application in embedded c
     dependsOn 'build'
     doLast {
         def casRunArgs = Arrays.asList("-server -noverify -Xmx2048M -XX:+TieredCompilation -XX:TieredStopAtLevel=1".split(" "))
-        javaexec {
-            main = "-jar"
+        project.javaexec {
             jvmArgs = casRunArgs
-            args = ["build/libs/{{appName}}.war"]
+            classpath = project.files("build/libs/{{appName}}.war")
             systemProperties = System.properties
             logger.info "Started ${commandLine}"
         }
@@ -62,11 +71,10 @@ task debug(group: "CAS", description: "Debug the CAS web application in embedded
     doLast {
         logger.info "Debugging process is started in a suspended state, listening on port 5005."
         def casArgs = Arrays.asList("-Xmx2048M".split(" "))
-        javaexec {
-            main = "-jar"
+        project.javaexec {
             jvmArgs = casArgs
             debug = true
-            args = ["build/libs/{{appName}}.war"]
+            classpath = project.files("build/libs/{{appName}}.war")
             systemProperties = System.properties
             logger.info "Started ${commandLine}"
         }
@@ -122,8 +130,8 @@ task zip(type: Zip) {
     exclude '**/.idea/**', '.gradle', 'tmp', '.git', '**/build/**', '**/bin/**', '**/out/**', '**/.settings/**'
     destinationDirectory = buildDir
     archiveFileName = "${project.name}.zip"
+    def zipFile = new File("${buildDir}/${archiveFileName}")
     doLast {
-        def zipFile = file("${buildDir}/${it.archiveFileName.get()}")
         if (zipFile.exists()) {
             println "Zip archive is available at ${zipFile.absolutePath}"
         }
@@ -131,6 +139,15 @@ task zip(type: Zip) {
 }
 
 task createKeystore(group: "CAS", description: "Create CAS keystore") {
+    def dn = "CN=cas.example.org,OU=Example,OU=Org,C=US"
+    if (project.hasProperty("certificateDn")) {
+        dn = project.getProperty("certificateDn")
+    }
+    def subjectAltName = "dns:example.org,dns:localhost,ip:127.0.0.1"
+    if (project.hasProperty("certificateSubAltName")) {
+        subjectAltName = project.getProperty("certificateSubAltName")
+    }
+
     doFirst {
         def certDir = project.getProperty("certDir")
         def serverKeyStore = project.getProperty("serverKeystore")
@@ -140,15 +157,6 @@ task createKeystore(group: "CAS", description: "Create CAS keystore") {
         def serverCert = "$certDir/$exportedServerCert"
 
         mkdir certDir
-
-        def dn = "CN=cas.example.org,OU=Example,OU=Org,C=US"
-        if (project.hasProperty("certificateDn")) {
-            dn = project.getProperty("certificateDn")
-        }
-        def subjectAltName = "dns:example.org,dns:localhost,ip:127.0.0.1"
-        if (project.hasProperty("certificateSubAltName")) {
-            subjectAltName = project.getProperty("certificateSubAltName")
-        }
         // this will fail if thekeystore exists and has cert with cas alias already (so delete if you want to recreate)
         logger.info "Generating keystore for CAS with DN ${dn}"
         exec {
@@ -173,10 +181,12 @@ task createKeystore(group: "CAS", description: "Create CAS keystore") {
 
 task unzipWAR(type: Copy, group: "CAS", description: "Explodes the CAS web application archive") {
     dependsOn 'build'
+    def destination = "${buildDir}/app"
+
     from zipTree("build/libs/{{appName}}.war")
-    into "${buildDir}/app"
+    into "${destination}"
     doLast {
-        println "Unzipped WAR into ${buildDir}/app"
+        println "Unzipped WAR into ${destination}"
     }
 }
 
@@ -221,72 +231,75 @@ task unzip(type: Copy, group: "CAS", description: "Explodes the CAS archive and 
     }
 }
 
-task downloadShell(group: "Shell", description: "Download CAS shell jar from snapshot or release maven repo") {
-    doFirst {
-        mkdir "${project.shellDir}"
-    }
-    doLast {
-        def downloadFile
-        if (isRunningCasServerSnapshot()) {
-            def snapshotDir = "https://oss.sonatype.org/content/repositories/snapshots/org/apereo/cas/cas-server-support-shell/${project.'cas.version'}/"
-            def files = new org.apache.ivy.util.url.ApacheURLLister().listFiles(new URL(snapshotDir))
-            files = files.sort { it.path }
-            files.each {
-                if (it.path.endsWith(".jar")) {
-                    downloadFile = it
-                }
+{{#shellSupported}}
+task downloadShell(group: "Shell", description: "Download CAS shell jar from snapshot or release maven repo", type: Download) {
+    def shellDir = project.providers.gradleProperty("shellDir").get()
+    def casVersion = project.providers.gradleProperty("cas.version").get()
+    def downloadFile
+    if (casVersion.contains("-SNAPSHOT")) {
+        def snapshotDir = "https://oss.sonatype.org/content/repositories/snapshots/org/apereo/cas/cas-server-support-shell/${casVersion}/"
+        def files = new org.apache.ivy.util.url.ApacheURLLister().listFiles(new URL(snapshotDir))
+        files = files.sort { it.path }
+        files.each {
+            if (it.path.endsWith(".jar")) {
+                downloadFile = it
             }
-        } else {
-            downloadFile = "https://repo1.maven.org/maven2/org/apereo/cas/cas-server-support-shell/${project.'cas.version'}/cas-server-support-shell-${project.'cas.version'}.jar"
         }
-        logger.info "Downloading file: ${downloadFile}"
-        download {
-            src downloadFile
-            dest new File("${project.shellDir}", "cas-server-support-shell-${project.'cas.version'}.jar")
-            overwrite false
-        }
+    } else {
+        downloadFile = "https://repo1.maven.org/maven2/org/apereo/cas/cas-server-support-shell/${casVersion}/cas-server-support-shell-${casVersion}.jar"
     }
+    new File("${shellDir}").mkdir()
+    logger.info "Downloading file: ${downloadFile}"
+    src downloadFile
+    dest new File("${shellDir}", "cas-server-support-shell-${casVersion}.jar")
+    overwrite false
 }
 
 task runShell(group: "Shell", description: "Run the CAS shell") {
     dependsOn downloadShell
+    def casVersion = project.providers.gradleProperty("cas.version").get()
     doLast {
-        println "Run the following command to launch the shell:\n\tjava -jar ${project.shellDir}/cas-server-support-shell-${project.'cas.version'}.jar"
+        println "Run the following command to launch the shell:\n\tjava -jar ${project.shellDir}/cas-server-support-shell-${casVersion}.jar"
     }
 }
 
 task debugShell(group: "Shell", description: "Run the CAS shell with debug options, wait for debugger on port 5005") {
     dependsOn downloadShell
+    def casVersion = project.providers.gradleProperty("cas.version").get()
     doLast {
         println """
         Run the following command to launch the shell:\n\t
-        java -Xrunjdwp:transport=dt_socket,address=5000,server=y,suspend=y -jar ${project.shellDir}/cas-server-support-shell-${project.'cas.version'}.jar
+        java -Xrunjdwp:transport=dt_socket,address=5000,server=y,suspend=y -jar ${project.shellDir}/cas-server-support-shell-${casVersion}.jar
         """
     }
 }
+{{/shellSupported}}
 
 task listTemplateViews(group: "CAS", description: "List all CAS views") {
     dependsOn unzip
 
+    def templateViews = fileTree(explodedResourcesDir).matching {
+        include "**/*.html"
+    }
+    .collect {
+        return it.path.replace(explodedResourcesDir, "")
+    }
+    .toSorted()
+
     doFirst {
-        fileTree(explodedResourcesDir).matching {
-            include "**/*.html"
-        }
-        .collect {
-            return it.path.replace(explodedResourcesDir, "")
-        }
-        .toSorted()
-        .each { println it }
+        templateViews.each { println it }
     }
 }
 
 task getResource(group: "CAS", description: "Fetch a CAS resource and move it into the overlay") {
     dependsOn unzip
 
-    doFirst {
-        def resourceName = project.getProperty("resourceName")
+    def resourceName = project.providers.gradleProperty("resourceName").getOrNull()
+    def resourcesDirectory = fileTree(explodedResourcesDir)
+    def projectDirectory = projectDir
 
-        def results = fileTree(explodedResourcesDir).matching {
+    doFirst {
+        def results = resourcesDirectory.matching {
             include "**/${resourceName}.*"
             include "**/${resourceName}"
         }
@@ -305,27 +318,21 @@ task getResource(group: "CAS", description: "Fetch a CAS resource and move it in
 
         def fromFile = explodedResourcesDir
         def resourcesDir = "src/main/resources"
-        mkdir resourcesDir
+        new File(resourcesDir).mkdir()
 
         def resourceFile = results[0].canonicalPath
-        def toResourceFile = resourceFile.replace(fromFile, resourcesDir)
-
-        def parent = file(toResourceFile).getParent()
-        mkdir parent
-
-        Files.copy(Paths.get(resourceFile), Paths.get(toResourceFile), StandardCopyOption.REPLACE_EXISTING)
+        def toResourceFile = new File("${projectDirectory}", resourceFile.replace(fromFile, resourcesDir))
+        toResourceFile.getParentFile().mkdirs()
+     
+        Files.copy(Paths.get(resourceFile), Paths.get(toResourceFile.absolutePath), StandardCopyOption.REPLACE_EXISTING)
         println "Copied file ${resourceFile} to ${toResourceFile}"
     }
 }
 
-def isRunningCasServerSnapshot() {
-    return "${project.'cas.version'}".contains("-SNAPSHOT")
-}
-
-
 task createTheme(group: "CAS", description: "Create theme directory structure in the overlay") {
+    def theme = project.providers.gradleProperty("theme").getOrNull()
+
     doFirst {
-        def theme = project.getProperty("theme")
         def builder = new FileTreeBuilder()
         new File("src/main/resources/${theme}.properties").delete()
 
@@ -364,7 +371,6 @@ cas.standard.js.file=/themes/${theme}/js/cas.js
         }
     }
 }
-
 {{/casServer}}
 
 def skipValidation = project.hasProperty("validate") && project.property("validate").equals("false")
@@ -383,3 +389,111 @@ if (!skipValidation) {
     processResources.dependsOn(validateConfiguration)
 }
 
+{{#casServer}}
+{{#gradleVersion8Compatible}}
+task duct(group: "CAS", description: "Test ticket registry functionality via the CAS REST API") {
+    def service = project.findProperty("duct.service") ?: "https://apereo.github.io"
+    def casServerNodes = providers.gradlePropertiesPrefixedBy("duct.cas").get()
+    def username = project.findProperty("duct.username") ?: "casuser"
+    def password = project.findProperty("duct.password") ?: "Mellon"
+    def debug = Boolean.parseBoolean(project.findProperty("duct.debug") ?: "false")
+    def duration = Long.parseLong(project.findProperty("duct.duration") ?: "-1")
+    def count = Long.parseLong(project.findProperty("duct.count") ?: "-1")
+
+    doLast {
+        def out = services.get(StyledTextOutputFactory).create("cas")
+
+        def getCasServerNode = {
+            def casServerNodesArray = casServerNodes.values().toArray()
+            return casServerNodesArray[new SecureRandom().nextInt(casServerNodesArray.length)] as String
+        }
+
+        def startTime = new Date()
+        def keepGoing = true
+        def executionCount = 0
+
+        while(keepGoing) {
+            executionCount++
+
+            def casServerPrefix1 = getCasServerNode()
+            def casServerPrefix2 = getCasServerNode()
+
+            if (casServerNodes.size() >= 2) {
+                while (casServerPrefix1.equals(casServerPrefix2)) {
+                    casServerPrefix2 = getCasServerNode()
+                }
+            }
+            
+            if (debug) {
+                out.withStyle(Style.Normal).println("CAS Server 1: ${casServerPrefix1}")
+                out.withStyle(Style.Normal).println("CAS Server 2: ${casServerPrefix2}")
+                out.withStyle(Style.Normal).println("Fetching ticket-granting ticket @ ${casServerPrefix1} for ${username}...")
+            }
+            def connection = new URL("${casServerPrefix1}/v1/tickets").openConnection()
+            connection.setRequestMethod("POST")
+            connection.setDoOutput(true)
+            connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded")
+            connection.getOutputStream().write("username=${username}&password=${password}".getBytes("UTF-8"))
+            def rc = connection.getResponseCode()
+            
+            if (rc == 201) {
+                def tgt = connection.getHeaderFields().get("Location").get(0).find('TGT-.*')
+
+                if (debug) {
+                    out.withStyle(Style.Normal).println("Received ticket-granting ticket ${tgt} @ ${casServerPrefix2} for ${username}...")
+                    out.withStyle(Style.Normal).println("Fetching service ticket @ ${casServerPrefix2} for ${tgt} and service ${service}...")
+                }
+                connection = new URL("${casServerPrefix2}/v1/tickets/${tgt}").openConnection()
+                connection.setRequestMethod("POST")
+                connection.setDoOutput(true)
+                connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded")
+                connection.getOutputStream().write("service=${service}".getBytes("UTF-8"))
+                rc = connection.getResponseCode()
+                
+                if (rc == 200) {
+                    def st = connection.getInputStream().getText()
+                    if (debug) {
+                        out.withStyle(Style.Normal).println("Received service ticket ${st} @ ${casServerPrefix1} for ${service}...")
+                        out.withStyle(Style.Normal).println("Validating service ticket ${st} @ ${casServerPrefix1} for service ${service}...")
+                    }
+                    connection = new URL("${casServerPrefix1}/p3/serviceValidate?service=${service}&ticket=${st}&format=json").openConnection()
+                    connection.setRequestMethod("GET")
+                    connection.setDoOutput(true)
+                    connection.setRequestProperty("Content-Type", "application/json")
+                    rc = connection.getResponseCode()
+                    
+                    if (rc == 200) {
+                        def serverResponse = connection.getInputStream().getText()
+                        def response = new JsonSlurper().parseText(serverResponse)
+                        
+                        if (response.serviceResponse["authenticationSuccess"] != null) {
+                            out.withStyle(Style.Success).println("Service ticket ${st} is successfully validated @ ${casServerPrefix1}")
+                        } else {
+                            out.withStyle(Style.Failure).println("Service ticket ${st} cannot be validated @ ${casServerPrefix1} for ${tgt}")
+                            if (debug) {
+                                out.withStyle(Style.Failure).println(serverResponse)
+                            }
+                        }
+                    } else {
+                        out.withStyle(Style.Failure).println("${rc}: Unable to validate service ticket ${st} @ ${casServerPrefix1} for ${tgt}")
+                    }
+                } else {
+                    out.withStyle(Style.Failure).println("${rc}: Unable to fetch service ticket @ ${casServerPrefix2} for ${tgt}")
+                }
+            } else {
+                out.withStyle(Style.Failure).println("${rc}: Unable to fetch ticket-granting ticket @ ${casServerPrefix1}")
+            }
+
+            if (keepGoing && duration > 0) {
+                def executionDuration = TimeCategory.minus(new Date(), startTime)
+                keepGoing = executionDuration.getSeconds() < duration
+            }
+            if (keepGoing) {
+                keepGoing = executionCount < count
+            }
+            Thread.sleep(250)
+        }
+    }
+}
+{{/gradleVersion8Compatible}}
+{{/casServer}}

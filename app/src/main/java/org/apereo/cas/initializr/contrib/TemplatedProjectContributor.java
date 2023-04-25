@@ -26,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ApplicationContext;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.util.FileCopyUtils;
@@ -33,6 +34,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
@@ -44,6 +46,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -67,19 +70,22 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         return builder.build().toString();
     }
 
-    private static void handleApplicationServerType(final ProjectDescription project, final Map<String, Object> defaults) {
+    private static void handleApplicationServerType(final OverlayProjectDescription project, final Map<String, Object> defaults) {
         var dependencies = project.getRequestedDependencies();
+
         var appServer = "-tomcat";
         if (dependencies.containsKey("webapp-jetty")) {
             appServer = "-jetty";
         } else if (dependencies.containsKey("webapp-undertow")) {
             appServer = "-undertow";
         }
-        if (dependencies.containsKey("webapp")) {
+
+        if (dependencies.containsKey("webapp") || project.getDeploymentType() == OverlayProjectDescription.DeploymentTypes.WEB) {
             appServer = "";
         }
 
         defaults.put("appServer", appServer);
+        defaults.put("executable", project.getDeploymentType() == OverlayProjectDescription.DeploymentTypes.EXECUTABLE);
     }
 
     protected static void createTemplateFile(final Path output, final String template) throws IOException {
@@ -110,22 +116,41 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
     public void contribute(final Path projectRoot) throws IOException {
         if (resourcePattern.endsWith("/**")) {
             val resources = resolver.getResources(resourcePattern);
+            
             for (val resource : resources) {
                 if (resource.isReadable()) {
-                    val filename = StringUtils.remove(resource.getFilename(), ".mustache");
-                    val output = projectRoot.resolve(StringUtils.appendIfMissing(relativePath, "/") + filename);
+                    val output = determineOutputResourcePath(projectRoot, resource);
                     log.info("Output file {}", output.toFile().getAbsolutePath());
                     createFileAndParentDirectories(output);
-                    var templateVariables = getProjectTemplateVariables();
-                    var template = renderTemplate(resource, templateVariables);
-                    var project = applicationContext.getBean(OverlayProjectDescription.class);
-                    template = postProcessRenderedTemplate(template, project, templateVariables);
-                    createTemplateFile(output, template);
+                    if (resource.getFilename().endsWith(".mustache")) {
+                        var templateVariables = getProjectTemplateVariables();
+                        var template = renderTemplate(resource, templateVariables);
+                        var project = applicationContext.getBean(OverlayProjectDescription.class);
+                        template = postProcessRenderedTemplate(template, project, templateVariables);
+                        createTemplateFile(output, template);
+                    } else {
+                        if (!output.toFile().exists()) {
+                            Files.createFile(output);
+                        }
+                        FileCopyUtils.copy(resource.getInputStream(), Files.newOutputStream(output));
+                    }
+                    if (output.endsWith(".sh") || output.endsWith(".bat")) {
+                        output.toFile().setExecutable(true);
+                    }
                 }
             }
         } else {
             processTemplatedFile(projectRoot.resolve(relativePath));
         }
+    }
+
+    protected Path determineOutputResourcePath(final Path projectRoot, final Resource resource) throws IOException {
+        val filename = determineOutputResourceFileName(resource);
+        return projectRoot.resolve(StringUtils.appendIfMissing(relativePath, "/") + filename);
+    }
+
+    protected String determineOutputResourceFileName(final Resource resource) throws IOException {
+        return StringUtils.remove(resource.getFilename(), ".mustache");
     }
 
     private Map<String, Object> getProjectTemplateVariables() {
@@ -197,6 +222,18 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
                 templateVariables.put("tomcatVersion", version.getTomcatVersion());
                 templateVariables.put("javaVersion", version.getJavaVersion());
                 templateVariables.put("containerBaseImageName", version.getContainerBaseImage());
+                templateVariables.put("gradleVersion", version.getGradleVersion());
+                templateVariables.put("branch", version.getBranch());
+
+                var gradleVersion = VersionUtils.parse(version.getGradleVersion());
+                IntStream.rangeClosed(7, 10).forEach(value -> {
+                    if (gradleVersion.getMajor() == value) {
+                        templateVariables.put("gradleVersion" + value, Boolean.TRUE);
+                    }
+                    if (gradleVersion.getMajor() >= value) {
+                        templateVariables.put("gradleVersion" + value + "Compatible", Boolean.TRUE);
+                    }
+                });
             }, () -> {
                 throw new UnsupportedVersionException(project.getCasVersion(),
                     "Unsupported version " + project.getCasVersion() + " for project type " + project.getBuildSystem().overlayType());
@@ -227,7 +264,7 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
 
         val dockerSupported = getOverlayProjectDescription().isDockerSupported();
         templateVariables.put("dockerSupported", dockerSupported);
-
+        
         templateVariables.put("containerImageName", StringUtils.remove(type, "-overlay"));
         templateVariables.put("containerImageOrg", "apereo");
 
@@ -235,18 +272,21 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
 
         if (type.equalsIgnoreCase(CasOverlayBuildSystem.ID) || type.equalsIgnoreCase(CasManagementOverlayBuildSystem.ID)) {
             handleApplicationServerType(project, templateVariables);
-            templateVariables.put("hasDockerFile", dockerSupported);
+            templateVariables.put("dockerSupported", dockerSupported);
         }
 
         if (type.equalsIgnoreCase(CasManagementOverlayBuildSystem.ID)) {
             templateVariables.put("managementServer", Boolean.TRUE);
             templateVariables.put("appName", "cas-management");
         }
+        templateVariables.put("githubActionsSupported", getOverlayProjectDescription().isGithubActionsSupported());
         if (type.equalsIgnoreCase(CasOverlayBuildSystem.ID)) {
+            templateVariables.put("puppeteerSupported", getOverlayProjectDescription().isPuppeteerSupported());
+            templateVariables.put("shellSupported", getOverlayProjectDescription().isCommandlineShellSupported());
             templateVariables.put("casServer", Boolean.TRUE);
             templateVariables.put("appName", "cas");
         }
-        if (type.equalsIgnoreCase(CasSpringBootAdminServerOverlayBuildSystem.ID)) {
+            if (type.equalsIgnoreCase(CasSpringBootAdminServerOverlayBuildSystem.ID)) {
             templateVariables.put("springBootAdminServer", Boolean.TRUE);
             templateVariables.put("appName", "casbootadminserver");
         }
@@ -294,6 +334,19 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
             writer.write(appendTemplate);
             return writer.toString();
         }
+    }
+
+    protected String getOutputResourcePathWithParent(final Resource resource,
+                                                     String filename) throws IOException {
+        val relativePathFile = new File(getRelativePath());
+        val parentFile = resource.isFile()
+            ? resource.getFile().getParentFile()
+            : new File(((ClassPathResource) resource).getPath()).getParentFile();
+        val resourceParentName = parentFile.getName();
+        if (!resourceParentName.equals(relativePathFile.getName())) {
+            filename = "/" + resourceParentName + "/" + filename;
+        }
+        return filename;
     }
 
     @Getter

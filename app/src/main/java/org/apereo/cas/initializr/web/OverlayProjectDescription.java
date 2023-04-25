@@ -6,11 +6,20 @@ import io.spring.initializr.generator.project.MutableProjectDescription;
 import io.spring.initializr.metadata.BillOfMaterials;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
 
 @Getter
 @Setter
+@ToString
 public class OverlayProjectDescription extends MutableProjectDescription {
+
+    public enum DeploymentTypes {
+        WEB,
+        NATIVE,
+        EXECUTABLE
+    }
+
     private String casVersion;
 
     private String springBootVersion;
@@ -21,6 +30,13 @@ public class OverlayProjectDescription extends MutableProjectDescription {
 
     private boolean herokuSupported;
 
+    private boolean puppeteerSupported;
+
+    private boolean githubActionsSupported;
+
+    private boolean commandlineShellSupported;
+
+    private DeploymentTypes deploymentType = DeploymentTypes.EXECUTABLE;
 
     public String resolveCasVersion(final BillOfMaterials billOfMaterials) {
         return StringUtils.defaultIfBlank(this.casVersion, billOfMaterials.getVersion());
