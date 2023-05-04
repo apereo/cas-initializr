@@ -114,8 +114,14 @@ export default function Initializr() {
 
     /*eslint-disable react-hooks/exhaustive-deps*/
     React.useEffect(() => {
-        const { dependencies = [...preselected] } = getOverlayFromQs();
+        let { dependencies = [...preselected] } = getOverlayFromQs();
+        if (!Array.isArray(dependencies) && typeof dependencies === 'string') {
+            dependencies = [dependencies];
+        }
+        
         dispatch(setDependencies(dependencies));
+
+        
     }, [defaultValues]);
 
     const [value, setValue] = React.useState(0);
@@ -142,6 +148,7 @@ export default function Initializr() {
                 columnSpacing={{ xs: 1, sm: 2, md: 3 }}
                 sx={{
                     padding: "2rem",
+                    paddingBottom: "5rem",
                 }}
             >
                 {apiLoaded && versionsLoaded ? (
