@@ -4,7 +4,6 @@ import {
     ListItemText,
     Typography,
     Button,
-    ListItemButton,
     ListItemIcon,
     Checkbox,
     OutlinedInput,
@@ -37,7 +36,7 @@ export interface PropertySelectorProps {
 const VList: Components['List'] = React.forwardRef(({ style, children }: any, listRef) => {
     return (
         <List
-            style={{ padding: 0, ...style, margin: 0, width: '640px' }}
+            style={{ padding: '0 1rem', ...style, margin: 0, width: '660px', boxSizing: 'content-box' }}
             component="div"
             ref={listRef}
         >
@@ -48,7 +47,7 @@ const VList: Components['List'] = React.forwardRef(({ style, children }: any, li
 
 const VItem: Components['Item'] = ({ children, ...props }: any) => {
     return (
-        <ListItem component="div" {...props} style={{ margin: 0 }}>
+        <ListItem component="div" {...props} style={{ margin: 0, boxSizing: 'content-box', borderBottom: '1px solid #666666' }}>
             {children}
         </ListItem>
     );
@@ -128,7 +127,7 @@ export default function PropertySelector({ onSelectedChange }: PropertySelectorP
                 + Add Properties
             </Button>
 
-            <Drawer open={open} onClose={handleClose} anchor="right" id="dependencies-drawer" sx={{width: '600px'}}>
+            <Drawer open={open} onClose={handleClose} anchor="right" id="dependencies-drawer" sx={{width: '660px'}}>
                 <div
                     style={{
                         padding: "1rem 1.5rem 0",
@@ -154,7 +153,7 @@ export default function PropertySelector({ onSelectedChange }: PropertySelectorP
                 <div
                     style={{ padding: "1rem 1.5rem 0", marginBottom: "1.5rem" }}
                 >
-                    <FormControl sx={{ marginBottom: 1, width: '600px' }}>
+                    <FormControl sx={{ marginBottom: 1, width: '660px' }}>
                         <InputLabel htmlFor="dep-search-select-helper-label">
                             Search
                         </InputLabel>
@@ -187,7 +186,7 @@ export default function PropertySelector({ onSelectedChange }: PropertySelectorP
                         style={{
                             padding: "1rem 1.5rem 0",
                             marginBottom: "1.5rem",
-                            width: '600px'
+                            width: '660px'
                         }}
                     >
                         {`No Results Found`}
@@ -205,43 +204,41 @@ export default function PropertySelector({ onSelectedChange }: PropertySelectorP
 
                             const { name, description, type, deprecated, defaultValue } = item;
                             return (
-                                <ListItemButton
-                                    onClick={() => handleToggle(name)}
-                                >
+                                <React.Fragment>
                                     <ListItemIcon>
                                         <Checkbox
                                             edge="start"
                                             tabIndex={-1}
                                             checked={checked}
                                             disableRipple
+                                            onClick={() => handleToggle(name)}
                                         />
                                     </ListItemIcon>
                                     <ListItemText
                                         primary={
-                                            <React.Fragment>
+                                            <code style={ { backgroundColor: '#222222', padding: '0.2rem 0.4rem', borderRadius: '0.3rem', fontSize: '0.8rem' } }>
                                                 <FuseHighlight
                                                     hit={record}
                                                     attribute="name"
                                                 />
                                                 { deprecated ? ` - (deprecated)` : `` }
-                                            </React.Fragment>
+                                            </code>
                                         }
                                         secondary={
                                             <React.Fragment>
                                                 <Typography variant="body2" sx={{fontWeight: 'bold'}}>{defaultValue ? `default: ${defaultValue} ` : ' ' }({ `${type}` })</Typography>
                                                 <Typography
                                                     sx={{ display: 'inline' }}
-                                                    component="span"
+                                                    component="p"
                                                     variant="body2"
                                                     color="text.primary"
                                                 >
                                                     {description}
                                                 </Typography>
-                                                
-                                          </React.Fragment>
+                                            </React.Fragment>
                                         }
                                     />
-                                </ListItemButton>
+                                </React.Fragment>
                             );
                         }}
                     />

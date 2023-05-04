@@ -101,7 +101,11 @@ export default function Properties() {
                                         placement="top-start"
                                     >
                                         <ListItemText
-                                            primary={s.name}
+                                            primary={
+                                                <code style={ { backgroundColor: '#000', padding: '0.2rem 0.4rem', borderRadius: '0.3rem', fontSize: '0.8rem' } }>
+                                                    {s.name}
+                                                </code>
+                                            }
                                             secondary={s.description}
                                         />
                                     </Tooltip>

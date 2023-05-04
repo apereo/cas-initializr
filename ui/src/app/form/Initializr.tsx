@@ -23,6 +23,8 @@ import { getTree } from "../file/tree";
 import DownloadOverlay from './DownloadOverlay';
 import Properties from './Properties';
 
+import { gte } from 'semver';
+
 export const downloadAsZip = (fileName: string, data: any) => {
     // const blob = new Blob([data], { type: 'text/zip;charset=utf-8' });
     FileSaver.saveAs(data, `${fileName}.tar.gz`);
@@ -69,6 +71,8 @@ export default function Initializr() {
     const defaultValues = useDefaultValues();
     const dispatch = useAppDispatch();
     const version = useSelectedCasVersion();
+    const versionNum = React.useMemo(() => version.replace('-SNAPSHOT', ''), [version]);
+    const hasSettings = React.useMemo(() => versionNum && gte(versionNum, '7.0.0-SNAPSHOT'),[versionNum]);
 
     const [loading, setLoading] = React.useState(false);
 
@@ -118,10 +122,7 @@ export default function Initializr() {
         if (!Array.isArray(dependencies) && typeof dependencies === 'string') {
             dependencies = [dependencies];
         }
-        
         dispatch(setDependencies(dependencies));
-
-        
     }, [defaultValues]);
 
     const [value, setValue] = React.useState(0);
@@ -193,15 +194,17 @@ export default function Initializr() {
                             <Box sx={{ borderBottom: 1, borderColor: 'divider', mt: 1 }}>
                                 <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
                                     <Tab label="Dependencies" {...a11yProps(0)} />
-                                    <Tab label="Configuration Settings" {...a11yProps(1)} disabled={ !version } />
+                                    { hasSettings && <Tab label="Configuration Settings" {...a11yProps(1)} disabled={ !version } /> }
                                 </Tabs>
                             </Box>
                             <TabPanel value={value} index={0}>
                                 <Dependencies />
                             </TabPanel>
+                            { hasSettings &&
                             <TabPanel value={value} index={1}>
                                 <Properties />
                             </TabPanel>
+                            }
                         </Grid>
                     </>
                 ) : (
