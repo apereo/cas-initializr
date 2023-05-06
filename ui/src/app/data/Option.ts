@@ -30,14 +30,31 @@ export interface DependencyOptionValue extends OptionValue {
     type?: string;
 }
 
+export interface PropertyOptionValue extends OptionValue {
+    id: string;
+    name: string;
+    description?: string;
+    type?: string;
+}
+
 export interface DependencyOption {
     type: string;
     values?: DependencyGroup[];
 }
 
+export interface PropertyOption {
+    type: string;
+    values?: PropertyGroup[];
+}
+
 export interface DependencyGroup {
     name: string;
     values: DependencyOptionValue[];
+}
+
+export interface PropertyGroup {
+    name: string;
+    values: PropertyOptionValue[];
 }
 
 export interface Option {

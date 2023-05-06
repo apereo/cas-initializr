@@ -40,7 +40,9 @@
         "react-syntax-highlighter": "^15.5.0",
         "react-virtuoso": "^4.1.0",
         "sass": "^1.50.0",
+        "semver": "^7.5.0",
         "typescript": "^5.0.0",
+        "util": "^0.12.5",
         "web-vitals": "^3.0.0"
     },
     "scripts": {
