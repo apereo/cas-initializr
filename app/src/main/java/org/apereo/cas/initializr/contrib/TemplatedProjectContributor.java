@@ -251,6 +251,14 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
 
         var casVersion = project.resolveCasVersion(boms.get("cas-bom"));
         templateVariables.put("casVersion", casVersion);
+
+        var casMajorVersion = VersionUtils.parse(casVersion).getMajor();
+        IntStream.rangeClosed(6, 10).forEach(value -> {
+            if (casMajorVersion == value) {
+                templateVariables.put("casVersion" + value, Boolean.TRUE);
+            }
+        });
+
         templateVariables.put("springBootVersion", project.getSpringBootVersion());
 
         var cmp = VersionUtils.parse(project.getSpringBootVersion()).compareTo(Version.parse("2.6.0"));

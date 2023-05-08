@@ -51,6 +51,9 @@ dependencies {
     bootRunConfig "org.apereo.cas:cas-server-support-validation"
     bootRunConfig "org.apereo.cas:cas-server-support-person-directory"
 
+    {{#casVersion6}}
+    bootRunConfig "org.apereo.cas:cas-server-webapp-config"
+    {{/casVersion6}}
     bootRunConfig "org.apereo.cas:cas-server-webapp-resources"
     bootRunConfig "org.apereo.cas:cas-server-webapp-init"
     bootRunConfig "org.apereo.cas:cas-server-webapp-tomcat"
