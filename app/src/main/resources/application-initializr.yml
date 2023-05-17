@@ -46,7 +46,7 @@ cas-initializr:
       tomcat-version: ${apacheTomcat9LatestVersion}
       java-version: 11
       container-base-image: eclipse-temurin:11-jdk
-      gradle-version: 7.5.1
+      gradle-version: 7.6
     - version: ${casLatestVersion}
       platform-version: ${casLatestVersion}
       boot-version: ${springBootLatestVersion}
