@@ -4,6 +4,7 @@ import org.apereo.cas.initializr.web.OverlayProjectDescription;
 import org.apereo.cas.initializr.web.VersionUtils;
 
 import io.spring.initializr.generator.project.contributor.ProjectContributor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
@@ -14,15 +15,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 
+@RequiredArgsConstructor
 public class OverlayOverrideConfigurationContributor implements ProjectContributor {
     private final ConfigurableApplicationContext applicationContext;
 
     private final PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-
-    public OverlayOverrideConfigurationContributor(final ConfigurableApplicationContext applicationContext) {
-        this.applicationContext = applicationContext;
-    }
-
 
     @Override
     public void contribute(Path projectRoot) throws IOException {

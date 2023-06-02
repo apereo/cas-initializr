@@ -156,6 +156,7 @@ public class OverlayProjectRequestToDescriptionConverter implements ProjectReque
         description.setHerokuSupported(getBooleanParameter(request, "herokuSupported", Boolean.TRUE));
         description.setPuppeteerSupported(getBooleanParameter(request, "puppeteerSupported", Boolean.TRUE));
         description.setGithubActionsSupported(getBooleanParameter(request, "githubActionsSupported", Boolean.TRUE));
+        description.setNativeImageSupported(getBooleanParameter(request, "nativeImageSupported", Boolean.FALSE));
         description.setCommandlineShellSupported(getBooleanParameter(request, "commandlineShellSupported", Boolean.TRUE));
 
         if (request.getParameters().containsKey("deploymentType")) {

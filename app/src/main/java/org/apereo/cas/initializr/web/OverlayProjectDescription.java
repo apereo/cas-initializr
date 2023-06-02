@@ -16,7 +16,6 @@ public class OverlayProjectDescription extends MutableProjectDescription {
 
     public enum DeploymentTypes {
         WEB,
-        NATIVE,
         EXECUTABLE
     }
 
@@ -35,6 +34,8 @@ public class OverlayProjectDescription extends MutableProjectDescription {
     private boolean githubActionsSupported;
 
     private boolean commandlineShellSupported;
+
+    private boolean nativeImageSupported;
 
     private DeploymentTypes deploymentType = DeploymentTypes.EXECUTABLE;
 

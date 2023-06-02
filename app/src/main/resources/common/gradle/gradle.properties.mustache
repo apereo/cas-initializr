@@ -45,6 +45,16 @@ containerImage={{containerImageOrg}}/{{containerImageName}}
 # Setting this to true allows the final web application
 # to be fully executable on its own
 executable={{executable}}
+
+{{#nativeImageSupported}}
+# Control whether the final outcome of the Gradle build
+# should be native image that is built via GraalVM
+nativeImage=false
+graalVmVersion=@graalVmVersion@
+graalVmMetadataRepositoryVersion=@graalMetadataRepositoryVersion@
+gradleGraalVmNativePluginVersion=@graalVmPluginVersion@
+{{/nativeImageSupported}}
+    
 {{/appServer}}
 
 # Use -tomcat, -jetty, -undertow for deployment to other embedded containers

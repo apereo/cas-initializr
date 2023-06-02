@@ -105,6 +105,10 @@ processResources {
     def casLatestVersion = project.providers.gradleProperty("casLatestVersion").get()
     def casManagementLatestVersion = project.providers.gradleProperty("casManagementLatestVersion").get()
 
+    def graalVmVersion = project.providers.gradleProperty("graalVmVersion").get()
+    def graalVmMetadataRepositoryVersion = project.providers.gradleProperty("graalVmMetadataRepositoryVersion").get()
+    def gradleGraalVmNativePluginVersion = project.providers.gradleProperty("gradleGraalVmNativePluginVersion").get()
+    
     filesMatching("**/application-*.yml") {
         expand (
                 springBootLatestVersion: springBootLatestVersion,
@@ -121,7 +125,10 @@ processResources {
                 "gradleDependencyManagementPluginVersion": gradleDependencyManagementPluginVersion,
                 "gradleFreeFairPluginVersion"            : gradleFreeFairPluginVersion,
                 "gradleDownloadTaskPluginVersion"        : gradleDownloadTaskPluginVersion,
-                "jibVersion"                             : jibVersion
+                "jibVersion"                             : jibVersion,
+                "graalVmVersion"                         : graalVmVersion,
+                "graalVmMetadataRepositoryVersion"       : graalVmMetadataRepositoryVersion,
+                "gradleGraalVmNativePluginVersion"       : gradleGraalVmNativePluginVersion
         ]
     }
 }

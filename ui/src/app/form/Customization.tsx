@@ -216,9 +216,6 @@ export default function Customization() {
                                                     <Tooltip arrow placement="top" title="Build the CAS server as a traditional web application that is then deployed into an external servlet container of choice, such as Apache Tomcat, that is downloaded, configured and tuned by you.">
                                                         <FormControlLabel value="web" control={<Radio />} label="Web" />
                                                     </Tooltip>
-                                                    <Tooltip arrow placement="top" title="Use ahead-of-time technology using the likes of GraalVM to build and transform CAS into a standalone native executable. The resulting CAS deployment has faster startup time and lower runtime memory overhead compared to a JVM-based deployment.">
-                                                        <FormControlLabel value="native" control={<Radio />} label="Native" disabled />
-                                                    </Tooltip>
                                                 </RadioGroup>
                                             )}
                                         />
@@ -469,6 +466,40 @@ export default function Customization() {
                                                     />
                                                 }
                                                 label="GitHub Actions"
+                                                labelPlacement="end"
+                                            />
+                                        )}
+                                    />
+                                    <Controller
+                                        control={control}
+                                        name="nativeImageSupported"
+                                        render={({
+                                                     field: {
+                                                         onChange,
+                                                         onBlur,
+                                                         value,
+                                                         ref,
+                                                     },
+                                                 }) => (
+                                            <FormControlLabel
+                                                control={
+                                                    <Checkbox
+                                                        checked={
+                                                            value === "true"
+                                                        }
+                                                        onChange={(
+                                                            event: React.ChangeEvent<HTMLInputElement>
+                                                        ) =>
+                                                            onChange(
+                                                                event.target
+                                                                    .checked
+                                                                    ? "true"
+                                                                    : "false"
+                                                            )
+                                                        }
+                                                    />
+                                                }
+                                                label="Native Image"
                                                 labelPlacement="end"
                                             />
                                         )}

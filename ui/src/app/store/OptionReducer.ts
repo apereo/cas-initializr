@@ -104,6 +104,10 @@ export const OptionSlice = createSlice({
                 type: "",
                 default: 'true'
             },
+            nativeImageSupported: {
+                type: "",
+                default: 'false'
+            },
             commandlineShellSupported: {
                 type: "",
                 default: 'true'
@@ -141,6 +145,7 @@ export const OptionSlice = createSlice({
                 herokuSupported,
                 puppeteerSupported,
                 githubActionsSupported,
+                nativeImageSupported,
                 commandlineShellSupported,
                 deploymentType,
             } = action.payload;
@@ -162,6 +167,7 @@ export const OptionSlice = createSlice({
             state.herokuSupported = herokuSupported || {default: 'false'};
             state.puppeteerSupported = puppeteerSupported || {default: 'true'};
             state.githubActionsSupported = githubActionsSupported || {default: 'true'};
+            state.nativeImageSupported = nativeImageSupported || {default: 'false'};
             state.commandlineShellSupported = commandlineShellSupported || {default: 'true'};
             state.deploymentType = deploymentType || { default: 'executable' };
         },
@@ -246,6 +252,7 @@ export const CasDefaultSelector = createSelector(
             herokuSupported: state.herokuSupported.default,
             puppeteerSupported: state.puppeteerSupported.default,
             githubActionsSupported: state.githubActionsSupported.default,
+            nativeImageSupported: state.nativeImageSupported.default,
             commandlineShellSupported: state.commandlineShellSupported.default,
             deploymentType: state.deploymentType.default,
         };
