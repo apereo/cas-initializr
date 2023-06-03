@@ -105,7 +105,7 @@ public class CasInitializrConfiguration {
         var chain = new ChainingSingleResourceProjectContributor();
         chain.addContributor(new OverlayGradleSettingsContributor(applicationContext));
         chain.addContributor(new OverlayGradleTasksContributor(applicationContext));
-        chain.addContributor(new OverlayWebXmlContributor());
+        chain.addContributor(new OverlayWebXmlContributor(applicationContext));
         chain.addContributor(new OverlayGradleSpringBootContributor(applicationContext));
         return chain;
     }

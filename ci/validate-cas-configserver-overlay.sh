@@ -16,6 +16,9 @@ while (( "$#" )); do
         TOMCAT_VERSION="$2"
         shift 2
         ;;
+    *)
+      echo "Unknown parameter $2"
+      exit 1
     esac
 done
 
@@ -25,6 +28,7 @@ sleep 25
 rm -Rf tmp &> /dev/null
 mkdir tmp
 cd tmp
+echo "Fetching CAS Config Server Overlay for CAS ${CAS_VERSION} and Spring Boot ${BOOT_VERSION} and Apache Tomcat ${TOMCAT_VERSION}"
 curl http://localhost:8080/starter.tgz --connect-timeout 60 -d casVersion=${CAS_VERSION} \
   -d bootVersion=${BOOT_VERSION} -d type=cas-config-server-overlay | tar -xzvf -
 kill -9 $pid

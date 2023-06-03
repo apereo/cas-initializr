@@ -1,12 +1,9 @@
 package org.apereo.cas.initializr.contrib.nativex;
 
-import org.apereo.cas.initializr.contrib.TemplatedProjectContributor;
 import org.apereo.cas.initializr.web.OverlayProjectDescription;
 import io.spring.initializr.generator.project.contributor.ProjectContributor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.util.FileCopyUtils;
 

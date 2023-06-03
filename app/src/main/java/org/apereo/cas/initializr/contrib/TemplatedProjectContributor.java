@@ -288,7 +288,8 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
             templateVariables.put("appName", "cas-management");
         }
         templateVariables.put("githubActionsSupported", getOverlayProjectDescription().isGithubActionsSupported());
-        templateVariables.put("nativeImageSupported", getOverlayProjectDescription().isNativeImageSupported());
+        templateVariables.put("nativeImageSupported",
+            getOverlayProjectDescription().isNativeImageSupported() && casMajorVersion >= 7);
 
         if (type.equalsIgnoreCase(CasOverlayBuildSystem.ID)) {
             templateVariables.put("puppeteerSupported", getOverlayProjectDescription().isPuppeteerSupported());

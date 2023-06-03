@@ -2,12 +2,9 @@ package org.apereo.cas.overlay.casserver.contrib.puppeteer;
 
 import org.apereo.cas.initializr.contrib.TemplatedProjectContributor;
 
-import lombok.val;
 import org.springframework.context.ApplicationContext;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 
