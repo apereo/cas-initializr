@@ -154,8 +154,10 @@ if (!nativeImage) {
 }
 {{/nativeImageSupported}}
 {{^nativeImageSupported}}
-apply plugin: "io.freefair.war-overlay"
-apply plugin: "war"
+war {
+    entryCompression = ZipEntryCompression.STORED
+    enabled = false
+}
 {{/nativeImageSupported}}
 
 java {
@@ -279,6 +281,7 @@ dependencies {
     implementation platform(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES)
     {{/springDependencyMgmt}}
 
+    {{#casServer}}
     {{#nativeImageSupported}}
     if (nativeImage) {
         nativeImageCompileOnly sourceSets.graal.output.classesDirs
@@ -306,7 +309,8 @@ dependencies {
 
     developmentOnly "org.springframework.boot:spring-boot-devtools:${project.springBootVersion}"
     {{/nativeImageSupported}}
-
+    {{/casServer}}
+        
     /**
      * CAS dependencies and modules may be listed here.
      *

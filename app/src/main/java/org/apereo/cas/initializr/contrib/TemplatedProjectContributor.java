@@ -289,7 +289,9 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         }
         templateVariables.put("githubActionsSupported", getOverlayProjectDescription().isGithubActionsSupported());
         templateVariables.put("nativeImageSupported",
-            getOverlayProjectDescription().isNativeImageSupported() && casMajorVersion >= 7);
+            getOverlayProjectDescription().isNativeImageSupported()
+                && type.equalsIgnoreCase(CasOverlayBuildSystem.ID)
+                && casMajorVersion >= 7);
 
         if (type.equalsIgnoreCase(CasOverlayBuildSystem.ID)) {
             templateVariables.put("puppeteerSupported", getOverlayProjectDescription().isPuppeteerSupported());
