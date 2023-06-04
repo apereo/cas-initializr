@@ -24,7 +24,7 @@ done
 
 java -jar app/build/libs/app.jar &
 pid=$!
-sleep 25
+sleep 20
 rm -Rf tmp &> /dev/null
 mkdir tmp
 cd tmp
