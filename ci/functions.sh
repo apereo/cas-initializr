@@ -12,10 +12,15 @@ function downloadTomcat() {
   tomcatUrl="https://archive.apache.org/dist/tomcat/${tomcatDir}/${tomcatVersionTag}/bin/apache-tomcat-${tomcatVersion}.zip"
 
   export CATALINA_HOME=./apache-tomcat-${tomcatVersion}
+  echo "Removing ${CATALINA_HOME}"
   rm -Rf "${CATALINA_HOME}" > /dev/null 2>&1
-  echo "Downloading Apache Tomcat from ${tomcatUrl}"
-  wget --no-check-certificate ${tomcatUrl} > /dev/null 2>&1
-  [ $? -eq 0 ] && echo "Apache Tomcat downloaded successfully." || exit 1
+
+  if [[ ! -f "apache-tomcat-${tomcatVersion}.zip" ]]; then
+    echo "Downloading Apache Tomcat from ${tomcatUrl}"
+    wget --no-check-certificate ${tomcatUrl} > /dev/null 2>&1
+    [ $? -eq 0 ] && echo "Apache Tomcat downloaded successfully." || exit 1
+  fi
+    
   unzip apache-tomcat-"${tomcatVersion}".zip > /dev/null 2>&1
   chmod +x "${CATALINA_HOME}"/bin/*.sh > /dev/null 2>&1
   rm -Rf "${CATALINA_HOME}"/webapps/examples ${CATALINA_HOME}/webapps/docs ${CATALINA_HOME}/webapps/host-manager ${CATALINA_HOME}/webapps/manager

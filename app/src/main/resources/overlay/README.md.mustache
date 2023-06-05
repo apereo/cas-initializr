@@ -103,6 +103,33 @@ The following defaults are assumed:
 You may of course need to make adjustments to account for your specific environment and deployment settings, URLs, etc.
 {{/puppeteerSupported}}
 
+{{#nativeImageSupported}}
+# GraalVM Native Images
+
+Building a GraalVM native image can be done via:
+
+```bash
+# You may control the property via gradle.properties
+./gradlew nativeCompile -PnativeImage=true
+```
+
+This capability requires that you download and install GraalVM with the native-image tool included.
+The required GraalVM version is indicated in the `gradle.properties` file.
+
+> Building CAS GraalVM native images can be quite resource intensive and time consuming.
+> Depending on the number of modules included in the build, CAS configuration options and the horsepower of the
+> build machine, the build time can vary greatly and typically is in the neighborhood of 5~15 minutes and perhaps longer.
+
+This process will invoke the initial AOT processing of the CAS configuration and context, and will then proceed
+to build the final native image. The AOT processing engine will always and by default use a `native` application profile.
+
+Once the native image is built, you may run CAS via:
+
+```bash
+./build/native/nativeCompile/cas --spring.profiles.active=native
+```
+{{/nativeImageSupported}}
+
 # Duct
 
 `duct` is a Gradle task to do quick smoke tests of multi-node CAS high-availability deployments. In particular, it tests correctness of ticket

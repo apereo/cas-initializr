@@ -12,6 +12,7 @@ import org.apereo.cas.initializr.contrib.gradle.OverlayGradleSpringBootContribut
 import org.apereo.cas.initializr.contrib.gradle.OverlayGradleTasksContributor;
 import org.apereo.cas.initializr.contrib.heroku.HerokuProcFileContributor;
 import org.apereo.cas.initializr.contrib.heroku.HerokuSystemPropertiesFileContributor;
+import org.apereo.cas.initializr.contrib.nativex.GraalVMNativeImageContributor;
 import org.apereo.cas.initializr.contrib.project.ApplicationYamlPropertiesContributor;
 import org.apereo.cas.initializr.contrib.project.IgnoreRulesContributor;
 import org.apereo.cas.initializr.contrib.project.JenvJavaVersionContributor;
@@ -78,6 +79,13 @@ public class CasInitializrConfiguration {
     }
 
     @Bean
+    public ChainingSingleResourceProjectContributor nativeImageContributor() {
+        var chain = new ChainingSingleResourceProjectContributor();
+        chain.addContributor(new GraalVMNativeImageContributor(applicationContext));
+        return chain;
+    }
+
+    @Bean
     public ChainingSingleResourceProjectContributor githubContributor() {
         var chain = new ChainingSingleResourceProjectContributor();
         chain.addContributor(new GithubResourcesContributor(applicationContext));
@@ -97,7 +105,7 @@ public class CasInitializrConfiguration {
         var chain = new ChainingSingleResourceProjectContributor();
         chain.addContributor(new OverlayGradleSettingsContributor(applicationContext));
         chain.addContributor(new OverlayGradleTasksContributor(applicationContext));
-        chain.addContributor(new OverlayWebXmlContributor());
+        chain.addContributor(new OverlayWebXmlContributor(applicationContext));
         chain.addContributor(new OverlayGradleSpringBootContributor(applicationContext));
         return chain;
     }

@@ -288,6 +288,11 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
             templateVariables.put("appName", "cas-management");
         }
         templateVariables.put("githubActionsSupported", getOverlayProjectDescription().isGithubActionsSupported());
+        templateVariables.put("nativeImageSupported",
+            getOverlayProjectDescription().isNativeImageSupported()
+                && type.equalsIgnoreCase(CasOverlayBuildSystem.ID)
+                && casMajorVersion >= 7);
+
         if (type.equalsIgnoreCase(CasOverlayBuildSystem.ID)) {
             templateVariables.put("puppeteerSupported", getOverlayProjectDescription().isPuppeteerSupported());
             templateVariables.put("shellSupported", getOverlayProjectDescription().isCommandlineShellSupported());
@@ -309,7 +314,7 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
 
         /*
          * Starting from CAS 6.5, projects can take advantage of Gradle's
-         * native support for BOMs. Prior to this version, the dependency management plugin
+         * support for BOMs. Prior to this version, the dependency management plugin
          * must be used to handle BOMs.
          */
         var bomCapableVersion = VersionUtils.parse("6.5.0");
