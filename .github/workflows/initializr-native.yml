@@ -29,7 +29,7 @@ jobs:
   ##########################################################################
 
   initialize:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     needs: [cancel-previous-runs]
     steps:
       - uses: actions/checkout@v3
@@ -50,7 +50,7 @@ jobs:
   
   supported-versions-cas:
     needs: [ initialize ]
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     outputs:
       supported-versions: ${{ steps.get-supported-versions.outputs.supported-versions }}
     steps:
@@ -68,7 +68,7 @@ jobs:
         run: echo "supported-versions=$(./gradlew --no-daemon -q versions-cas)" >> $GITHUB_OUTPUT
         
   build:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     needs: [ supported-versions-cas ]
     continue-on-error: false
     strategy:
