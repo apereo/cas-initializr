@@ -90,7 +90,6 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           cache: 'gradle'
           set-java-home: 'true'
-          native-image-musl: 'true'
           native-image-job-reports: 'true'
       - name: GraalVM Versions
         if: ${{ matrix.versions.sync == true && matrix.versions.branch == 'master' }}

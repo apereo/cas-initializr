@@ -26,6 +26,10 @@ curl http://localhost:8080/starter.tgz --connect-timeout 30 -d "${parameters}" |
 kill -9 $pid
 [ "$CI" = "true" ] && pkill java
 
+if [[ -d /tmp ]] ; then
+  sudo mkdir /tmp
+fi
+
 printgreen "Building CAS Native Image. This may take several minutes..."
 ./gradlew clean build nativeCompile -PnativeImage=true --warning-mode all --no-daemon
 
