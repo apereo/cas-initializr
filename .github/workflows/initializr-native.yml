@@ -48,7 +48,7 @@ jobs:
   ##########################################################################
   
   supported-versions-cas:
-    needs: [ build ]
+    needs: [ initialize ]
     runs-on: ubuntu-latest
     outputs:
       supported-versions: ${{ steps.get-supported-versions.outputs.supported-versions }}
