@@ -30,7 +30,6 @@ jobs:
         with:
           access_token: ${{ github.token }}
   build:
-    if: false
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
