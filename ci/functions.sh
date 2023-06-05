@@ -1,5 +1,20 @@
 #!/bin/bash
 
+RED="\e[31m"
+GREEN="\e[32m"
+YELLOW="\e[33m"
+ENDCOLOR="\e[0m"
+
+function printgreen() {
+  printf "${GREEN}$1${ENDCOLOR}\n"
+}
+function printyellow() {
+  printf "${YELLOW}$1${ENDCOLOR}\n"
+}
+function printred() {
+  printf "${RED}$1${ENDCOLOR}\n"
+}
+
 function downloadTomcat() {
   tomcatVersion=$1
   echo "Apache Tomcat version: ${tomcatVersion}"

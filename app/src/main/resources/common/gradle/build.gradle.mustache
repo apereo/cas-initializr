@@ -110,6 +110,10 @@ apply plugin: "war"
 apply plugin: "org.springframework.boot"
 apply plugin: "io.freefair.lombok"
 
+{{#nativeImageSupported}}
+apply plugin: "org.graalvm.buildtools.native"
+{{/nativeImageSupported}}
+
 apply from: rootProject.file("gradle/springboot.gradle")
 {{#dockerSupported}}
 apply from: rootProject.file("gradle/jib.gradle")
@@ -175,6 +179,16 @@ bootBuildImage {
 {{#nativeImageSupported}}
 configurations {
     nativeImageClasspath.extendsFrom(graalImplementation)
+}
+
+if (nativeImage) {
+    sourceSets {
+        graal {
+            java {
+                srcDirs("src/main/graal")
+            }
+        }
+    }
 }
 
 graalvmNative {

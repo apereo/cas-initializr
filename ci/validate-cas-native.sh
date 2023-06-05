@@ -21,13 +21,18 @@ pid=$!
 sleep 10
 mkdir tmp
 cd tmp || exit
-echo "Requesting CAS overlay for ${parameters}"
+printgreen "Requesting CAS overlay for ${parameters}"
 curl http://localhost:8080/starter.tgz --connect-timeout 30 -d "${parameters}" | tar -xzvf -
 kill -9 $pid
 [ "$CI" = "true" ] && pkill java
 
-echo "Building CAS Native Image. This may take several minutes..."
+printgreen "Building CAS Native Image. This may take several minutes..."
 ./gradlew clean build nativeCompile -PnativeImage=true --warning-mode all --no-daemon
+
+if [[ $? -ne 0 ]]; then
+  printred "Native image build failed"
+  exit 1
+fi
 
 [ "$CI" = "true" ] && pkill java
 exit 0
