@@ -71,6 +71,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [ supported-versions-cas ]
     continue-on-error: false
+    timeout-minutes: 20
     strategy:
       matrix:
         versions: ${{fromJSON(needs.supported-versions-cas.outputs.supported-versions)}}
