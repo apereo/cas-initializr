@@ -89,6 +89,7 @@ jobs:
           native-image-musl: 'true'
           native-image-job-reports: 'true'
       - name: GraalVM Versions
+        if: ${{ matrix.versions.sync == true && matrix.versions.branch == 'master' }}
         run: |
           echo "GRAALVM_HOME: $GRAALVM_HOME"
           echo "JAVA_HOME: $JAVA_HOME"
