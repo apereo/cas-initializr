@@ -18,7 +18,7 @@ CAS_MINOR_VERSION=`echo $CAS_VERSION | cut -d. -f2`
 
 java -jar app/build/libs/app.jar &
 pid=$!
-sleep 30
+sleep 10
 mkdir tmp
 cd tmp || exit
 echo "Requesting CAS overlay for ${parameters}"
@@ -26,7 +26,7 @@ curl http://localhost:8080/starter.tgz --connect-timeout 30 -d "${parameters}" |
 kill -9 $pid
 [ "$CI" = "true" ] && pkill java
 
-echo "Building CAS Overlay"
+echo "Building CAS Native Image. This may take several minutes..."
 ./gradlew clean build nativeCompile -PnativeImage=true --warning-mode all --no-daemon
 
 [ "$CI" = "true" ] && pkill java

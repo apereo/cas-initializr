@@ -11,7 +11,7 @@ echo "Building CAS Initializr"
 echo "Launching CAS Initializr"
 java -jar app/build/libs/app.jar &
 pid=$!
-sleep 20
+sleep 10
 
 echo "Checking CAS Initializr metadata"
 curl -H 'Accept: application/json' http://localhost:8080 | jq
