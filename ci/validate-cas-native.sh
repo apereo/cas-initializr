@@ -18,7 +18,7 @@ CAS_MINOR_VERSION=`echo $CAS_VERSION | cut -d. -f2`
 
 java -jar app/build/libs/app.jar &
 pid=$!
-sleep 10
+sleep 15
 mkdir tmp
 cd tmp || exit
 printgreen "Requesting CAS overlay for ${parameters}"
