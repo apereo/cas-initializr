@@ -1,0 +1,104 @@
+name: Initialize Native
+
+env:
+  TERM: xterm-256color
+  JDK_CURRENT: 17
+  GRAALVM_CURRENT: 22.3.1
+  GH_TOKEN: ${{ secrets.GH_TOKEN }}
+
+##########################################################################
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  schedule:
+    - cron: '0 0 * * *'
+##########################################################################
+
+jobs:
+  cancel-previous-runs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    steps:
+      - uses: styfle/cancel-workflow-action@0.11.0
+        with:
+          access_token: ${{ github.token }}
+
+  ##########################################################################
+
+  initialize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ env.JDK_CURRENT }}
+          distribution: 'temurin'
+      - name: Setup Gradle Wrapper Cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.gradle/wrapper
+          key: ${{ runner.os }}-${{ github.sha }}-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
+      - name: Initialize
+        run: ls ./ci && chmod -R +x ./ci/**/*.sh && ./ci/init-build.sh
+
+  ##########################################################################
+  
+  supported-versions-cas:
+    needs: [ build ]
+    runs-on: ubuntu-latest
+    outputs:
+      supported-versions: ${{ steps.get-supported-versions.outputs.supported-versions }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ env.JDK_CURRENT }}
+          distribution: 'zulu'
+      - uses: actions/download-artifact@v3
+        with:
+          name: binary-artifacts
+      - id: print-supported-versions
+        name: Print supported versions
+        run: ./gradlew --no-daemon -q versions-cas
+      - id: get-supported-versions
+        name: Get supported versions for matrix
+        run: echo "supported-versions=$(./gradlew --no-daemon -q versions-cas)" >> $GITHUB_OUTPUT
+        
+  build:
+    runs-on: ubuntu-latest
+    needs: [ initialize,supported-versions-cas ]
+    continue-on-error: false
+    strategy:
+      matrix:
+        versions: ${{fromJSON(needs.supported-versions-cas.outputs.supported-versions)}}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: graalvm/setup-graalvm@v1
+        with:
+          version: ${{ env.GRAALVM_CURRENT }}
+          java-version: ${{ env.JDK_CURRENT }}
+          components: 'native-image'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          cache: 'gradle'
+          set-java-home: 'true'
+          native-image-musl: 'true'
+          native-image-job-reports: 'true'
+      - name: GraalVM Versions
+        run: |
+          echo "GRAALVM_HOME: $GRAALVM_HOME"
+          echo "JAVA_HOME: $JAVA_HOME"
+          java --version
+          gu --version
+          native-image --version
+      - name: Build Initializr
+        run: ./gradlew --build-cache --configure-on-demand --no-daemon clean build -x test -x javadoc -x check --parallel
+      - name: Validate Initializr
+        run: ./ci/validate-initializr.sh
+      - name: Build Native Image
+        if: ${{ matrix.versions.sync == true && matrix.versions.branch == 'master' }}
+        run: ./ci/validate-cas-native.sh --cas ${{ matrix.versions.version }}

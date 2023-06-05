@@ -16,7 +16,9 @@ on:
     branches: [ master ]
   pull_request:
     branches: [ master ]
-
+  schedule:
+    - cron: '0 0 * * *'
+      
 ##########################################################################
 
 jobs:
@@ -28,6 +30,7 @@ jobs:
         with:
           access_token: ${{ github.token }}
   build:
+    if: false
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
