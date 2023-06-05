@@ -34,9 +34,15 @@ printgreen "Building CAS Native Image. This may take several minutes..."
 ./gradlew clean build nativeCompile -PnativeImage=true --warning-mode all --no-daemon
 
 if [[ $? -ne 0 ]]; then
-  printred "Native image build failed"
+  printred "CAS native image build failed"
   exit 1
 fi
+
+printgreen "CAS native image build is successfully built"
+ls build/native/nativeCompile
+
+./build/native/nativeCompile/cas --spring.profiles.active=native &
+sleep 15
 
 [ "$CI" = "true" ] && pkill java
 exit 0
