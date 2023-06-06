@@ -131,22 +131,32 @@ dependencyManagement {
 }
 {{/springDependencyMgmt}}
 
-configurations.all {
-    resolutionStrategy {
-        cacheChangingModulesFor 0, "seconds"
-        cacheDynamicVersionsFor 0, "seconds"
-        preferProjectModules()
-        def failIfConflict = project.hasProperty("failOnVersionConflict") && Boolean.valueOf(project.getProperty("failOnVersionConflict"))
-        if (failIfConflict) {
-            failOnVersionConflict()
-        }
+
+configurations {
+    {{#nativeImageSupported}}
+    nativeImageConfig {
+        extendsFrom compileClasspath
+        exclude(group: "org.apache.groovy", module: "groovy-templates")
     }
-    exclude(group: "cglib", module: "cglib")
-    exclude(group: "cglib", module: "cglib-full")
-    exclude(group: "org.slf4j", module: "slf4j-log4j12")
-    exclude(group: "org.slf4j", module: "slf4j-simple")
-    exclude(group: "org.slf4j", module: "jcl-over-slf4j")
-    exclude(group: "org.apache.logging.log4j", module: "log4j-to-slf4j")
+    {{/nativeImageSupported}}
+
+    all {
+        resolutionStrategy {
+            cacheChangingModulesFor 0, "seconds"
+            cacheDynamicVersionsFor 0, "seconds"
+            preferProjectModules()
+            def failIfConflict = project.hasProperty("failOnVersionConflict") && Boolean.valueOf(project.getProperty("failOnVersionConflict"))
+            if (failIfConflict) {
+                failOnVersionConflict()
+            }
+        }
+        exclude(group: "cglib", module: "cglib")
+        exclude(group: "cglib", module: "cglib-full")
+        exclude(group: "org.slf4j", module: "slf4j-log4j12")
+        exclude(group: "org.slf4j", module: "slf4j-simple")
+        exclude(group: "org.slf4j", module: "jcl-over-slf4j")
+        exclude(group: "org.apache.logging.log4j", module: "log4j-to-slf4j")
+    }
 }
 
 {{#nativeImageSupported}}
@@ -303,7 +313,7 @@ dependencies {
         graalCompileOnly "org.graalvm.nativeimage:svm:${graalVmVersion}"
         graalCompileOnly "org.graalvm.sdk:graal-sdk:${graalVmVersion}"
 
-        implementation("org.apereo.cas:cas-server-webapp-native")
+        nativeImageConfig "org.apereo.cas:cas-server-webapp-native"
     } else {
         /**
          * Do NOT modify the lines below or else you will risk breaking the build.
