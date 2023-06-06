@@ -10,7 +10,7 @@ env:
 
 on:
   push:
-    branches: [ master,native-* ]
+    branches: [ master ]
   pull_request:
     branches: [ master ]
   schedule:
