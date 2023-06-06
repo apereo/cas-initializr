@@ -46,10 +46,10 @@ subjectAltName="${subjectAltName:-dns:example.org,dns:localhost,ip:127.0.0.1}"
 keystore="/etc/cas/thekeystore"
 sudo mkdir -p /etc/cas
 printgreen "Generating keystore ${keystore} for CAS with DN=${dname}, SAN=${subjectAltName}"
-[ -f "${keystore}" ] && rm "${keystore}"
-keytool -genkey -noprompt -alias cas -keyalg RSA -keypass changeit -storepass changeit \
+[ -f "${keystore}" ] && sudo rm "${keystore}"
+sudo keytool -genkey -noprompt -alias cas -keyalg RSA -keypass changeit -storepass changeit \
   -keystore "${keystore}" -dname "${dname}" -ext SAN="${subjectAltName}"
-  
+printgreen "Launching CAS native image..."  
 ./build/native/nativeCompile/cas --spring.profiles.active=native &
 pid=$!
 sleep 15
