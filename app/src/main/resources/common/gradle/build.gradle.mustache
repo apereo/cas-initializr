@@ -137,6 +137,8 @@ configurations {
         extendsFrom compileClasspath
         exclude(group: "org.apache.groovy", module: "groovy-templates")
     }
+    compileClasspath.extendsFrom(nativeImageConfig)
+    runtimeClasspath.extendsFrom(nativeImageConfig)
     {{/nativeImageSupported}}
     all {
         resolutionStrategy {
@@ -298,28 +300,11 @@ dependencies {
     implementation enforcedPlatform("org.apereo.cas:cas-server-support-bom:${project.'cas.version'}")
     {{/managementServer}}
     {{^managementServer}}
-    {{#nativeImageSupported}}
-    if (nativeImage) {
-        nativeImageConfig enforcedPlatform("org.apereo.cas:cas-server-support-bom:${project.'cas.version'}")
-    } else {
-        implementation enforcedPlatform("org.apereo.cas:cas-server-support-bom:${project.'cas.version'}")
-    }
-    {{/nativeImageSupported}}
-    {{^nativeImageSupported}}
     implementation enforcedPlatform("org.apereo.cas:cas-server-support-bom:${project.'cas.version'}")
-    {{/nativeImageSupported}}
     {{/managementServer}}
-    {{#nativeImageSupported}}
-    if (nativeImage) {
-        nativeImageConfig platform(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES)
-    } else {
-        implementation platform(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES)
-    }
-    {{/nativeImageSupported}}
-    {{^nativeImageSupported}}
     implementation platform(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES)
-    {{/nativeImageSupported}}
     {{/springDependencyMgmt}}
+
     {{#casServer}}
     {{#nativeImageSupported}}
     if (nativeImage) {
@@ -328,7 +313,7 @@ dependencies {
         graalCompileOnly "org.graalvm.nativeimage:svm:${graalVmVersion}"
         graalCompileOnly "org.graalvm.sdk:graal-sdk:${graalVmVersion}"
 
-        nativeImageConfig "org.apereo.cas:cas-server-webapp-native"
+        implementation "org.apereo.cas:cas-server-webapp-native"
     } else {
         /**
          * Do NOT modify the lines below or else you will risk breaking the build.
