@@ -148,9 +148,11 @@ configurations {
         exclude(group: "org.slf4j", module: "slf4j-simple")
         exclude(group: "org.slf4j", module: "jcl-over-slf4j")
         exclude(group: "org.apache.logging.log4j", module: "log4j-to-slf4j")
+        {{#nativeImageSupported}}
         if (nativeImage) {
             exclude(group: "org.apache.groovy", module: "groovy-templates")
         }
+        {{/nativeImageSupported}}
     }
 }
 
