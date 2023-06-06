@@ -131,7 +131,6 @@ dependencyManagement {
 }
 {{/springDependencyMgmt}}
 
-
 configurations {
     {{#nativeImageSupported}}
     nativeImageConfig {
@@ -139,7 +138,6 @@ configurations {
         exclude(group: "org.apache.groovy", module: "groovy-templates")
     }
     {{/nativeImageSupported}}
-
     all {
         resolutionStrategy {
             cacheChangingModulesFor 0, "seconds"
@@ -300,11 +298,28 @@ dependencies {
     implementation enforcedPlatform("org.apereo.cas:cas-server-support-bom:${project.'cas.version'}")
     {{/managementServer}}
     {{^managementServer}}
+    {{#nativeImageSupported}}
+    if (nativeImage) {
+        nativeImageConfig enforcedPlatform("org.apereo.cas:cas-server-support-bom:${project.'cas.version'}")
+    } else {
+        implementation enforcedPlatform("org.apereo.cas:cas-server-support-bom:${project.'cas.version'}")
+    }
+    {{/nativeImageSupported}}
+    {{^nativeImageSupported}}
     implementation enforcedPlatform("org.apereo.cas:cas-server-support-bom:${project.'cas.version'}")
+    {{/nativeImageSupported}}
     {{/managementServer}}
+    {{#nativeImageSupported}}
+    if (nativeImage) {
+        nativeImageConfig platform(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES)
+    } else {
+        implementation platform(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES)
+    }
+    {{/nativeImageSupported}}
+    {{^nativeImageSupported}}
     implementation platform(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES)
+    {{/nativeImageSupported}}
     {{/springDependencyMgmt}}
-
     {{#casServer}}
     {{#nativeImageSupported}}
     if (nativeImage) {
