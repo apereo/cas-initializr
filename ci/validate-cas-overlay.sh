@@ -32,33 +32,33 @@ pid=$!
 sleep 30
 mkdir tmp
 cd tmp || exit
-echo "Requesting CAS overlay for ${parameters}"
+printgreen "Requesting CAS overlay for ${parameters}"
 curl http://localhost:8080/starter.tgz --connect-timeout 30 -d "${parameters}" | tar -xzvf -
 kill -9 $pid
 [ "$CI" = "true" ] && pkill java
 
-echo "Building CAS Overlay"
+printgreen "Building CAS Overlay"
 ./gradlew clean build --warning-mode all --no-daemon
 
-echo "Running CAS Overlay with Gradle"
+printgreen "Running CAS Overlay with Gradle"
 ./gradlew run -Dspring.profiles.active=none -Dserver.ssl.enabled=false -Dserver.port=8080 &
 pid=$!
 sleep 80
 rc=$(curl -L -k -u casuser:password -o /dev/null --connect-timeout 60 -s  -I -w "%{http_code}" http://localhost:8080/cas/login)
 kill -9 $pid
 if [ "$rc" == 200 ]; then
-    echo "Deployed the CAS web application successfully."
+    printgreen "Deployed the CAS web application successfully."
 else
-    echo "Failed to deploy the CAS web application with status $rc."
+    printred "Failed to deploy the CAS web application with status $rc."
     exit 1
 fi
 [ "$CI" = "true" ] && pkill java
 
-echo "Downloading Apache Tomcat $TOMCAT_VERSION"
+printgreen "Downloading Apache Tomcat $TOMCAT_VERSION"
 downloadTomcat "$TOMCAT_VERSION"
 mv build/libs/cas.war ${CATALINA_HOME}/webapps/cas.war
 
-echo "Starting Apache Tomcat $TOMCAT_VERSION to deploy ${CATALINA_HOME}/webapps/cas.war"
+printgreen "Starting Apache Tomcat $TOMCAT_VERSION to deploy ${CATALINA_HOME}/webapps/cas.war"
 ${CATALINA_HOME}/bin/startup.sh & >/dev/null 2>&1
 pid=$!
 sleep 30
@@ -66,15 +66,15 @@ rc=$(curl -L -k -u casuser:password -o /dev/null --connect-timeout 60 -s  -I -w 
 ${CATALINA_HOME}/bin/shutdown.sh & >/dev/null 2>&1
 kill -9 $pid
 if [ "$rc" == 200 ]; then
-    echo "Deployed the web application successfully."
+    printgreen "Deployed the web application successfully."
 else
-    echo "Failed to deploy the web application with status $rc."
+    printred "Failed to deploy the web application with status $rc."
     exit 1
 fi
 [ "$CI" = "true" ] && pkill java
 #ps -ef
 
-echo "Running CAS Overlay as an executable WAR file"
+printgreen "Running CAS Overlay as an executable WAR file"
 ./gradlew clean build -Pexecutable=true --no-daemon
 ./build/libs/cas.war --spring.profiles.active=none --server.ssl.enabled=false --server.port=8090 &
 pid=$!
@@ -96,20 +96,20 @@ echo "Killing process $pid"
 kill -9 $pid
 [ "$CI" = "true" ] && pkill java
 #ps -ef
-echo "Running Puppeteer test scenarios"
+printgreen "Running Puppeteer test scenarios"
 chmod +x ./puppeteer/run.sh
 export PUPPETEER_CAS_HOST="http://localhost:8090"
 export CAS_ARGS="--spring.profiles.active=none --server.ssl.enabled=false --server.port=8090"
 
 ./puppeteer/run.sh
-[ $? -eq 0 ] && echo "Puppeteer ran successfully." || exit 1
+[ $? -eq 0 ] && printgreen "Puppeteer ran successfully." || exit 1
 [ "$CI" = "true" ] && pkill java
 
-echo "Running CAS Overlay with bootRun"
+printgreen "Running CAS Overlay with bootRun"
 ./gradlew --no-daemon clean build bootRun -Dserver.ssl.enabled=false -Dserver.port=8091 &
 pid=$!
 sleep 15
-echo "Launched CAS with pid ${pid} using bootRun. Waiting for CAS server to come online..."
+printgreen "Launched CAS with pid ${pid} using bootRun. Waiting for CAS server to come online..."
 until curl -k -L --output /dev/null --silent --fail http://localhost:8091/cas/login; do
    echo -n '.'
    sleep 5
@@ -122,49 +122,49 @@ kill -9 $pid
 chmod -R 777 ./*.sh >/dev/null 2>&1
 
 if [ "$CAS_MAJOR_VERSION" -ge 7 ]; then
-    echo "Building Docker image with Spring Boot"
+    printgreen "Building Docker image with Spring Boot"
     ./gradlew --no-daemon bootBuildImage
 fi
 
-echo "Building Docker image with Jib"
+printgreen "Building Docker image with Jib"
 publishDockerImage
 
-echo "Verify Java Version"
+printgreen "Verify Java Version"
 ./gradlew --no-daemon verifyRequiredJavaVersion
 [ $? -eq 0 ] && echo "Gradle command ran successfully." || exit 1
 
-echo "Downloading Shell"
+printgreen "Downloading Shell"
 ./gradlew --no-daemon downloadShell
 [ $? -eq 0 ] && echo "Gradle command ran successfully." || exit 1
 
-echo "Listing Views"
+printgreen "Listing Views"
 ./gradlew --no-daemon listTemplateViews
 [ $? -eq 0 ] && echo "Gradle command ran successfully." || exit 1
 
-echo "Fetching HTML resource"
+printgreen "Fetching HTML resource"
 ./gradlew --no-daemon getResource -PresourceName=casGenericSuccessView
 [ $? -eq 0 ] && echo "Gradle command ran successfully." || exit 1
 
-echo "Fetching message bundle"
+printgreen "Fetching message bundle"
 ./gradlew --no-daemon getResource -PresourceName=messages.properties
 [ $? -eq 0 ] && echo "Gradle command ran successfully." || exit 1
 
-echo "Creating ZIP archive"
+printgreen "Creating ZIP archive"
 ./gradlew --no-daemon zip
 [ $? -eq 0 ] && echo "Gradle command ran successfully." || exit 1
 
-echo "Configuration Metadata Export"
+printgreen "Configuration Metadata Export"
 ./gradlew --no-daemon exportConfigMetadata
 [ $? -eq 0 ] && echo "Gradle command ran successfully." || exit 1
 
-echo "Unzip WAR"
+printgreen "Unzip WAR"
 ./gradlew --no-daemon unzip
 [ $? -eq 0 ] && echo "Gradle command ran successfully." || exit 1
 
-echo "Build Container Image w/ Docker"
+printgreen "Build Container Image w/ Docker"
 ./docker-build.sh
 
-echo "Build Container Image w/ Docker Compose"
+printgreen "Build Container Image w/ Docker Compose"
 docker-compose build
 
 [ "$CI" = "true" ] && pkill java

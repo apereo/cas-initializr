@@ -49,10 +49,20 @@ printgreen "Generating keystore ${keystore} for CAS with DN=${dname}, SAN=${subj
 [ -f "${keystore}" ] && sudo rm "${keystore}"
 sudo keytool -genkey -noprompt -alias cas -keyalg RSA -keypass changeit -storepass changeit \
   -keystore "${keystore}" -dname "${dname}" -ext SAN="${subjectAltName}"
+if [[ $? -ne 0 ]]; then
+  printred "Unable to create CAS keystore ${keystore}"
+  exit 1
+fi
+
 printgreen "Launching CAS native image..."  
 ./build/native/nativeCompile/cas --spring.profiles.active=native &
 pid=$!
 sleep 15
+curl -k -L --connect-timeout 10 --output /dev/null --silent --fail https://localhost:8443/cas/login
+if [[ $? -ne 0 ]]; then
+  printred "CAS native image failed to launch"
+  exit 1
+fi
 kill -9 $pid
 [ "$CI" = "true" ] && pkill java
 exit 0
