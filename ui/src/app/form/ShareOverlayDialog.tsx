@@ -85,7 +85,7 @@ export default function ShareOverlayDialog({ onClose, open, uiUrl, curlUrl }: Si
                 <Box sx={{borderBottom: 1, borderColor: 'divider'}}>
                     <Tabs value={tab} onChange={handleChange} aria-label="basic tabs example">
                         <Tab label="Curl" {...a11yProps(0)} />
-                        <Tab label="Configuration UI" {...a11yProps(1)} />
+                        <Tab label="Web" {...a11yProps(1)} />
                     </Tabs>
                 </Box>
                 <TabPanel value={tab} index={0}>
