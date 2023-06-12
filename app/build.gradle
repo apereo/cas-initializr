@@ -45,7 +45,7 @@ springBoot {
 dependencies {
     implementation "org.jooq:jool:0.9.15"
     implementation "commons-io:commons-io:2.13.0"
-    implementation "org.eclipse.jgit:org.eclipse.jgit:6.5.0.202303070854-r"
+    implementation "org.eclipse.jgit:org.eclipse.jgit:6.6.0.202305301015-r"
     implementation "com.github.vladimir-bukhtoyarov:bucket4j-core:7.6.0"
     implementation "com.github.spullara.mustache.java:compiler:0.9.10"
     
