@@ -3,7 +3,7 @@ name: Initializr Native Image
 env:
   TERM: xterm-256color
   JDK_CURRENT: 17
-  GRAALVM_CURRENT: 22.3.2
+  GRAALVM_CURRENT: 23.0.0
   GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
 ##########################################################################
