@@ -18,6 +18,9 @@ public class VersionUtils {
     }
 
     public static Version parse(String versionText) {
+        if (versionText.matches("\\d.\\d-rc-\\d")) {
+            versionText = versionText.replaceAll("-rc-\\d", "");
+        }
         if (versionText.matches("\\d.\\d")) {
             versionText += ".0";
         }

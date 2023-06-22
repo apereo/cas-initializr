@@ -66,7 +66,7 @@ dependencies {
     runtimeOnly "org.springframework.boot:spring-boot-starter-tomcat"
 
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
-    
+    testImplementation "org.springframework.boot:spring-boot-starter-test"
 }
 
 bootBuildImage {
