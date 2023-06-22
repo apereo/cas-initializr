@@ -21,6 +21,9 @@ public class VersionUtils {
         if (versionText.matches("\\d.\\d-rc-\\d")) {
             versionText = versionText.replaceAll("-rc-\\d", "");
         }
+        if (versionText.matches("\\d.\\d-\\d+\\+0000")) {
+            versionText = versionText.replaceAll("-\\d+\\+0000", "");
+        }
         if (versionText.matches("\\d.\\d")) {
             versionText += ".0";
         }
