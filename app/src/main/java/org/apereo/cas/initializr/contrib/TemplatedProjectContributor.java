@@ -117,7 +117,7 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
 
     @Override
     public void contribute(final Path projectRoot) throws IOException {
-        pathsAndResourcesMap.forEach((resourcePattern, relativePath) -> {
+        pathsAndResourcesMap.forEach((relativePath, resourcePattern) -> {
             try {
                 if (resourcePattern.endsWith("/**")) {
                     val resources = resolver.getResources(resourcePattern);

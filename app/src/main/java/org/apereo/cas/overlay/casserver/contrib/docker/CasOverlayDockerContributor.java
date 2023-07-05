@@ -13,7 +13,6 @@ public class CasOverlayDockerContributor extends TemplatedProjectContributor {
         super(applicationContext,
             Map.of(
                 "./", "classpath:overlay/docker/**",
-                "gradle/docker.gradle", "classpath:common/docker/docker.gradle.mustache",
                 ENTRYPOINT_SCRIPT_PATH, "classpath:common/docker/jib/entrypoint.sh.mustache"
             )
         );
