@@ -10,7 +10,6 @@ import org.apereo.cas.overlay.casserver.buildsystem.CasOverlayBuildSystem;
 import org.apereo.cas.overlay.casserver.buildsystem.CasOverlayGradleBuild;
 import org.apereo.cas.overlay.configserver.buildsystem.CasConfigServerOverlayBuildSystem;
 import org.apereo.cas.overlay.discoveryserver.buildsystem.CasDiscoveryServerOverlayBuildSystem;
-
 import com.github.mustachejava.DefaultMustacheFactory;
 import io.spring.initializr.generator.project.ProjectDescription;
 import io.spring.initializr.generator.project.contributor.ProjectContributor;
@@ -18,8 +17,6 @@ import io.spring.initializr.generator.version.Version;
 import io.spring.initializr.metadata.InitializrMetadataProvider;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +28,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -48,9 +44,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-@RequiredArgsConstructor
 @Slf4j
-@Setter
 @Getter
 @Accessors(chain = true)
 public abstract class TemplatedProjectContributor implements ProjectContributor {
@@ -58,11 +52,20 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
 
     protected final PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
 
-    private final String relativePath;
-
-    private final String resourcePattern;
-
     private final Map<String, Object> variables = new HashMap<>();
+
+    private final Map<String, String> pathsAndResourcesMap;
+
+    public TemplatedProjectContributor(final ApplicationContext applicationContext,
+                                       final Map<String, String> pathsAndResourcesMap) {
+        this.pathsAndResourcesMap = pathsAndResourcesMap;
+        this.applicationContext = applicationContext;
+    }
+
+    public TemplatedProjectContributor(final ApplicationContext applicationContext,
+                                       final String relativePath, final String resourcePattern) {
+        this(applicationContext, Map.of(relativePath, resourcePattern));
+    }
 
     protected static String generateAppUrl() {
         var builder = ServletUriComponentsBuilder.fromCurrentServletMapping();
@@ -114,42 +117,49 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
 
     @Override
     public void contribute(final Path projectRoot) throws IOException {
-        if (resourcePattern.endsWith("/**")) {
-            val resources = resolver.getResources(resourcePattern);
-            
-            for (val resource : resources) {
-                if (resource.isReadable()) {
-                    val output = determineOutputResourcePath(projectRoot, resource);
-                    log.info("Output file {}", output.toFile().getAbsolutePath());
-                    createFileAndParentDirectories(output);
-                    if (resource.getFilename().endsWith(".mustache")) {
-                        var templateVariables = getProjectTemplateVariables();
-                        var template = renderTemplate(resource, templateVariables);
-                        var project = applicationContext.getBean(OverlayProjectDescription.class);
-                        template = postProcessRenderedTemplate(template, project, templateVariables);
-                        createTemplateFile(output, template);
-                    } else {
-                        if (!output.toFile().exists()) {
-                            Files.createFile(output);
+        pathsAndResourcesMap.forEach((resourcePattern, relativePath) -> {
+            try {
+                if (resourcePattern.endsWith("/**")) {
+                    val resources = resolver.getResources(resourcePattern);
+                    for (val resource : resources) {
+                        if (resource.isReadable()) {
+                            val output = determineOutputResourcePath(projectRoot, resource, relativePath);
+                            log.info("Output file {}", output.toFile().getAbsolutePath());
+                            createFileAndParentDirectories(output);
+                            if (resource.getFilename().endsWith(".mustache")) {
+                                var templateVariables = getProjectTemplateVariables();
+                                var template = renderTemplate(resource, templateVariables);
+                                var project = applicationContext.getBean(OverlayProjectDescription.class);
+                                template = postProcessRenderedTemplate(template, project, templateVariables);
+                                createTemplateFile(output, template);
+                            } else {
+                                if (!output.toFile().exists()) {
+                                    Files.createFile(output);
+                                }
+                                FileCopyUtils.copy(resource.getInputStream(), Files.newOutputStream(output));
+                            }
+                            if (output.endsWith(".sh") || output.endsWith(".bat")) {
+                                output.toFile().setExecutable(true);
+                            }
                         }
-                        FileCopyUtils.copy(resource.getInputStream(), Files.newOutputStream(output));
                     }
-                    if (output.endsWith(".sh") || output.endsWith(".bat")) {
-                        output.toFile().setExecutable(true);
-                    }
+                } else {
+                    processTemplatedFile(projectRoot.resolve(relativePath), resourcePattern);
                 }
+            } catch (final Exception e) {
+                throw new IllegalArgumentException(e);
             }
-        } else {
-            processTemplatedFile(projectRoot.resolve(relativePath));
-        }
+        });
+
     }
 
-    protected Path determineOutputResourcePath(final Path projectRoot, final Resource resource) throws IOException {
-        val filename = determineOutputResourceFileName(resource);
+    protected Path determineOutputResourcePath(final Path projectRoot, final Resource resource,
+                                               final String relativePath) throws IOException {
+        val filename = determineOutputResourceFileName(resource, relativePath);
         return projectRoot.resolve(StringUtils.appendIfMissing(relativePath, "/") + filename);
     }
 
-    protected String determineOutputResourceFileName(final Resource resource) throws IOException {
+    protected String determineOutputResourceFileName(final Resource resource, final String relativePath) throws IOException {
         return StringUtils.remove(resource.getFilename(), ".mustache");
     }
 
@@ -163,7 +173,8 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         return templateVariables;
     }
 
-    private void processTemplatedFile(final Path output) throws IOException {
+    private void processTemplatedFile(final Path output,
+                                      final String resourcePattern) throws IOException {
         createFileAndParentDirectories(output);
         var templateVariables = getProjectTemplateVariables();
         var project = applicationContext.getBean(OverlayProjectDescription.class);
@@ -216,7 +227,7 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         properties.getSupportedVersions()
             .stream()
             .filter(version -> version.getType().equals(project.getBuildSystem().overlayType())
-                               && version.getVersion().equals(project.getCasVersion()))
+                && version.getVersion().equals(project.getCasVersion()))
             .findFirst()
             .ifPresentOrElse(version -> {
                 templateVariables.put("tomcatVersion", version.getTomcatVersion());
@@ -244,7 +255,7 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
             properties.getSupportedVersions()
                 .stream()
                 .filter(version -> version.getType().equals("cas-mgmt")
-                                   && version.getVersion().equals(project.getCasVersion()))
+                    && version.getVersion().equals(project.getCasVersion()))
                 .findFirst()
                 .ifPresent(version -> templateVariables.put("casMgmtCasVersion", version.getPlatformVersion()));
         }
@@ -272,7 +283,7 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
 
         val dockerSupported = getOverlayProjectDescription().isDockerSupported();
         templateVariables.put("dockerSupported", dockerSupported);
-        
+
         templateVariables.put("containerImageName", StringUtils.remove(type, "-overlay"));
         templateVariables.put("containerImageOrg", "apereo");
 
@@ -299,7 +310,7 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
             templateVariables.put("casServer", Boolean.TRUE);
             templateVariables.put("appName", "cas");
         }
-            if (type.equalsIgnoreCase(CasSpringBootAdminServerOverlayBuildSystem.ID)) {
+        if (type.equalsIgnoreCase(CasSpringBootAdminServerOverlayBuildSystem.ID)) {
             templateVariables.put("springBootAdminServer", Boolean.TRUE);
             templateVariables.put("appName", "casbootadminserver");
         }
@@ -350,14 +361,15 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
     }
 
     protected String getOutputResourcePathWithParent(final Resource resource,
-                                                     String filename) throws IOException {
-        val relativePathFile = new File(getRelativePath());
+                                                     final String filename,
+                                                     final String relativePath) throws IOException {
+        val relativePathFile = new File(relativePath);
         val parentFile = resource.isFile()
             ? resource.getFile().getParentFile()
             : new File(((ClassPathResource) resource).getPath()).getParentFile();
         val resourceParentName = parentFile.getName();
         if (!resourceParentName.equals(relativePathFile.getName())) {
-            filename = "/" + resourceParentName + "/" + filename;
+            return "/" + resourceParentName + "/" + filename;
         }
         return filename;
     }

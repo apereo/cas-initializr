@@ -116,7 +116,7 @@ apply plugin: "org.graalvm.buildtools.native"
 
 apply from: rootProject.file("gradle/springboot.gradle")
 {{#dockerSupported}}
-apply from: rootProject.file("gradle/jib.gradle")
+apply from: rootProject.file("gradle/docker.gradle")
 {{/dockerSupported}}
 apply from: rootProject.file("gradle/tasks.gradle")
 
