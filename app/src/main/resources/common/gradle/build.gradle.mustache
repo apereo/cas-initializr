@@ -92,7 +92,6 @@ repositories {
         mavenContent { releasesOnly() }
     }
 }
-def out = services.get(StyledTextOutputFactory).create("cas")
 
 {{#springDependencyMgmt}}
 apply plugin: "io.spring.dependency-management"
@@ -305,9 +304,11 @@ processAot {
 def imagePlatforms = project.dockerImagePlatform.split(",")
 def dockerUsername = providers.systemProperty("dockerUsername").getOrNull()
 def dockerPassword = providers.systemProperty("dockerPassword").getOrNull()
+def imageTagPostFix = providers.systemProperty("dockerImageTagPostfix").getOrElse("")
 
 jib {
     if (gradle.gradleVersion >= "8.0" && gradle.startParameter.isConfigurationCacheRequested()) {
+        def out = services.get(StyledTextOutputFactory).create("cas")
         out.withStyle(Style.Info).println("You are seeing this message because the Gradle configuration cache is turned on")
         out.withStyle(Style.Info).println("Running Jib tasks to produce Docker images will require the command-line option: --no-configuration-cache")
         out.withStyle(Style.Info).println("Jib does not support the Gradle configuration cache; Please see https://github.com/GoogleContainerTools/jib/issues/3132")
@@ -375,14 +376,15 @@ tasks.register("casBuildDockerImage", DockerBuildImage) {
 
     def imageTag = "${project.'cas.version'}"
     inputDir = project.projectDir
-    images.add("apereo/cas:$imageTag")
-    images.add("apereo/cas:latest")
+    images.add("apereo/cas:${imageTag}${imageTagPostFix}")
+    images.add("apereo/cas:latest${imageTagPostFix}")
     if (dockerUsername != null && dockerPassword != null) {
         username = dockerUsername
         password = dockerPassword
     }
     doLast {
-        out.withStyle(Style.Success).println("Built CAS images ${images} successfully.")
+        def out = services.get(StyledTextOutputFactory).create("cas")
+        out.withStyle(Style.Success).println("Built CAS images successfully.")
     }
 }
 
@@ -390,18 +392,18 @@ tasks.register("casPushDockerImage", DockerPushImage) {
     dependsOn("casBuildDockerImage")
 
     def imageTag = "${project.'cas.version'}"
-    images.add("apereo/cas:$imageTag")
-    images.add("apereo/cas:latest")
+    images.add("apereo/cas:${imageTag}${imageTagPostFix}")
+    images.add("apereo/cas:latest${imageTagPostFix}")
 
     if (dockerUsername != null && dockerPassword != null) {
         username = dockerUsername
         password = dockerPassword
     }
     doLast {
-        out.withStyle(Style.Success).println("Pushed CAS images ${images} successfully.")
+        def out = services.get(StyledTextOutputFactory).create("cas")
+        out.withStyle(Style.Success).println("Pushed CAS images successfully.")
     }
 }
-
 {{/dockerSupported}}
 
 dependencies {
