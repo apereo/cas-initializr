@@ -371,6 +371,8 @@ jib {
 
 import com.bmuschko.gradle.docker.tasks.image.*
 tasks.register("casBuildDockerImage", DockerBuildImage) {
+    dependsOn("build")
+
     def imageTag = "${project.'cas.version'}"
     inputDir = project.projectDir
     images.add("apereo/cas:$imageTag")

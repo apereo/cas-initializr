@@ -162,7 +162,7 @@ printgreen "Unzip WAR"
 [ $? -eq 0 ] && echo "Gradle command ran successfully." || exit 1
 
 printgreen "Build Container Image w/ Docker"
-./docker-build.sh
+./gradlew casBuildDockerImage
 
 printgreen "Build Container Image w/ Docker Compose"
 docker-compose build
