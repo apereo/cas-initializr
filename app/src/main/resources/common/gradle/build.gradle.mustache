@@ -2,6 +2,7 @@ import org.apache.tools.ant.taskdefs.condition.*
 import org.gradle.internal.logging.text.*
 import org.apereo.cas.metadata.*
 import java.nio.file.*
+import org.gradle.internal.logging.text.*
 import static org.gradle.internal.logging.text.StyledTextOutput.Style
 
 buildscript {
@@ -36,6 +37,7 @@ buildscript {
         classpath "io.spring.gradle:dependency-management-plugin:${project.gradleDependencyManagementPluginVersion}"
         {{#dockerSupported}}
         classpath "com.google.cloud.tools:jib-gradle-plugin:${project.jibVersion}"
+        classpath "com.bmuschko:gradle-docker-plugin:${project.gradleDockerPluginVersion}"
         {{/dockerSupported}}
 
         {{#casServer}}
@@ -116,7 +118,8 @@ apply plugin: "org.graalvm.buildtools.native"
 
 apply from: rootProject.file("gradle/springboot.gradle")
 {{#dockerSupported}}
-apply from: rootProject.file("gradle/jib.gradle")
+apply plugin: "com.google.cloud.tools.jib"
+apply plugin: "com.bmuschko.docker-remote-api"
 {{/dockerSupported}}
 apply from: rootProject.file("gradle/tasks.gradle")
 
@@ -287,6 +290,121 @@ processAot {
     )
 }
 {{/nativeImageSupported}}
+
+{{#dockerSupported}}
+['jibDockerBuild', 'jibBuildTar', 'jib'].each { taskName ->
+    if (gradle.gradleVersion >= "8.0") {
+        getTasksByName(taskName, true).each(it -> {
+            it.notCompatibleWithConfigurationCache("Jib is not compatible with configuration cache");
+            it.enabled = !gradle.startParameter.isConfigurationCacheRequested()
+        })
+    }
+}
+
+def imagePlatforms = project.dockerImagePlatform.split(",")
+def dockerUsername = providers.systemProperty("dockerUsername").getOrNull()
+def dockerPassword = providers.systemProperty("dockerPassword").getOrNull()
+def imageTagPostFix = providers.systemProperty("dockerImageTagPostfix").getOrElse("")
+
+jib {
+    if (gradle.gradleVersion >= "8.0" && gradle.startParameter.isConfigurationCacheRequested()) {
+        def out = services.get(StyledTextOutputFactory).create("cas")
+        out.withStyle(Style.Info).println("You are seeing this message because the Gradle configuration cache is turned on")
+        out.withStyle(Style.Info).println("Running Jib tasks to produce Docker images will require the command-line option: --no-configuration-cache")
+        out.withStyle(Style.Info).println("Jib does not support the Gradle configuration cache; Please see https://github.com/GoogleContainerTools/jib/issues/3132")
+        out.withStyle(Style.Info).println("Jib tasks are disabled.")
+    }
+    from {
+        image = project.baseDockerImage
+        platforms {
+            imagePlatforms.each {
+                def given = it.split(":")
+                platform {
+                    architecture = given[0]
+                    os = given[1]
+                }
+            }
+        }
+    }
+    to {
+        image = "${project.'containerImageOrg'}/${project.'containerImageName'}:${project.version}"
+        /**
+             ecr-login: Amazon Elastic Container Registry (ECR)
+             gcr: Google Container Registry (GCR)
+             osxkeychain: Docker Hub
+         */
+        credHelper = "osxkeychain"
+        if (dockerUsername != null && dockerPassword != null) {
+            auth {
+                username = "${dockerUsername}"
+                password = "${dockerPassword}"
+            }
+        }
+        tags = [project.version]
+    }
+    container {
+        creationTime = "USE_CURRENT_TIMESTAMP"
+        entrypoint = ['/docker/entrypoint.sh']
+        ports = ['80', '443', '8080', '8443', '8444', '8761', '8888', '5000']
+        labels = [version:project.version, name:project.name, group:project.group, org:project.containerImageOrg]
+        workingDirectory = '/docker/cas/war'
+    }
+    extraDirectories {
+        paths {
+          path {
+            from = file('src/main/jib')
+          }
+          path {
+            from = file('etc/cas')
+            into = '/etc/cas'
+          }
+          path {
+            from = file("build/libs")
+            into = "/docker/cas/war"
+          }
+        }
+        permissions = [
+            '/docker/entrypoint.sh': '755'
+        ]
+    }
+    allowInsecureRegistries = project.allowInsecureRegistries
+}
+
+import com.bmuschko.gradle.docker.tasks.image.*
+tasks.register("casBuildDockerImage", DockerBuildImage) {
+    dependsOn("build")
+
+    def imageTag = "${project.'cas.version'}"
+    inputDir = project.projectDir
+    images.add("apereo/cas:${imageTag}${imageTagPostFix}")
+    images.add("apereo/cas:latest${imageTagPostFix}")
+    if (dockerUsername != null && dockerPassword != null) {
+        username = dockerUsername
+        password = dockerPassword
+    }
+    doLast {
+        def out = services.get(StyledTextOutputFactory).create("cas")
+        out.withStyle(Style.Success).println("Built CAS images successfully.")
+    }
+}
+
+tasks.register("casPushDockerImage", DockerPushImage) {
+    dependsOn("casBuildDockerImage")
+
+    def imageTag = "${project.'cas.version'}"
+    images.add("apereo/cas:${imageTag}${imageTagPostFix}")
+    images.add("apereo/cas:latest${imageTagPostFix}")
+
+    if (dockerUsername != null && dockerPassword != null) {
+        username = dockerUsername
+        password = dockerPassword
+    }
+    doLast {
+        def out = services.get(StyledTextOutputFactory).create("cas")
+        out.withStyle(Style.Success).println("Pushed CAS images successfully.")
+    }
+}
+{{/dockerSupported}}
 
 dependencies {
     {{^springDependencyMgmt}}

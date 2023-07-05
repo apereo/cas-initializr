@@ -1,4 +1,8 @@
-FROM {{containerBaseImageName}} AS overlay
+ARG BASE_IMAGE="{{containerBaseImageName}}"
+ARG EXT_BUILD_COMMANDS=""
+ARG EXT_BUILD_OPTIONS=""
+
+FROM $BASE_IMAGE AS overlay
 
 RUN mkdir -p cas-overlay
 COPY ./src cas-overlay/src/
@@ -13,9 +17,9 @@ RUN mkdir -p ~/.gradle \
     && ./gradlew --version;
 
 RUN cd cas-overlay \
-    && ./gradlew clean build --parallel --no-daemon;
+    && ./gradlew clean build $EXT_BUILD_COMMANDS --parallel --no-daemon $EXT_BUILD_OPTIONS;
 
-FROM {{containerBaseImageName}} AS cas
+FROM $BASE_IMAGE AS cas
 
 LABEL "Organization"="Apereo"
 LABEL "Description"="Apereo CAS"

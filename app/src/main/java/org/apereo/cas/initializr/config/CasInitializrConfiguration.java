@@ -2,8 +2,6 @@ package org.apereo.cas.initializr.config;
 
 import org.apereo.cas.initializr.contrib.ChainingMultipleResourcesProjectContributor;
 import org.apereo.cas.initializr.contrib.ChainingSingleResourceProjectContributor;
-import org.apereo.cas.initializr.contrib.docker.jib.OverlayGradleJibContributor;
-import org.apereo.cas.initializr.contrib.docker.jib.OverlayGradleJibEntrypointContributor;
 import org.apereo.cas.initializr.contrib.github.GithubResourcesContributor;
 import org.apereo.cas.initializr.contrib.gradle.GradleWrapperConfigurationContributor;
 import org.apereo.cas.initializr.contrib.gradle.GradleWrapperExecutablesContributor;
@@ -118,10 +116,8 @@ public class CasInitializrConfiguration {
     }
 
     @Bean
-    public ChainingSingleResourceProjectContributor overlayJibConfigurationContributor() {
+    public ChainingSingleResourceProjectContributor overlayConfigurationContributor() {
         var chain = new ChainingSingleResourceProjectContributor();
-        chain.addContributor(new OverlayGradleJibContributor(applicationContext));
-        chain.addContributor(new OverlayGradleJibEntrypointContributor(applicationContext));
         chain.addContributor(new LocalEtcCasDirectoryContributor());
         return chain;
     }
