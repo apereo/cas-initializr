@@ -1,6 +1,7 @@
 import React, { Fragment } from "react";
 import {
     Button,
+    ButtonGroup,
     Grid,
     IconButton,
     List,
@@ -20,6 +21,11 @@ import {
     useOverlayProperties,
 } from "../store/OverlayReducer";
 import { Action, useCommand } from "../core/Keyboard";
+import ButtonPopover from "../component/ButtonPopover";
+import { CopyAll } from "@mui/icons-material";
+import useCopyToClipboard from "../core/UseCopyToClipboard";
+import { PropertyCode, getPropertyCodeString } from "./PropertyActions";
+import { HtmlRender } from "../component/HtmlRender";
 
 export default function Properties() {
     const selectedProperties = useMappedOverlayProperties();
@@ -41,6 +47,12 @@ export default function Properties() {
     ]);
 
     const properties: Property[] = React.useMemo(() => selectedProperties.filter(d => !!d), [selectedProperties]);
+
+    const copy = useCopyToClipboard();
+
+    const handleCopy = React.useCallback((text: string) => {
+        copy(text);
+    }, [copy]);
 
     return (
         <>
@@ -87,13 +99,24 @@ export default function Properties() {
                             {s !== undefined ? (
                                 <ListItem
                                     secondaryAction={
-                                        <IconButton
-                                            edge="end"
-                                            aria-label="delete"
-                                            onClick={() => remove(s.id)}
-                                        >
-                                            <DeleteIcon />
-                                        </IconButton>
+                                        <ButtonGroup>
+                                            <ButtonPopover
+                                                icon={
+                                                    <CopyAll />
+                                                }
+                                                label="Copy"
+                                                onClick={() => { handleCopy(getPropertyCodeString(s)) }}
+                                            >
+                                                <PropertyCode property={s} />
+                                            </ButtonPopover>
+                                            <IconButton
+                                                edge="end"
+                                                aria-label="delete"
+                                                onClick={() => remove(s.id)}
+                                            >
+                                                <DeleteIcon />
+                                            </IconButton>
+                                        </ButtonGroup>
                                     }
                                 >
                                     <Tooltip
@@ -106,7 +129,10 @@ export default function Properties() {
                                                     {s.name}
                                                 </code>
                                             }
-                                            secondary={s.description}
+                                            secondary={
+                                                <div style={{ paddingRight: '3rem' }}>
+                                                    <HtmlRender html={s.description} />
+                                                </div>}
                                         />
                                     </Tooltip>
                                 </ListItem>

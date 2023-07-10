@@ -20,7 +20,7 @@ import { Property } from "../data/Property";
 import {
     usePropertyList,
 } from "../store/OptionReducer";
-import { Close, HighlightOff } from "@mui/icons-material";
+import { Close, CopyAll, HighlightOff } from "@mui/icons-material";
 
 import { Components, Virtuoso } from "react-virtuoso";
 import { useOverlayProperties } from "../store/OverlayReducer";
@@ -28,6 +28,10 @@ import { useOverlayProperties } from "../store/OverlayReducer";
 import { useHotkeys } from "react-hotkeys-hook";
 import FuseHighlight from './Highlight';
 import { useFuse } from "../data/useFuse";
+import { HtmlRender } from "../component/HtmlRender";
+import ButtonPopover from "../component/ButtonPopover";
+import useCopyToClipboard from "../core/UseCopyToClipboard";
+import { PropertyCode, getPropertyCodeString } from "./PropertyActions";
 
 export interface PropertySelectorProps {
     onSelectedChange(selected: string[]): void;
@@ -36,7 +40,7 @@ export interface PropertySelectorProps {
 const VList: Components['List'] = React.forwardRef(({ style, children }: any, listRef) => {
     return (
         <List
-            style={{ padding: '0 1rem', ...style, margin: 0, width: '660px', boxSizing: 'content-box' }}
+            style={{ padding: '0 1rem', ...style, margin: 0, width: '612px', boxSizing: 'content-box' }}
             component="div"
             ref={listRef}
         >
@@ -47,9 +51,9 @@ const VList: Components['List'] = React.forwardRef(({ style, children }: any, li
 
 const VItem: Components['Item'] = ({ children, ...props }: any) => {
     return (
-        <ListItem component="div" {...props} style={{ margin: 0, boxSizing: 'content-box', borderBottom: '1px solid #666666' }}>
+        <div { ...props }>
             {children}
-        </ListItem>
+        </div>
     );
 };
 
@@ -121,6 +125,12 @@ export default function PropertySelector({ onSelectedChange }: PropertySelectorP
 
     useHotkeys("ctrl+B", () => handleClickOpen(), [handleClickOpen]);
 
+    const copy = useCopyToClipboard();
+
+    const handleCopy = React.useCallback((text: string) => {
+        copy(text);
+    }, [copy]);
+
     return (
         <>
             <Button onClick={handleClickOpen} variant="contained">
@@ -186,7 +196,7 @@ export default function PropertySelector({ onSelectedChange }: PropertySelectorP
                         style={{
                             padding: "1rem 1.5rem 0",
                             marginBottom: "1.5rem",
-                            width: '660px'
+                            width: '612px'
                         }}
                     >
                         {`No Results Found`}
@@ -203,8 +213,22 @@ export default function PropertySelector({ onSelectedChange }: PropertySelectorP
                             const checked = selected.indexOf(item.name) > -1;
 
                             const { name, description, type, deprecated, defaultValue } = item;
+
+                            const code = getPropertyCodeString(item);
+
                             return (
-                                <React.Fragment>
+                                <ListItem component="div" style={{ margin: 0, boxSizing: 'content-box', borderBottom: '1px solid #666666' }}
+                                    secondaryAction={
+                                        <ButtonPopover
+                                            icon={
+                                                <CopyAll />
+                                            }
+                                            label="Copy"
+                                            onClick={() => { handleCopy(code) }}
+                                        >
+                                            <PropertyCode property={item} />
+                                        </ButtonPopover>
+                                    }>
                                     <ListItemIcon>
                                         <Checkbox
                                             edge="start"
@@ -226,19 +250,19 @@ export default function PropertySelector({ onSelectedChange }: PropertySelectorP
                                         }
                                         secondary={
                                             <React.Fragment>
-                                                <Typography variant="body2" sx={{fontWeight: 'bold'}}>{defaultValue ? `default: ${defaultValue} ` : ' ' }({ `${type}` })</Typography>
+                                                <Typography component="span" variant="body2" sx={{fontWeight: 'bold'}}>{defaultValue ? `default: ${defaultValue} ` : ' ' }({ `${type}` })</Typography>
                                                 <Typography
-                                                    sx={{ display: 'inline' }}
-                                                    component="p"
+                                                    sx={{ display: 'block' }}
+                                                    component="span"
                                                     variant="body2"
                                                     color="text.primary"
                                                 >
-                                                    {description}
+                                                    <HtmlRender html={description} />
                                                 </Typography>
                                             </React.Fragment>
                                         }
                                     />
-                                </React.Fragment>
+                                </ListItem>
                             );
                         }}
                     />
