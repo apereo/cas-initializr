@@ -52,7 +52,7 @@ function TabPanel(props: TabPanelProps) {
 
 export default function ShareOverlayDialog({ onClose, open, uiUrl, curlUrl }: SimpleDialogProps) {
     /*eslint-disable @typescript-eslint/no-unused-vars*/
-    const [value, copy] = useCopyToClipboard();
+    const copy = useCopyToClipboard();
 
     const [copied, setCopied] = React.useState(false);
 
