@@ -45,7 +45,7 @@ springBoot {
 dependencies {
     implementation "org.jooq:jool:0.9.15"
     implementation "commons-io:commons-io:2.13.0"
-    implementation "org.eclipse.jgit:org.eclipse.jgit:6.5.0.202303070854-r"
+    implementation "org.eclipse.jgit:org.eclipse.jgit:6.6.0.202305301015-r"
     implementation "com.github.vladimir-bukhtoyarov:bucket4j-core:7.6.0"
     implementation "com.github.spullara.mustache.java:compiler:0.9.10"
     
@@ -66,7 +66,7 @@ dependencies {
     runtimeOnly "org.springframework.boot:spring-boot-starter-tomcat"
 
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
-    
+    testImplementation "org.springframework.boot:spring-boot-starter-test"
 }
 
 bootBuildImage {
@@ -98,6 +98,7 @@ processResources {
     def gradleFreeFairPluginVersion = project.providers.gradleProperty("gradleFreeFairPluginVersion").get()
     def gradleDownloadTaskPluginVersion = project.providers.gradleProperty("gradleDownloadTaskPluginVersion").get()
     def jibVersion = project.providers.gradleProperty("jibVersion").get()
+    def gradleDockerPluginVersion = project.providers.gradleProperty("gradleDockerPluginVersion").get()
 
     def springBootLatestVersion = project.providers.gradleProperty("springBootLatestVersion").get()
     def apacheTomcat9LatestVersion = project.providers.gradleProperty("apacheTomcat9LatestVersion").get()
@@ -126,6 +127,7 @@ processResources {
                 "gradleFreeFairPluginVersion"            : gradleFreeFairPluginVersion,
                 "gradleDownloadTaskPluginVersion"        : gradleDownloadTaskPluginVersion,
                 "jibVersion"                             : jibVersion,
+                "gradleDockerPluginVersion"              : gradleDockerPluginVersion,
                 "graalVmVersion"                         : graalVmVersion,
                 "graalVmMetadataRepositoryVersion"       : graalVmMetadataRepositoryVersion,
                 "gradleGraalVmNativePluginVersion"       : gradleGraalVmNativePluginVersion
@@ -138,6 +140,7 @@ supportedTypes.forEach({ type ->
     project.tasks.create(name: "versions-${type}",
                          description: "Display supported versions",
                          dependsOn: build) {
+
         def file = file("${project.buildDir}/resources/main/application-initializr.yml")
         doLast {
             def yaml = new org.yaml.snakeyaml.Yaml()

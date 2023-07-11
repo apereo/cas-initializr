@@ -26,7 +26,7 @@ export default function ShareOverlay({ overlay, disabled }: ShareOverlayProps) {
     );
 
     const curlUrl = React.useMemo(
-        () => `${APP_ORIGIN}${API_PATH}starter.${type}?${getOverlayQuery(overlay)}`,
+        () => `curl "${APP_ORIGIN}${API_PATH}starter.${type}?${getOverlayQuery(overlay)}" | tar -xzvf -`,
         [overlay]
     );
 

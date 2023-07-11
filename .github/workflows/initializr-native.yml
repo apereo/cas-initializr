@@ -3,7 +3,6 @@ name: Initializr Native Image
 env:
   TERM: xterm-256color
   JDK_CURRENT: 17
-  GRAALVM_CURRENT: 22.3.2
   GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
 ##########################################################################
@@ -83,7 +82,7 @@ jobs:
         uses: graalvm/setup-graalvm@v1
         if: ${{ matrix.versions.sync == true && matrix.versions.branch == 'master' }}
         with:
-          version: ${{ env.GRAALVM_CURRENT }}
+          distribution: 'graalvm'
           java-version: ${{ env.JDK_CURRENT }}
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
