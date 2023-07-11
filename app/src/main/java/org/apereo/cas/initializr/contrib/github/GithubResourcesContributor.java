@@ -27,8 +27,8 @@ public class GithubResourcesContributor extends TemplatedProjectContributor {
     }
 
     @Override
-    protected String determineOutputResourceFileName(final Resource resource) throws IOException {
-        var filename = super.determineOutputResourceFileName(resource);
-        return getOutputResourcePathWithParent(resource, filename);
+    protected String determineOutputResourceFileName(final Resource resource, final String relativePath) throws IOException {
+        var filename = super.determineOutputResourceFileName(resource, relativePath);
+        return getOutputResourcePathWithParent(resource, filename, relativePath);
     }
 }

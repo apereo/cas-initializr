@@ -28,6 +28,7 @@ gradleDependencyManagementPluginVersion=@gradleDependencyManagementPluginVersion
 {{#dockerSupported}}
 # Used to build docker images
 jibVersion=@jibVersion@
+gradleDockerPluginVersion=@gradleDockerPluginVersion@
 
 # Specify the coordinates of the container image to build via jib
 containerImageOrg={{containerImageOrg}}
@@ -36,8 +37,6 @@ containerImageName={{containerImageName}}
 baseDockerImage={{containerBaseImageName}}
 allowInsecureRegistries=false
 dockerImagePlatform=amd64:linux
-
-containerImage={{containerImageOrg}}/{{containerImageName}}
 {{/dockerSupported}}
 
 {{#appServer}}
