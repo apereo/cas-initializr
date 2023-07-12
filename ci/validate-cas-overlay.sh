@@ -22,11 +22,15 @@ done
 CAS_MAJOR_VERSION=`echo $CAS_VERSION | cut -d. -f1`
 CAS_MINOR_VERSION=`echo $CAS_VERSION | cut -d. -f2`
 
-echo "$PWD"
-printgreen "Building CAS Overlay"
+mkdir -p tmp
+cd tmp || exit
+echo -e "CAS overlay is built in directory: " && echo "$PWD"
+ls
+printgreen "Building CAS Overlay in $PWD"
 ./gradlew clean build --warning-mode all --no-daemon
 
 printgreen "Running CAS Overlay with Gradle"
+ls -al
 ./gradlew run -Dspring.profiles.active=none -Dserver.ssl.enabled=false -Dserver.port=8080 &
 pid=$!
 sleep 80

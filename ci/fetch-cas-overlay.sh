@@ -35,6 +35,6 @@ cd tmp || exit
 printgreen "Requesting CAS overlay for ${parameters}"
 curl http://localhost:8080/starter.tgz --connect-timeout 30 -d "${parameters}" | tar -xzvf -
 kill -9 $pid
-echo "$PWD"
+echo -e "CAS overlay is downloaded into directory: " && echo "$PWD"
 [ "$CI" = "true" ] && pkill java
 exit 0
