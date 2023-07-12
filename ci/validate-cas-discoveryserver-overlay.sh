@@ -2,8 +2,13 @@
 
 source ./ci/functions.sh
 
+FETCH_OVERLAY="false"
 while (( "$#" )); do
     case "$1" in
+    --fetch-only)
+        FETCH_OVERLAY="true"
+        shift 1
+        ;;
     --cas)
         CAS_VERSION="$2"
         shift 2
@@ -19,17 +24,23 @@ while (( "$#" )); do
     esac
 done
 
-java -jar app/build/libs/app.jar &
-pid=$!
-sleep 30
-rm -Rf tmp &> /dev/null
-mkdir tmp
-cd tmp
-curl http://localhost:8080/starter.tgz --connect-timeout 60 -d casVersion=${CAS_VERSION} \
-  -d bootVersion=${BOOT_VERSION} -d type=cas-discovery-server-overlay | tar -xzvf -
-kill -9 $pid
+mkdir -p tmp
+cd tmp || exit
+echo "Working directory: ${PWD}"
 
-echo "Building CAS Discovery Server Overlay"
+if [[ "${FETCH_OVERLAY}" == "true" ]]; then
+  java -jar app/build/libs/app.jar &
+  pid=$!
+  sleep 30
+  curl http://localhost:8080/starter.tgz --connect-timeout 60 -d casVersion=${CAS_VERSION} \
+    -d bootVersion=${BOOT_VERSION} -d type=cas-discovery-server-overlay | tar -xzvf -
+  kill -9 $pid
+  ls
+  printgreen "Downloaded CAS overlay ${CAS_VERSION} successfully"
+  exit 0
+fi
+
+echo "Building CAS Discovery Server Overlay in ${PWD}"
 ./gradlew clean build --no-daemon
 
 echo "Launched CAS with pid ${pid}. Waiting for server to come online..."
