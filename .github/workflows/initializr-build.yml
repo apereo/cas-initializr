@@ -189,6 +189,10 @@ jobs:
         with:
           java-version: ${{ env.JDK_CURRENT }}
           distribution: 'zulu'
+      - uses: actions/download-artifact@v3
+        if: ${{ matrix.versions.validate == true }}
+        with:
+          name: binary-artifacts
       - name: Fetch CAS Overlay
         if: ${{ matrix.versions.validate == true }}
         run: |
@@ -201,10 +205,6 @@ jobs:
         with:
           java-version: ${{ matrix.versions.java-version }}
           distribution: 'zulu'
-      - uses: actions/download-artifact@v3
-        if: ${{ matrix.versions.validate == true }}
-        with:
-          name: binary-artifacts
       - name: Validate Overlay w/ CAS & SpringBoot
         if: ${{ matrix.versions.validate == true }}
         run: |
