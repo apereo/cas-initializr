@@ -133,7 +133,7 @@ jobs:
           distribution: 'zulu'
       - name: Initialize
         if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
-        run: chmod -R 777 ./ci/*.sh
+        run: ls ./ci && find ./ci -type f -name "*.sh" -exec chmod +x "{}" \;
       - uses: actions/download-artifact@v3
         if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
         with:
@@ -161,7 +161,7 @@ jobs:
           distribution: 'zulu'
       - name: Initialize
         if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
-        run: chmod -R 777 ./ci/*.sh
+        run: ls ./ci && find ./ci -type f -name "*.sh" -exec chmod +x "{}" \;
       - uses: actions/download-artifact@v3
         if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
         with:
@@ -180,15 +180,27 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         if: ${{ matrix.versions.validate == true }}
+      - name: Initialize
+        if: ${{ matrix.versions.validate == true }}
+        run: ls ./ci && find ./ci -type f -name "*.sh" -exec chmod +x "{}" \;
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        if: ${{ matrix.versions.validate == true }}
+        with:
+          java-version: ${{ env.JDK_CURRENT }}
+          distribution: 'zulu'
+      - name: Fetch CAS Overlay
+        if: ${{ matrix.versions.validate == true }}
+        run: |
+          ./ci/fetch-cas-overlay.sh --cas ${{ matrix.versions.version }} \
+            --spring-boot ${{ matrix.versions.boot-version }} \
+            --apache-tomcat ${{ matrix.versions.tomcat-version }}
       - name: Set up JDK
         uses: actions/setup-java@v3
         if: ${{ matrix.versions.validate == true }}
         with:
           java-version: ${{ matrix.versions.java-version }}
           distribution: 'zulu'
-      - name: Initialize
-        if: ${{ matrix.versions.validate == true }}
-        run: chmod -R 777 ./ci/*.sh
       - uses: actions/download-artifact@v3
         if: ${{ matrix.versions.validate == true }}
         with:
@@ -225,7 +237,7 @@ jobs:
           distribution: 'zulu'
       - name: Initialize
         if: ${{ matrix.versions.validate == true }}
-        run: chmod -R 777 ./ci/*.sh
+        run: ls ./ci && find ./ci -type f -name "*.sh" -exec chmod +x "{}" \;
       - uses: actions/download-artifact@v3
         if: ${{ matrix.versions.validate == true }}
         with:
@@ -255,7 +267,7 @@ jobs:
           distribution: 'zulu'
       - name: Initialize
         if: ${{ matrix.versions.validate == true }}
-        run: chmod -R 777 ./ci/*.sh
+        run: ls ./ci && find ./ci -type f -name "*.sh" -exec chmod +x "{}" \;
       - uses: actions/download-artifact@v3
         if: ${{ matrix.versions.validate == true }}
         with:
@@ -285,7 +297,7 @@ jobs:
           distribution: 'zulu'
       - name: Initialize
         if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
-        run: chmod -R 777 ./ci/*.sh
+        run: ls ./ci && find ./ci -type f -name "*.sh" -exec chmod +x "{}" \;
       - uses: actions/download-artifact@v3
         if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
         with:
@@ -313,7 +325,7 @@ jobs:
           distribution: 'zulu'
       - name: Initialize
         if: ${{ matrix.versions.validate == true }}
-        run: chmod -R 777 ./ci/*.sh
+        run: ls ./ci && find ./ci -type f -name "*.sh" -exec chmod +x "{}" \;
       - uses: actions/download-artifact@v3
         if: ${{ matrix.versions.validate == true }}
         with:
@@ -343,7 +355,7 @@ jobs:
           distribution: 'zulu'
       - name: Initialize
         if: ${{ matrix.versions.validate == true }}
-        run: chmod -R 777 ./ci/*.sh
+        run: ls ./ci && find ./ci -type f -name "*.sh" -exec chmod +x "{}" \;
       - uses: actions/download-artifact@v3
         if: ${{ matrix.versions.validate == true }}
         with:
@@ -366,7 +378,7 @@ jobs:
           java-version: ${{ env.JDK_CURRENT }}
           distribution: 'zulu'
       - name: Initialize
-        run: chmod -R 777 ./ci/*.sh
+        run: ls ./ci && find ./ci -type f -name "*.sh" -exec chmod +x "{}" \;
       - uses: actions/download-artifact@v3
         with:
           name: binary-artifacts

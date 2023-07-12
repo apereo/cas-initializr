@@ -19,24 +19,10 @@ while (( "$#" )); do
     esac
 done
 
-parameters="casVersion=${CAS_VERSION}&dependencyCoordinates=cas-server-support-rest"
-if [ -z "${BOOT_VERSION}" ]; then
-  parameters="${parameters}&bootVersion=${BOOT_VERSION}"
-fi
-
 CAS_MAJOR_VERSION=`echo $CAS_VERSION | cut -d. -f1`
 CAS_MINOR_VERSION=`echo $CAS_VERSION | cut -d. -f2`
 
-java -jar app/build/libs/app.jar &
-pid=$!
-sleep 30
-mkdir tmp
-cd tmp || exit
-printgreen "Requesting CAS overlay for ${parameters}"
-curl http://localhost:8080/starter.tgz --connect-timeout 30 -d "${parameters}" | tar -xzvf -
-kill -9 $pid
-[ "$CI" = "true" ] && pkill java
-
+echo "$PWD"
 printgreen "Building CAS Overlay"
 ./gradlew clean build --warning-mode all --no-daemon
 
