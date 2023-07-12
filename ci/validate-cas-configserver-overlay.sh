@@ -40,11 +40,11 @@ if [[ "${FETCH_OVERLAY}" == "true" ]]; then
     -d bootVersion=${BOOT_VERSION} -d type=cas-config-server-overlay | tar -xzvf -
   kill -9 $pid
   ls
-  printgreen "Downloaded CAS overlay ${CAS_VERSION} successfully"
+  printgreen "Downloaded CAS Config Server overlay ${CAS_VERSION} successfully"
   exit 0
 fi
 
-echo "Building CAS Config Server Overlay in ${PWD}"
+echo "Building CAS Config Server overlay in ${PWD}"
 ./gradlew clean build --no-daemon
 
 sudo mkdir /etc/cas
