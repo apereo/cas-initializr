@@ -2,8 +2,13 @@
 
 source ./ci/functions.sh
 
+FETCH_OVERLAY="false"
 while (( "$#" )); do
     case "$1" in
+    --fetch-only)
+        FETCH_OVERLAY="true"
+        shift 1
+        ;;
     --cas)
         CAS_VERSION="$2"
         shift 2
@@ -19,28 +24,35 @@ while (( "$#" )); do
     esac
 done
 
-parameters="casVersion=${CAS_VERSION}&dependencyCoordinates=cas-server-support-rest"
-if [ -z "${BOOT_VERSION}" ]; then
-  parameters="${parameters}&bootVersion=${BOOT_VERSION}"
-fi
-
 CAS_MAJOR_VERSION=`echo $CAS_VERSION | cut -d. -f1`
 CAS_MINOR_VERSION=`echo $CAS_VERSION | cut -d. -f2`
 
-java -jar app/build/libs/app.jar &
-pid=$!
-sleep 30
-mkdir tmp
+mkdir -p tmp
 cd tmp || exit
-printgreen "Requesting CAS overlay for ${parameters}"
-curl http://localhost:8080/starter.tgz --connect-timeout 30 -d "${parameters}" | tar -xzvf -
-kill -9 $pid
-[ "$CI" = "true" ] && pkill java
+echo "Working directory: ${PWD}"
+if [[ "${FETCH_OVERLAY}" == "true" ]]; then
+  parameters="casVersion=${CAS_VERSION}&dependencyCoordinates=cas-server-support-rest"
+  if [ -z "${BOOT_VERSION}" ]; then
+    parameters="${parameters}&bootVersion=${BOOT_VERSION}"
+  fi
+  java -jar ../app/build/libs/app.jar &
+  pid=$!
+  sleep 30
+  printgreen "Requesting CAS overlay for ${parameters}"
+  curl http://localhost:8080/starter.tgz --connect-timeout 30 -d "${parameters}" | tar -xzvf -
+  kill -9 $pid
+  echo -e "CAS overlay is downloaded into directory: " && echo "$PWD"
+  [ "$CI" = "true" ] && pkill java
+  ls
+    printgreen "Downloaded CAS overlay ${CAS_VERSION} successfully."
+    exit 0
+fi
 
-printgreen "Building CAS Overlay"
+printgreen "Building CAS overlay in $PWD"
 ./gradlew clean build --warning-mode all --no-daemon
 
-printgreen "Running CAS Overlay with Gradle"
+printgreen "Running CAS overlay with Gradle"
+ls -al
 ./gradlew run -Dspring.profiles.active=none -Dserver.ssl.enabled=false -Dserver.port=8080 &
 pid=$!
 sleep 80

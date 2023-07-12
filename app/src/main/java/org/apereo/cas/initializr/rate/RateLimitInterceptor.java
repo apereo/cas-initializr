@@ -6,8 +6,8 @@ import io.github.bucket4j.Bucket4j;
 import io.github.bucket4j.Refill;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.servlet.HandlerInterceptor;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.time.Duration;
 
 /**

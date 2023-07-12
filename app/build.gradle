@@ -55,7 +55,7 @@ dependencies {
 
 
     implementation("javax.cache:cache-api")
-    implementation("org.ehcache:ehcache")
+    implementation("org.ehcache:ehcache:3.10.8")
 
     implementation "io.spring.initializr:initializr-web"
     implementation "io.spring.initializr:initializr-actuator"
