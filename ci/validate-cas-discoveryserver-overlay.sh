@@ -29,7 +29,7 @@ cd tmp || exit
 echo "Working directory: ${PWD}"
 
 if [[ "${FETCH_OVERLAY}" == "true" ]]; then
-  java -jar app/build/libs/app.jar &
+  java -jar ../app/build/libs/app.jar &
   pid=$!
   sleep 30
   curl http://localhost:8080/starter.tgz --connect-timeout 60 -d casVersion=${CAS_VERSION} \

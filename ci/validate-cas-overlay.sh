@@ -35,7 +35,7 @@ if [[ "${FETCH_OVERLAY}" == "true" ]]; then
   if [ -z "${BOOT_VERSION}" ]; then
     parameters="${parameters}&bootVersion=${BOOT_VERSION}"
   fi
-  java -jar app/build/libs/app.jar &
+  java -jar ../app/build/libs/app.jar &
   pid=$!
   sleep 30
   printgreen "Requesting CAS overlay for ${parameters}"

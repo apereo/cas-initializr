@@ -229,19 +229,30 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         if: ${{ matrix.versions.validate == true }}
+      - name: Initialize
+        if: ${{ matrix.versions.validate == true }}
+        run: ls ./ci && find ./ci -type f -name "*.sh" -exec chmod +x "{}" \;
       - name: Set up JDK
         uses: actions/setup-java@v3
         if: ${{ matrix.versions.validate == true }}
         with:
-          java-version: ${{ matrix.versions.java-version }}
+          java-version: ${{ env.JDK_CURRENT }}
           distribution: 'zulu'
-      - name: Initialize
-        if: ${{ matrix.versions.validate == true }}
-        run: ls ./ci && find ./ci -type f -name "*.sh" -exec chmod +x "{}" \;
       - uses: actions/download-artifact@v3
         if: ${{ matrix.versions.validate == true }}
         with:
           name: binary-artifacts
+      - name: Fetch Overlay
+        if: ${{ matrix.versions.validate == true }}
+        run: |
+          ./ci/validate-cas-mgmt-overlay.sh --fetch-only --cas ${{ matrix.versions.version }} \
+            --apache-tomcat ${{ matrix.versions.tomcat-version }}
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        if: ${{ matrix.versions.validate == true }}
+        with:
+          java-version: ${{ env.JDK_CURRENT }}
+          distribution: 'zulu'
       - name: Validate Overlay
         if: ${{ matrix.versions.validate == true }}
         run: |
@@ -272,7 +283,7 @@ jobs:
         if: ${{ matrix.versions.validate == true }}
         with:
           name: binary-artifacts
-      - name: Fetch Config Server Overlay
+      - name: Fetch Overlay
         if: ${{ matrix.versions.validate == true }}
         run: |
           ./ci/validate-cas-configserver-overlay.sh --fetch-only --cas ${{ matrix.versions.version }} \
@@ -341,7 +352,7 @@ jobs:
         if: ${{ matrix.versions.validate == true }}
         with:
           name: binary-artifacts
-      - name: Fetch Discovery Server Overlay
+      - name: Fetch Overlay
         if: ${{ matrix.versions.validate == true }}
         run: |
           ./ci/validate-cas-discoveryserver-overlay.sh --fetch-only --cas ${{ matrix.versions.version }} \
@@ -369,19 +380,30 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         if: ${{ matrix.versions.validate == true }}
+      - name: Initialize
+        if: ${{ matrix.versions.validate == true }}
+        run: ls ./ci && find ./ci -type f -name "*.sh" -exec chmod +x "{}" \;
       - name: Set up JDK
         uses: actions/setup-java@v3
         if: ${{ matrix.versions.validate == true }}
         with:
-          java-version: ${{ matrix.versions.java-version }}
+          java-version: ${{ env.JDK_CURRENT }}
           distribution: 'zulu'
-      - name: Initialize
-        if: ${{ matrix.versions.validate == true }}
-        run: ls ./ci && find ./ci -type f -name "*.sh" -exec chmod +x "{}" \;
       - uses: actions/download-artifact@v3
         if: ${{ matrix.versions.validate == true }}
         with:
           name: binary-artifacts
+      - name: Fetch Overlay
+        if: ${{ matrix.versions.validate == true }}
+        run: |
+          ./ci/validate-cas-bootadminserver-overlay.sh --fetch-only --cas ${{ matrix.versions.version }} \
+            --apache-tomcat ${{ matrix.versions.tomcat-version }}
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        if: ${{ matrix.versions.validate == true }}
+        with:
+          java-version: ${{ env.JDK_CURRENT }}
+          distribution: 'zulu'
       - name: Validate Overlay
         if: ${{ matrix.versions.validate == true }}
         run: |

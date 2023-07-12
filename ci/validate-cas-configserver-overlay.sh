@@ -32,7 +32,7 @@ cd tmp || exit
 echo "Working directory: ${PWD}"
 
 if [[ "${FETCH_OVERLAY}" == "true" ]]; then
-  java -jar app/build/libs/app.jar &
+  java -jar ../app/build/libs/app.jar &
   pid=$!
   sleep 20
   echo "Fetching CAS Config Server Overlay for CAS ${CAS_VERSION} and Spring Boot ${BOOT_VERSION} and Apache Tomcat ${TOMCAT_VERSION}"
