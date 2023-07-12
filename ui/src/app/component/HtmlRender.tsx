@@ -6,7 +6,11 @@ export function HtmlRender ({ html }: { html: string }) {
 
     const parsed = React.useMemo(() => {
         let rootElement = document.createElement("div");
-        rootElement.appendChild(DOMPurify.sanitize(html, { RETURN_DOM_FRAGMENT: true }));
+        const pattern = /\{@code (.+?)\}/gi;
+        let finalHtml = html?.replace(pattern, (match, $1) => {
+            return "<code>" + $1 + "</code>";
+        });
+        rootElement.appendChild(DOMPurify.sanitize(finalHtml, { RETURN_DOM_FRAGMENT: true }));
         return rootElement.innerHTML;
     }, [html]);
 
