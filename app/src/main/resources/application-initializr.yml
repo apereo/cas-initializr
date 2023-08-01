@@ -25,8 +25,8 @@ cas-initializr:
       java-version: 11
       container-base-image: eclipse-temurin:11-jdk
       gradle-version: 7.6
-    - version: 6.5.9.1
-      platform-version: 6.5.9.1
+    - version: 6.5.9.2
+      platform-version: 6.5.0
       boot-version: 2.6.3
       branch: 6.5
       sync: false
@@ -36,7 +36,7 @@ cas-initializr:
       java-version: 11
       container-base-image: eclipse-temurin:11-jdk
       gradle-version: 7.4
-    - version: 6.6.9
+    - version: 6.6.10
       platform-version: 6.6.0
       boot-version: 2.7.3
       sync: true
