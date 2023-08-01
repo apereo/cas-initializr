@@ -24,14 +24,6 @@ If release name contains chart name it will be used as a full name.
 {{- end }}
 
 {{/*
-Create a name for boot admin deployment
-*/}}
-{{- define "cas-server.bootadminname" -}}
-{{- $bootadminsuffix := default "boot-admin" .Values.bootadminSuffixOverride }}
-{{- printf "%s-%s" (include "cas-server.fullname" . | trunc 43 | trimSuffix "-") $bootadminsuffix }}
-{{- end }}
-
-{{/*
 Create a name for cas mgmt deployment
 */}}
 {{- define "cas-server.mgmtname" -}}
@@ -66,20 +58,6 @@ app.kubernetes.io/name: {{ include "cas-server.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
-{{/*
-Bootadmin Selector labels
-*/}}
-{{- define "cas-bootadmin.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "cas-server.bootadminname" . }}
-app.kubernetes.io/instance: {{ .Release.Name }}
-{{- end }}
-
-{{/*
-Bootadmin Pod labels
-*/}}
-{{- define "cas-bootadmin.labels" -}}
-cas.server-type: bootadmin
-{{- end }}
 
 {{/*
 CAS Mgmt Selector labels
@@ -112,13 +90,6 @@ Return the proper cas-server image name
 */}}
 {{- define "cas-server.imageName" -}}
 {{ include "common.images.image" (dict "imageRoot" .Values.image "global" .Values.global) }}
-{{- end -}}
-
-{{/*
-Return the proper cas-server boot admin image name
-*/}}
-{{- define "cas-server.bootadminImageName" -}}
-{{ include "common.images.image" (dict "imageRoot" .Values.bootadminimage "global" .Values.global) }}
 {{- end -}}
 
 {{/*

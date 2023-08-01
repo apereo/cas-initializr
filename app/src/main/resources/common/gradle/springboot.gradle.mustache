@@ -95,7 +95,6 @@ springBoot {
     {{/nativeImageSupported}}
     {{^nativeImageSupported}}{{mainClass}} = "org.apereo.cas.web.CasWebApplication"{{/nativeImageSupported}}
     {{/casServer}}
-    {{#springBootAdminServer}}{{mainClass}} = "org.apereo.cas.CasSpringBootAdminServerWebApplication"{{/springBootAdminServer}}
     {{#configServer}}{{mainClass}} = "org.apereo.cas.CasConfigurationServerWebApplication"{{/configServer}}
     {{#managementServer}}{{mainClass}} = "org.apereo.cas.mgmt.web.CasManagementWebApplication"{{/managementServer}}
     {{#discoveryServer}}{{mainClass}} = "org.apereo.cas.CasEurekaServerWebApplication"{{/discoveryServer}}
@@ -135,10 +134,6 @@ if (!nativeImage) {
                 {{#casServer}}
                 from "org.apereo.cas:cas-server-webapp${project.appServer}:${project.'cas.version'}@war"
                 {{/casServer}}
-
-                {{#springBootAdminServer}}
-                from "org.apereo.cas:cas-server-webapp-bootadmin-server:${project.'cas.version'}@war"
-                {{/springBootAdminServer}}
 
                 {{#managementServer}}
                 from "org.apereo.cas:cas-mgmt-webapp${project.appServer}:${project.'casmgmt.version'}@war"

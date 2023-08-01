@@ -29,7 +29,6 @@ const mapVersions: { [id: string]: string } = {
     "cas-management-overlay": "cas-mgmt",
     "cas-config-server-overlay": "cas",
     "cas-discovery-server-overlay": "cas",
-    "cas-bootadmin-server-overlay": "cas",
 };
 
 const stateSelector = (state: RootState): any => state.option;

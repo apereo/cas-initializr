@@ -403,47 +403,6 @@ jobs:
           ./ci/validate-cas-discoveryserver-overlay.sh --cas ${{ matrix.versions.version }} \
             --apache-tomcat ${{ matrix.versions.tomcat-version }}
   ##########################################################################
-  validate-cas-bootadminserver-overlay:
-    needs: [ supported-versions-cas ]
-    runs-on: ubuntu-latest
-    # if: ${{ false }}
-    strategy:
-      matrix:
-        versions: ${{fromJSON(needs.supported-versions-cas.outputs.supported-versions)}}
-    name: Validate BootAdmin Server ${{ matrix.versions.version }}
-    steps:
-      - uses: actions/checkout@v3
-        if: ${{ matrix.versions.validate == true }}
-      - name: Initialize
-        if: ${{ matrix.versions.validate == true }}
-        run: ls ./ci && find ./ci -type f -name "*.sh" -exec chmod +x "{}" \;
-      - name: Set up JDK
-        uses: actions/setup-java@v3
-        if: ${{ matrix.versions.validate == true }}
-        with:
-          java-version: ${{ env.JDK_CURRENT }}
-          distribution: 'zulu'
-      - uses: actions/download-artifact@v3
-        if: ${{ matrix.versions.validate == true }}
-        with:
-          name: binary-artifacts
-      - name: Fetch Overlay
-        if: ${{ matrix.versions.validate == true }}
-        run: |
-          ./ci/validate-cas-bootadminserver-overlay.sh --fetch-only --cas ${{ matrix.versions.version }} \
-            --apache-tomcat ${{ matrix.versions.tomcat-version }}
-      - name: Set up JDK
-        uses: actions/setup-java@v3
-        if: ${{ matrix.versions.validate == true }}
-        with:
-          java-version: ${{ env.JDK_CURRENT }}
-          distribution: 'zulu'
-      - name: Validate Overlay
-        if: ${{ matrix.versions.validate == true }}
-        run: |
-          ./ci/validate-cas-bootadminserver-overlay.sh --cas ${{ matrix.versions.version }} \
-            --apache-tomcat ${{ matrix.versions.tomcat-version }}
-  ##########################################################################
   publish:
     needs: [ build ]
     runs-on: ubuntu-latest
@@ -471,7 +430,7 @@ jobs:
           docker push apereo/cas-initializr:"$imageTag"
   ##########################################################################
   complete:
-    needs: [ build,publish,validate-cas-overlay,validate-cas-mgmt-overlay,validate-cas-configserver-overlay,validate-cas-discoveryserver-overlay,validate-cas-bootadminserver-overlay ]
+    needs: [ build,publish,validate-cas-overlay,validate-cas-mgmt-overlay,validate-cas-configserver-overlay,validate-cas-discoveryserver-overlay ]
     runs-on: ubuntu-latest
     steps:
       - name: Successful Build
