@@ -109,9 +109,9 @@ curl $INITIALIZR_URL/starter.tgz \
 curl $INITIALIZR_URL/starter.tgz \
   -d "type=cas-management-overlay" | tar  -xzvf -
 ```
+
 Type can be one of:
   - `cas-overlay` (default)
-  - `cas-bootadmin-server-overlay` 
   - `cas-config-server-overlay`
   - `cas-discovery-server-overlay`
   - `cas-management-overlay`

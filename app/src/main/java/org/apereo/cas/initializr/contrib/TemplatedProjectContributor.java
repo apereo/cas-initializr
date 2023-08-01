@@ -4,7 +4,6 @@ import org.apereo.cas.initializr.config.CasInitializrProperties;
 import org.apereo.cas.initializr.web.OverlayProjectDescription;
 import org.apereo.cas.initializr.web.UnsupportedVersionException;
 import org.apereo.cas.initializr.web.VersionUtils;
-import org.apereo.cas.overlay.bootadminserver.buildsystem.CasSpringBootAdminServerOverlayBuildSystem;
 import org.apereo.cas.overlay.casmgmt.buildsystem.CasManagementOverlayBuildSystem;
 import org.apereo.cas.overlay.casserver.buildsystem.CasOverlayBuildSystem;
 import org.apereo.cas.overlay.casserver.buildsystem.CasOverlayGradleBuild;
@@ -309,10 +308,6 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
             templateVariables.put("shellSupported", getOverlayProjectDescription().isCommandlineShellSupported());
             templateVariables.put("casServer", Boolean.TRUE);
             templateVariables.put("appName", "cas");
-        }
-        if (type.equalsIgnoreCase(CasSpringBootAdminServerOverlayBuildSystem.ID)) {
-            templateVariables.put("springBootAdminServer", Boolean.TRUE);
-            templateVariables.put("appName", "casbootadminserver");
         }
         if (type.equalsIgnoreCase(CasConfigServerOverlayBuildSystem.ID)) {
             templateVariables.put("configServer", Boolean.TRUE);

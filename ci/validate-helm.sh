@@ -90,7 +90,7 @@ echo "Listing local jib image imported into k3s"
 sudo k3s ctr image list -q
 
 echo "Install cas-server helm chart"
-helm upgrade --install cas-server --namespace $NAMESPACE --set image.pullPolicy=Never --set bootadminimage.pullPolicy=Never --set mgmtimage.pullPolicy=Never --set image.tag="${imageTag}" ./cas-server
+helm upgrade --install cas-server --namespace $NAMESPACE --set image.pullPolicy=Never --set mgmtimage.pullPolicy=Never --set image.tag="${imageTag}" ./cas-server
 
 # make sure resources are created before waiting on their status
 sleep 35
@@ -98,20 +98,16 @@ sleep 35
 set +e
 echo "Waiting for startup $(date)"
 kubectl wait --for condition=ready --timeout=180s --namespace $NAMESPACE pod cas-server-0
-kubectl wait --for condition=ready --timeout=180s --namespace $NAMESPACE pod -l cas.server-type=bootadmin
 kubectl wait --for condition=ready --timeout=180s --namespace $NAMESPACE pod -l cas.server-type=mgmt
 echo "Done waiting for startup $(date)"
 
 echo "Checking rollout status"
-kubectl rollout --namespace $NAMESPACE status deploy cas-server-boot-admin --timeout=5s
 kubectl rollout --namespace $NAMESPACE status deploy cas-server-mgmt --timeout=5s
 kubectl rollout --namespace $NAMESPACE status sts cas-server --timeout=5s
 echo "Done checking rollout status"
 set -e
 
 kubectl describe pod --namespace $NAMESPACE cas-server-0
-echo "Describing cas bootadmin pod"
-kubectl describe pod --namespace $NAMESPACE -l cas.server-type=bootadmin
 echo "Describing cas mgmt pod"
 kubectl describe pod --namespace $NAMESPACE -l cas.server-type=mgmt
 
@@ -124,15 +120,11 @@ echo "CAS Management Server Logs..."
 kubectl logs -l cas.server-type=mgmt --tail=-1 --namespace $NAMESPACE | tee cas-mgmt.out
 echo "CAS Server Logs..."
 kubectl logs cas-server-0 --namespace $NAMESPACE | tee cas.out
-echo "CAS Boot Admin Server Logs..."
-kubectl logs -l cas.server-type=bootadmin --tail=-1 --namespace $NAMESPACE | tee cas-bootadmin.out
 
 echo "Checking mgmt server log for startup message"
 grep "Initializing Spring DispatcherServlet" cas-mgmt.out
 echo "Checking cas server log for startup message"
 grep "Started CasWebApplication" cas.out
-echo "Checking bootadmin server log for startup message"
-grep "Started CasSpringBootAdminServerWebApplication" cas-bootadmin.out
 
 echo "Running chart built-in test"
 helm test --namespace $NAMESPACE cas-server

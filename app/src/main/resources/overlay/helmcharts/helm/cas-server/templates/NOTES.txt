@@ -20,12 +20,4 @@
   kubectl --namespace {{ .Release.Namespace }} port-forward $POD_NAME 8080:80
 {{- end }}
 
-{{- if .Values.bootadmin.ingress.enabled }}
-Access boot admin UI via the following URLs:
-{{- range $host := .Values.bootadmin.ingress.hosts }}
-  {{- range .paths }}
-  curl -k -v http{{ if $.Values.bootadmin.ingress.tls }}s{{ end }}://{{ $host.host }}{{ . }}
-  {{- end }}
-{{- end }}
-{{- end }}
 Kubernetes Version: {{ .Capabilities.KubeVersion.Version }}
