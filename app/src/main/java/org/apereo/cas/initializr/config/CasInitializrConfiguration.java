@@ -21,6 +21,7 @@ import org.apereo.cas.initializr.contrib.project.OverlayWebXmlContributor;
 import org.apereo.cas.initializr.contrib.project.ProjectLicenseContributor;
 import org.apereo.cas.initializr.metadata.CasOverlayInitializrMetadataUpdateStrategy;
 import org.apereo.cas.initializr.web.ui.InitializrHomeController;
+import org.apereo.cas.overlay.casserver.contrib.docker.CasOverlayDockerContributor;
 
 import io.spring.initializr.generator.project.ProjectGenerationConfiguration;
 import io.spring.initializr.generator.project.contributor.ProjectContributor;
@@ -132,6 +133,12 @@ public class CasInitializrConfiguration {
         return new CasOverlayInitializrMetadataUpdateStrategy(initializrProperties);
     }
 
+    @Bean
+    public CasOverlayDockerContributor casOverlayDockerContributor() {
+        return new CasOverlayDockerContributor(applicationContext);
+    }
+
+    
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public JCacheManagerCustomizer initializrMetadataCacheManagerCustomizer() {

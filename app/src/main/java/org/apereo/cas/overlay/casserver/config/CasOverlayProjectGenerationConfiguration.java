@@ -32,11 +32,6 @@ public class CasOverlayProjectGenerationConfiguration {
     private ConfigurableApplicationContext applicationContext;
 
     @Bean
-    public CasOverlayDockerContributor casOverlayDockerContributor() {
-        return new CasOverlayDockerContributor(applicationContext);
-    }
-
-    @Bean
     public CasOverlayPuppeteerContributor casOverlayPuppeteerContributor() {
         return new CasOverlayPuppeteerContributor(applicationContext);
     }
