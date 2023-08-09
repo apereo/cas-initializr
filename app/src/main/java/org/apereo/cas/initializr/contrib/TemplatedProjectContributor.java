@@ -8,7 +8,6 @@ import org.apereo.cas.overlay.casmgmt.buildsystem.CasManagementOverlayBuildSyste
 import org.apereo.cas.overlay.casserver.buildsystem.CasOverlayBuildSystem;
 import org.apereo.cas.overlay.casserver.buildsystem.CasOverlayGradleBuild;
 import org.apereo.cas.overlay.configserver.buildsystem.CasConfigServerOverlayBuildSystem;
-import org.apereo.cas.overlay.discoveryserver.buildsystem.CasDiscoveryServerOverlayBuildSystem;
 import com.github.mustachejava.DefaultMustacheFactory;
 import io.spring.initializr.generator.project.ProjectDescription;
 import io.spring.initializr.generator.project.contributor.ProjectContributor;
@@ -312,10 +311,6 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         if (type.equalsIgnoreCase(CasConfigServerOverlayBuildSystem.ID)) {
             templateVariables.put("configServer", Boolean.TRUE);
             templateVariables.put("appName", "casconfigserver");
-        }
-        if (type.equalsIgnoreCase(CasDiscoveryServerOverlayBuildSystem.ID)) {
-            templateVariables.put("discoveryServer", Boolean.TRUE);
-            templateVariables.put("appName", "casdiscoveryserver");
         }
 
         /*

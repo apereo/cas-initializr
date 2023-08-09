@@ -113,7 +113,6 @@ curl $INITIALIZR_URL/starter.tgz \
 Type can be one of:
   - `cas-overlay` (default)
   - `cas-config-server-overlay`
-  - `cas-discovery-server-overlay`
   - `cas-management-overlay`
 
 - Generate a CAS Overlay using latest cas-initializr deployed on heroku.com:

@@ -97,7 +97,6 @@ springBoot {
     {{/casServer}}
     {{#configServer}}{{mainClass}} = "org.apereo.cas.CasConfigurationServerWebApplication"{{/configServer}}
     {{#managementServer}}{{mainClass}} = "org.apereo.cas.mgmt.web.CasManagementWebApplication"{{/managementServer}}
-    {{#discoveryServer}}{{mainClass}} = "org.apereo.cas.CasEurekaServerWebApplication"{{/discoveryServer}}
 }
 
 {{#nativeImageSupported}}
@@ -142,10 +141,6 @@ if (!nativeImage) {
                 {{#configServer}}
                 from "org.apereo.cas:cas-server-webapp-config-server:${project.'cas.version'}@war"
                 {{/configServer}}
-
-                {{#discoveryServer}}
-                from "org.apereo.cas:cas-server-webapp-eureka-server:${project.'cas.version'}@war"
-                {{/discoveryServer}}
 
                 provided = false
                 excludes = ["WEB-INF/lib/servlet-api-2*.jar"]
