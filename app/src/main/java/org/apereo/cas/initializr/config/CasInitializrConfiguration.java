@@ -19,6 +19,7 @@ import org.apereo.cas.initializr.contrib.project.OverlayLombokConfigContributor;
 import org.apereo.cas.initializr.contrib.project.OverlayOverrideConfigurationContributor;
 import org.apereo.cas.initializr.contrib.project.OverlayWebXmlContributor;
 import org.apereo.cas.initializr.contrib.project.ProjectLicenseContributor;
+import org.apereo.cas.initializr.contrib.project.SdkmanJavaVersionContributor;
 import org.apereo.cas.initializr.metadata.CasOverlayInitializrMetadataUpdateStrategy;
 import org.apereo.cas.initializr.web.ui.InitializrHomeController;
 import org.apereo.cas.overlay.casserver.contrib.docker.CasOverlayDockerContributor;
@@ -62,6 +63,11 @@ public class CasInitializrConfiguration {
     @Bean
     public ProjectContributor jenvJavaVersionContributor() {
         return new JenvJavaVersionContributor(applicationContext);
+    }
+
+    @Bean
+    public ProjectContributor sdkmanJavaVersionContributor() {
+        return new SdkmanJavaVersionContributor(applicationContext);
     }
 
     @Bean
