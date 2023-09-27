@@ -30,7 +30,9 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -91,7 +93,7 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
 
     protected static void createTemplateFile(final Path output, final String template) throws IOException {
         log.info("Processing template file {}", output.toFile().getAbsolutePath());
-        FileCopyUtils.copy(new BufferedInputStream(new ByteArrayInputStream(template.getBytes(StandardCharsets.UTF_8))),
+        copyResourceToOutput(new BufferedInputStream(new ByteArrayInputStream(template.getBytes(StandardCharsets.UTF_8))),
             Files.newOutputStream(output, StandardOpenOption.APPEND));
         val filename = output.getFileName().toFile().getName();
         val result = output.toFile().setExecutable(filename.endsWith(".sh") || filename.endsWith(".bat"));
@@ -134,7 +136,7 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
                                 if (!output.toFile().exists()) {
                                     Files.createFile(output);
                                 }
-                                FileCopyUtils.copy(resource.getInputStream(), Files.newOutputStream(output));
+                                copyResourceToOutput(resource.getInputStream(), Files.newOutputStream(output));
                             }
                             if (output.endsWith(".sh") || output.endsWith(".bat")) {
                                 output.toFile().setExecutable(true);
@@ -149,6 +151,10 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
             }
         });
 
+    }
+
+    protected static void copyResourceToOutput(final InputStream resource, final OutputStream output) throws IOException {
+        FileCopyUtils.copy(resource, output);
     }
 
     protected Path determineOutputResourcePath(final Path projectRoot, final Resource resource,
@@ -298,7 +304,7 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         }
         templateVariables.put("githubActionsSupported", getOverlayProjectDescription().isGithubActionsSupported());
         templateVariables.put("openRewriteSupported", getOverlayProjectDescription().isOpenRewriteSupported());
-        
+
         templateVariables.put("nativeImageSupported",
             getOverlayProjectDescription().isNativeImageSupported()
                 && type.equalsIgnoreCase(CasOverlayBuildSystem.ID)
