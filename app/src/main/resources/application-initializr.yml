@@ -55,6 +55,6 @@ cas-initializr:
       branch: master
       type: cas
       tomcat-version: ${apacheTomcat10LatestVersion}
-      java-version: 17
-      container-base-image: eclipse-temurin:17-jdk
-      gradle-version: 8.3
+      java-version: 21
+      container-base-image: azul/zulu-openjdk:21
+      gradle-version: 8.4
