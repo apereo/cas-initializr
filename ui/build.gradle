@@ -4,12 +4,15 @@ plugins {
 }
 
 node {
-    version = '20.5.1'
+    version = '20.7.0'
     yarnVersion = ''
     download = true
 }
 
 def yarn = tasks.named("yarn")
+tasks.named("yarn", YarnTask) {
+    args = ['--network-timeout', '600000']
+}
 
 tasks.register("buildWebapp", NpxTask) {
     command = "react-scripts"
