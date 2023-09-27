@@ -303,7 +303,6 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
             templateVariables.put("appName", "cas-management");
         }
         templateVariables.put("githubActionsSupported", getOverlayProjectDescription().isGithubActionsSupported());
-        templateVariables.put("openRewriteSupported", getOverlayProjectDescription().isOpenRewriteSupported());
 
         templateVariables.put("nativeImageSupported",
             getOverlayProjectDescription().isNativeImageSupported()
@@ -312,6 +311,7 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
 
         if (type.equalsIgnoreCase(CasOverlayBuildSystem.ID)) {
             templateVariables.put("puppeteerSupported", getOverlayProjectDescription().isPuppeteerSupported());
+            templateVariables.put("openRewriteSupported", getOverlayProjectDescription().isOpenRewriteSupported());
             templateVariables.put("shellSupported", getOverlayProjectDescription().isCommandlineShellSupported());
             templateVariables.put("casServer", Boolean.TRUE);
             templateVariables.put("appName", "cas");
