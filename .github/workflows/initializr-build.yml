@@ -32,7 +32,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4
+      - uses: actions/checkout@v4
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
@@ -53,7 +53,7 @@ jobs:
     outputs:
       supported-versions: ${{ steps.get-supported-versions.outputs.supported-versions }}
     steps:
-      - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4
+      - uses: actions/checkout@v4
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
@@ -75,7 +75,7 @@ jobs:
     outputs:
       supported-versions: ${{ steps.get-supported-versions.outputs.supported-versions }}
     steps:
-      - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4
+      - uses: actions/checkout@v4
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
@@ -98,7 +98,7 @@ jobs:
     outputs:
       supported-versions: ${{ steps.get-supported-versions.outputs.supported-versions }}
     steps:
-      - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4
+      - uses: actions/checkout@v4
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
@@ -123,7 +123,7 @@ jobs:
         versions: ${{fromJSON(needs.supported-versions-cas-mgmt.outputs.supported-versions)}}
     name: Sync CAS Mgmt Server ${{ matrix.versions.version }} Branch ${{ matrix.versions.branch }}
     steps:
-      - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4
+      - uses: actions/checkout@v4
         if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
       - name: Initialize
         if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
@@ -162,7 +162,7 @@ jobs:
         versions: ${{fromJSON(needs.supported-versions-cas.outputs.supported-versions)}}
     name: Sync CAS Server ${{ matrix.versions.version }} Branch ${{ matrix.versions.branch }}
     steps:
-      - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4
+      - uses: actions/checkout@v4
         if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
       - name: Initialize
         if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
@@ -201,7 +201,7 @@ jobs:
         versions: ${{fromJSON(needs.supported-versions-cas.outputs.supported-versions)}}
     name: Validate CAS Server ${{ matrix.versions.version }}
     steps:
-      - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4
+      - uses: actions/checkout@v4
         if: ${{ matrix.versions.validate == true }}
       - name: Initialize
         if: ${{ matrix.versions.validate == true }}
@@ -250,7 +250,7 @@ jobs:
         versions: ${{fromJSON(needs.supported-versions-cas-mgmt.outputs.supported-versions)}}
     name: Validate CAS Mgmt ${{ matrix.versions.version }}
     steps:
-      - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4
+      - uses: actions/checkout@v4
         if: ${{ matrix.versions.validate == true }}
       - name: Initialize
         if: ${{ matrix.versions.validate == true }}
@@ -291,7 +291,7 @@ jobs:
         versions: ${{fromJSON(needs.supported-versions-cas.outputs.supported-versions)}}
     name: Validate Config Server ${{ matrix.versions.version }}
     steps:
-      - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4
+      - uses: actions/checkout@v4
         if: ${{ matrix.versions.validate == true }}
       - name: Initialize
         if: ${{ matrix.versions.validate == true }}
@@ -332,7 +332,7 @@ jobs:
         versions: ${{fromJSON(needs.supported-versions-cas.outputs.supported-versions)}}
     name: Sync Config Server ${{ matrix.versions.version }} Branch ${{ matrix.versions.branch }}
     steps:
-      - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4
+      - uses: actions/checkout@v4
         if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
       - name: Initialize
         if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
@@ -367,7 +367,7 @@ jobs:
     runs-on: ubuntu-latest
     # if: ${{ false }}
     steps:
-      - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4
+      - uses: actions/checkout@v4
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
