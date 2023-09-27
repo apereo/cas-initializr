@@ -504,6 +504,40 @@ export default function Customization() {
                                             />
                                         )}
                                     />
+                                    <Controller
+                                        control={control}
+                                        name="openRewriteSupported"
+                                        render={({
+                                                     field: {
+                                                         onChange,
+                                                         onBlur,
+                                                         value,
+                                                         ref,
+                                                     },
+                                                 }) => (
+                                            <FormControlLabel
+                                                control={
+                                                    <Checkbox
+                                                        checked={
+                                                            value === "true"
+                                                        }
+                                                        onChange={(
+                                                            event: React.ChangeEvent<HTMLInputElement>
+                                                        ) =>
+                                                            onChange(
+                                                                event.target
+                                                                    .checked
+                                                                    ? "true"
+                                                                    : "false"
+                                                            )
+                                                        }
+                                                    />
+                                                }
+                                                label="Open Rewrite"
+                                                labelPlacement="end"
+                                            />
+                                        )}
+                                    />
                                 </AccordionDetails>
                             </Accordion>
                         </React.Fragment>

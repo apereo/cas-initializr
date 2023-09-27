@@ -18,6 +18,7 @@ export interface Overlay {
     puppeteerSupported: string;
     githubActionsSupported: string;
     nativeImageSupported: string;
+    openRewriteSupported: string;
     commandlineShellSupported: string;
     deploymentType: string;
 }

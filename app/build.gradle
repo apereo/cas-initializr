@@ -97,6 +97,7 @@ processResources {
     def gradleDependencyManagementPluginVersion = project.providers.gradleProperty("gradleDependencyManagementPluginVersion").get()
     def gradleFreeFairPluginVersion = project.providers.gradleProperty("gradleFreeFairPluginVersion").get()
     def gradleDownloadTaskPluginVersion = project.providers.gradleProperty("gradleDownloadTaskPluginVersion").get()
+    def gradleOpenRewritePluginVersion = project.providers.gradleProperty("gradleOpenRewritePluginVersion").get()
     def jibVersion = project.providers.gradleProperty("jibVersion").get()
     def gradleDockerPluginVersion = project.providers.gradleProperty("gradleDockerPluginVersion").get()
 
@@ -109,7 +110,7 @@ processResources {
     def graalVmVersion = project.providers.gradleProperty("graalVmVersion").get()
     def graalVmMetadataRepositoryVersion = project.providers.gradleProperty("graalVmMetadataRepositoryVersion").get()
     def gradleGraalVmNativePluginVersion = project.providers.gradleProperty("gradleGraalVmNativePluginVersion").get()
-    
+
     filesMatching("**/application-*.yml") {
         expand (
                 springBootLatestVersion: springBootLatestVersion,
@@ -126,6 +127,7 @@ processResources {
                 "gradleDependencyManagementPluginVersion": gradleDependencyManagementPluginVersion,
                 "gradleFreeFairPluginVersion"            : gradleFreeFairPluginVersion,
                 "gradleDownloadTaskPluginVersion"        : gradleDownloadTaskPluginVersion,
+                "gradleOpenRewritePluginVersion"         : gradleOpenRewritePluginVersion,
                 "jibVersion"                             : jibVersion,
                 "gradleDockerPluginVersion"              : gradleDockerPluginVersion,
                 "graalVmVersion"                         : graalVmVersion,

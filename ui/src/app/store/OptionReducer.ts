@@ -102,6 +102,10 @@ export const OptionSlice = createSlice({
                 type: "",
                 default: 'true'
             },
+            openRewriteSupported: {
+                type: "",
+                default: 'true'
+            },
             nativeImageSupported: {
                 type: "",
                 default: 'false'
@@ -144,6 +148,7 @@ export const OptionSlice = createSlice({
                 puppeteerSupported,
                 githubActionsSupported,
                 nativeImageSupported,
+                openRewriteSupported,
                 commandlineShellSupported,
                 deploymentType,
             } = action.payload;
@@ -166,6 +171,7 @@ export const OptionSlice = createSlice({
             state.puppeteerSupported = puppeteerSupported || {default: 'true'};
             state.githubActionsSupported = githubActionsSupported || {default: 'true'};
             state.nativeImageSupported = nativeImageSupported || {default: 'false'};
+            state.openRewriteSupported = openRewriteSupported || {default: 'true'};
             state.commandlineShellSupported = commandlineShellSupported || {default: 'true'};
             state.deploymentType = deploymentType || { default: 'executable' };
         },
@@ -251,6 +257,7 @@ export const CasDefaultSelector = createSelector(
             puppeteerSupported: state.puppeteerSupported.default,
             githubActionsSupported: state.githubActionsSupported.default,
             nativeImageSupported: state.nativeImageSupported.default,
+            openRewriteSupported: state.openRewriteSupported.default,
             commandlineShellSupported: state.commandlineShellSupported.default,
             deploymentType: state.deploymentType.default,
         };

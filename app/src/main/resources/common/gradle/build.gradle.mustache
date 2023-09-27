@@ -39,11 +39,13 @@ buildscript {
         classpath "com.google.cloud.tools:jib-gradle-plugin:${project.jibVersion}"
         classpath "com.bmuschko:gradle-docker-plugin:${project.gradleDockerPluginVersion}"
         {{/dockerSupported}}
-
         {{#casServer}}
         {{#nativeImageSupported}}
         classpath "org.graalvm.buildtools:native-gradle-plugin:${project.gradleGraalVmNativePluginVersion}"
         {{/nativeImageSupported}}
+        {{#openRewriteSupported}}
+        classpath "org.openrewrite:plugin:${project.gradleOpenRewritePluginVersion}"
+        {{/openRewriteSupported}}
         classpath "de.undercouch:gradle-download-task:${project.gradleDownloadTaskVersion}"
         classpath "org.apereo.cas:cas-server-core-api-configuration-model:${project.'cas.version'}"
         classpath "org.apereo.cas:cas-server-core-configuration-metadata-repository:${project.'cas.version'}"
@@ -115,7 +117,9 @@ apply plugin: "io.freefair.lombok"
 {{#nativeImageSupported}}
 apply plugin: "org.graalvm.buildtools.native"
 {{/nativeImageSupported}}
-
+{{#openRewriteSupported}}
+apply plugin: "org.openrewrite.rewrite"
+{{/openRewriteSupported}}
 apply from: rootProject.file("gradle/springboot.gradle")
 {{#dockerSupported}}
 apply plugin: "com.google.cloud.tools.jib"
@@ -185,6 +189,18 @@ bootBuildImage {
     imageName = "${project.'containerImageOrg'}/${project.'containerImageName'}:${project.version}"
 }
 {{/dockerSupported}}
+
+{{#openRewriteSupported}}
+rewrite {
+    def activeRecipe = providers.systemProperty("activeRecipe").getOrNull()
+    if (activeRecipe != null) {
+        def file = project.getRootProject().file("openrewrite/${activeRecipe}.yml")
+        def out = services.get(StyledTextOutputFactory).create("cas")
+        out.withStyle(Style.Success).println("Activating recipe ${file}")
+        configFile = file
+    }
+}
+{{/openRewriteSupported}}
 
 {{#nativeImageSupported}}
 configurations {

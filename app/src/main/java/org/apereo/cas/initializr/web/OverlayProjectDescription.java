@@ -37,6 +37,8 @@ public class OverlayProjectDescription extends MutableProjectDescription {
 
     private boolean nativeImageSupported;
 
+    private boolean openRewriteSupported;
+
     private DeploymentTypes deploymentType = DeploymentTypes.EXECUTABLE;
 
     public String resolveCasVersion(final BillOfMaterials billOfMaterials) {

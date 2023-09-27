@@ -86,6 +86,7 @@ export interface ApiOptions {
     puppeteerSupported: Option;
     githubActionsSupported: Option;
     nativeImageSupported: Option;
+    openRewriteSupported: Option;
     commandlineShellSupported: Option;
     deploymentType: Option;
 }

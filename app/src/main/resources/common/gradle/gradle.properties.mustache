@@ -44,7 +44,6 @@ dockerImagePlatform=amd64:linux
 # Setting this to true allows the final web application
 # to be fully executable on its own
 executable={{executable}}
-
 {{#nativeImageSupported}}
 # Control whether the final outcome of the Gradle build
 # should be a native image that is built via GraalVM
@@ -53,7 +52,6 @@ graalVmVersion=@graalVmVersion@
 graalVmMetadataRepositoryVersion=@graalVmMetadataRepositoryVersion@
 gradleGraalVmNativePluginVersion=@gradleGraalVmNativePluginVersion@
 {{/nativeImageSupported}}
-    
 {{/appServer}}
 
 # Use -tomcat, -jetty, -undertow for deployment to other embedded containers
@@ -75,6 +73,9 @@ storeType=PKCS12
 shellDir=build/libs
 ivyVersion=2.5.0
 gradleDownloadTaskVersion=@gradleDownloadTaskPluginVersion@
+{{#openRewriteSupported}}
+gradleOpenRewritePluginVersion=@gradleOpenRewritePluginVersion@
+{{/openRewriteSupported}}
 {{/casServer}}
 
 tomcatVersion={{tomcatVersion}}
