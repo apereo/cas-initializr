@@ -57,4 +57,4 @@ cas-initializr:
       tomcat-version: ${apacheTomcat10LatestVersion}
       java-version: 21
       container-base-image: azul/zulu-openjdk:21
-      gradle-version: 8.4-rc-2
+      gradle-version: 8.4-rc-3
