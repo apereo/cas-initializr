@@ -315,7 +315,7 @@ jobs:
         uses: actions/setup-java@v3
         if: ${{ matrix.versions.validate == true }}
         with:
-          java-version: ${{ env.JDK_CURRENT }}
+          java-version: ${{ matrix.versions.java-version }}
           distribution: 'zulu'
       - name: Validate Overlay
         if: ${{ matrix.versions.validate == true }}

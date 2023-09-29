@@ -10,7 +10,7 @@ const logger = pino({
 
 (async () => {
     const browser = await puppeteer.launch({
-        headless: true,
+        headless: (process.env.CI === "true" || process.env.HEADLESS === "true") ? "new" : false,
         ignoreHTTPSErrors: true,
         devtools: false,
         defaultViewport: null,
