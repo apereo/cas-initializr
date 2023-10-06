@@ -2,8 +2,8 @@ name: Initializr Helm Charts
 
 env:
   TERM: xterm-256color
-  JDK_CURRENT: 17
-  JDK_DISTRO: 'temurin'
+  JDK_CURRENT: 21
+  JDK_DISTRO: 'corretto'
   CAS_PROJECT_DB_URL_ENDPOINT: ${{ secrets.CAS_PROJECT_DB_URL_ENDPOINT }}
   CAS_PROJECT_DB_API_KEY: ${{ secrets.CAS_PROJECT_DB_API_KEY }}
 
