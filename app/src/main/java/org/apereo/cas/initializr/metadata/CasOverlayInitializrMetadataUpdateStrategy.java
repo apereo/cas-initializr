@@ -18,13 +18,19 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.RegExUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 
+import javax.cache.Caching;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -35,41 +41,22 @@ public class CasOverlayInitializrMetadataUpdateStrategy implements InitializrMet
     private final CasInitializrProperties initializrProperties;
 
     @Override
-    public InitializrMetadata update(final InitializrMetadata current) {
+    @Retryable(maxAttempts = 5, backoff = @Backoff(delay = 1000))
+    public synchronized InitializrMetadata update(final InitializrMetadata current) {
         try {
             if (StringUtils.isNotBlank(initializrProperties.getMetadataUrl()) &&
                 StringUtils.isNotBlank(initializrProperties.getMetadataApiKey())) {
-
-                var findUrl = initializrProperties.getMetadataUrl().trim().concat("/action/find");
-//                log.info("Fetching CAS modules from {}", findUrl.substring(0, 6));
-                
-                var url = new URL(findUrl);
-                var uc = (HttpURLConnection) url.openConnection();
-                uc.setRequestMethod("POST");
-                uc.setConnectTimeout(5000);
-                uc.setReadTimeout(5000);
-                uc.setRequestProperty("Content-Type", "application/json");
-                uc.setRequestProperty("api-key", initializrProperties.getMetadataApiKey());
-                uc.setDoOutput(true);
-                var coords = "{\"collection\":\"casmodules\",\"database\":\"apereocas\",\"dataSource\":\"cascluster\"}";
-                var out = coords.getBytes(StandardCharsets.UTF_8);
-                uc.setFixedLengthStreamingMode(out.length);
-                uc.connect();
-                try(var os = uc.getOutputStream()) {
-                    os.write(out);
-                }
-                var dependencyMap = MAPPER.readValue(uc.getInputStream(), Map.class);
-                var allDependencies = MAPPER.convertValue(dependencyMap.get("documents"), new TypeReference<List<CasDependency>>() {});
-                allDependencies.sort(Comparator.comparing(o -> o.getDetails().getCategory()));
+                var allDependencies = loadAllDependencies();
                 allDependencies.forEach(entry -> addDependencyToMetadata(current, entry));
                 current.getDependencies().validate();
             } else {
                 log.warn("Initializr metadata URL or api key are undefined");
             }
-        } catch (final Exception e) {
-            log.error(e.getMessage(), e);
+            log.info("Loaded CAS modules: {}", current.getDependencies().getAll().size());
+            return current;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        return current;
     }
 
     private static void addDependencyToMetadata(final InitializrMetadata current, final CasDependency entry) {
@@ -104,6 +91,32 @@ public class CasOverlayInitializrMetadataUpdateStrategy implements InitializrMet
         }
     }
 
+    private List<CasDependency> loadAllDependencies() throws Exception {
+        var findUrl = initializrProperties.getMetadataUrl().trim().concat("/action/find");
+        var url = new URL(findUrl);
+        var uc = (HttpURLConnection) url.openConnection();
+        uc.setRequestMethod("POST");
+        uc.setConnectTimeout(10000);
+        uc.setReadTimeout(10000);
+        uc.setRequestProperty("Content-Type", "application/json");
+        uc.setRequestProperty("api-key", initializrProperties.getMetadataApiKey());
+        uc.setDoOutput(true);
+        var coords = "{\"collection\":\"casmodules\",\"database\":\"apereocas\",\"dataSource\":\"cascluster\"}";
+        var out = coords.getBytes(StandardCharsets.UTF_8);
+        uc.setFixedLengthStreamingMode(out.length);
+        uc.connect();
+        try(var os = uc.getOutputStream()) {
+            os.write(out);
+        }
+        var dependencyMap = MAPPER.readValue(uc.getInputStream(), Map.class);
+        var allDependencies = MAPPER.convertValue(dependencyMap.get("documents"), new TypeReference<List<CasDependency>>() {});
+        allDependencies.sort(Comparator.comparing(o -> o.getDetails().getCategory()));
+        if (allDependencies.isEmpty()) {
+            throw new Exception("Could not load dependencies");
+        }
+        return allDependencies;
+    }
+    
     @Getter
     @NoArgsConstructor
     @ToString

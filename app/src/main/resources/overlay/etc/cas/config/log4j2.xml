@@ -17,6 +17,7 @@ Set -Dlog4j2.contextSelector=org.apache.logging.log4j.core.selector.BasicContext
         <Property name="pac4j.log.level">warn</Property>
         <Property name="opensaml.log.level">warn</Property>
         <Property name="hazelcast.log.level">warn</Property>
+        <Property name="jdbc.log.level">warn</Property>
         <Property name="log.console.stacktraces">true</Property>
         <Property name="log.file.stacktraces">false</Property>
         <!-- -Dlog.stacktraceappender=null to disable stacktrace log -->
@@ -130,11 +131,14 @@ Set -Dlog4j2.contextSelector=org.apache.logging.log4j.core.selector.BasicContext
         <Logger name="org.springframework.integration" level="warn"/>
         <Logger name="org.springframework.messaging" level="warn"/>
         <Logger name="org.springframework.web" level="${sys:spring.web.log.level}"/>
-        <Logger name="org.springframework.orm.jpa" level="warn"/>
+        
         <Logger name="org.springframework.scheduling" level="warn"/>
         <Logger name="org.springframework.context.annotation" level="off"/>
         <Logger name="org.springframework.web.socket" level="warn"/>
         <Logger name="org.springframework.boot.diagnostics.LoggingFailureAnalysisReporter" level="trace"/>
+
+        <Logger name="org.springframework.orm.jpa" level="${sys:jdbc.log.level}"/>
+        <Logger name="org.hibernate" level="${sys:jdbc.log.level}"/>
 
         <Logger name="com.couchbase" level="warn" />
         <Logger name="org.apache" level="error"/>

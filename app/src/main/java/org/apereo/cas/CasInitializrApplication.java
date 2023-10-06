@@ -28,6 +28,7 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -41,6 +42,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @SpringBootApplication(scanBasePackages = "org.apereo.cas.initializr")
 @EnableConfigurationProperties(CasInitializrProperties.class)
 @EnableCaching
+@EnableRetry
 public class CasInitializrApplication {
 
     public static void main(final String[] args) {
@@ -102,8 +104,10 @@ public class CasInitializrApplication {
     @Autowired
     @Bean
     public InfoContributor dependencyAliasesInfoContributor(final InitializrMetadataProvider provider,
+                                                            @Qualifier("jCacheCacheManager")
+                                                            final javax.cache.CacheManager jCacheCacheManager,
                                                             final ConfigurableApplicationContext applicationContext) {
-        return new DependencyAliasesInfoContributor(provider, applicationContext);
+        return new DependencyAliasesInfoContributor(provider, applicationContext, jCacheCacheManager);
     }
 
 }

@@ -32,12 +32,12 @@ logging:
     org:
       ehcache: warn
       springframework:
-        web: debug
+        web: info
       apereo:
-        cas: debug
+        cas: info
     io:
       spring:
-        initializr: debug
+        initializr: info
 spring:
   profiles:
     include: initializr

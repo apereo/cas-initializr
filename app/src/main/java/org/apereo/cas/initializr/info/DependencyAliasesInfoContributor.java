@@ -2,26 +2,42 @@ package org.apereo.cas.initializr.info;
 
 import org.apereo.cas.initializr.config.CasInitializrProperties;
 
+import io.spring.initializr.metadata.Dependency;
+import io.spring.initializr.metadata.InitializrMetadata;
 import io.spring.initializr.metadata.InitializrMetadataProvider;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.springframework.boot.actuate.info.Info;
 import org.springframework.boot.actuate.info.InfoContributor;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 
+import java.util.Collection;
 import java.util.LinkedHashMap;
 
 @RequiredArgsConstructor
+@Slf4j
 public class DependencyAliasesInfoContributor implements InfoContributor {
     private final InitializrMetadataProvider metadataProvider;
-
     private final ConfigurableApplicationContext applicationContext;
+
+    private final javax.cache.CacheManager jCacheCacheManager;
 
     @Override
     public void contribute(final Info.Builder builder) {
         var properties = applicationContext.getBean(CasInitializrProperties.class);
 
+        val initializrMetadata = metadataProvider.get();
+        var dependencies = initializrMetadata.getDependencies().getAll();
+        if (dependencies.isEmpty()) {
+            jCacheCacheManager.getCache("initializr.metadata").clear();
+            dependencies = initializrMetadata.getDependencies().getAll();
+        }
+
         var details = new LinkedHashMap<>();
-        metadataProvider.get().getDependencies().getAll()
+        dependencies
             .stream()
             .filter(dependency -> !dependency.getAliases().isEmpty())
             .forEach(dependency -> details.put(dependency.getId(), dependency));
@@ -30,4 +46,5 @@ public class DependencyAliasesInfoContributor implements InfoContributor {
         }
         builder.withDetail("supported-versions", properties.getSupportedVersions());
     }
+
 }
