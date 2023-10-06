@@ -32,9 +32,9 @@ logging:
     org:
       ehcache: warn
       springframework:
-        web: info
+        web: warn
       apereo:
-        cas: info
+        cas: warn
     io:
       spring:
         initializr: info
