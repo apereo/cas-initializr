@@ -65,5 +65,14 @@ if [ $? -ne 0 ] ; then
   echo "Could not successfully push changes to the repository branch"
   exit 1
 fi
+
+echo "Authenticating with GitHub..."
+gh auth login --with-token <<< "$GH_TOKEN"
+timestamp=$(date +%Y%m%d%H%M%S)
+echo "Creating GitHub Release ${timestamp} for repository ${repoName}"
+gh release create ${timestamp} --repo apereo/"${repoName}" --title "Release ${timestamp}" --notes "CAS: ${CAS_VERSION}"
+#echo "Uploading release assets for repository ${repoName}"
+#gh release upload ${timestamp} ./path/to/asset.zip
+
 echo "Done"
 exit 0

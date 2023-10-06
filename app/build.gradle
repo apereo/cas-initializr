@@ -118,7 +118,8 @@ processResources {
                 apacheTomcat9LatestVersion: apacheTomcat9LatestVersion,
                 apacheTomcat10LatestVersion: apacheTomcat10LatestVersion,
                 casLatestVersion: casLatestVersion,
-                casManagementLatestVersion: casManagementLatestVersion
+                casManagementLatestVersion: casManagementLatestVersion,
+                jibVersion: jibVersion
         )
     }
 

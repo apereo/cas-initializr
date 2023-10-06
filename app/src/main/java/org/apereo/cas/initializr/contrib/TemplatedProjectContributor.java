@@ -150,7 +150,6 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
                 throw new IllegalArgumentException(e);
             }
         });
-
     }
 
     protected static void copyResourceToOutput(final InputStream resource, final OutputStream output) throws IOException {
@@ -167,7 +166,7 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         return StringUtils.remove(resource.getFilename(), ".mustache");
     }
 
-    private Map<String, Object> getProjectTemplateVariables() {
+    protected Map<String, Object> getProjectTemplateVariables() {
         var project = applicationContext.getBean(OverlayProjectDescription.class);
         var templateVariables = prepareProjectTemplateVariables(project);
         var model = contributeInternal(project);
@@ -177,7 +176,7 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         return templateVariables;
     }
 
-    private void processTemplatedFile(final Path output,
+    protected void processTemplatedFile(final Path output,
                                       final String resourcePattern) throws IOException {
         createFileAndParentDirectories(output);
         var templateVariables = getProjectTemplateVariables();
@@ -187,7 +186,7 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         createTemplateFile(output, template);
     }
 
-    private static void createFileAndParentDirectories(final Path output) throws IOException {
+    protected static void createFileAndParentDirectories(final Path output) throws IOException {
         if (!Files.exists(output)) {
             Files.createDirectories(output.getParent());
             Files.createFile(output);
@@ -207,7 +206,7 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         return renderTemplate(resource, model);
     }
 
-    private static String renderTemplate(final Resource resource, final Object model) throws IOException {
+    protected static String renderTemplate(final Resource resource, final Object model) throws IOException {
         log.debug("Rendering template [{}], using model [{}]", resource, model);
         try (var writer = new StringWriter()) {
             var mf = new DefaultMustacheFactory();
@@ -236,6 +235,7 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
             .ifPresentOrElse(version -> {
                 templateVariables.put("tomcatVersion", version.getTomcatVersion());
                 templateVariables.put("javaVersion", version.getJavaVersion());
+                templateVariables.put("jibVersion", version.getPlugins().getJibVersion());
                 templateVariables.put("containerBaseImageName", version.getContainerBaseImage());
                 templateVariables.put("gradleVersion", version.getGradleVersion());
                 templateVariables.put("branch", version.getBranch());

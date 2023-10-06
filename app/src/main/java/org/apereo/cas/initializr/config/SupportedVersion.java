@@ -31,4 +31,12 @@ public class SupportedVersion {
     private String gradleVersion;
 
     private String javaVersion;
+
+    private Plugins plugins = new Plugins();
+
+    @Getter
+    @Setter
+    public static class Plugins {
+        private String jibVersion;
+    }
 }
