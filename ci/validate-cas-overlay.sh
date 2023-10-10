@@ -44,8 +44,8 @@ if [[ "${FETCH_OVERLAY}" == "true" ]]; then
   echo -e "CAS overlay is downloaded into directory: " && echo "$PWD"
   [ "$CI" = "true" ] && pkill java
   ls
-    printgreen "Downloaded CAS overlay ${CAS_VERSION} successfully."
-    exit 0
+  printgreen "Downloaded CAS overlay ${CAS_VERSION} successfully."
+  exit 0
 fi
 
 printgreen "Building CAS overlay in $PWD"
@@ -53,7 +53,7 @@ printgreen "Building CAS overlay in $PWD"
 
 printgreen "Running CAS overlay with Gradle"
 ls -al
-./gradlew run -Dspring.profiles.active=none -Dcas.service-registry.core.init-from-json=true -Dserver.ssl.enabled=false -Dserver.port=8080 &
+./gradlew run -Dspring.profiles.active=none -Dserver.ssl.enabled=false -Dserver.port=8080 &
 pid=$!
 sleep 80
 rc=$(curl -L -k -u casuser:password -o /dev/null --connect-timeout 60 -s  -I -w "%{http_code}" http://localhost:8080/cas/login)
@@ -88,7 +88,7 @@ fi
 
 printgreen "Running CAS Overlay as an executable WAR file"
 ./gradlew clean build -Pexecutable=true --no-daemon
-./build/libs/cas.war --spring.profiles.active=none -Dcas.service-registry.core.init-from-json=true --server.ssl.enabled=false --server.port=8090 &
+./build/libs/cas.war --spring.profiles.active=none --cas.service-registry.core.init-from-json=true --server.ssl.enabled=false --server.port=8090 &
 pid=$!
 sleep 15
 echo "Launched executable CAS with pid ${pid}. Waiting for CAS server to come online..."
@@ -118,7 +118,7 @@ export CAS_ARGS="--spring.profiles.active=none --cas.service-registry.core.init-
 [ "$CI" = "true" ] && pkill java
 
 printgreen "Running CAS Overlay with bootRun"
-./gradlew --no-daemon clean build bootRun -Dserver.ssl.enabled=false -Dserver.port=8091 -Dcas.service-registry.core.init-from-json=true &
+./gradlew --no-daemon clean build bootRun -Dserver.ssl.enabled=false -Dserver.port=8091 &
 pid=$!
 sleep 15
 printgreen "Launched CAS with pid ${pid} using bootRun. Waiting for CAS server to come online..."
