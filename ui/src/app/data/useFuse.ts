@@ -1,7 +1,6 @@
 import { useMemo, useState, useCallback } from 'react';
 
 import Fuse from "fuse.js";
-import IFuseOptions from "fuse.js";
 import debounce from 'lodash/debounce';
 
 export function useFuse<T>(list: T[], matchAllOnEmptyQuery: boolean, options: {}) {
