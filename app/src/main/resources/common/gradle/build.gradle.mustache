@@ -148,6 +148,15 @@ configurations {
             if (failIfConflict) {
                 failOnVersionConflict()
             }
+
+            if (project.hasProperty("tomcatVersion")) {
+                eachDependency { DependencyResolveDetails dependency ->
+                    def requested = dependency.requested
+                    if (requested.group.startsWith("org.apache.tomcat") && requested.name != "jakartaee-migration")  {
+                        dependency.useVersion("${tomcatVersion}")
+                    }
+                }
+            }
         }
         exclude(group: "cglib", module: "cglib")
         exclude(group: "cglib", module: "cglib-full")
@@ -463,6 +472,10 @@ dependencies {
     implementation "org.apereo.cas:cas-server-core-api-configuration-model"
     implementation "org.apereo.cas:cas-server-webapp-init"
 
+    if (project.hasProperty("appServer")) {
+        implementation "org.apereo.cas:cas-server-webapp-init${project.appServer}"
+    }
+    
     developmentOnly "org.springframework.boot:spring-boot-devtools:${project.springBootVersion}"
     {{/nativeImageSupported}}
     {{/casServer}}

@@ -143,7 +143,12 @@ if (!nativeImage) {
                 {{/configServer}}
 
                 provided = false
-                excludes = ["WEB-INF/lib/servlet-api-2*.jar"]
+
+                def excludeArtifacts = ["WEB-INF/lib/servlet-api-2*.jar"]
+                if (project.hasProperty("tomcatVersion")) {
+                    excludes += ["WEB-INF/lib/tomcat-*.jar"]
+                }
+                excludes = excludeArtifacts
 
                 /*
                 excludes = ["WEB-INF/lib/somejar-1.0*"]
