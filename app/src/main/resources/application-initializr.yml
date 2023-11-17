@@ -40,7 +40,7 @@ cas-initializr:
       gradle-version: 7.4
       plugins:
         jibVersion: 3.4.0
-    - version: 6.6.13
+    - version: 6.6.14
       platform-version: 6.6.0
       boot-version: 2.7.3
       sync: true
