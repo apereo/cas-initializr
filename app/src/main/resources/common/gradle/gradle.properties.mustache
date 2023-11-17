@@ -60,6 +60,14 @@ gradleGraalVmNativePluginVersion=@gradleGraalVmNativePluginVersion@
 # and want to set up, download and manage the container (i.e. Apache Tomcat) yourself.
 appServer={{appServer}}
 
+# If you are using an embedded Apache Tomcat container to deploy and run CAS,
+# and need to override the Apache Tomcat version, uncomment the property below
+# and specify the the Apache Tomcat version, i.e. {{tomcatVersion}}.
+# While enabled, this will override any and all upstream changes to
+# Apache Tomcat dependency management and you will be directly responsible to make
+# adjustments and upgrades as necessary. Use with caution, favor less work.
+# tomcatVersion={{tomcatVersion}}
+
 # Settings to generate keystore
 # used by the build to assist with creating
 # self-signed certificates for https endpoints
@@ -77,8 +85,6 @@ gradleDownloadTaskVersion=@gradleDownloadTaskPluginVersion@
 gradleOpenRewritePluginVersion=@gradleOpenRewritePluginVersion@
 {{/openRewriteSupported}}
 {{/casServer}}
-
-tomcatVersion={{tomcatVersion}}
 
 # Include private repository
 # override these in user properties or pass in values from env on command line

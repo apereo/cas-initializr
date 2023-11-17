@@ -203,9 +203,6 @@ task copyCasConfiguration(type: Copy, group: "CAS",
 
 {{#casServer}}
 
-def tomcatDirectory = "${buildDir}/apache-tomcat-${tomcatVersion}"
-project.ext."tomcatDirectory" = tomcatDirectory
-
 def explodedDir = "${buildDir}/app"
 def explodedResourcesDir = "${buildDir}/cas-resources"
 
