@@ -170,6 +170,7 @@ export default function Customization() {
                                 <Typography variant="subtitle1" component="h3" mt={0}>Platform Requirements</Typography>
                                 <Divider sx={{ backgroundColor: 'background.paper', mx: 0, my: 2 }} />
                                 <Typography variant="body2" my={1}><strong>Java Version:</strong> {selectedVersion.javaVersion}</Typography>
+                                <Typography variant="body2" my={1}><strong>Spring Boot Version:</strong> {selectedVersion.bootVersion}</Typography>
                                 <Typography variant="body2" my={1}><strong>Gradle Version:</strong> {selectedVersion.gradleVersion}</Typography>
                                 <Typography variant="body2" mt={1}><strong>Tomcat Version:</strong> {selectedVersion.tomcatVersion}</Typography>
                             </Paper>
