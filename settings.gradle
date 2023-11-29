@@ -1,3 +1,6 @@
 rootProject.name = 'cas-initializr'
 include "app"
-include "ui"
+if (!providers.systemProperty("skipUI").isPresent()) {
+    include "ui"
+}
+include "rewrite"

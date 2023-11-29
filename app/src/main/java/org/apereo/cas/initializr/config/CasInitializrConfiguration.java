@@ -11,7 +11,6 @@ import org.apereo.cas.initializr.contrib.gradle.OverlayGradleTasksContributor;
 import org.apereo.cas.initializr.contrib.heroku.HerokuProcFileContributor;
 import org.apereo.cas.initializr.contrib.heroku.HerokuSystemPropertiesFileContributor;
 import org.apereo.cas.initializr.contrib.nativex.GraalVMNativeImageContributor;
-import org.apereo.cas.initializr.contrib.openrewrite.OpenRewriteContributor;
 import org.apereo.cas.initializr.contrib.project.ApplicationYamlPropertiesContributor;
 import org.apereo.cas.initializr.contrib.project.IgnoreRulesContributor;
 import org.apereo.cas.initializr.contrib.project.JenvJavaVersionContributor;
@@ -90,13 +89,7 @@ public class CasInitializrConfiguration {
         chain.addContributor(new GraalVMNativeImageContributor(applicationContext));
         return chain;
     }
-
-    @Bean
-    public ChainingSingleResourceProjectContributor openRewriteContributor() {
-        var chain = new ChainingSingleResourceProjectContributor();
-        chain.addContributor(new OpenRewriteContributor(applicationContext));
-        return chain;
-    }
+    
 
     @Bean
     public ChainingSingleResourceProjectContributor githubContributor() {

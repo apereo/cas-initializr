@@ -1,0 +1,62 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.yaml:snakeyaml:2.2"
+        classpath "com.github.spullara.mustache.java:compiler:0.9.11"
+    }
+}
+
+plugins {
+    id "java-library"
+    id 'maven-publish'
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+def appProject = rootProject.findProject(":app")
+def initializrFile = appProject.file("build/resources/main/application-initializr.yml")
+def recipeTemplate = file("src/main/resources/CASUpgrade.yml.mustache")
+
+processResources {
+    doLast {
+        def initializr = new org.yaml.snakeyaml.Yaml().load(initializrFile.newInputStream())
+        def supportedVersions = initializr.'cas-initializr'.'supported-versions'
+        def results = supportedVersions.findAll { ver -> ver.type == "cas" }
+        results.each { entry ->
+            def writer = new StringWriter()
+            def mf = new com.github.mustachejava.DefaultMustacheFactory()
+            def mustache = mf.compile(new InputStreamReader(recipeTemplate.newInputStream()), recipeTemplate.name)
+
+            def model = [:]
+
+            def initialName = recipeTemplate.name.replace(".mustache", "").replaceAll(/-SNAPSHOT/, "").replace(".yml", "")
+            def recipeName = initialName + entry.version.replaceAll(/\.|-SNAPSHOT/, "")
+
+            model.put("recipeName", recipeName)
+            model.put("tomcatVersion", entry.'tomcat-version')
+            model.put("casVersion", entry.version)
+            model.put("javaVersion", entry.'java-version')
+            model.put("jibVersion", entry.plugins.'jib-version')
+            model.put("gradleVersion", entry.'gradle-version')
+            model.put("springBootVersion", entry.'boot-version')
+
+            mustache.execute(writer, model).flush()
+            def recipe = writer.toString()
+
+            def outputDir = file("$buildDir/resources/main/META-INF/rewrite")
+            if (!outputDir.exists()) {
+                outputDir.mkdirs()
+            }
+            def outputFile = file("${outputDir.absolutePath}/${recipeName}.yml")
+            outputFile.write(recipe)
+        }
+
+    }
+}
+
+processResources.dependsOn(rootProject.findProject(":app").getTasksByName("processResources", false))
