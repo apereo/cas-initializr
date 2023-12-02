@@ -38,5 +38,6 @@ public class SupportedVersion {
     @Setter
     public static class Plugins {
         private String jibVersion;
+        private String openRewriteVersion;
     }
 }

@@ -98,7 +98,7 @@ processResources {
     def gradleDependencyManagementPluginVersion = project.providers.gradleProperty("gradleDependencyManagementPluginVersion").get()
     def gradleFreeFairPluginVersion = project.providers.gradleProperty("gradleFreeFairPluginVersion").get()
     def gradleDownloadTaskPluginVersion = project.providers.gradleProperty("gradleDownloadTaskPluginVersion").get()
-    def gradleOpenRewritePluginVersion = project.providers.gradleProperty("gradleOpenRewritePluginVersion").get()
+    def openRewriteVersion = project.providers.gradleProperty("openRewriteVersion").get()
     def jibVersion = project.providers.gradleProperty("jibVersion").get()
     def gradleDockerPluginVersion = project.providers.gradleProperty("gradleDockerPluginVersion").get()
 
@@ -119,6 +119,7 @@ processResources {
                 apacheTomcat10LatestVersion: apacheTomcat10LatestVersion,
                 casLatestVersion: casLatestVersion,
                 casManagementLatestVersion: casManagementLatestVersion,
+                "openRewriteVersion"         : openRewriteVersion,
                 jibVersion: jibVersion
         )
     }
@@ -129,7 +130,7 @@ processResources {
                 "gradleDependencyManagementPluginVersion": gradleDependencyManagementPluginVersion,
                 "gradleFreeFairPluginVersion"            : gradleFreeFairPluginVersion,
                 "gradleDownloadTaskPluginVersion"        : gradleDownloadTaskPluginVersion,
-                "gradleOpenRewritePluginVersion"         : gradleOpenRewritePluginVersion,
+                "openRewriteVersion"                     : openRewriteVersion,
                 "jibVersion"                             : jibVersion,
                 "gradleDockerPluginVersion"              : gradleDockerPluginVersion,
                 "graalVmVersion"                         : graalVmVersion,

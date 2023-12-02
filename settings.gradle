@@ -3,4 +3,3 @@ include "app"
 if (!providers.systemProperty("skipUI").isPresent()) {
     include "ui"
 }
-include "rewrite"

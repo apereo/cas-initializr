@@ -66,3 +66,4 @@ cas-initializr:
       gradle-version: 8.4
       plugins:
         jib-version: ${jibVersion}
+        open-rewrite-version: ${openRewriteVersion}
