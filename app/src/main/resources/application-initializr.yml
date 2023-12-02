@@ -63,7 +63,7 @@ cas-initializr:
       tomcat-version: ${apacheTomcat10LatestVersion}
       java-version: 21
       container-base-image: azul/zulu-openjdk:21
-      gradle-version: 8.4
+      gradle-version: 8.5
       plugins:
         jib-version: ${jibVersion}
         open-rewrite-version: ${openRewriteVersion}
