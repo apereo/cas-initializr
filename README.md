@@ -3,7 +3,7 @@
 CAS Initializr provides a build system and an API to dynamically generate 
 CAS overlays. The project is based on [Spring Initializr](https://github.com/spring-io/initializr).
 
-This service is ultimately deployed on Heroku and is available at: https://casinit.herokuapp.com
+This service is available at: https://getcas.apereo.org/ui
 
 ## Build
 
