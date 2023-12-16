@@ -196,6 +196,7 @@ jobs:
   ##########################################################################
   validate-cas-overlay:
     needs: [ supported-versions-cas ]
+    timeout-minutes: 35
     runs-on: ubuntu-latest
     strategy:
       matrix:
