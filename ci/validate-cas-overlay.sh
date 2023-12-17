@@ -72,11 +72,11 @@ downloadTomcat "$TOMCAT_VERSION"
 mv build/libs/cas.war ${CATALINA_HOME}/webapps/cas.war
 
 printgreen "Starting Apache Tomcat $TOMCAT_VERSION to deploy ${CATALINA_HOME}/webapps/cas.war"
-${CATALINA_HOME}/bin/startup.sh & >/dev/null 2>&1
+"${CATALINA_HOME}"/bin/startup.sh & >/dev/null 2>&1
 pid=$!
 sleep 30
 rc=$(curl -L -k -u casuser:password -o /dev/null --connect-timeout 60 -s  -I -w "%{http_code}" http://localhost:8080/cas/login)
-${CATALINA_HOME}/bin/shutdown.sh & >/dev/null 2>&1
+"${CATALINA_HOME}"/bin/shutdown.sh & >/dev/null 2>&1
 kill -9 $pid
 if [ "$rc" == 200 ]; then
     printgreen "Deployed the web application successfully."
@@ -89,7 +89,8 @@ fi
 
 printgreen "Running CAS Overlay as an executable WAR file"
 ./gradlew clean build -Pexecutable=true --no-daemon
-./build/libs/cas.war --spring.profiles.active=none --cas.service-registry.core.init-from-json=true --server.ssl.enabled=false --server.port=8090 &
+./build/libs/cas.war --spring.profiles.active=none --cas.service-registry.core.init-from-json=true \
+  --server.ssl.enabled=false --server.port=8090 &
 pid=$!
 sleep 15
 echo "Launched executable CAS with pid ${pid}. Waiting for CAS server to come online..."
@@ -101,7 +102,8 @@ echo -e "\n\nReady!"
 
 if [ "$CAS_MAJOR_VERSION" -ge 7 ]; then
     echo "Running duct against CAS Overlay $CAS_VERSION"
-    ./gradlew --no-daemon duct -Pduct.service=https://apereo.github.io -Pduct.cas.1=http://localhost:8090/cas -Pduct.debug=true -Pduct.count=1
+    ./gradlew --no-daemon duct -Pduct.service=https://apereo.github.io \
+      -Pduct.cas.1=http://localhost:8090/cas -Pduct.debug=true -Pduct.count=1
     [ $? -eq 0 ] && echo "Gradle command ran successfully." || exit 1
 fi
 
@@ -134,7 +136,7 @@ kill -9 $pid
 # ps -ef
 chmod -R 777 ./*.sh >/dev/null 2>&1
 
-if [ "$CAS_MAJOR_VERSION" -ge 7 ]; then
+if [[ "$CAS_MAJOR_VERSION" -ge 7 ]]; then
     printgreen "Building Docker image with Spring Boot"
     ./gradlew --no-daemon bootBuildImage
 fi
@@ -180,19 +182,17 @@ printgreen "Build Container Image w/ Docker"
 printgreen "Build Container Image w/ Docker Compose"
 docker-compose build
 
-CAS_MAJOR_VERSION=`echo $CAS_VERSION | cut -d. -f1`
-CAS_MINOR_VERSION=`echo $CAS_VERSION | cut -d. -f2`
-CAS_PATCH_VERSION=`echo $CAS_VERSION | cut -d. -f3`
+if [[ "$CAS_MAJOR_VERSION" -ge 7 ]]; then
+  printgreen "OpenRewrite to discover recipes for target version ${CAS_VERSION}..."
+  recipes=$(./gradlew --init-script openrewrite.gradle rewriteDiscover -PtargetVersion="${CAS_VERSION}" | grep "org.apereo.cas")
+  printgreen "Discovered OpenRewrite recipes: ${recipes}"
 
-printgreen "OpenRewrite to discover recipes for target version ${CAS_VERSION}..."
-./gradlew --init-script openrewrite.gradle rewriteDiscover -PtargetVersion="${CAS_VERSION}" | grep "org.apereo.cas"
-[ $? -eq 0 ] && echo "Gradle command ran successfully." || exit 1
-
-printgreen "OpenRewrite to dry-run recipes..."
-recipeName="${CAS_MAJOR_VERSION}${CAS_MINOR_VERSION}${CAS_PATCH_VERSION}"
-./gradlew --init-script openrewrite.gradle rewriteDryRun \
-  -PtargetVersion="${CAS_VERSION}" -DactiveRecipe="org.apereo.cas.cas$recipeName"
-[ $? -eq 0 ] && echo "Gradle command ran successfully." || exit 1
+  printgreen "OpenRewrite to dry-run recipes..."
+  recipeName="org.apereo.cas.cas${CAS_MAJOR_VERSION}${CAS_MINOR_VERSION}${CAS_PATCH_VERSION}"
+  ./gradlew --init-script openrewrite.gradle rewriteDryRun \
+    -PtargetVersion="${CAS_VERSION}" -DactiveRecipe="$recipeName"
+  [ $? -eq 0 ] && echo "Gradle command ran successfully." || exit 1
+fi
 
 [ "$CI" = "true" ] && pkill java
 exit 0

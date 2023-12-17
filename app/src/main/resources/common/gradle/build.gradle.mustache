@@ -84,13 +84,6 @@ repositories {
         url "https://repo.spring.io/milestone"
         mavenContent { releasesOnly() }
     }
-    maven {
-        url "https://jitpack.io"
-        content {
-            includeGroupByRegex ".*wss4j.*"
-        }
-        mavenContent { releasesOnly() }
-    }
 }
 
 {{#springDependencyMgmt}}
