@@ -183,14 +183,16 @@ printgreen "Build Container Image w/ Docker Compose"
 docker-compose build
 
 if [[ "$CAS_MAJOR_VERSION" -ge 7 ]]; then
-  printgreen "OpenRewrite to discover recipes for target version ${CAS_VERSION}..."
-  recipes=$(./gradlew --init-script openrewrite.gradle rewriteDiscover -PtargetVersion="${CAS_VERSION}" | grep "org.apereo.cas")
+  targetVersion=${CAS_VERSION%-SNAPSHOT}
+
+  printgreen "OpenRewrite to discover recipes for target version ${targetVersion}..."
+  recipes=$(./gradlew --init-script openrewrite.gradle rewriteDiscover -PtargetVersion="${targetVersion}" | grep "org.apereo.cas")
   printgreen "Discovered OpenRewrite recipes: ${recipes}"
 
   printgreen "OpenRewrite to dry-run recipes..."
   recipeName="org.apereo.cas.cas${CAS_MAJOR_VERSION}${CAS_MINOR_VERSION}${CAS_PATCH_VERSION}"
   ./gradlew --init-script openrewrite.gradle rewriteDryRun \
-    -PtargetVersion="${CAS_VERSION}" -DactiveRecipe="$recipeName"
+    -PtargetVersion="${targetVersion}" -DactiveRecipe="$recipeName"
   [ $? -eq 0 ] && echo "Gradle command ran successfully." || exit 1
 fi
 
