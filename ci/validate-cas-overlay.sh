@@ -187,6 +187,10 @@ if [[ "$CAS_MAJOR_VERSION" -ge 7 ]]; then
 
   printgreen "OpenRewrite to discover recipes for target version ${targetVersion}..."
   recipes=$(./gradlew --init-script openrewrite.gradle rewriteDiscover -PtargetVersion="${targetVersion}" | grep "org.apereo.cas")
+  if [ -z "$recipes" ] ; then
+    printred "\nNo OpenRewrite recipes could be found."
+    exit 1
+  fi
   printgreen "Discovered OpenRewrite recipes: ${recipes}"
 
   printgreen "OpenRewrite to dry-run recipes..."
