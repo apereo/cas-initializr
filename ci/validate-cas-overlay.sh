@@ -26,6 +26,7 @@ done
 
 CAS_MAJOR_VERSION=`echo $CAS_VERSION | cut -d. -f1`
 CAS_MINOR_VERSION=`echo $CAS_VERSION | cut -d. -f2`
+CAS_PATCH_VERSION=`echo $CAS_VERSION | cut -d. -f3`
 
 mkdir -p tmp
 cd tmp || exit
@@ -178,6 +179,20 @@ printgreen "Build Container Image w/ Docker"
 
 printgreen "Build Container Image w/ Docker Compose"
 docker-compose build
+
+CAS_MAJOR_VERSION=`echo $CAS_VERSION | cut -d. -f1`
+CAS_MINOR_VERSION=`echo $CAS_VERSION | cut -d. -f2`
+CAS_PATCH_VERSION=`echo $CAS_VERSION | cut -d. -f3`
+
+printgreen "OpenRewrite to discover recipes for target version ${CAS_VERSION}..."
+./gradlew --init-script openrewrite.gradle rewriteDiscover -PtargetVersion="${CAS_VERSION}" | grep "org.apereo.cas"
+[ $? -eq 0 ] && echo "Gradle command ran successfully." || exit 1
+
+printgreen "OpenRewrite to dry-run recipes..."
+recipeName="${CAS_MAJOR_VERSION}${CAS_MINOR_VERSION}${CAS_PATCH_VERSION}"
+./gradlew --init-script openrewrite.gradle rewriteDryRun \
+  -PtargetVersion="${CAS_VERSION}" -DactiveRecipe="org.apereo.cas.cas$recipeName"
+[ $? -eq 0 ] && echo "Gradle command ran successfully." || exit 1
 
 [ "$CI" = "true" ] && pkill java
 exit 0
