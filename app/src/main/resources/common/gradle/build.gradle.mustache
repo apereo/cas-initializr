@@ -84,13 +84,6 @@ repositories {
         url "https://repo.spring.io/milestone"
         mavenContent { releasesOnly() }
     }
-    maven {
-        url "https://jitpack.io"
-        content {
-            includeGroupByRegex ".*wss4j.*"
-        }
-        mavenContent { releasesOnly() }
-    }
 }
 
 {{#springDependencyMgmt}}
@@ -196,10 +189,6 @@ bootBuildImage {
 {{/dockerSupported}}
 
 {{#nativeImageSupported}}
-configurations {
-    nativeImageClasspath.extendsFrom(graalImplementation)
-}
-
 if (nativeImage) {
     sourceSets {
         graal {
@@ -208,6 +197,10 @@ if (nativeImage) {
             }
         }
     }
+}
+
+configurations {
+    nativeImageClasspath.extendsFrom(graalImplementation)
 }
 
 graalvmNative {
@@ -236,23 +229,29 @@ graalvmNative {
             buildArgs.add('-H:+ReportExceptionStackTraces')
             buildArgs.add('-H:+InlineBeforeAnalysis')
             buildArgs.add('-H:+TraceSecurityServices')
+            buildArgs.add('-H:+UnlockExperimentalVMOptions')
 
-            buildArgs.add('--initialize-at-build-time=org.hibernate.internal.util.ReflectHelper')
+            buildArgs.add('-J-Xmx12G')
+            buildArgs.add('-J-Xms4G')
+            buildArgs.add('--native-image-info')
+            buildArgs.add('-march=native')
 
-            buildArgs.add('--initialize-at-build-time=java.beans.Introspector')
+            buildArgs.add('--trace-class-initialization=true')
+
+            buildArgs.add('--initialize-at-build-time=java.beans')
             buildArgs.add('--initialize-at-build-time=com.sun.beans')
-
             buildArgs.add('--initialize-at-build-time=groovyjarjarantlr4.v4.runtime')
             buildArgs.add('--initialize-at-build-time=org.codehaus.groovy')
             buildArgs.add('--initialize-at-build-time=org.apache.groovy')
             buildArgs.add('--initialize-at-build-time=groovy.lang')
 
-            buildArgs.add('--initialize-at-run-time=com.sun.xml.ws,org.codehaus.groovy.control.XStreamUtils,org.codehaus.groovy.vmplugin.v8.Java8\$LookupHolder,groovy.grape.GrapeIvy')
-            buildArgs.add("--initialize-at-run-time=org.bouncycastle.jcajce.provider.drbg.DRBG\$Default,org.bouncycastle.jcajce.provider.drbg.DRBG\$NonceAndIV")
+            buildArgs.add('--initialize-at-run-time=com.sun.xml.ws')
+            buildArgs.add('--initialize-at-run-time=groovy.grape.GrapeIvy')
+            buildArgs.add("--initialize-at-run-time=org.bouncycastle.jcajce.provider.drbg.DRBG\$Default")
+            buildArgs.add("--initialize-at-run-time=org.bouncycastle.jcajce.provider.drbg.DRBG\$NonceAndIV")
 
-            buildArgs.add('--features=org.apereo.cas.nativex.features.BouncyCastleProviderFeature')
-
-            buildArgs.add('--enable-url-protocols=jar')
+            buildArgs.add('--features=org.apereo.cas.nativex.features.DefaultNativeImageFeature')
+            buildArgs.add('--enable-url-protocols=jar,file,resource,http,https')
 
             /*
             buildArgs.add("-g")
@@ -474,19 +473,7 @@ dependencies {
     {{#dependencies}}
     implementation "{{groupId}}:{{artifactId}}"
     {{/dependencies}}
- 
-    {{#casServer}}
 
-    if (project.hasProperty("casModules")) {
-        def dependencies = project.getProperty("casModules").split(",")
-        dependencies.each {
-            def projectsToAdd = rootProject.subprojects.findAll {project ->
-                project.name == "cas-server-core-${it}" || project.name == "cas-server-support-${it}"
-            }
-            projectsToAdd.each {implementation it}
-        }
-    }
-    {{/casServer}}
     {{#configServer}}
     compileOnly "org.apereo.cas:cas-server-webapp-init-config-server"
     {{/configServer}}

@@ -39,13 +39,13 @@ echo -n "NPM version: " && npm --version
 echo -n "Node version: " && node --version
 
 echo "Launching CAS at $casWebApplicationFile with arguments $RUN_ARGS and options $CAS_ARGS"
-java $RUN_ARGS -jar $casWebApplicationFile $CAS_ARGS &
+java "$RUN_ARGS" -jar "$casWebApplicationFile" "$CAS_ARGS" &
 pid=$!
 echo "Waiting for CAS under process id ${pid}"
 sleep 45
 casLogin="${PUPPETEER_CAS_HOST:-https://localhost:8443}/cas/login"
 echo "Checking CAS status at ${casLogin}"
-curl -k -L --output /dev/null --silent --fail $casLogin
+curl -k -L --output /dev/null --silent --fail "$casLogin"
 if [[ $? -ne 0 ]]; then
     printred "Unable to launch CAS instance under process id ${pid}."
     printred "Killing process id $pid and exiting"
@@ -55,12 +55,12 @@ fi
 
 export NODE_TLS_REJECT_UNAUTHORIZED=0
 echo "Executing puppeteer scenarios..."
-for scenario in "${PWD}/puppeteer/scenarios/*"; do 
-    scenarioName=$(basename $scenario)
+for scenario in "${PWD}"/puppeteer/scenarios/*; do
+    scenarioName=$(basename "$scenario")
     echo "=========================="
     echo "- Scenario $scenarioName "
     echo -e "==========================\n"
-    node $scenario
+    node "$scenario"
     echo -e "\n"
     echo -n "- Scenario $scenarioName: "
     if [[ $? -ne 0 ]]; then
