@@ -1,6 +1,6 @@
 #!/bin/bash
 
-RUN_ARGS="-Xmx2048M -server -Dlog.console.stacktraces=true"
+RUN_ARGS=""
 CAS_ARGS="${CAS_ARGS:-}"
 
 RED="\e[31m"
