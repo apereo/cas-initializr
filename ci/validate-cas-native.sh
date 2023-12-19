@@ -25,17 +25,19 @@ if [[ "${FETCH_OVERLAY}" == "true" ]]; then
   pid=$!
   sleep 15
   printgreen "Requesting CAS overlay for ${parameters}"
+  mkdir tmp
+  cd tmp || exit
   curl http://localhost:8080/starter.tgz --connect-timeout 30 -d "${parameters}" | tar -xzvf -
   kill -9 $pid
   [ "$CI" = "true" ] && pkill java
+  printgreen "Working directory: ${PWD}"
   ls
   printgreen "Downloaded CAS overlay ${CAS_VERSION} successfully."
   exit 0
 fi
 
-mkdir tmp
 cd tmp || exit
-echo "Working directory: ${PWD}"
+printgreen "Working directory: ${PWD}"
 
 if [[ -d /tmp ]] ; then
   sudo mkdir /tmp
