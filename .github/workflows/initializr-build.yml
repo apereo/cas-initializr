@@ -26,14 +26,14 @@ on:
 
 jobs:
   cancel-previous-runs:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     timeout-minutes: 1
     steps:
       - uses: styfle/cancel-workflow-action@0.12.0
         with:
           access_token: ${{ github.token }}
   build:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK
@@ -52,7 +52,7 @@ jobs:
   ##########################################################################
   latest-versions-cas:
     needs: [ build ]
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     outputs:
       supported-versions: ${{ steps.get-supported-versions.outputs.supported-versions }}
     steps:
@@ -74,7 +74,7 @@ jobs:
   ##########################################################################
   supported-versions-cas:
     needs: [ build ]
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     outputs:
       supported-versions: ${{ steps.get-supported-versions.outputs.supported-versions }}
     steps:
@@ -97,7 +97,7 @@ jobs:
   supported-versions-cas-mgmt:
     needs: [ build ]
     # if: ${{ false }}
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     outputs:
       supported-versions: ${{ steps.get-supported-versions.outputs.supported-versions }}
     steps:
@@ -119,7 +119,7 @@ jobs:
   ##########################################################################
   sync-cas-mgmt-overlay:
     needs: [ supported-versions-cas-mgmt,validate-cas-mgmt-overlay ]
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     # if: ${{ false }}
     strategy:
       matrix:
@@ -158,7 +158,7 @@ jobs:
   ##########################################################################
   sync-cas-overlay:
     needs: [ supported-versions-cas,validate-cas-overlay ]
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     # if: ${{ false }}
     strategy:
       matrix:
@@ -199,7 +199,7 @@ jobs:
   validate-cas-overlay:
     needs: [ supported-versions-cas ]
     timeout-minutes: 35
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         versions: ${{fromJSON(needs.supported-versions-cas.outputs.supported-versions)}}
@@ -247,7 +247,7 @@ jobs:
   ##########################################################################
   validate-cas-mgmt-overlay:
     needs: [ supported-versions-cas-mgmt ]
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     # if: ${{ false }}
     strategy:
       matrix:
@@ -288,7 +288,7 @@ jobs:
   ##########################################################################
   validate-cas-configserver-overlay:
     needs: [ supported-versions-cas ]
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     # if: ${{ false }}
     strategy:
       matrix:
@@ -329,7 +329,7 @@ jobs:
   ##########################################################################
   sync-cas-configserver-overlay:
     needs: [ supported-versions-cas,validate-cas-configserver-overlay ]
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     # if: ${{ false }}
     strategy:
       matrix:
@@ -368,7 +368,7 @@ jobs:
   ##########################################################################
   publish:
     needs: [ build ]
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     # if: ${{ false }}
     steps:
       - uses: actions/checkout@v4
@@ -394,7 +394,7 @@ jobs:
   ##########################################################################
   complete:
     needs: [ build,publish,validate-cas-overlay,validate-cas-mgmt-overlay,validate-cas-configserver-overlay ]
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Successful Build
         run: echo "Build is a complete success"
