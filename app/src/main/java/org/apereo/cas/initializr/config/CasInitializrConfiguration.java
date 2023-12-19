@@ -47,6 +47,13 @@ public class CasInitializrConfiguration {
     private ConfigurableApplicationContext applicationContext;
 
     @Bean
+    public ChainingSingleResourceProjectContributor openRewriteContributor() {
+        var chain = new ChainingSingleResourceProjectContributor();
+        chain.addContributor(new OpenRewriteContributor(applicationContext));
+        return chain;
+    }
+    
+    @Bean
     public ProjectContributor projectLicenseContributor() {
         return new ProjectLicenseContributor();
     }
@@ -88,13 +95,6 @@ public class CasInitializrConfiguration {
     public ChainingSingleResourceProjectContributor nativeImageContributor() {
         var chain = new ChainingSingleResourceProjectContributor();
         chain.addContributor(new GraalVMNativeImageContributor(applicationContext));
-        return chain;
-    }
-
-    @Bean
-    public ChainingSingleResourceProjectContributor openRewriteContributor() {
-        var chain = new ChainingSingleResourceProjectContributor();
-        chain.addContributor(new OpenRewriteContributor(applicationContext));
         return chain;
     }
 
@@ -152,7 +152,6 @@ public class CasInitializrConfiguration {
         return new CasOverlayDockerContributor(applicationContext);
     }
 
-    
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public JCacheManagerCustomizer initializrMetadataCacheManagerCustomizer() {

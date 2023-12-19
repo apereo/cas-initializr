@@ -43,9 +43,7 @@ buildscript {
         {{#nativeImageSupported}}
         classpath "org.graalvm.buildtools:native-gradle-plugin:${project.gradleGraalVmNativePluginVersion}"
         {{/nativeImageSupported}}
-        {{#openRewriteSupported}}
-        classpath "org.openrewrite:plugin:${project.gradleOpenRewritePluginVersion}"
-        {{/openRewriteSupported}}
+
         classpath "de.undercouch:gradle-download-task:${project.gradleDownloadTaskVersion}"
         classpath "org.apereo.cas:cas-server-core-api-configuration-model:${project.'cas.version'}"
         classpath "org.apereo.cas:cas-server-core-configuration-metadata-repository:${project.'cas.version'}"
@@ -86,13 +84,6 @@ repositories {
         url "https://repo.spring.io/milestone"
         mavenContent { releasesOnly() }
     }
-    maven {
-        url "https://jitpack.io"
-        content {
-            includeGroupByRegex ".*wss4j.*"
-        }
-        mavenContent { releasesOnly() }
-    }
 }
 
 {{#springDependencyMgmt}}
@@ -117,9 +108,7 @@ apply plugin: "io.freefair.lombok"
 {{#nativeImageSupported}}
 apply plugin: "org.graalvm.buildtools.native"
 {{/nativeImageSupported}}
-{{#openRewriteSupported}}
-apply plugin: "org.openrewrite.rewrite"
-{{/openRewriteSupported}}
+
 apply from: rootProject.file("gradle/springboot.gradle")
 {{#dockerSupported}}
 apply plugin: "com.google.cloud.tools.jib"
@@ -199,23 +188,7 @@ bootBuildImage {
 }
 {{/dockerSupported}}
 
-{{#openRewriteSupported}}
-rewrite {
-    def activeRecipe = providers.systemProperty("activeRecipe").getOrNull()
-    if (activeRecipe != null) {
-        def file = project.getRootProject().file("openrewrite/${activeRecipe}.yml")
-        def out = services.get(StyledTextOutputFactory).create("cas")
-        out.withStyle(Style.Success).println("Activating recipe ${file}")
-        configFile = file
-    }
-}
-{{/openRewriteSupported}}
-
 {{#nativeImageSupported}}
-configurations {
-    nativeImageClasspath.extendsFrom(graalImplementation)
-}
-
 if (nativeImage) {
     sourceSets {
         graal {
@@ -224,6 +197,10 @@ if (nativeImage) {
             }
         }
     }
+}
+
+configurations {
+    nativeImageClasspath.extendsFrom(graalImplementation)
 }
 
 graalvmNative {
@@ -252,23 +229,29 @@ graalvmNative {
             buildArgs.add('-H:+ReportExceptionStackTraces')
             buildArgs.add('-H:+InlineBeforeAnalysis')
             buildArgs.add('-H:+TraceSecurityServices')
+            buildArgs.add('-H:+UnlockExperimentalVMOptions')
 
-            buildArgs.add('--initialize-at-build-time=org.hibernate.internal.util.ReflectHelper')
+            buildArgs.add('-J-Xmx12G')
+            buildArgs.add('-J-Xms4G')
+            buildArgs.add('--native-image-info')
+            buildArgs.add('-march=native')
 
-            buildArgs.add('--initialize-at-build-time=java.beans.Introspector')
+            buildArgs.add('--trace-class-initialization=true')
+
+            buildArgs.add('--initialize-at-build-time=java.beans')
             buildArgs.add('--initialize-at-build-time=com.sun.beans')
-
             buildArgs.add('--initialize-at-build-time=groovyjarjarantlr4.v4.runtime')
             buildArgs.add('--initialize-at-build-time=org.codehaus.groovy')
             buildArgs.add('--initialize-at-build-time=org.apache.groovy')
             buildArgs.add('--initialize-at-build-time=groovy.lang')
 
-            buildArgs.add('--initialize-at-run-time=com.sun.xml.ws,org.codehaus.groovy.control.XStreamUtils,org.codehaus.groovy.vmplugin.v8.Java8\$LookupHolder,groovy.grape.GrapeIvy')
-            buildArgs.add("--initialize-at-run-time=org.bouncycastle.jcajce.provider.drbg.DRBG\$Default,org.bouncycastle.jcajce.provider.drbg.DRBG\$NonceAndIV")
+            buildArgs.add('--initialize-at-run-time=com.sun.xml.ws')
+            buildArgs.add('--initialize-at-run-time=groovy.grape.GrapeIvy')
+            buildArgs.add("--initialize-at-run-time=org.bouncycastle.jcajce.provider.drbg.DRBG\$Default")
+            buildArgs.add("--initialize-at-run-time=org.bouncycastle.jcajce.provider.drbg.DRBG\$NonceAndIV")
 
-            buildArgs.add('--features=org.apereo.cas.nativex.features.BouncyCastleProviderFeature')
-
-            buildArgs.add('--enable-url-protocols=jar')
+            buildArgs.add('--features=org.apereo.cas.nativex.features.DefaultNativeImageFeature')
+            buildArgs.add('--enable-url-protocols=jar,file,resource,http,https')
 
             /*
             buildArgs.add("-g")
@@ -435,7 +418,7 @@ dependencies {
     {{^springDependencyMgmt}}
     /**
     * Do NOT modify the lines below or else you will risk breaking dependency management.
-    */
+    **/
     {{#managementServer}}
     implementation enforcedPlatform("org.apereo.cas:cas-mgmt-support-bom:${project.'casmgmt.version'}")
     implementation enforcedPlatform("org.apereo.cas:cas-server-support-bom:${project.'cas.version'}")
@@ -445,8 +428,8 @@ dependencies {
     {{/managementServer}}
     implementation platform(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES)
     {{/springDependencyMgmt}}
-
     {{#casServer}}
+
     {{#nativeImageSupported}}
     if (nativeImage) {
         nativeImageCompileOnly sourceSets.graal.output.classesDirs
@@ -468,7 +451,7 @@ dependencies {
     {{^nativeImageSupported}}
     /**
      * Do NOT modify the lines below or else you will risk breaking the build.
-     */
+     **/
     implementation "org.apereo.cas:cas-server-core-api-configuration-model"
     implementation "org.apereo.cas:cas-server-webapp-init"
 
@@ -490,19 +473,7 @@ dependencies {
     {{#dependencies}}
     implementation "{{groupId}}:{{artifactId}}"
     {{/dependencies}}
- 
-    {{#casServer}}
 
-    if (project.hasProperty("casModules")) {
-        def dependencies = project.getProperty("casModules").split(",")
-        dependencies.each {
-            def projectsToAdd = rootProject.subprojects.findAll {project ->
-                project.name == "cas-server-core-${it}" || project.name == "cas-server-support-${it}"
-            }
-            projectsToAdd.each {implementation it}
-        }
-    }
-    {{/casServer}}
     {{#configServer}}
     compileOnly "org.apereo.cas:cas-server-webapp-init-config-server"
     {{/configServer}}

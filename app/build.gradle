@@ -53,6 +53,7 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-thymeleaf"
     implementation "org.springframework.boot:spring-boot-starter-actuator"
     implementation "org.springframework.boot:spring-boot-starter-aop"
+    implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation "org.springframework.retry:spring-retry"
 
     implementation("javax.cache:cache-api")
@@ -98,7 +99,7 @@ processResources {
     def gradleDependencyManagementPluginVersion = project.providers.gradleProperty("gradleDependencyManagementPluginVersion").get()
     def gradleFreeFairPluginVersion = project.providers.gradleProperty("gradleFreeFairPluginVersion").get()
     def gradleDownloadTaskPluginVersion = project.providers.gradleProperty("gradleDownloadTaskPluginVersion").get()
-    def gradleOpenRewritePluginVersion = project.providers.gradleProperty("gradleOpenRewritePluginVersion").get()
+    def openRewriteVersion = project.providers.gradleProperty("openRewriteVersion").get()
     def jibVersion = project.providers.gradleProperty("jibVersion").get()
     def gradleDockerPluginVersion = project.providers.gradleProperty("gradleDockerPluginVersion").get()
 
@@ -119,6 +120,7 @@ processResources {
                 apacheTomcat10LatestVersion: apacheTomcat10LatestVersion,
                 casLatestVersion: casLatestVersion,
                 casManagementLatestVersion: casManagementLatestVersion,
+                "openRewriteVersion"         : openRewriteVersion,
                 jibVersion: jibVersion
         )
     }
@@ -129,7 +131,7 @@ processResources {
                 "gradleDependencyManagementPluginVersion": gradleDependencyManagementPluginVersion,
                 "gradleFreeFairPluginVersion"            : gradleFreeFairPluginVersion,
                 "gradleDownloadTaskPluginVersion"        : gradleDownloadTaskPluginVersion,
-                "gradleOpenRewritePluginVersion"         : gradleOpenRewritePluginVersion,
+                "openRewriteVersion"                     : openRewriteVersion,
                 "jibVersion"                             : jibVersion,
                 "gradleDockerPluginVersion"              : gradleDockerPluginVersion,
                 "graalVmVersion"                         : graalVmVersion,
@@ -203,30 +205,31 @@ tasks.register('copyWrapperExecutables', Copy) {
     }
 }
 
-def copyUIStatic = tasks.register('copyUIStatic', Copy) {
-    dependsOn tasks.findByPath(":ui:compileJava")
-//    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    from tasks.findByPath(":ui:buildWebapp").outputs
-    into "${buildDir}/resources/main/static"
-}
+def skipUI = providers.systemProperty("skipUI").isPresent()
+if (!skipUI) {
+    def copyUIStatic = tasks.register('copyUIStatic', Copy) {
+        dependsOn tasks.findByPath(":ui:compileJava")
+    //    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+        from tasks.findByPath(":ui:buildWebapp").outputs
+        into "${buildDir}/resources/main/static"
+    }
 
-def copyUITemplates = tasks.register('copyUITemplates', Copy) {
-    dependsOn tasks.findByPath(":ui:compileJava")
-//    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    from tasks.findByPath(":ui:buildWebapp").outputs
-    into "${buildDir}/resources/main/templates"
-}
+    def copyUITemplates = tasks.register('copyUITemplates', Copy) {
+        dependsOn tasks.findByPath(":ui:compileJava")
+    //    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+        from tasks.findByPath(":ui:buildWebapp").outputs
+        into "${buildDir}/resources/main/templates"
+    }
 
+    def enableDepends = gradle.startParameter.taskNames.any
+            {task -> task.equalsIgnoreCase('build') || task.equalsIgnoreCase('bootRun') }
+
+    if (enableDepends) {
+        processResources.dependsOn([copyUITemplates, copyUIStatic])
+        bootRun.dependsOn([copyUITemplates, copyUIStatic])
+    }
+}
 rootProject.tasks["wrapper"].finalizedBy([copyWrapper, copyWrapperExecutables])
-
 bootBuildInfo.mustRunAfter(compileJava)
-
-def enableDepends = gradle.startParameter.taskNames.any 
-    {task -> task.equalsIgnoreCase('build') || task.equalsIgnoreCase('bootRun') }
-
-if (enableDepends) {
-    processResources.dependsOn([copyUITemplates, copyUIStatic])
-    bootRun.dependsOn([copyUITemplates, copyUIStatic])
-}
 
 build.dependsOn([copyWrapper, copyWrapperExecutables])

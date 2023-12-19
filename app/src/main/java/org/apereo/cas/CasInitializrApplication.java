@@ -28,7 +28,12 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.retry.annotation.EnableRetry;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -110,4 +115,11 @@ public class CasInitializrApplication {
         return new DependencyAliasesInfoContributor(provider, applicationContext, jCacheCacheManager);
     }
 
+    @Bean
+    public SecurityFilterChain filterChain(final HttpSecurity http) throws Exception {
+        http.requiresChannel(c -> c.requestMatchers(r -> r.getHeader("X-Forwarded-Proto") != null).requiresSecure());
+        http.csrf(AbstractHttpConfigurer::disable);
+        return http.build();
+    }
+    
 }

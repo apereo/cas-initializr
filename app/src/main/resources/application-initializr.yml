@@ -26,7 +26,7 @@ cas-initializr:
       container-base-image: eclipse-temurin:11-jdk
       gradle-version: 7.6
       plugins:
-        jibVersion: 3.4.0
+        jib-version: 3.4.0
     - version: 6.5.9.4
       platform-version: 6.5.0
       boot-version: 2.6.3
@@ -39,7 +39,7 @@ cas-initializr:
       container-base-image: eclipse-temurin:11-jdk
       gradle-version: 7.4
       plugins:
-        jibVersion: 3.4.0
+        jib-version: 3.4.0
     - version: 6.6.14
       platform-version: 6.6.0
       boot-version: 2.7.3
@@ -52,7 +52,7 @@ cas-initializr:
       container-base-image: eclipse-temurin:11-jdk
       gradle-version: 7.6
       plugins:
-        jibVersion: 3.4.0
+        jib-version: 3.4.0
     - version: ${casLatestVersion}
       platform-version: ${casLatestVersion}
       boot-version: ${springBootLatestVersion}
@@ -65,4 +65,5 @@ cas-initializr:
       container-base-image: azul/zulu-openjdk:21
       gradle-version: 8.5
       plugins:
-        jibVersion: ${jibVersion}
+        jib-version: ${jibVersion}
+        open-rewrite-version: ${openRewriteVersion}

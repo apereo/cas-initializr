@@ -236,6 +236,7 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
                 templateVariables.put("tomcatVersion", version.getTomcatVersion());
                 templateVariables.put("javaVersion", version.getJavaVersion());
                 templateVariables.put("jibVersion", version.getPlugins().getJibVersion());
+                templateVariables.put("openRewriteVersion", version.getPlugins().getOpenRewriteVersion());
                 templateVariables.put("containerBaseImageName", version.getContainerBaseImage());
                 templateVariables.put("gradleVersion", version.getGradleVersion());
                 templateVariables.put("branch", version.getBranch());
@@ -268,7 +269,7 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         templateVariables.put("casVersion", casVersion);
 
         var casMajorVersion = VersionUtils.parse(casVersion).getMajor();
-        IntStream.rangeClosed(6, 10).forEach(value -> {
+        IntStream.rangeClosed(6, 15).forEach(value -> {
             if (casMajorVersion == value) {
                 templateVariables.put("casVersion" + value, Boolean.TRUE);
             }
