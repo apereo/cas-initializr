@@ -111,6 +111,6 @@ jobs:
           java --version
           native-image --version
       - name: Build Native Image
-        timeout-minutes: 35
+        timeout-minutes: 40
         if: ${{ matrix.versions.sync == true && matrix.versions.branch == 'master' }}
         run: ./ci/validate-cas-native.sh --cas ${{ matrix.versions.version }}
