@@ -54,7 +54,7 @@ jobs:
         with:
           java-version: ${{ env.JDK_CURRENT }}
           distribution: ${{ env.JDK_DISTRO }}
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: binary-artifacts
       - id: print-supported-versions
@@ -81,7 +81,7 @@ jobs:
         with:
           java-version: ${{ env.JDK_CURRENT }}
           distribution: ${{ env.JDK_DISTRO }}
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: binary-artifacts
       - name: Install K3S and Helm
