@@ -3,6 +3,7 @@ name: Initializr Native Image
 env:
   TERM: xterm-256color
   JDK_CURRENT: 17
+  JDK_DISTRO: 'corretto'
   GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
 ##########################################################################
@@ -78,12 +79,24 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
         if: ${{ matrix.versions.sync == true && matrix.versions.branch == 'master' }}
+      - name: Set up JDK
+        uses: actions/setup-java@v4.0.0
+        if: ${{ matrix.versions.sync == true && matrix.versions.branch == 'master' }}
+        with:
+          java-version: ${{ env.JDK_CURRENT }}
+          distribution: ${{ env.JDK_DISTRO }}
+      - name: Validate Initializr
+        if: ${{ matrix.versions.sync == true && matrix.versions.branch == 'master' }}
+        run: ./ci/validate-initializr.sh
+      - name: Fetch Overlay
+        if: ${{ matrix.versions.sync == true && matrix.versions.branch == 'master' }}
+        run: ./ci/validate-cas-native.sh --fetch-only --cas ${{ matrix.versions.version }}       
       - name: Setup GraalVM JDK
         uses: graalvm/setup-graalvm@v1
         if: ${{ matrix.versions.sync == true && matrix.versions.branch == 'master' }}
         with:
           distribution: 'graalvm'
-          java-version: ${{ env.JDK_CURRENT }}
+          java-version: ${{ matrix.versions.java-version }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           cache: 'gradle'
           set-java-home: 'true'
@@ -95,12 +108,6 @@ jobs:
           echo "JAVA_HOME: $JAVA_HOME"
           java --version
           native-image --version
-      - name: Build Initializr
-        if: ${{ matrix.versions.sync == true && matrix.versions.branch == 'master' }}
-        run: ./gradlew --build-cache --configure-on-demand --no-daemon clean build -x test -x javadoc -x check --parallel
-      - name: Validate Initializr
-        if: ${{ matrix.versions.sync == true && matrix.versions.branch == 'master' }}
-        run: ./ci/validate-initializr.sh
       - name: Build Native Image
         timeout-minutes: 35
         if: ${{ matrix.versions.sync == true && matrix.versions.branch == 'master' }}

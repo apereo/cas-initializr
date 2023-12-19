@@ -2,8 +2,13 @@
 
 source ./ci/functions.sh
 
+FETCH_OVERLAY="false"
 while (( "$#" )); do
     case "$1" in
+    --fetch-only)
+        FETCH_OVERLAY="true"
+        shift 1
+        ;;
     --cas)
         CAS_VERSION="$2"
         shift 2
@@ -11,20 +16,26 @@ while (( "$#" )); do
     esac
 done
 
-parameters="casVersion=${CAS_VERSION}&nativeImageSupported=true"
-
 CAS_MAJOR_VERSION=`echo $CAS_VERSION | cut -d. -f1`
 CAS_MINOR_VERSION=`echo $CAS_VERSION | cut -d. -f2`
 
-java -jar app/build/libs/app.jar &
-pid=$!
-sleep 15
+if [[ "${FETCH_OVERLAY}" == "true" ]]; then
+  parameters="casVersion=${CAS_VERSION}&nativeImageSupported=true"
+  java -jar app/build/libs/app.jar &
+  pid=$!
+  sleep 15
+  printgreen "Requesting CAS overlay for ${parameters}"
+  curl http://localhost:8080/starter.tgz --connect-timeout 30 -d "${parameters}" | tar -xzvf -
+  kill -9 $pid
+  [ "$CI" = "true" ] && pkill java
+  ls
+  printgreen "Downloaded CAS overlay ${CAS_VERSION} successfully."
+  exit 0
+fi
+
 mkdir tmp
 cd tmp || exit
-printgreen "Requesting CAS overlay for ${parameters}"
-curl http://localhost:8080/starter.tgz --connect-timeout 30 -d "${parameters}" | tar -xzvf -
-kill -9 $pid
-[ "$CI" = "true" ] && pkill java
+echo "Working directory: ${PWD}"
 
 if [[ -d /tmp ]] ; then
   sudo mkdir /tmp
