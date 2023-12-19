@@ -44,7 +44,7 @@ if [[ -d /tmp ]] ; then
 fi
 
 printgreen "Building CAS Native Image. This may take several minutes..."
-./gradlew clean build nativeCompile -PnativeImage=true --warning-mode all --no-daemon
+./gradlew clean build nativeCompile -PnativeImage=true --warning-mode all --no-daemon --no-configuration-cache
 
 if [[ $? -ne 0 ]]; then
   printred "CAS native image build failed"

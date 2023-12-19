@@ -84,13 +84,14 @@ bootRun {
 def nativeImage = project.hasProperty("nativeImage") && Boolean.valueOf(project.getProperty("nativeImage"))
 {{/nativeImageSupported}}
 springBoot {
-    buildInfo()
     {{#casServer}}
     {{#nativeImageSupported}}
     if (nativeImage) {
         {{mainClass}} = "org.apereo.cas.nativex.CasNativeWebApplication"
     } else {
         {{mainClass}} = "org.apereo.cas.web.CasWebApplication"
+        buildInfo()
+        bootBuildInfo.mustRunAfter(compileJava)
     }
     {{/nativeImageSupported}}
     {{^nativeImageSupported}}{{mainClass}} = "org.apereo.cas.web.CasWebApplication"{{/nativeImageSupported}}
@@ -163,5 +164,3 @@ if (!nativeImage) {
 {{#nativeImageSupported}}
 }
 {{/nativeImageSupported}}
-
-bootBuildInfo.mustRunAfter(compileJava)
