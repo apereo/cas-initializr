@@ -207,8 +207,8 @@ if [[ "$CAS_MAJOR_VERSION" -ge 7 ]]; then
   fi
   printgreen "Discovered OpenRewrite recipes: ${recipes}"
 
-  printgreen "OpenRewrite to dry-run recipes..."
-  recipeName="org.apereo.cas.cas${CAS_MAJOR_VERSION}${CAS_MINOR_VERSION}${CAS_PATCH_VERSION}"
+  recipeName="org.apereo.cas.cas${CAS_MAJOR_VERSION}${CAS_MINOR_VERSION}${CAS_PATCH_VERSION%-SNAPSHOT}"
+  printgreen "OpenRewrite to dry-run recipe ${recipeName}..."
   ./gradlew --init-script openrewrite.gradle rewriteDryRun \
     -PtargetVersion="${targetVersion}" -DactiveRecipe="$recipeName"
   [ $? -eq 0 ] && echo "Gradle command ran successfully." || exit 1
