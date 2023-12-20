@@ -38,7 +38,7 @@ echo -n "NPM version: " && npm --version
 echo -n "Node version: " && node --version
 
 echo "Launching CAS at $casWebApplicationFile with options $CAS_ARGS"
-java -jar "$casWebApplicationFile" "$CAS_ARGS" &
+java -jar "$casWebApplicationFile" $CAS_ARGS &
 pid=$!
 echo "Waiting for CAS under process id ${pid}"
 sleep 45
