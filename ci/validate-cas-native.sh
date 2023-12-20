@@ -23,11 +23,15 @@ if [[ "${FETCH_OVERLAY}" == "true" ]]; then
   parameters="casVersion=${CAS_VERSION}&nativeImageSupported=true"
   java -jar app/build/libs/app.jar &
   pid=$!
-  sleep 15
+  sleep 25
   printgreen "Requesting CAS overlay for ${parameters}"
   mkdir tmp
   cd tmp || exit
   curl http://localhost:8080/starter.tgz --connect-timeout 30 -d "${parameters}" | tar -xzvf -
+  if [ $? -ne 0 ]; then
+      printred "Failed to download CAS overlay from CAS Initializr"
+      exit 1
+  fi
   kill -9 $pid
   [ "$CI" = "true" ] && pkill java
   printgreen "Working directory: ${PWD}"
