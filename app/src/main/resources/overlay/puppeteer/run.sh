@@ -1,6 +1,5 @@
 #!/bin/bash
 
-RUN_ARGS=""
 CAS_ARGS="${CAS_ARGS:-}"
 
 RED="\e[31m"

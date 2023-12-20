@@ -49,6 +49,19 @@ if [[ "${FETCH_OVERLAY}" == "true" ]]; then
   exit 0
 fi
 
+dname="${dname:-CN=cas.example.org,OU=Example,OU=Org,C=US}"
+subjectAltName="${subjectAltName:-dns:example.org,dns:localhost,ip:127.0.0.1}"
+keystore="/etc/cas/thekeystore"
+sudo mkdir -p /etc/cas
+printgreen "Generating keystore ${keystore} for CAS with DN=${dname}, SAN=${subjectAltName}"
+[ -f "${keystore}" ] && sudo rm "${keystore}"
+sudo keytool -genkey -noprompt -alias cas -keyalg RSA -keypass changeit -storepass changeit \
+  -keystore "${keystore}" -dname "${dname}" -ext SAN="${subjectAltName}"
+if [[ $? -ne 0 ]]; then
+  printred "Unable to create CAS keystore ${keystore}"
+  exit 1
+fi
+
 printgreen "Building CAS overlay in $PWD"
 ./gradlew clean build --warning-mode all --no-daemon
 
