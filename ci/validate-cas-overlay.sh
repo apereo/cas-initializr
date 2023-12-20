@@ -196,8 +196,9 @@ printgreen "Build Container Image w/ Docker Compose"
 docker-compose build
 
 if [[ "$CAS_MAJOR_VERSION" -ge 7 ]]; then
-  targetVersion=${CAS_VERSION%-SNAPSHOT}
-
+  # targetVersion=${CAS_VERSION%-SNAPSHOT}
+  targetVersion="${CAS_VERSION}"
+  
   printgreen "OpenRewrite to discover recipes for target version ${targetVersion}..."
   recipes=$(./gradlew --init-script openrewrite.gradle rewriteDiscover -PtargetVersion="${targetVersion}" | grep "org.apereo.cas")
   if [ -z "$recipes" ] ; then
