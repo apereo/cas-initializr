@@ -33,6 +33,7 @@ import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -119,6 +120,10 @@ public class CasInitializrApplication {
     public SecurityFilterChain filterChain(final HttpSecurity http) throws Exception {
         http.requiresChannel(c -> c.requestMatchers(r -> r.getHeader("X-Forwarded-Proto") != null).requiresSecure());
         http.csrf(AbstractHttpConfigurer::disable);
+        http.headers(c -> {
+            c.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin);
+            c.contentSecurityPolicy(s -> s.policyDirectives("frame-src https://apereo.github.io/cas"));
+        });
         return http.build();
     }
     
