@@ -43,8 +43,8 @@ cas-initializr:
     - version: 6.6.15
       platform-version: 6.6.0
       boot-version: 2.7.3
-      sync: true
-      validate: true
+      sync: false
+      validate: false
       branch: 6.6
       type: cas
       tomcat-version: 9.0.84
@@ -53,6 +53,20 @@ cas-initializr:
       gradle-version: 7.6
       plugins:
         jib-version: 3.4.0
+    - version: 7.0.0
+      platform-version: 7.0.0
+      boot-version: 3.2.1
+      sync: true
+      validate: true
+      branch: master
+      type: cas
+      tomcat-version: ${apacheTomcat10LatestVersion}
+      java-version: 21
+      container-base-image: azul/zulu-openjdk:21
+      gradle-version: 8.5
+      plugins:
+        jib-version: ${jibVersion}
+        open-rewrite-version: ${openRewriteVersion}
     - version: ${casLatestVersion}
       platform-version: ${casLatestVersion}
       boot-version: ${springBootLatestVersion}
