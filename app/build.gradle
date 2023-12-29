@@ -104,7 +104,7 @@ processResources {
     def gradleDockerPluginVersion = project.providers.gradleProperty("gradleDockerPluginVersion").get()
 
     def springBootLatestVersion = project.providers.gradleProperty("springBootLatestVersion").get()
-    def apacheTomcat9LatestVersion = project.providers.gradleProperty("apacheTomcat9LatestVersion").get()
+
     def apacheTomcat10LatestVersion = project.providers.gradleProperty("apacheTomcat10LatestVersion").get()
     def casLatestVersion = project.providers.gradleProperty("casLatestVersion").get()
     def casManagementLatestVersion = project.providers.gradleProperty("casManagementLatestVersion").get()
@@ -116,7 +116,6 @@ processResources {
     filesMatching("**/application-*.yml") {
         expand (
                 springBootLatestVersion: springBootLatestVersion,
-                apacheTomcat9LatestVersion: apacheTomcat9LatestVersion,
                 apacheTomcat10LatestVersion: apacheTomcat10LatestVersion,
                 casLatestVersion: casLatestVersion,
                 casManagementLatestVersion: casManagementLatestVersion,
