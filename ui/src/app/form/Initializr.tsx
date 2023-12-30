@@ -6,7 +6,7 @@ import ShareOverlay from "./ShareOverlay";
 
 import { useApiLoaded, useVersionsLoaded } from '../store/AppReducer';
 import { Overlay } from '../data/Overlay';
-import { preselected, useCanDownload, useOverlay, useSelectedCasVersion } from '../store/OverlayReducer';
+import { preselected, useCanDownload, useOverlay } from '../store/OverlayReducer';
 import { getOverlayFromQs, getOverlayQuery } from '../data/Url';
 import JSZip from "jszip";
 
@@ -21,9 +21,6 @@ import { setDependencies } from '../store/OverlayReducer';
 
 import { getTree } from "../file/tree";
 import DownloadOverlay from './DownloadOverlay';
-import Properties from './Properties';
-
-import { gte } from 'semver';
 
 export const downloadAsZip = (fileName: string, data: any) => {
     // const blob = new Blob([data], { type: 'text/zip;charset=utf-8' });
@@ -70,12 +67,6 @@ export default function Initializr() {
     const overlay = useOverlay();
     const defaultValues = useDefaultValues();
     const dispatch = useAppDispatch();
-    const version = useSelectedCasVersion();
-    const versionNum = React.useMemo(() => {
-        const match = version.match(/\d.\d.\d/);
-        return match != null && match[0];
-    }, [version]);
-    const hasSettings = React.useMemo(() => versionNum && gte(versionNum, '7.0.0'),[versionNum]);
     const [loading, setLoading] = React.useState(false);
 
     const fetchArchive = async (overlay: Overlay, type: string = "tgz") => {
@@ -196,17 +187,11 @@ export default function Initializr() {
                             <Box sx={{ borderBottom: 1, borderColor: 'divider', mt: 1 }}>
                                 <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
                                     <Tab label="Dependencies" {...a11yProps(0)} />
-                                    { hasSettings && <Tab label="Configuration Settings" {...a11yProps(1)} disabled={ !version } /> }
                                 </Tabs>
                             </Box>
                             <TabPanel value={value} index={0}>
                                 <Dependencies />
                             </TabPanel>
-                            { hasSettings &&
-                            <TabPanel value={value} index={1}>
-                                <Properties />
-                            </TabPanel>
-                            }
                         </Grid>
                     </>
                 ) : (
