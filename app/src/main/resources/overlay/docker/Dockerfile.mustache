@@ -1,8 +1,9 @@
 ARG BASE_IMAGE="{{containerBaseImageName}}"
-ARG EXT_BUILD_COMMANDS=""
-ARG EXT_BUILD_OPTIONS=""
 
 FROM $BASE_IMAGE AS overlay
+
+ARG EXT_BUILD_COMMANDS=""
+ARG EXT_BUILD_OPTIONS=""
 
 RUN mkdir -p cas-overlay
 COPY ./src cas-overlay/src/
