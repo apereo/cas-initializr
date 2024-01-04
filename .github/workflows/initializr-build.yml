@@ -13,23 +13,21 @@ env:
 ##########################################################################
 
 on:
+  workflow_dispatch:
   push:
     branches: [ master ]
   pull_request:
     branches: [ master ]
   schedule:
     - cron: '0 0 * * *'
-      
+
+concurrency:
+  group: "workflow = ${{ github.workflow }}, ref = ${{ github.event.ref }}, pr = ${{ github.event.pull_request.id }}"
+  cancel-in-progress: ${{ github.event_name == 'pull_request' || github.repository != 'apereo/cas-initializr' }}
+  
 ##########################################################################
 
 jobs:
-  cancel-previous-runs:
-    runs-on: ubuntu-latest
-    timeout-minutes: 1
-    steps:
-      - uses: styfle/cancel-workflow-action@0.12.0
-        with:
-          access_token: ${{ github.token }}
   build:
     runs-on: ubuntu-latest
     steps:
