@@ -45,7 +45,7 @@ cas-initializr:
       boot-version: 3.2.1
       sync: true
       validate: true
-      branch: 7.0
+      branch: "7.0"
       type: cas
       tomcat-version: ${apacheTomcat10LatestVersion}
       java-version: 21

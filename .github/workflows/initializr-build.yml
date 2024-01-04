@@ -150,7 +150,7 @@ jobs:
           distribution: ${{ env.JDK_DISTRO }}
       - name: Sync Overlay
         if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
-        run: ./ci/sync-overlay.sh ${{ matrix.versions.version }} ${{ matrix.versions.boot-version }} "${{ matrix.versions.branch }}" cas-management-overlay
+        run: ./ci/sync-overlay.sh ${{ matrix.versions.version }} ${{ matrix.versions.boot-version }} ${{ matrix.versions.branch }} cas-management-overlay
   ##########################################################################
   sync-cas-overlay:
     needs: [ supported-versions-cas,validate-cas-overlay ]
@@ -190,7 +190,7 @@ jobs:
           distribution: ${{ env.JDK_DISTRO }}
       - name: Sync Overlay
         if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
-        run: ./ci/sync-overlay.sh ${{ matrix.versions.version }} ${{ matrix.versions.boot-version }} "${{ matrix.versions.branch }}" cas-overlay
+        run: ./ci/sync-overlay.sh ${{ matrix.versions.version }} ${{ matrix.versions.boot-version }} ${{ matrix.versions.branch }} cas-overlay
   ##########################################################################
   validate-cas-overlay:
     needs: [ supported-versions-cas ]
@@ -360,7 +360,7 @@ jobs:
           distribution: ${{ env.JDK_DISTRO }}
       - name: Sync Overlay
         if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
-        run: ./ci/sync-overlay.sh ${{ matrix.versions.version }} ${{ matrix.versions.boot-version }} "${{ matrix.versions.branch }}" cas-config-server-overlay
+        run: ./ci/sync-overlay.sh ${{ matrix.versions.version }} ${{ matrix.versions.boot-version }} ${{ matrix.versions.branch }} cas-config-server-overlay
   ##########################################################################
   publish:
     needs: [ build ]
