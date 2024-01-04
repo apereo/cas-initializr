@@ -75,7 +75,7 @@ bootRun {
 
     jvmArgs = list
 
-    def appArgList = []
+    def appArgList = ["--spring.thymeleaf.cache=false"]
     args = appArgList
 }
 {{/casServer}}
