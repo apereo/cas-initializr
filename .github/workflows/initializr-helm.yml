@@ -82,7 +82,7 @@ jobs:
         with:
           name: binary-artifacts
       - name: Install K3S and Helm
-        uses: jupyterhub/action-k3s-helm@v3
+        uses: jupyterhub/action-k3s-helm@v4
         with:
           # - k3s release channels at https://github.com/k3s-io/k3s/blob/HEAD/channel.yaml
           k3s-channel: ${{ matrix.k3s-channel }}
