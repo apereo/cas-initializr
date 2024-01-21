@@ -60,12 +60,12 @@ for scenario in "${PWD}"/puppeteer/scenarios/*; do
     echo "- Scenario $scenarioName "
     echo -e "==========================\n"
     node "$scenario"
+    rc=$?
     echo -e "\n"
-    echo -n "- Scenario $scenarioName: "
-    if [[ $? -ne 0 ]]; then
-        printred "\xE2\x9D\x8C FAILED"
+    if [[ $rc -ne 0 ]]; then
+        printred "🔥 Scenario $scenarioName FAILED"
     else 
-        printgreen "\xE2\x9C\x94 PASSED"
+        printgreen "✅ Scenario $scenarioName PASSED"
     fi
     echo -e "\n"
     sleep 1

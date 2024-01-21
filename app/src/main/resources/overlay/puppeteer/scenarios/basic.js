@@ -41,6 +41,10 @@ const logger = pino({
         });
         assert(cookies.length !== 0);
         logger.info(`Cookie:\n${JSON.stringify(cookies, undefined, 2)}`);
+        await process.exit(0)
+    } catch (e) {
+        logger.error(e);
+        await process.exit(1)
     } finally {
         await browser.close();
     }
