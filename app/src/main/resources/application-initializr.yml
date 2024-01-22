@@ -19,7 +19,7 @@ cas-initializr:
       platform-version: 7.0.0
       sync: true
       validate: true
-      branch: 7.0
+      branch: "7.0"
       type: cas-mgmt
       tomcat-version: ${apacheTomcat10LatestVersion}
       java-version: 21
@@ -32,7 +32,7 @@ cas-initializr:
       platform-version: 6.6.0
       sync: false
       validate: false
-      branch: 6.6
+      branch: "6.6"
       type: cas-mgmt
       tomcat-version: 9.0.84
       java-version: 11
@@ -45,7 +45,7 @@ cas-initializr:
       boot-version: 2.7.3
       sync: false
       validate: false
-      branch: 6.6
+      branch: "6.6"
       type: cas
       tomcat-version: 9.0.84
       java-version: 11
