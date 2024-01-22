@@ -30,8 +30,8 @@ cas-initializr:
     - version: 6.6.4
       boot-version: 2.7.1
       platform-version: 6.6.0
-      sync: true
-      validate: true
+      sync: false
+      validate: false
       branch: 6.6
       type: cas-mgmt
       tomcat-version: 9.0.84
