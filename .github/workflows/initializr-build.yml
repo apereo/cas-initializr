@@ -276,6 +276,8 @@ jobs:
         with:
           java-version: ${{ matrix.versions.java-version }}
           distribution: ${{ env.JDK_DISTRO }}
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
       - name: Validate Overlay
         if: ${{ matrix.versions.validate == true }}
         run: |
