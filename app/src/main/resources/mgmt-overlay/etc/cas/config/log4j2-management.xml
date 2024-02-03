@@ -6,7 +6,7 @@
         Default log directory is the current directory but that can be overridden with -Dcas.log.dir=<logdir>
         Or you can change this property to a new default
         -->
-        <Property name="cas.log.dir" >.</Property>
+        <Property name="cas.log.dir" >/etc/cas/logs</Property>
         <!-- To see more CAS specific logging, adjust this property to info or debug or run server with -Dcas.log.leve=debug -->
         <Property name="cas.log.level" >info</Property>
     </Properties>
@@ -26,6 +26,7 @@
     </Appenders>
     <Loggers>
         <AsyncLogger name="org.springframework" level="warn" />
+        <AsyncLogger name="org.springframework.boot" level="info" />
         <AsyncLogger name="org.springframework.amqp" level="error" />
         <AsyncLogger name="org.springframework.webflow" level="warn" />
         <AsyncLogger name="org.springframework.web" level="warn" />
