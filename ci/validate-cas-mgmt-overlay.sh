@@ -69,15 +69,10 @@ done
 echo -e "\n\nReady!"
 kill -9 $pid
 
-echo "Build Container Image w/ Docker"
-chmod +x "*.sh"  >/dev/null 2>&1
-./docker-build.sh
-
-echo "Building Docker image with Jib"
-publishDockerImage
-
 downloadTomcat $TOMCAT_VERSION
+echo "Moving CAS Management WAR to Apache Tomcat webapps directory..."
 mv build/libs/cas-management.war ${CATALINA_HOME}/webapps/app.war
+ls ${CATALINA_HOME}/webapps
 
 ${CATALINA_HOME}/bin/startup.sh & >/dev/null 2>&1
 pid=$!
@@ -91,3 +86,11 @@ else
     echo "Failed to deploy the web application with status $rc."
     exit 1
 fi
+
+echo "Build Container Image w/ Docker"
+chmod +x "*.sh"  >/dev/null 2>&1
+./docker-build.sh
+
+echo "Building Docker image with Jib"
+publishDockerImage
+
