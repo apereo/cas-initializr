@@ -194,7 +194,6 @@ jobs:
   ##########################################################################
   validate-cas-overlay:
     needs: [ supported-versions-cas ]
-    timeout-minutes: 35
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -229,6 +228,7 @@ jobs:
           java-version: ${{ matrix.versions.java-version }}
           distribution: ${{ env.JDK_DISTRO }}
       - name: Validate Overlay w/ CAS & SpringBoot
+        timeout-minutes: 15
         if: ${{ matrix.versions.validate == true }}
         run: |
           ./ci/validate-cas-overlay.sh --cas ${{ matrix.versions.version }} \
@@ -236,7 +236,7 @@ jobs:
             --apache-tomcat ${{ matrix.versions.tomcat-version }}
       - name: Validate Overlay w/ CAS Only
         if: ${{ matrix.versions.validate == true }}
-        # if: ${{ false }}
+        timeout-minutes: 35
         run: |
           ./ci/validate-cas-overlay.sh --cas ${{ matrix.versions.version }} \
             --apache-tomcat ${{ matrix.versions.tomcat-version }}
