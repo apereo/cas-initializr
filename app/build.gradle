@@ -46,7 +46,7 @@ dependencies {
     implementation "org.jooq:jool:0.9.15"
     implementation "commons-io:commons-io:2.16.0"
     implementation "org.eclipse.jgit:org.eclipse.jgit:6.8.0.202311291450-r"
-    implementation "com.github.vladimir-bukhtoyarov:bucket4j-core:7.6.0"
+    implementation "com.github.vladimir-bukhtoyarov:bucket4j-core:7.6.1"
     implementation "com.github.spullara.mustache.java:compiler:0.9.11"
     
     implementation "org.springframework.boot:spring-boot-starter-web"
