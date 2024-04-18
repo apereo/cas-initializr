@@ -47,13 +47,13 @@ cas-initializr:
       validate: false
       branch: "6.6"
       type: cas
-      tomcat-version: 9.0.84
+      tomcat-version: 9.0.87
       java-version: 11
       container-base-image: eclipse-temurin:11-jdk
       gradle-version: 7.6
       plugins:
         jib-version: 3.4.0
-    - version: 7.0.2
+    - version: 7.0.3
       platform-version: 7.0.0
       boot-version: 3.2.1
       sync: true
