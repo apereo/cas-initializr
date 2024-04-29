@@ -47,7 +47,7 @@ dependencies {
     implementation "org.eclipse.jgit:org.eclipse.jgit:6.9.0.202403050737-r"
     implementation "commons-io:commons-io:2.16.1"
     implementation "com.github.vladimir-bukhtoyarov:bucket4j-core:8.0.1"
-    implementation "com.github.spullara.mustache.java:compiler:0.9.11"
+    implementation "com.github.spullara.mustache.java:compiler:0.9.12"
     
     implementation "org.springframework.boot:spring-boot-starter-web"
     implementation "org.springframework.boot:spring-boot-starter-thymeleaf"
