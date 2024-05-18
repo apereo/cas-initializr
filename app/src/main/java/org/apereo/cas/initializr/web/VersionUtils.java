@@ -27,7 +27,7 @@ public class VersionUtils {
         if (versionText.matches("\\d.\\d")) {
             versionText += ".0";
         }
-        if (versionText.matches("\\d.\\d.\\d.\\d")) {
+        if (versionText.matches("\\d+.\\d+.\\d+.\\d+")) {
             return Version.parse(versionText.substring(0, versionText.lastIndexOf('.')));
         }
         return Version.parse(versionText);
