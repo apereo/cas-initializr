@@ -228,7 +228,7 @@ jobs:
           java-version: ${{ matrix.versions.java-version }}
           distribution: ${{ env.JDK_DISTRO }}
       - name: Validate Overlay w/ CAS & SpringBoot
-        timeout-minutes: 15
+        timeout-minutes: 20
         if: ${{ matrix.versions.validate == true }}
         run: |
           ./ci/validate-cas-overlay.sh --cas ${{ matrix.versions.version }} \
