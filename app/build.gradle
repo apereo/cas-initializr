@@ -112,6 +112,7 @@ processResources {
     def graalVmVersion = project.providers.gradleProperty("graalVmVersion").get()
     def graalVmMetadataRepositoryVersion = project.providers.gradleProperty("graalVmMetadataRepositoryVersion").get()
     def gradleGraalVmNativePluginVersion = project.providers.gradleProperty("gradleGraalVmNativePluginVersion").get()
+    def gradleCyclonePluginVersion = project.providers.gradleProperty("gradleCyclonePluginVersion").get()
 
     filesMatching("**/application-*.yml") {
         expand (
@@ -135,7 +136,8 @@ processResources {
                 "gradleDockerPluginVersion"              : gradleDockerPluginVersion,
                 "graalVmVersion"                         : graalVmVersion,
                 "graalVmMetadataRepositoryVersion"       : graalVmMetadataRepositoryVersion,
-                "gradleGraalVmNativePluginVersion"       : gradleGraalVmNativePluginVersion
+                "gradleGraalVmNativePluginVersion"       : gradleGraalVmNativePluginVersion,
+                "gradleCyclonePluginVersion"             : gradleCyclonePluginVersion
         ]
     }
 }

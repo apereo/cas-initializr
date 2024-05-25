@@ -268,9 +268,9 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         var casVersion = project.resolveCasVersion(boms.get("cas-bom"));
         templateVariables.put("casVersion", casVersion);
 
-        var casMajorVersion = VersionUtils.parse(casVersion).getMajor();
+        var parsedCasVersion = VersionUtils.parse(casVersion);
         IntStream.rangeClosed(6, 15).forEach(value -> {
-            if (casMajorVersion == value) {
+            if (parsedCasVersion.getMajor() == value) {
                 templateVariables.put("casVersion" + value, Boolean.TRUE);
             }
         });
@@ -305,10 +305,10 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         }
         templateVariables.put("githubActionsSupported", getOverlayProjectDescription().isGithubActionsSupported());
 
-        templateVariables.put("nativeImageSupported",
-            getOverlayProjectDescription().isNativeImageSupported()
-                && type.equalsIgnoreCase(CasOverlayBuildSystem.ID)
-                && casMajorVersion >= 7);
+        if (type.equalsIgnoreCase(CasOverlayBuildSystem.ID) && parsedCasVersion.getMajor() >= 7 && parsedCasVersion.getMinor() >= 1) {
+            templateVariables.put("sbomSupported", getOverlayProjectDescription().isSbomSupported());
+            templateVariables.put("nativeImageSupported", getOverlayProjectDescription().isNativeImageSupported());
+        }
 
         if (type.equalsIgnoreCase(CasOverlayBuildSystem.ID)) {
             templateVariables.put("puppeteerSupported", getOverlayProjectDescription().isPuppeteerSupported());

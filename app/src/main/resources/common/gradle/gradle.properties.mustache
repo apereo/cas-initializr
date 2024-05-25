@@ -1,4 +1,5 @@
 {{#managementServer}}
+# This overlay project's version
 version={{casMgmtVersion}}
 # CAS Management version
 casmgmt.version={{casMgmtVersion}}
@@ -9,6 +10,7 @@ cas.version={{casMgmtCasVersion}}
 {{/managementServer}}
 
 {{^managementServer}}
+# This overlay project's version
 version={{casVersion}}
 # CAS server version
 cas.version={{casVersion}}
@@ -52,6 +54,13 @@ graalVmVersion=@graalVmVersion@
 graalVmMetadataRepositoryVersion=@graalVmMetadataRepositoryVersion@
 gradleGraalVmNativePluginVersion=@gradleGraalVmNativePluginVersion@
 {{/nativeImageSupported}}
+
+{{#sbomSupported}}
+# The plugin creates an aggregate of all dependencies of a project
+# and creates a valid SBOM, designed for use in application security contexts
+# and supply chain component analysis.
+gradleCyclonePluginVersion=@gradleCyclonePluginVersion@
+{{/sbomSupported}}
 {{/appServer}}
 
 # Use -tomcat, -jetty, -undertow for deployment to other embedded containers

@@ -60,6 +60,7 @@ export const OverlaySlice = createSlice({
         commandlineShellSupported: 'true',
         helmSupported: 'false',
         herokuSupported: 'false',
+        sbomSupported: 'false',
         deploymentType: 'executable'
     },
     reducers: {
@@ -86,6 +87,7 @@ export const OverlaySlice = createSlice({
                 dockerSupported,
                 helmSupported,
                 herokuSupported,
+                sbomSupported,
                 puppeteerSupported,
                 githubActionsSupported,
                 nativeImageSupported,
@@ -108,6 +110,7 @@ export const OverlaySlice = createSlice({
             state.dockerSupported = dockerSupported;
             state.helmSupported = helmSupported;
             state.herokuSupported = herokuSupported;
+            state.sbomSupported = sbomSupported;
             state.puppeteerSupported = puppeteerSupported;
             state.githubActionsSupported = githubActionsSupported;
             state.nativeImageSupported = nativeImageSupported;

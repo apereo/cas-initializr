@@ -43,7 +43,9 @@ buildscript {
         {{#nativeImageSupported}}
         classpath "org.graalvm.buildtools:native-gradle-plugin:${project.gradleGraalVmNativePluginVersion}"
         {{/nativeImageSupported}}
-
+        {{#sbomSupported}}
+        classpath "org.cyclonedx:cyclonedx-gradle-plugin:${project.gradleCyclonePluginVersion}"
+        {{/sbomSupported}}
         classpath "de.undercouch:gradle-download-task:${project.gradleDownloadTaskVersion}"
         classpath "org.apereo.cas:cas-server-core-api-configuration-model:${project.'cas.version'}"
         classpath "org.apereo.cas:cas-server-core-configuration-metadata-repository:${project.'cas.version'}"
@@ -104,6 +106,10 @@ apply plugin: "war"
 
 apply plugin: "org.springframework.boot"
 apply plugin: "io.freefair.lombok"
+
+{{#sbomSupported}}
+apply plugin: "org.cyclonedx.bom"
+{{/sbomSupported}}
 
 {{#nativeImageSupported}}
 apply plugin: "org.graalvm.buildtools.native"

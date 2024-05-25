@@ -122,6 +122,10 @@ export const OptionSlice = createSlice({
                 type: "",
                 default: 'false'
             },
+            sbomSupported: {
+                type: "",
+                default: 'false'
+            },
             deploymentType: {
                 type: "",
                 default: 'executable'
@@ -145,6 +149,7 @@ export const OptionSlice = createSlice({
                 dockerSupported,
                 helmSupported,
                 herokuSupported,
+                sbomSupported,
                 puppeteerSupported,
                 githubActionsSupported,
                 nativeImageSupported,
@@ -167,6 +172,7 @@ export const OptionSlice = createSlice({
             state.packageName = packageName;
             state.dockerSupported = dockerSupported || {default: 'true'};
             state.helmSupported = helmSupported || { default: 'false' };
+            state.sbomSupported = sbomSupported || { default: 'false' };
             state.herokuSupported = herokuSupported || {default: 'false'};
             state.puppeteerSupported = puppeteerSupported || {default: 'true'};
             state.githubActionsSupported = githubActionsSupported || {default: 'true'};
@@ -254,6 +260,7 @@ export const CasDefaultSelector = createSelector(
             dockerSupported: state.dockerSupported.default,
             helmSupported: state.helmSupported.default,
             herokuSupported: state.herokuSupported.default,
+            sbomSupported: state.sbomSupported.default,
             puppeteerSupported: state.puppeteerSupported.default,
             githubActionsSupported: state.githubActionsSupported.default,
             nativeImageSupported: state.nativeImageSupported.default,
