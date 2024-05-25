@@ -125,6 +125,21 @@ Run the CAS web application as a *standalone* executable WAR:
 ./gradlew[.bat] clean executable
 ```
 
+### CDS Support
+
+CDS is a JVM feature that can help reduce the startup time and memory footprint of Java applications. CAS via Spring Boot
+now has support for easy creation of a CDS friendly layout. This layout can be created by extracting the CAS web application file
+with the help of the `tools` jarmode:
+
+```bash
+# Note:
+# You must first build the web application with "executable" turned off
+java -Djarmode=tools -jar build/libs/{{appName}}.war extract
+
+# Run the CAS web application via CDS
+java -jar {{appName}}/{{appName}}.war
+```
+
 ## External
 
 Deploy the binary web application file in `build/libs` after a successful build to a servlet container of choice.

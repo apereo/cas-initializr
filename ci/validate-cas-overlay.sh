@@ -212,6 +212,26 @@ if [[ "$CAS_MAJOR_VERSION" -ge 7 ]]; then
   ./gradlew --init-script openrewrite.gradle rewriteDryRun \
     -PtargetVersion="${targetVersion}" -DactiveRecipe="$recipeName"
   [ $? -eq 0 ] && echo "Gradle command ran successfully." || exit 1
+
+  if [[ "$CAS_MINOR_VERSION" -ge 1 ]]; then
+    printgreen "Build CAS web application without executable mode..."
+    ./gradlew clean build -Pexecutable=false --no-daemon
+    
+    printgreen "Extracting Uber WAR from CAS to prepare CDS launch..."
+    java -Djarmode=tools -jar build/libs/cas.war extract
+    java -jar ./cas/cas.war --spring.profiles.active=none --server.ssl.enabled=false --server.port=8091 &
+    pid=$!
+    sleep 15
+    echo "Launched executable CAS with pid ${pid}. Waiting for CAS server to come online..."
+    until curl -k -L --output /dev/null --silent --fail http://localhost:8091/cas/login; do
+       echo -n '.'
+       sleep 5
+    done
+    echo -e "\n\nReady!"
+    echo "Killing process $pid"
+    kill -9 $pid
+    [ "$CI" = "true" ] && pkill java
+  fi
 fi
 
 [ "$CI" = "true" ] && pkill java
