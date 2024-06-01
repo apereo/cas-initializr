@@ -30,6 +30,6 @@ jobs:
         with:
           java-version: ${{ matrix.jdk }}
           distribution: 'corretto'
-      - name: Build with ${{ matrix.jdk }} on ${{ matrix.os }}
-        run: ./gradlew clean build
+      - name: Build with JDK ${{ matrix.jdk }} on ${{ matrix.os }}
+        run: ./gradlew build
 <%={{ }}=%>
