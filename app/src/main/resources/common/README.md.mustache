@@ -136,8 +136,11 @@ with the help of the `tools` jarmode:
 # You must first build the web application with "executable" turned off
 java -Djarmode=tools -jar build/libs/{{appName}}.war extract
 
+# Perform a training run once
+java -XX:ArchiveClassesAtExit=cas.jsa -Dspring.context.exit=onRefresh -jar {{appName}}/{{appName}}.war
+
 # Run the CAS web application via CDS
-java -jar {{appName}}/{{appName}}.war
+java XX:SharedArchiveFile=cas.jsa -jar {{appName}}/{{appName}}.war
 ```
 
 ## External
