@@ -185,4 +185,24 @@ A `docker-compose.yml` is also provided to orchestrate the build:
 docker-compose build
 ```
 
+{{#casVersion7OrAbove}}
+    
+## Spring Boot
+
+You can use the Spring Boot build plugin for Gradle to create CAS container images.
+The plugins create an OCI image (the same format as one created by docker build)
+by using [Cloud Native Buildpacks](https://buildpacks.io/). You do not need a Dockerfile, but you do need a Docker daemon,
+either locally (which is what you use when you build with docker) or remotely
+through the `DOCKER_HOST` environment variable. The default builder is optimized for
+Spring Boot applications such as CAS, and the image is layered efficiently.
+
+```bash
+./gradlew bootBuildImage
+```
+
+The first build might take a long time because it has to download some container
+images and the JDK, but subsequent builds should be fast.
+
+{{/casVersion7OrAbove}}
+
 {{/dockerSupported}}
