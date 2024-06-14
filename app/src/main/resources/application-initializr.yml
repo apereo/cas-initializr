@@ -43,11 +43,11 @@ cas-initializr:
     - version: 6.6.15.1
       platform-version: 6.6.0
       boot-version: 2.7.3
-      sync: false
+      sync: true
       validate: false
       branch: "6.6"
       type: cas
-      tomcat-version: 9.0.87
+      tomcat-version: 9.0.89
       java-version: 11
       container-base-image: eclipse-temurin:11-jdk
       gradle-version: 7.6
