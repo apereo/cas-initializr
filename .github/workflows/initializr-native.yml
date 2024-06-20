@@ -27,7 +27,7 @@ concurrency:
 
 jobs:
   initialize:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK
@@ -47,7 +47,7 @@ jobs:
   
   supported-versions-cas:
     needs: [ initialize ]
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     outputs:
       supported-versions: ${{ steps.get-supported-versions.outputs.supported-versions }}
     steps:
@@ -65,7 +65,7 @@ jobs:
         run: echo "supported-versions=$(./gradlew --no-daemon -q versions-cas)" >> $GITHUB_OUTPUT
         
   build:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     needs: [ supported-versions-cas ]
     continue-on-error: false
     strategy:
