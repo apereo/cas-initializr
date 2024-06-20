@@ -34,7 +34,7 @@ cas-initializr:
       validate: false
       branch: "6.6"
       type: cas-mgmt
-      tomcat-version: 9.0.84
+      tomcat-version: 9.0.90
       java-version: 11
       container-base-image: eclipse-temurin:11-jdk
       gradle-version: 7.6
@@ -47,7 +47,7 @@ cas-initializr:
       validate: true
       branch: "6.6"
       type: cas
-      tomcat-version: 9.0.89
+      tomcat-version: 9.0.90
       java-version: 11
       container-base-image: eclipse-temurin:11-jdk
       gradle-version: 7.6
