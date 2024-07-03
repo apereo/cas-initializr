@@ -278,6 +278,7 @@ jobs:
           distribution: ${{ env.JDK_DISTRO }}
       - name: Validate Overlay
         if: ${{ matrix.versions.validate == true }}
+        timeout-minutes: 20
         run: |
           ./ci/validate-cas-mgmt-overlay.sh --cas ${{ matrix.versions.version }} \
             --apache-tomcat ${{ matrix.versions.tomcat-version }}
@@ -319,6 +320,7 @@ jobs:
           distribution: ${{ env.JDK_DISTRO }}
       - name: Validate Overlay
         if: ${{ matrix.versions.validate == true }}
+        timeout-minutes: 20
         run: |
           ./ci/validate-cas-configserver-overlay.sh --cas ${{ matrix.versions.version }} \
             --apache-tomcat ${{ matrix.versions.tomcat-version }}
