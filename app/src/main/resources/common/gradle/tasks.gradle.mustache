@@ -187,7 +187,8 @@ task unzipWAR(type: Copy, group: "CAS", description: "Explodes the CAS web appli
 task verifyRequiredJavaVersion {
     def currentVersion = org.gradle.api.JavaVersion.current()
     logger.info "Checking current Java version ${currentVersion} for required Java version ${project.targetCompatibility}"
-    if (!currentVersion.name.equalsIgnoreCase("${project.targetCompatibility}")) {
+    def targetVersion = JavaVersion.toVersion(project.targetCompatibility)
+    if (!currentVersion.isCompatibleWith(targetVersion)) {
         logger.warn("Careful: Current Java version ${currentVersion} does not match required Java version ${project.targetCompatibility}")
     }
 }
