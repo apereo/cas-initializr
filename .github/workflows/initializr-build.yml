@@ -180,7 +180,6 @@ jobs:
         if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
         run: |
           ./ci/validate-cas-overlay.sh --fetch-only --cas ${{ matrix.versions.version }} \
-              --spring-boot ${{ matrix.versions.boot-version }} \
               --apache-tomcat ${{ matrix.versions.tomcat-version }}
       - name: Set up JDK
         if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
@@ -198,6 +197,7 @@ jobs:
     strategy:
       matrix:
         versions: ${{fromJSON(needs.supported-versions-cas.outputs.supported-versions)}}
+        appServer: ["tomcat", "jetty", "undertow"]
     name: Validate CAS Server ${{ matrix.versions.version }}
     steps:
       - uses: actions/checkout@v4
@@ -215,31 +215,25 @@ jobs:
         if: ${{ matrix.versions.validate == true }}
         with:
           name: binary-artifacts
-      - name: Fetch CAS Overlay
+      - name: Fetch CAS Overlay ${{ matrix.appServer }}
         if: ${{ matrix.versions.validate == true }}
         run: |
           ./ci/validate-cas-overlay.sh --fetch-only --cas ${{ matrix.versions.version }} \
-            --spring-boot ${{ matrix.versions.boot-version }} \
-            --apache-tomcat ${{ matrix.versions.tomcat-version }}
+            --apache-tomcat ${{ matrix.versions.tomcat-version }} \
+            --app-server ${{ matrix.appServer }}
       - name: Set up JDK
         uses: actions/setup-java@v4
         if: ${{ matrix.versions.validate == true }}
         with:
           java-version: ${{ matrix.versions.java-version }}
           distribution: ${{ env.JDK_DISTRO }}
-      - name: Validate Overlay w/ CAS & SpringBoot
-        timeout-minutes: 20
-        if: ${{ matrix.versions.validate == true }}
-        run: |
-          ./ci/validate-cas-overlay.sh --cas ${{ matrix.versions.version }} \
-            --spring-boot ${{ matrix.versions.boot-version }} \
-            --apache-tomcat ${{ matrix.versions.tomcat-version }}
-      - name: Validate Overlay w/ CAS Only
+      - name: Validate Overlay ${{ matrix.appServer }}
         if: ${{ matrix.versions.validate == true }}
         timeout-minutes: 35
         run: |
           ./ci/validate-cas-overlay.sh --cas ${{ matrix.versions.version }} \
-            --apache-tomcat ${{ matrix.versions.tomcat-version }}
+            --apache-tomcat ${{ matrix.versions.tomcat-version }} \
+            --app-server ${{ matrix.appServer }}
   ##########################################################################
   validate-cas-mgmt-overlay:
     needs: [ supported-versions-cas-mgmt ]

@@ -3,6 +3,8 @@
 source ./ci/functions.sh
 
 FETCH_OVERLAY="false"
+APP_SERVER="tomcat"
+
 while (( "$#" )); do
     case "$1" in
     --fetch-only)
@@ -13,8 +15,8 @@ while (( "$#" )); do
         CAS_VERSION="$2"
         shift 2
         ;;
-    --spring-boot)
-        BOOT_VERSION="$2"
+    --app-server)
+        APP_SERVER="$2"
         shift 2
         ;;
     --apache-tomcat)
@@ -33,8 +35,9 @@ cd tmp || exit
 echo "Working directory: ${PWD}"
 if [[ "${FETCH_OVERLAY}" == "true" ]]; then
   parameters="casVersion=${CAS_VERSION}&dependencyCoordinates=cas-server-support-rest"
-  if [ -z "${BOOT_VERSION}" ]; then
-    parameters="${parameters}&bootVersion=${BOOT_VERSION}"
+  if [ ! -z "${APP_SERVER}" ]; then
+    printgreen "Requesting application server ${APP_SERVER}"
+    parameters="${parameters}&dependencies=webapp-${APP_SERVER}"
   fi
   java -jar ../app/build/libs/app.jar &
   pid=$!
@@ -80,24 +83,26 @@ else
 fi
 [ "$CI" = "true" ] && pkill java
 
-printgreen "Downloading Apache Tomcat $TOMCAT_VERSION"
-downloadTomcat "$TOMCAT_VERSION"
-mv build/libs/cas.war ${CATALINA_HOME}/webapps/cas.war
+if [ "${APP_SERVER}" == "tomcat" ]; then
+  printgreen "Downloading Apache Tomcat $TOMCAT_VERSION"
+  downloadTomcat "$TOMCAT_VERSION"
+  mv build/libs/cas.war ${CATALINA_HOME}/webapps/cas.war
 
-printgreen "Starting Apache Tomcat $TOMCAT_VERSION to deploy ${CATALINA_HOME}/webapps/cas.war"
-"${CATALINA_HOME}"/bin/startup.sh & >/dev/null 2>&1
-pid=$!
-sleep 30
-rc=$(curl -L -k -u casuser:password -o /dev/null --connect-timeout 60 -s  -I -w "%{http_code}" http://localhost:8080/cas/login)
-"${CATALINA_HOME}"/bin/shutdown.sh & >/dev/null 2>&1
-kill -9 $pid
-if [ "$rc" == 200 ]; then
-    printgreen "Deployed the web application successfully."
-else
-    printred "Failed to deploy the web application with status $rc."
-    exit 1
+  printgreen "Starting Apache Tomcat $TOMCAT_VERSION to deploy ${CATALINA_HOME}/webapps/cas.war"
+  "${CATALINA_HOME}"/bin/startup.sh & >/dev/null 2>&1
+  pid=$!
+  sleep 30
+  rc=$(curl -L -k -u casuser:password -o /dev/null --connect-timeout 60 -s  -I -w "%{http_code}" http://localhost:8080/cas/login)
+  "${CATALINA_HOME}"/bin/shutdown.sh & >/dev/null 2>&1
+  kill -9 $pid
+  if [ "$rc" == 200 ]; then
+      printgreen "Deployed the web application successfully."
+  else
+      printred "Failed to deploy the web application with status $rc."
+      exit 1
+  fi
+  [ "$CI" = "true" ] && pkill java
 fi
-[ "$CI" = "true" ] && pkill java
 #ps -ef
 
 printgreen "Running CAS Overlay as an executable WAR file"
