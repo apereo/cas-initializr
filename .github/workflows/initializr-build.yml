@@ -198,7 +198,7 @@ jobs:
       matrix:
         versions: ${{fromJSON(needs.supported-versions-cas.outputs.supported-versions)}}
         appServer: ["tomcat", "jetty", "undertow"]
-    name: Validate CAS Server ${{ matrix.versions.version }}
+    name: Validate CAS Server ${{ matrix.versions.version }} / ${{ matrix.appServer }}
     steps:
       - uses: actions/checkout@v4
         if: ${{ matrix.versions.validate == true }}
@@ -215,19 +215,19 @@ jobs:
         if: ${{ matrix.versions.validate == true }}
         with:
           name: binary-artifacts
-      - name: Fetch CAS Overlay ${{ matrix.appServer }}
+      - name: Fetch CAS Overlay / ${{ matrix.appServer }}
         if: ${{ matrix.versions.validate == true }}
         run: |
           ./ci/validate-cas-overlay.sh --fetch-only --cas ${{ matrix.versions.version }} \
             --apache-tomcat ${{ matrix.versions.tomcat-version }} \
             --app-server ${{ matrix.appServer }}
-      - name: Set up JDK
+      - name: Set up JDK 
         uses: actions/setup-java@v4
         if: ${{ matrix.versions.validate == true }}
         with:
           java-version: ${{ matrix.versions.java-version }}
           distribution: ${{ env.JDK_DISTRO }}
-      - name: Validate Overlay ${{ matrix.appServer }}
+      - name: Validate Overlay / ${{ matrix.appServer }}
         if: ${{ matrix.versions.validate == true }}
         timeout-minutes: 35
         run: |
