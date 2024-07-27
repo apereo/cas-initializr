@@ -187,6 +187,8 @@ war {
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(project.targetCompatibility)
+        vendor = JvmVendorSpec.matching(project.jvmVendor)
+        implementation = JvmImplementation.VENDOR_SPECIFIC
     }
 }
 
