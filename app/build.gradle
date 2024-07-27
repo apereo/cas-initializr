@@ -102,6 +102,7 @@ processResources {
     def openRewriteVersion = project.providers.gradleProperty("openRewriteVersion").get()
     def jibVersion = project.providers.gradleProperty("jibVersion").get()
     def gradleDockerPluginVersion = project.providers.gradleProperty("gradleDockerPluginVersion").get()
+    def gradleFoojayPluginVersion = project.providers.gradleProperty("gradleFoojayPluginVersion").get()
 
     def springBootLatestVersion = project.providers.gradleProperty("springBootLatestVersion").get()
 
@@ -134,6 +135,7 @@ processResources {
                 "openRewriteVersion"                     : openRewriteVersion,
                 "jibVersion"                             : jibVersion,
                 "gradleDockerPluginVersion"              : gradleDockerPluginVersion,
+                "gradleFoojayPluginVersion"              : gradleFoojayPluginVersion,
                 "graalVmVersion"                         : graalVmVersion,
                 "graalVmMetadataRepositoryVersion"       : graalVmMetadataRepositoryVersion,
                 "gradleGraalVmNativePluginVersion"       : gradleGraalVmNativePluginVersion,
