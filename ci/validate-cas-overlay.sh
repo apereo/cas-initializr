@@ -55,7 +55,7 @@ if [[ "${FETCH_OVERLAY}" == "true" ]]; then
   ls
   printgreen "Downloaded CAS overlay ${CAS_VERSION} successfully."
 
-  if [[ -n ${{JVM_VENDOR}} ]]; then
+  if [[ -n "${JVM_VENDOR}" ]]; then
     printgreen "Chosen JVM vendor: ${JVM_VENDOR}"
     cd $PWD
     printgreen "Building CAS overlay in $PWD"
