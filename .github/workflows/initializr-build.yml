@@ -2,7 +2,7 @@ name: Initializr Build
 
 env:
   TERM: xterm-256color
-  JDK_CURRENT: 17
+  JDK_CURRENT: 21
   JDK_DISTRO: 'corretto'
   DOCKER_USER: ${{ secrets.DOCKER_USER }}
   DOCKER_PWD: ${{ secrets.DOCKER_PWD }}
@@ -190,7 +190,39 @@ jobs:
       - name: Sync Overlay
         if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
         run: ./ci/sync-overlay.sh ${{ matrix.versions.version }} ${{ matrix.versions.boot-version }} ${{ matrix.versions.branch }} cas-overlay
-  ##########################################################################
+##########################################################################
+  build-cas-overlay:
+    needs: [ supported-versions-cas ]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        versions: ${{fromJSON(needs.supported-versions-cas.outputs.supported-versions)}}
+        jvmVendor: ["AMAZON", "AZUL", "ADOPTIUM", "MICROSOFT", "ORACLE", "BELLSOFT"]
+    name: Build CAS Server ${{ matrix.versions.version }} / ${{ matrix.jvmVendor }}
+    steps:
+      - uses: actions/checkout@v4
+        if: ${{ matrix.versions.validate == true }}
+      - name: Initialize
+        if: ${{ matrix.versions.validate == true }}
+        run: ls ./ci && find ./ci -type f -name "*.sh" -exec chmod +x "{}" \;
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        if: ${{ matrix.versions.validate == true }}
+        with:
+          java-version: ${{ env.JDK_CURRENT }}
+          distribution: ${{ env.JDK_DISTRO }}
+      - uses: actions/download-artifact@v4
+        if: ${{ matrix.versions.validate == true }}
+        with:
+          name: binary-artifacts
+      - name: Build CAS Overlay / ${{ matrix.jvmVendor }}
+        if: ${{ matrix.versions.validate == true }}
+        run: |
+          ./ci/validate-cas-overlay.sh --fetch-only --cas ${{ matrix.versions.version }} \
+            --apache-tomcat ${{ matrix.versions.tomcat-version }} \
+            --jvm-vendor ${{ matrix.jvmVendor }}
+
+##########################################################################
   validate-cas-overlay:
     needs: [ supported-versions-cas ]
     runs-on: ubuntu-latest
@@ -229,7 +261,7 @@ jobs:
           distribution: ${{ env.JDK_DISTRO }}
       - name: Validate Overlay / ${{ matrix.appServer }}
         if: ${{ matrix.versions.validate == true }}
-        timeout-minutes: 35
+        timeout-minutes: 40
         run: |
           ./ci/validate-cas-overlay.sh --cas ${{ matrix.versions.version }} \
             --apache-tomcat ${{ matrix.versions.tomcat-version }} \
