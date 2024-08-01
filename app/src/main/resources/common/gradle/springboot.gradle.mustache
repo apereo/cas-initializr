@@ -149,11 +149,11 @@ bootWar {
         */
         cas {
             {{#casServer}}
-            from "org.apereo.cas:cas-server-webapp${project.appServer}:${project.'cas.version'}@war"
+            from "org.apereo.cas:cas-server-webapp${project.findProperty('appServer') ?: ''}:${project.'cas.version'}@war"
             {{/casServer}}
 
             {{#managementServer}}
-            from "org.apereo.cas:cas-mgmt-webapp${project.appServer}:${project.'casmgmt.version'}@war"
+            from "org.apereo.cas:cas-mgmt-webapp${project.findProperty('appServer') ?: ''}:${project.'casmgmt.version'}@war"
             {{/managementServer}}
 
             {{#configServer}}

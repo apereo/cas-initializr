@@ -47,7 +47,7 @@ dependencies {
     implementation "org.eclipse.jgit:org.eclipse.jgit:6.10.0.202406032230-r"
     implementation "commons-io:commons-io:2.16.1"
     implementation "com.github.vladimir-bukhtoyarov:bucket4j-core:8.0.1"
-    implementation "com.github.spullara.mustache.java:compiler:0.9.13"
+    implementation "com.github.spullara.mustache.java:compiler:0.9.14"
     
     implementation "org.springframework.boot:spring-boot-starter-web"
     implementation "org.springframework.boot:spring-boot-starter-thymeleaf"
@@ -102,6 +102,7 @@ processResources {
     def openRewriteVersion = project.providers.gradleProperty("openRewriteVersion").get()
     def jibVersion = project.providers.gradleProperty("jibVersion").get()
     def gradleDockerPluginVersion = project.providers.gradleProperty("gradleDockerPluginVersion").get()
+    def gradleFoojayPluginVersion = project.providers.gradleProperty("gradleFoojayPluginVersion").get()
 
     def springBootLatestVersion = project.providers.gradleProperty("springBootLatestVersion").get()
 
@@ -134,6 +135,7 @@ processResources {
                 "openRewriteVersion"                     : openRewriteVersion,
                 "jibVersion"                             : jibVersion,
                 "gradleDockerPluginVersion"              : gradleDockerPluginVersion,
+                "gradleFoojayPluginVersion"              : gradleFoojayPluginVersion,
                 "graalVmVersion"                         : graalVmVersion,
                 "graalVmMetadataRepositoryVersion"       : graalVmMetadataRepositoryVersion,
                 "gradleGraalVmNativePluginVersion"       : gradleGraalVmNativePluginVersion,

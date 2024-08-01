@@ -2,6 +2,7 @@ import org.apache.tools.ant.taskdefs.condition.*
 import org.gradle.internal.logging.text.*
 import org.apereo.cas.metadata.*
 import java.nio.file.*
+import java.lang.reflect.*
 import org.gradle.internal.logging.text.*
 import static org.gradle.internal.logging.text.StyledTextOutput.Style
 
@@ -133,6 +134,8 @@ dependencyManagement {
 }
 {{/springDependencyMgmt}}
 
+def out = services.get(StyledTextOutputFactory).create("cas")
+
 configurations {
     all {
         resolutionStrategy {
@@ -185,6 +188,23 @@ war {
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(project.targetCompatibility)
+        {{^nativeImageSupported}}
+        def chosenJvmVendor = null
+        JvmVendorSpec.declaredFields.each { field ->
+            if (field.type == JvmVendorSpec && Modifier.isStatic(field.getModifiers())) {
+                if (field.name == project.jvmVendor?.toUpperCase()) {
+                    chosenJvmVendor = field.get(null)
+                    return
+                }
+            }
+        }
+        if (chosenJvmVendor != null) {
+            vendor = chosenJvmVendor
+            out.withStyle(Style.Success).println("Using ${chosenJvmVendor} as the JVM vendor for the Java toolchain")
+        } else {
+            out.withStyle(Style.Info).println("JVM vendor ${project.jvmVendor} is not recognized")
+        }
+        {{/nativeImageSupported}}
     }
 }
 
@@ -322,7 +342,6 @@ def imageTagPostFix = providers.systemProperty("dockerImageTagPostfix").getOrEls
 
 jib {
     if (gradle.gradleVersion >= "8.0" && gradle.startParameter.isConfigurationCacheRequested()) {
-        def out = services.get(StyledTextOutputFactory).create("cas")
         out.withStyle(Style.Info).println("You are seeing this message because the Gradle configuration cache is turned on")
         out.withStyle(Style.Info).println("Running Jib tasks to produce Docker images will require the command-line option: --no-configuration-cache")
         out.withStyle(Style.Info).println("Jib does not support the Gradle configuration cache; Please see https://github.com/GoogleContainerTools/jib/issues/3132")
@@ -397,7 +416,6 @@ tasks.register("casBuildDockerImage", DockerBuildImage) {
         password = dockerPassword
     }
     doLast {
-        def out = services.get(StyledTextOutputFactory).create("cas")
         out.withStyle(Style.Success).println("Built CAS images successfully.")
     }
 }
@@ -414,11 +432,18 @@ tasks.register("casPushDockerImage", DockerPushImage) {
         password = dockerPassword
     }
     doLast {
-        def out = services.get(StyledTextOutputFactory).create("cas")
         out.withStyle(Style.Success).println("Pushed CAS images successfully.")
     }
 }
 {{/dockerSupported}}
+
+
+if (project.hasProperty("appServer")) {
+    def appServer = project.findProperty('appServer') ?: ''
+    out.withStyle(Style.Success).println("Building CAS version ${project.version} with application server ${appServer}")
+} else {
+    out.withStyle(Style.Success).println("Building CAS version ${project.version} without an application server")
+}
 
 dependencies {
     {{^springDependencyMgmt}}
@@ -461,8 +486,8 @@ dependencies {
     implementation "org.apereo.cas:cas-server-core-api-configuration-model"
     implementation "org.apereo.cas:cas-server-webapp-init"
 
-    if (project.hasProperty("appServer")) {
-        implementation "org.apereo.cas:cas-server-webapp-init${project.appServer}"
+    if (appServer == 'tomcat') {
+        implementation "org.apereo.cas:cas-server-webapp-init"
     }
     
     developmentOnly "org.springframework.boot:spring-boot-devtools:${project.springBootVersion}"
