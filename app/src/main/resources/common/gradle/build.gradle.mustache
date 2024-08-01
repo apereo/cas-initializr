@@ -187,6 +187,10 @@ war {
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(project.targetCompatibility)
+        {{^nativeImageSupported}}
+        vendor = JvmVendorSpec.matching(project.jvmVendor)
+        implementation = JvmImplementation.VENDOR_SPECIFIC
+        {{/nativeImageSupported}}
     }
 }
 
