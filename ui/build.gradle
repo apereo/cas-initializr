@@ -4,7 +4,7 @@ plugins {
 }
 
 node {
-    version = '20.7.0'
+    version = '22.5.1'
     yarnVersion = ''
     download = true
 }

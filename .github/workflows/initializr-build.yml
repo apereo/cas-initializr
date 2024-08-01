@@ -2,7 +2,7 @@ name: Initializr Build
 
 env:
   TERM: xterm-256color
-  JDK_CURRENT: 17
+  JDK_CURRENT: 21
   JDK_DISTRO: 'corretto'
   DOCKER_USER: ${{ secrets.DOCKER_USER }}
   DOCKER_PWD: ${{ secrets.DOCKER_PWD }}
@@ -229,7 +229,7 @@ jobs:
           distribution: ${{ env.JDK_DISTRO }}
       - name: Validate Overlay / ${{ matrix.appServer }}
         if: ${{ matrix.versions.validate == true }}
-        timeout-minutes: 35
+        timeout-minutes: 40
         run: |
           ./ci/validate-cas-overlay.sh --cas ${{ matrix.versions.version }} \
             --apache-tomcat ${{ matrix.versions.tomcat-version }} \
