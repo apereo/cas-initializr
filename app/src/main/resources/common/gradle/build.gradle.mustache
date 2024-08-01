@@ -2,6 +2,7 @@ import org.apache.tools.ant.taskdefs.condition.*
 import org.gradle.internal.logging.text.*
 import org.apereo.cas.metadata.*
 import java.nio.file.*
+import java.lang.reflect.*
 import org.gradle.internal.logging.text.*
 import static org.gradle.internal.logging.text.StyledTextOutput.Style
 
@@ -188,8 +189,21 @@ java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(project.targetCompatibility)
         {{^nativeImageSupported}}
-        vendor = JvmVendorSpec.matching(project.jvmVendor)
-        implementation = JvmImplementation.VENDOR_SPECIFIC
+        def chosenJvmVendor = null
+        JvmVendorSpec.declaredFields.each { field ->
+            if (field.type == JvmVendorSpec && Modifier.isStatic(field.getModifiers())) {
+                if (field.name == project.jvmVendor?.toUpperCase()) {
+                    chosenJvmVendor = field.get(null)
+                    return
+                }
+            }
+        }
+        if (chosenJvmVendor != null) {
+            vendor = chosenJvmVendor
+            out.withStyle(Style.Success).println("Using ${chosenJvmVendor} as the JVM vendor for the Java toolchain")
+        } else {
+            out.withStyle(Style.Info).println("JVM vendor ${project.jvmVendor} is not recognized")
+        }
         {{/nativeImageSupported}}
     }
 }
