@@ -439,6 +439,40 @@ export default function Customization() {
                                     />
                                     <Controller
                                         control={control}
+                                        name="sbomSupported"
+                                        render={({
+                                                     field: {
+                                                         onChange,
+                                                         onBlur,
+                                                         value,
+                                                         ref,
+                                                     },
+                                                 }) => (
+                                            <FormControlLabel
+                                                control={
+                                                    <Checkbox
+                                                        checked={
+                                                            value === "true"
+                                                        }
+                                                        onChange={(
+                                                            event: React.ChangeEvent<HTMLInputElement>
+                                                        ) =>
+                                                            onChange(
+                                                                event.target
+                                                                    .checked
+                                                                    ? "true"
+                                                                    : "false"
+                                                            )
+                                                        }
+                                                    />
+                                                }
+                                                label="SBOM"
+                                                labelPlacement="end"
+                                            />
+                                        )}
+                                    />
+                                    <Controller
+                                        control={control}
                                         name="githubActionsSupported"
                                         render={({
                                                      field: {

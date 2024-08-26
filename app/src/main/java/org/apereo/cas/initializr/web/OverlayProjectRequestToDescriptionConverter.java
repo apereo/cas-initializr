@@ -159,6 +159,7 @@ public class OverlayProjectRequestToDescriptionConverter implements ProjectReque
         description.setNativeImageSupported(getBooleanParameter(request, "nativeImageSupported", Boolean.FALSE));
         description.setCommandlineShellSupported(getBooleanParameter(request, "commandlineShellSupported", Boolean.TRUE));
         description.setOpenRewriteSupported(getBooleanParameter(request, "openRewriteSupported", Boolean.TRUE));
+        description.setSbomSupported(getBooleanParameter(request, "sbomSupported", Boolean.FALSE));
 
         if (request.getParameters().containsKey("deploymentType")) {
             var deploymentType = OverlayProjectDescription.DeploymentTypes.valueOf(getStringParameter(request, "deploymentType").toUpperCase());

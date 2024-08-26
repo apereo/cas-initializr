@@ -39,6 +39,8 @@ public class OverlayProjectDescription extends MutableProjectDescription {
 
     private boolean openRewriteSupported;
 
+    private boolean sbomSupported;
+
     private DeploymentTypes deploymentType = DeploymentTypes.EXECUTABLE;
 
     public String resolveCasVersion(final BillOfMaterials billOfMaterials) {

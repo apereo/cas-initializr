@@ -125,6 +125,24 @@ Run the CAS web application as a *standalone* executable WAR:
 ./gradlew[.bat] clean executable
 ```
 
+### CDS Support
+
+CDS is a JVM feature that can help reduce the startup time and memory footprint of Java applications. CAS via Spring Boot
+now has support for easy creation of a CDS friendly layout. This layout can be created by extracting the CAS web application file
+with the help of the `tools` jarmode:
+
+```bash
+# Note:
+# You must first build the web application with "executable" turned off
+java -Djarmode=tools -jar build/libs/{{appName}}.war extract
+
+# Perform a training run once
+java -XX:ArchiveClassesAtExit=cas.jsa -Dspring.context.exit=onRefresh -jar {{appName}}/{{appName}}.war
+
+# Run the CAS web application via CDS
+java XX:SharedArchiveFile=cas.jsa -jar {{appName}}/{{appName}}.war
+```
+
 ## External
 
 Deploy the binary web application file in `build/libs` after a successful build to a servlet container of choice.
@@ -166,5 +184,25 @@ A `docker-compose.yml` is also provided to orchestrate the build:
 ```bash  
 docker-compose build
 ```
+
+{{#casVersion7OrAbove}}
+    
+## Spring Boot
+
+You can use the Spring Boot build plugin for Gradle to create CAS container images.
+The plugins create an OCI image (the same format as one created by docker build)
+by using [Cloud Native Buildpacks](https://buildpacks.io/). You do not need a Dockerfile, but you do need a Docker daemon,
+either locally (which is what you use when you build with docker) or remotely
+through the `DOCKER_HOST` environment variable. The default builder is optimized for
+Spring Boot applications such as CAS, and the image is layered efficiently.
+
+```bash
+./gradlew bootBuildImage
+```
+
+The first build might take a long time because it has to download some container
+images and the JDK, but subsequent builds should be fast.
+
+{{/casVersion7OrAbove}}
 
 {{/dockerSupported}}

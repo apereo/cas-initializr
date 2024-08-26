@@ -48,6 +48,9 @@ import java.util.stream.IntStream;
 @Getter
 @Accessors(chain = true)
 public abstract class TemplatedProjectContributor implements ProjectContributor {
+    private static final int MAX_CAS_MAJOR_VERSION = 20;
+    private static final int MAX_GRADLE_MAJOR_VERSION = 20;
+    
     protected final ApplicationContext applicationContext;
 
     protected final PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
@@ -242,7 +245,7 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
                 templateVariables.put("branch", version.getBranch());
 
                 var gradleVersion = VersionUtils.parse(version.getGradleVersion());
-                IntStream.rangeClosed(7, 10).forEach(value -> {
+                IntStream.rangeClosed(7, MAX_GRADLE_MAJOR_VERSION).forEach(value -> {
                     if (gradleVersion.getMajor() == value) {
                         templateVariables.put("gradleVersion" + value, Boolean.TRUE);
                     }
@@ -268,10 +271,13 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         var casVersion = project.resolveCasVersion(boms.get("cas-bom"));
         templateVariables.put("casVersion", casVersion);
 
-        var casMajorVersion = VersionUtils.parse(casVersion).getMajor();
-        IntStream.rangeClosed(6, 15).forEach(value -> {
-            if (casMajorVersion == value) {
+        var parsedCasVersion = VersionUtils.parse(casVersion);
+        IntStream.rangeClosed(6, MAX_CAS_MAJOR_VERSION).forEach(value -> {
+            if (parsedCasVersion.getMajor() == value) {
                 templateVariables.put("casVersion" + value, Boolean.TRUE);
+            }
+            if (parsedCasVersion.getMajor() >= value) {
+                templateVariables.put("casVersion" + value + "OrAbove", Boolean.TRUE);
             }
         });
 
@@ -305,10 +311,10 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         }
         templateVariables.put("githubActionsSupported", getOverlayProjectDescription().isGithubActionsSupported());
 
-        templateVariables.put("nativeImageSupported",
-            getOverlayProjectDescription().isNativeImageSupported()
-                && type.equalsIgnoreCase(CasOverlayBuildSystem.ID)
-                && casMajorVersion >= 7);
+        if (type.equalsIgnoreCase(CasOverlayBuildSystem.ID) && parsedCasVersion.getMajor() >= 7 && parsedCasVersion.getMinor() >= 1) {
+            templateVariables.put("sbomSupported", getOverlayProjectDescription().isSbomSupported());
+            templateVariables.put("nativeImageSupported", getOverlayProjectDescription().isNativeImageSupported());
+        }
 
         if (type.equalsIgnoreCase(CasOverlayBuildSystem.ID)) {
             templateVariables.put("puppeteerSupported", getOverlayProjectDescription().isPuppeteerSupported());

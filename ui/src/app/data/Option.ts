@@ -88,5 +88,6 @@ export interface ApiOptions {
     nativeImageSupported: Option;
     openRewriteSupported: Option;
     commandlineShellSupported: Option;
+    sbomSupported: Option;
     deploymentType: Option;
 }
