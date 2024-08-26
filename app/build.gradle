@@ -105,6 +105,7 @@ processResources {
     def gradleFoojayPluginVersion = project.providers.gradleProperty("gradleFoojayPluginVersion").get()
 
     def springBootLatestVersion = project.providers.gradleProperty("springBootLatestVersion").get()
+    def gradleLatestVersion = project.providers.gradleProperty("gradleLatestVersion").get()
 
     def apacheTomcat10LatestVersion = project.providers.gradleProperty("apacheTomcat10LatestVersion").get()
     def casLatestVersion = project.providers.gradleProperty("casLatestVersion").get()
@@ -119,6 +120,7 @@ processResources {
         expand (
                 springBootLatestVersion: springBootLatestVersion,
                 apacheTomcat10LatestVersion: apacheTomcat10LatestVersion,
+                gradleLatestVersion: gradleLatestVersion,
                 casLatestVersion: casLatestVersion,
                 casManagementLatestVersion: casManagementLatestVersion,
                 "openRewriteVersion"         : openRewriteVersion,
