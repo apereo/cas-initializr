@@ -24,7 +24,7 @@ cas-initializr:
       tomcat-version: ${apacheTomcat10LatestVersion}
       java-version: 21
       container-base-image: azul/zulu-openjdk:21
-      gradle-version: 8.5
+      gradle-version: "8.5"
       plugins:
         jib-version: 3.4.0
     - version: 6.6.4
@@ -37,7 +37,7 @@ cas-initializr:
       tomcat-version: 9.0.90
       java-version: 11
       container-base-image: eclipse-temurin:11-jdk
-      gradle-version: 7.6
+      gradle-version: "7.6"
       plugins:
         jib-version: 3.4.0
     - version: 7.0.6
@@ -50,7 +50,7 @@ cas-initializr:
       tomcat-version: ${apacheTomcat10LatestVersion}
       java-version: 21
       container-base-image: azul/zulu-openjdk:21
-      gradle-version: 8.5
+      gradle-version: "8.5"
       plugins:
         jib-version: ${jibVersion}
         open-rewrite-version: ${openRewriteVersion}
@@ -64,7 +64,7 @@ cas-initializr:
       tomcat-version: ${apacheTomcat10LatestVersion}
       java-version: 21
       container-base-image: azul/zulu-openjdk:21
-      gradle-version: 8.9
+      gradle-version: "${gradleLatestVersion}"
       plugins:
         jib-version: ${jibVersion}
         open-rewrite-version: ${openRewriteVersion}
