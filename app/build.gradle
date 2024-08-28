@@ -109,7 +109,6 @@ processResources {
 
     def apacheTomcat10LatestVersion = project.providers.gradleProperty("apacheTomcat10LatestVersion").get()
     def casLatestVersion = project.providers.gradleProperty("casLatestVersion").get()
-    def casManagementLatestVersion = project.providers.gradleProperty("casManagementLatestVersion").get()
 
     def graalVmVersion = project.providers.gradleProperty("graalVmVersion").get()
     def graalVmMetadataRepositoryVersion = project.providers.gradleProperty("graalVmMetadataRepositoryVersion").get()
@@ -122,7 +121,6 @@ processResources {
                 apacheTomcat10LatestVersion: apacheTomcat10LatestVersion,
                 gradleLatestVersion: gradleLatestVersion,
                 casLatestVersion: casLatestVersion,
-                casManagementLatestVersion: casManagementLatestVersion,
                 "openRewriteVersion"         : openRewriteVersion,
                 jibVersion: jibVersion
         )
@@ -146,7 +144,7 @@ processResources {
     }
 }
 
-def supportedTypes = ["cas", "cas-mgmt"]
+def supportedTypes = ["cas"]
 supportedTypes.forEach({ type ->
     project.tasks.create(name: "versions-${type}",
                          description: "Display supported versions",
@@ -175,23 +173,12 @@ tasks.register('latestCasVersion') {
     }
 }
 
-tasks.register('latestCasMgmtVersion') {
-    description "Display latest CAS Management version"
-    def casManagementLatestVersion = project.providers.gradleProperty("casManagementLatestVersion").get()
-    doLast {
-        project.
-        def results = [version: casManagementLatestVersion]
-        println(groovy.json.JsonOutput.toJson(results))
-    }
-}
 
 tasks.register('latestCasVersions') {
     description "Display latest CAS versions"
-    def casManagementLatestVersion = project.providers.gradleProperty("casManagementLatestVersion").get()
     def casLatestVersion = project.providers.gradleProperty("casLatestVersion").get()
     doLast {
-        def results = ['cas-version': casLatestVersion,
-                       'cas-mgmt-version': casManagementLatestVersion]
+        def results = ['cas-version': casLatestVersion]
         println(groovy.json.JsonOutput.toJson(results))
     }
 }

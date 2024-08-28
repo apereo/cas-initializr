@@ -2,7 +2,6 @@ package org.apereo.cas.initializr.web;
 
 import org.apereo.cas.initializr.config.CasInitializrProperties;
 import org.apereo.cas.initializr.config.SupportedVersion;
-import org.apereo.cas.overlay.casmgmt.buildsystem.CasManagementOverlayBuildSystem;
 
 import io.spring.initializr.generator.buildsystem.BuildSystem;
 import io.spring.initializr.generator.language.Language;
@@ -113,9 +112,6 @@ public class OverlayProjectRequestToDescriptionConverter implements ProjectReque
         }
         var type = request.getType();
         var boms = metadata.getConfiguration().getEnv().getBoms();
-        if (type.equals(CasManagementOverlayBuildSystem.ID)) {
-            return boms.get("cas-mgmt-bom").getVersion();
-        }
         return boms.get("cas-bom").getVersion();
     }
 

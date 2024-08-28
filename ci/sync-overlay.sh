@@ -22,9 +22,6 @@ case "${TYPE}" in
   cas-config-server-overlay)
     repoName="cas-configserver-overlay"
     ;;
-  cas-management-overlay)
-    repoName="cas-management-overlay"
-    ;;
 esac
 
 mkdir tmp

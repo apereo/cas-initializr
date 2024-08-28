@@ -24,14 +24,6 @@ If release name contains chart name it will be used as a full name.
 {{- end }}
 
 {{/*
-Create a name for cas mgmt deployment
-*/}}
-{{- define "cas-server.mgmtname" -}}
-{{- $mgmtsuffix := default "mgmt" .Values.mgmtSuffixOverride }}
-{{- printf "%s-%s" (include "cas-server.fullname" . | trunc 43 | trimSuffix "-") $mgmtsuffix }}
-{{- end }}
-
-{{/*
 Create chart name and version as used by the chart label.
 */}}
 {{- define "cas-server.chart" -}}
@@ -58,22 +50,6 @@ app.kubernetes.io/name: {{ include "cas-server.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
-
-{{/*
-CAS Mgmt Selector labels
-*/}}
-{{- define "cas-mgmt.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "cas-server.mgmtname" . }}
-app.kubernetes.io/instance: {{ .Release.Name }}
-{{- end }}
-
-{{/*
-CAS Mgmt Pod labels
-*/}}
-{{- define "cas-mgmt.labels" -}}
-cas.server-type: mgmt
-{{- end }}
-
 {{/*
 Create the name of the service account to use
 */}}
@@ -92,12 +68,6 @@ Return the proper cas-server image name
 {{ include "common.images.image" (dict "imageRoot" .Values.image "global" .Values.global) }}
 {{- end -}}
 
-{{/*
-Return the proper CAS management image name
-*/}}
-{{- define "cas-server.mgmtImageName" -}}
-{{ include "common.images.image" (dict "imageRoot" .Values.mgmtimage "global" .Values.global) }}
-{{- end -}}
 
 {{/*
 Return the proper image name (for the init container volume-permissions image)

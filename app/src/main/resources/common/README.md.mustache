@@ -4,16 +4,9 @@ Apereo CAS WAR Overlay Template
 WAR Overlay Type: `{{type}}`
 
 # Versions
-   
-{{#managementServer}}
-- CAS Management `{{casMgmtVersion}}`
-- CAS Server `{{casMgmtCasVersion}}`
-{{/managementServer}}
 
-{{^managementServer}}
 - CAS Server `{{casVersion}}`
 - JDK `{{javaVersion}}`
-{{/managementServer}}                     
 
 # Build
 
@@ -73,7 +66,6 @@ To collect the list of all project modules and dependencies in the overlay:
 
 On a successful deployment via the following methods, the server will be available at:
 
-{{#managementServer}}* `https://localhost:8443/cas-management`{{/managementServer}}
 {{#casServer}}* `https://localhost:8443/cas`{{/casServer}}
 {{#configServer}}* `https:/localhost:8888/casconfigserver`{{/configServer}}
 

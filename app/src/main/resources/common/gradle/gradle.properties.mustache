@@ -1,15 +1,3 @@
-{{#managementServer}}
-# This overlay project's version
-version={{casMgmtVersion}}
-# CAS Management version
-casmgmt.version={{casMgmtVersion}}
-
-# This is the CAS server version that is compatible
-# with the build/version of the CAS management web application.
-cas.version={{casMgmtCasVersion}}
-{{/managementServer}}
-
-{{^managementServer}}
 # This overlay project's version
 # For consistency and with no other effect, this is set to the CAS version itself.
 version={{casVersion}}
@@ -20,7 +8,6 @@ version={{casVersion}}
 # For patch and security releases and unless explicitly stated otherwise, the below property
 # and NOTHING ELSE is the only change you usually need to make to upgrade your CAS deployment.
 cas.version={{casVersion}}
-{{/managementServer}}
 
 # The Spring Boot version is very much tied to the CAS release {{casVersion}}
 # and must not be modified or upgraded out of band, as doing so would most likely

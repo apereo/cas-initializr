@@ -17,8 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 
-import java.util.stream.Collectors;
-
 @ProjectGenerationConfiguration
 @ConditionalOnBuildSystem(CasConfigServerOverlayBuildSystem.ID)
 public class CasConfigServerOverlayProjectGenerationConfiguration {
@@ -46,7 +44,7 @@ public class CasConfigServerOverlayProjectGenerationConfiguration {
     public CasConfigServerOverlayGradleBuild gradleBuild(final ObjectProvider<BuildCustomizer<CasConfigServerOverlayGradleBuild>> buildCustomizers,
                                                          final ObjectProvider<BuildItemResolver> buildItemResolver) {
         var build = new CasConfigServerOverlayGradleBuild(buildItemResolver.getIfAvailable());
-        var customizers = buildCustomizers.orderedStream().collect(Collectors.toList());
+        var customizers = buildCustomizers.orderedStream().toList();
         customizers.forEach(c -> c.customize(build));
         return build;
     }

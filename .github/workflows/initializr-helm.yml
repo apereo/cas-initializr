@@ -90,7 +90,6 @@ jobs:
       - name: Build Images for Helm Chart
         env:
           HELM_CAS_VERSION: "${{ fromJSON(needs.latest-versions-cas.outputs.supported-versions).cas-version }}"
-          HELM_CAS_MGMT_VERSION: "${{ fromJSON(needs.latest-versions-cas.outputs.supported-versions).cas-mgmt-version }}"
-        run: ./ci/validate-helm-build-images.sh $HELM_CAS_VERSION $HELM_CAS_MGMT_VERSION
+        run: ./ci/validate-helm-build-images.sh $HELM_CAS_VERSION
       - name: Validate Helm Chart
         run: ./ci/validate-helm.sh

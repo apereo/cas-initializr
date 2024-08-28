@@ -8,38 +8,8 @@ initializr:
         groupId: org.apereo.cas
         artifactId: cas-server-support-bom
         version: ${casLatestVersion}
-      cas-mgmt-bom:
-        groupId: org.apereo.cas
-        artifactId: cas-mgmt-support-bom
-        version: ${casManagementLatestVersion}
 cas-initializr:
   supported-versions:
-    - version: ${casManagementLatestVersion}
-      boot-version: 3.2.1
-      platform-version: 7.0.0
-      sync: true
-      validate: true
-      branch: "7.0"
-      type: cas-mgmt
-      tomcat-version: ${apacheTomcat10LatestVersion}
-      java-version: 21
-      container-base-image: azul/zulu-openjdk:21
-      gradle-version: "8.5"
-      plugins:
-        jib-version: 3.4.0
-    - version: 6.6.4
-      boot-version: 2.7.1
-      platform-version: 6.6.0
-      sync: false
-      validate: false
-      branch: "6.6"
-      type: cas-mgmt
-      tomcat-version: 9.0.90
-      java-version: 11
-      container-base-image: eclipse-temurin:11-jdk
-      gradle-version: "7.6"
-      plugins:
-        jib-version: 3.4.0
     - version: 7.0.6
       platform-version: 7.0.0
       boot-version: 3.2.1

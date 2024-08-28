@@ -2,7 +2,7 @@
 
 The current helm chart for cas-server demonstrates standing up CAS.
 The chart functionality will grow over time, hopefully with contributions from real world deployments. 
-Eventually it might be nice to support a config-server and have cas-management available.  
+Eventually it might be nice to support a config-server.  
 The chart supports mapping in arbitrary volumes and cas config can be specified in values files. 
 The config could be in cloud config rather than kubernetes config maps, the service registry 
 could be in a database, git, or a simple json registry in a kubernetes persistent volume. The ticket registry could use a standard helm chart for redis, 

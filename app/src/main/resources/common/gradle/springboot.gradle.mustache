@@ -97,7 +97,6 @@ springBoot {
     {{^nativeImageSupported}}{{mainClass}} = "org.apereo.cas.web.CasWebApplication"{{/nativeImageSupported}}
     {{/casServer}}
     {{#configServer}}{{mainClass}} = "org.apereo.cas.CasConfigurationServerWebApplication"{{/configServer}}
-    {{#managementServer}}{{mainClass}} = "org.apereo.cas.mgmt.web.CasManagementWebApplication"{{/managementServer}}
 }
 
 {{#sbomSupported}}
@@ -151,10 +150,6 @@ bootWar {
             {{#casServer}}
             from "org.apereo.cas:cas-server-webapp${project.findProperty('appServer') ?: ''}:${project.'cas.version'}@war"
             {{/casServer}}
-
-            {{#managementServer}}
-            from "org.apereo.cas:cas-mgmt-webapp${project.findProperty('appServer') ?: ''}:${project.'casmgmt.version'}@war"
-            {{/managementServer}}
 
             {{#configServer}}
             from "org.apereo.cas:cas-server-webapp-config-server:${project.'cas.version'}@war"

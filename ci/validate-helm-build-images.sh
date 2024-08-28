@@ -3,7 +3,6 @@
 source ./ci/functions.sh
 
 CAS_VERSION=${1}
-# CAS_MGMT_VERSION=${2}
 
 REGISTRY=docker.io
 IMAGE_REPO=apereo
@@ -76,8 +75,6 @@ java -jar app/build/libs/app.jar &
 waitForInitializr
 
 updateOverlay cas-overlay $CAS_VERSION metrics,jsonsvc
-# updateOverlay cas-config-server-overlay $CAS_VERSION
-# updateOverlay cas-management-overlay $CAS_MGMT_VERSION
 
 stopInitializr
 
@@ -85,8 +82,6 @@ if [[ "$BUILD_IMAGES" == "yes" ]] ; then
   echo "Purging existing $IMAGE_REPO images"
   sudo k3s ctr image rm $(sudo k3s ctr image list -q | grep $IMAGE_REPO | xargs)
   updateImage cas-overlay cas ${CAS_VERSION}
-  # updateImage cas-config-server-overlay cas-config-server ${CAS_VERSION}
-  # updateImage cas-management-overlay cas-management ${CAS_MGMT_VERSION}
 fi
 
 echo "Listing final images built"

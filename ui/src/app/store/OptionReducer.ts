@@ -26,7 +26,6 @@ export interface OptionState extends ApiOptions {
 
 const mapVersions: { [id: string]: string } = {
     "cas-overlay": "cas",
-    "cas-management-overlay": "cas-mgmt",
     "cas-config-server-overlay": "cas"
 };
 

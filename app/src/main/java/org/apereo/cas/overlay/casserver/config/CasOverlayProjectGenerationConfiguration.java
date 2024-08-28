@@ -8,7 +8,6 @@ import org.apereo.cas.overlay.casserver.buildsystem.CasOverlayBuildSystem;
 import org.apereo.cas.overlay.casserver.buildsystem.CasOverlayGradleBuild;
 import org.apereo.cas.overlay.casserver.contrib.CasOverlayConfigurationDirectoriesContributor;
 import org.apereo.cas.overlay.casserver.contrib.CasOverlayLoggingConfigurationContributor;
-import org.apereo.cas.overlay.casserver.contrib.docker.CasOverlayDockerContributor;
 import org.apereo.cas.overlay.casserver.contrib.helm.CasOverlayHelmContributor;
 import org.apereo.cas.overlay.casserver.contrib.puppeteer.CasOverlayPuppeteerContributor;
 import org.apereo.cas.overlay.casserver.customize.DefaultDependenciesBuildCustomizer;
@@ -22,8 +21,6 @@ import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
-
-import java.util.stream.Collectors;
 
 @ProjectGenerationConfiguration
 @ConditionalOnBuildSystem(CasOverlayBuildSystem.ID)
@@ -65,7 +62,7 @@ public class CasOverlayProjectGenerationConfiguration {
     public CasOverlayGradleBuild gradleBuild(final ObjectProvider<BuildCustomizer<CasOverlayGradleBuild>> buildCustomizers,
                                              final ObjectProvider<BuildItemResolver> buildItemResolver) {
         var build = new CasOverlayGradleBuild(buildItemResolver.getIfAvailable());
-        var customizers = buildCustomizers.orderedStream().collect(Collectors.toList());
+        var customizers = buildCustomizers.orderedStream().toList();
         customizers.forEach(c -> c.customize(build));
         return build;
     }

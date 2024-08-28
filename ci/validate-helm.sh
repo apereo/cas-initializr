@@ -98,31 +98,23 @@ sleep 35
 set +e
 echo "Waiting for startup $(date)"
 kubectl wait --for condition=ready --timeout=180s --namespace $NAMESPACE pod cas-server-0
-# kubectl wait --for condition=ready --timeout=180s --namespace $NAMESPACE pod -l cas.server-type=mgmt
 echo "Done waiting for startup $(date)"
 
 echo "Checking rollout status"
-# kubectl rollout --namespace $NAMESPACE status deploy cas-server-mgmt --timeout=5s
 kubectl rollout --namespace $NAMESPACE status sts cas-server --timeout=5s
 echo "Done checking rollout status"
 set -e
 
 kubectl describe pod --namespace $NAMESPACE cas-server-0
-# echo "Describing cas mgmt pod"
-# kubectl describe pod --namespace $NAMESPACE -l cas.server-type=mgmt
 
 echo "Pod Status:"
 kubectl get pods --namespace $NAMESPACE
 
 sleep 10
 
-# echo "CAS Management Server Logs..."
-# kubectl logs -l cas.server-type=mgmt --tail=-1 --namespace $NAMESPACE | tee cas-mgmt.out
 echo "CAS Server Logs..."
 kubectl logs cas-server-0 --namespace $NAMESPACE | tee cas.out
 
-# echo "Checking mgmt server log for startup message"
-# grep "Initializing Spring DispatcherServlet" cas-mgmt.out
 echo "Checking cas server log for startup message"
 grep "Started CasWebApplication" cas.out
 

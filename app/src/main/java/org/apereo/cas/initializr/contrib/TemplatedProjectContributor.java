@@ -4,7 +4,6 @@ import org.apereo.cas.initializr.config.CasInitializrProperties;
 import org.apereo.cas.initializr.web.OverlayProjectDescription;
 import org.apereo.cas.initializr.web.UnsupportedVersionException;
 import org.apereo.cas.initializr.web.VersionUtils;
-import org.apereo.cas.overlay.casmgmt.buildsystem.CasManagementOverlayBuildSystem;
 import org.apereo.cas.overlay.casserver.buildsystem.CasOverlayBuildSystem;
 import org.apereo.cas.overlay.casserver.buildsystem.CasOverlayGradleBuild;
 import org.apereo.cas.overlay.configserver.buildsystem.CasConfigServerOverlayBuildSystem;
@@ -258,16 +257,6 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
                     "Unsupported version " + project.getCasVersion() + " for project type " + project.getBuildSystem().overlayType());
             });
 
-        if (type.equals(CasManagementOverlayBuildSystem.ID)) {
-            templateVariables.put("casMgmtVersion", project.getCasVersion());
-            properties.getSupportedVersions()
-                .stream()
-                .filter(version -> version.getType().equals("cas-mgmt")
-                    && version.getVersion().equals(project.getCasVersion()))
-                .findFirst()
-                .ifPresent(version -> templateVariables.put("casMgmtCasVersion", version.getPlatformVersion()));
-        }
-
         var casVersion = project.resolveCasVersion(boms.get("cas-bom"));
         templateVariables.put("casVersion", casVersion);
 
@@ -300,14 +289,9 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
 
         templateVariables.put("initializrUrl", generateAppUrl());
 
-        if (type.equalsIgnoreCase(CasOverlayBuildSystem.ID) || type.equalsIgnoreCase(CasManagementOverlayBuildSystem.ID)) {
+        if (type.equalsIgnoreCase(CasOverlayBuildSystem.ID)) {
             handleApplicationServerType(project, templateVariables);
             templateVariables.put("dockerSupported", dockerSupported);
-        }
-
-        if (type.equalsIgnoreCase(CasManagementOverlayBuildSystem.ID)) {
-            templateVariables.put("managementServer", Boolean.TRUE);
-            templateVariables.put("appName", "cas-management");
         }
         templateVariables.put("githubActionsSupported", getOverlayProjectDescription().isGithubActionsSupported());
 

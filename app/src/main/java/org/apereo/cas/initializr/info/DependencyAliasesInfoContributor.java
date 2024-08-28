@@ -2,8 +2,6 @@ package org.apereo.cas.initializr.info;
 
 import org.apereo.cas.initializr.config.CasInitializrProperties;
 
-import io.spring.initializr.metadata.Dependency;
-import io.spring.initializr.metadata.InitializrMetadata;
 import io.spring.initializr.metadata.InitializrMetadataProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,10 +9,7 @@ import lombok.val;
 import org.springframework.boot.actuate.info.Info;
 import org.springframework.boot.actuate.info.InfoContributor;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.Retryable;
 
-import java.util.Collection;
 import java.util.LinkedHashMap;
 
 @RequiredArgsConstructor
