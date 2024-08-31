@@ -1,55 +1,35 @@
 package org.apereo.cas.initializr.metadata;
 
-import org.apereo.cas.initializr.config.CasInitializrProperties;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.spring.initializr.metadata.Dependency;
 import io.spring.initializr.metadata.DependencyGroup;
 import io.spring.initializr.metadata.InitializrMetadata;
 import io.spring.initializr.web.support.InitializrMetadataUpdateStrategy;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.RegExUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
-
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.util.Comparator;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
 public class CasOverlayInitializrMetadataUpdateStrategy implements InitializrMetadataUpdateStrategy {
-    private static final ObjectMapper MAPPER = new ObjectMapper()
-        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-
-    private final CasInitializrProperties initializrProperties;
+    private final InitializrMetadataFetcher fetcher;
 
     @Override
     @Retryable(maxAttempts = 5, backoff = @Backoff(delay = 1000))
-    public synchronized InitializrMetadata update(final InitializrMetadata current) {
+    public synchronized InitializrMetadata update(final InitializrMetadata metadata) {
         try {
-            if (StringUtils.isNotBlank(initializrProperties.getMetadataUrl()) &&
-                StringUtils.isNotBlank(initializrProperties.getMetadataApiKey())) {
-                var allDependencies = loadAllDependencies();
-                allDependencies.forEach(entry -> addDependencyToMetadata(current, entry));
-                current.getDependencies().validate();
-            } else {
-                log.warn("Initializr metadata URL or api key are undefined");
+            var casVersion = metadata.getConfiguration().getEnv().getBoms().get("cas-bom").getVersion();
+            var allDependencies = new ArrayList<>(fetcher.fetch(casVersion));
+            allDependencies.forEach(entry -> addDependencyToMetadata(metadata, entry));
+            if (!allDependencies.isEmpty()) {
+                metadata.getDependencies().validate();
             }
-            log.info("Loaded CAS modules: {}", current.getDependencies().getAll().size());
-            return current;
+            log.info("Loaded CAS modules: {}", metadata.getDependencies().getAll().size());
+            return metadata;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -87,61 +67,4 @@ public class CasOverlayInitializrMetadataUpdateStrategy implements InitializrMet
         }
     }
 
-    private List<CasDependency> loadAllDependencies() throws Exception {
-        var findUrl = initializrProperties.getMetadataUrl().trim().concat("/action/find");
-        var url = new URL(findUrl);
-        var uc = (HttpURLConnection) url.openConnection();
-        uc.setRequestMethod("POST");
-        uc.setConnectTimeout(10000);
-        uc.setReadTimeout(10000);
-        uc.setRequestProperty("Content-Type", "application/json");
-        uc.setRequestProperty("api-key", initializrProperties.getMetadataApiKey());
-        uc.setDoOutput(true);
-        var coords = "{\"collection\":\"casmodules\",\"database\":\"apereocas\",\"dataSource\":\"cascluster\"}";
-        var out = coords.getBytes(StandardCharsets.UTF_8);
-        uc.setFixedLengthStreamingMode(out.length);
-        uc.connect();
-        try(var os = uc.getOutputStream()) {
-            os.write(out);
-        }
-        var dependencyMap = MAPPER.readValue(uc.getInputStream(), Map.class);
-        var allDependencies = MAPPER.convertValue(dependencyMap.get("documents"), new TypeReference<List<CasDependency>>() {});
-        allDependencies.sort(Comparator.comparing(o -> o.getDetails().getCategory()));
-        if (allDependencies.isEmpty()) {
-            throw new Exception("Could not load dependencies");
-        }
-        return allDependencies;
-    }
-    
-    @Getter
-    @NoArgsConstructor
-    @ToString
-    @Setter
-    public static class CasDependencyDetails {
-        private String category;
-
-        private String title;
-
-        private List<String> aliases;
-
-        private List<String> facets;
-
-        private boolean selectable = true;
-    }
-
-    @Getter
-    @NoArgsConstructor
-    @ToString
-    @Setter
-    public static class CasDependency {
-        private String name;
-
-        private String version;
-
-        private String group;
-
-        private String description;
-
-        private CasDependencyDetails details = new CasDependencyDetails();
-    }
 }

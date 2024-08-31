@@ -382,7 +382,6 @@ if (!skipValidation) {
 }
 
 {{#casServer}}
-{{#gradleVersion8Compatible}}
 task duct(group: "CAS", description: "Test ticket registry functionality via the CAS REST API") {
     def service = project.findProperty("duct.service") ?: "https://apereo.github.io"
     def casServerNodes = providers.gradlePropertiesPrefixedBy("duct.cas").get()
@@ -487,5 +486,4 @@ task duct(group: "CAS", description: "Test ticket registry functionality via the
         }
     }
 }
-{{/gradleVersion8Compatible}}
 {{/casServer}}
