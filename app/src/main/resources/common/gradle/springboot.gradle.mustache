@@ -86,16 +86,16 @@ springBoot {
     {{#casServer}}
     {{#nativeImageSupported}}
     if (nativeImage) {
-        mainClassName = "org.apereo.cas.nativex.CasNativeWebApplication"
+        mainClass = "org.apereo.cas.nativex.CasNativeWebApplication"
     } else {
-        mainClassName = "org.apereo.cas.web.CasWebApplication"
+        mainClass = "org.apereo.cas.web.CasWebApplication"
         buildInfo()
         bootBuildInfo.mustRunAfter(compileJava)
     }
     {{/nativeImageSupported}}
-    {{^nativeImageSupported}}mainClassName = "org.apereo.cas.web.CasWebApplication"{{/nativeImageSupported}}
+    {{^nativeImageSupported}}mainClass = "org.apereo.cas.web.CasWebApplication"{{/nativeImageSupported}}
     {{/casServer}}
-    {{#configServer}}mainClassName = "org.apereo.cas.CasConfigurationServerWebApplication"{{/configServer}}
+    {{#configServer}}mainClass = "org.apereo.cas.CasConfigurationServerWebApplication"{{/configServer}}
 }
 
 {{#sbomSupported}}
