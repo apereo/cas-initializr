@@ -110,7 +110,6 @@ public class OverlayProjectRequestToDescriptionConverter implements ProjectReque
         if (request.getCasVersion() != null) {
             return request.getCasVersion();
         }
-        var type = request.getType();
         var boms = metadata.getConfiguration().getEnv().getBoms();
         return boms.get("cas-bom").getVersion();
     }

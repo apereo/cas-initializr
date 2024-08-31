@@ -35,7 +35,6 @@ buildscript {
         classpath "org.springframework.boot:spring-boot-gradle-plugin:${project.springBootVersion}"
         classpath "io.freefair.gradle:maven-plugin:${project.gradleFreeFairPluginVersion}"
         classpath "io.freefair.gradle:lombok-plugin:${project.gradleFreeFairPluginVersion}"
-        classpath "io.spring.gradle:dependency-management-plugin:${project.gradleDependencyManagementPluginVersion}"
         {{#dockerSupported}}
         classpath "com.google.cloud.tools:jib-gradle-plugin:${project.jibVersion}"
         classpath "com.bmuschko:gradle-docker-plugin:${project.gradleDockerPluginVersion}"
@@ -89,10 +88,6 @@ repositories {
     }
 }
 
-{{#springDependencyMgmt}}
-apply plugin: "io.spring.dependency-management"
-{{/springDependencyMgmt}}
-
 {{#nativeImageSupported}}
 def nativeImage = project.hasProperty("nativeImage") && Boolean.valueOf(project.getProperty("nativeImage"))
 if (!nativeImage) {
@@ -122,14 +117,6 @@ apply plugin: "com.google.cloud.tools.jib"
 apply plugin: "com.bmuschko.docker-remote-api"
 {{/dockerSupported}}
 apply from: rootProject.file("gradle/tasks.gradle")
-
-{{#springDependencyMgmt}}
-dependencyManagement {
-    imports {
-        mavenBom "org.apereo.cas:cas-server-support-bom:${project.'cas.version'}"
-    }
-}
-{{/springDependencyMgmt}}
 
 def out = services.get(StyledTextOutputFactory).create("cas")
 
@@ -443,13 +430,11 @@ if (project.hasProperty("appServer")) {
 }
 
 dependencies {
-    {{^springDependencyMgmt}}
     /**
     * Do NOT modify the lines below or else you will risk breaking dependency management.
     **/
     implementation enforcedPlatform("org.apereo.cas:cas-server-support-bom:${project.'cas.version'}")
     implementation platform(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES)
-    {{/springDependencyMgmt}}
     {{#casServer}}
 
     {{#nativeImageSupported}}
@@ -478,7 +463,7 @@ dependencies {
     implementation "org.apereo.cas:cas-server-webapp-init"
 
     if (appServer == 'tomcat') {
-        implementation "org.apereo.cas:cas-server-webapp-init"
+        implementation "org.apereo.cas:cas-server-webapp-init-tomcat"
     }
     
     developmentOnly "org.springframework.boot:spring-boot-devtools:${project.springBootVersion}"

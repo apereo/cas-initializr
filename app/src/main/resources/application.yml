@@ -34,7 +34,7 @@ logging:
       springframework:
         web: warn
       apereo:
-        cas: warn
+        cas: info
     io:
       spring:
         initializr: info
@@ -42,7 +42,8 @@ spring:
   profiles:
     include: initializr
   cloud:
-    compatibility-verifier.enabled: false 
+    compatibility-verifier:
+      enabled: false
   main:
     allow-bean-definition-overriding: true
 
@@ -50,7 +51,7 @@ initializr:
   env:
     force-ssl: true
     platform:
-      compatibility-range: 6.5.0
+      compatibility-range: 7.0.0
   name:
     value: cas
   description:
@@ -64,10 +65,8 @@ initializr:
   package-name:
     value: org.apereo
   javaVersions:
-    - id: 11
-      default: true
-    - id: 17
     - id: 21
+      default: true
   languages:
     - name: Java
       id: java

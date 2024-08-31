@@ -37,7 +37,6 @@ dependencies {
     bootRunConfig "org.apereo.cas:cas-server-support-thymeleaf"
     bootRunConfig "org.apereo.cas:cas-server-support-validation"
     bootRunConfig "org.apereo.cas:cas-server-support-person-directory"
-    {{#casVersion6}}bootRunConfig "org.apereo.cas:cas-server-webapp-config"{{/casVersion6}}
     bootRunConfig "org.apereo.cas:cas-server-webapp-resources"
     bootRunConfig "org.apereo.cas:cas-server-webapp-init"
     bootRunConfig "org.apereo.cas:cas-server-webapp-tomcat"
@@ -87,16 +86,16 @@ springBoot {
     {{#casServer}}
     {{#nativeImageSupported}}
     if (nativeImage) {
-        {{mainClass}} = "org.apereo.cas.nativex.CasNativeWebApplication"
+        mainClass = "org.apereo.cas.nativex.CasNativeWebApplication"
     } else {
-        {{mainClass}} = "org.apereo.cas.web.CasWebApplication"
+        mainClass = "org.apereo.cas.web.CasWebApplication"
         buildInfo()
         bootBuildInfo.mustRunAfter(compileJava)
     }
     {{/nativeImageSupported}}
-    {{^nativeImageSupported}}{{mainClass}} = "org.apereo.cas.web.CasWebApplication"{{/nativeImageSupported}}
+    {{^nativeImageSupported}}mainClass = "org.apereo.cas.web.CasWebApplication"{{/nativeImageSupported}}
     {{/casServer}}
-    {{#configServer}}{{mainClass}} = "org.apereo.cas.CasConfigurationServerWebApplication"{{/configServer}}
+    {{#configServer}}mainClass = "org.apereo.cas.CasConfigurationServerWebApplication"{{/configServer}}
 }
 
 {{#sbomSupported}}

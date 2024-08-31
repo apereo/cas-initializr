@@ -1,6 +1,7 @@
 package org.apereo.cas.initializr.contrib;
 
 import org.apereo.cas.initializr.config.CasInitializrProperties;
+import org.apereo.cas.initializr.metadata.InitializrMetadataFetcher;
 import org.apereo.cas.initializr.web.OverlayProjectDescription;
 import org.apereo.cas.initializr.web.UnsupportedVersionException;
 import org.apereo.cas.initializr.web.VersionUtils;
@@ -10,7 +11,7 @@ import org.apereo.cas.overlay.configserver.buildsystem.CasConfigServerOverlayBui
 import com.github.mustachejava.DefaultMustacheFactory;
 import io.spring.initializr.generator.project.ProjectDescription;
 import io.spring.initializr.generator.project.contributor.ProjectContributor;
-import io.spring.initializr.generator.version.Version;
+import io.spring.initializr.metadata.InitializrMetadata;
 import io.spring.initializr.metadata.InitializrMetadataProvider;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -47,8 +48,9 @@ import java.util.stream.IntStream;
 @Getter
 @Accessors(chain = true)
 public abstract class TemplatedProjectContributor implements ProjectContributor {
-    private static final int MAX_CAS_MAJOR_VERSION = 20;
-    private static final int MAX_GRADLE_MAJOR_VERSION = 20;
+    private static final int MIN_CAS_MAJOR_VERSION = 7;
+    private static final int MAX_CAS_MAJOR_VERSION = 50;
+    private static final int MAX_GRADLE_MAJOR_VERSION = 50;
     
     protected final ApplicationContext applicationContext;
 
@@ -102,11 +104,23 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         log.debug("{} was marked as executable: {}", filename, result);
     }
 
-    protected static List<CasDependency> handleProjectRequestedDependencies(final ProjectDescription project) {
+    protected List<CasDependency> handleProjectRequestedDependencies(final OverlayProjectDescription project) {
+        val fetcher = applicationContext.getBean(InitializrMetadataFetcher.class);
+
+        var provider = getInitializrMetadata();
+        var configuration = provider.getConfiguration();
+        var boms = configuration.getEnv().getBoms();
+        
+        var casVersion = project.resolveCasVersion(boms.get("cas-bom"));
+        var availableDependencies = fetcher.fetch(casVersion);
+        log.info("Available overlay dependencies for {}: {}", project.getVersion(), availableDependencies.size());
+        
         var dependencies = project.getRequestedDependencies()
             .values()
             .stream()
             .filter(dep -> !CasOverlayGradleBuild.WEBAPP_ARTIFACTS.contains(dep.getArtifactId()))
+            .filter(dep -> availableDependencies.stream().anyMatch(dependency -> dependency.getName().equalsIgnoreCase(dep.getArtifactId())
+                && dependency.getGroup().equalsIgnoreCase(dep.getGroupId())))
             .map(dep -> new CasDependency(dep.getGroupId(), dep.getArtifactId()))
             .collect(Collectors.toList());
         log.debug("Requested overlay dependencies: {}", dependencies);
@@ -172,8 +186,8 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         var project = applicationContext.getBean(OverlayProjectDescription.class);
         var templateVariables = prepareProjectTemplateVariables(project);
         var model = contributeInternal(project);
-        if (model instanceof Map) {
-            ((Map<String, Object>) model).putAll(templateVariables);
+        if (model instanceof Map mapModule) {
+            mapModule.putAll(templateVariables);
         }
         return templateVariables;
     }
@@ -218,12 +232,17 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         }
     }
 
-    protected Map<String, Object> prepareProjectTemplateVariables(final OverlayProjectDescription project) {
+    protected InitializrMetadata getInitializrMetadata() {
         var provider = applicationContext.getBean(InitializrMetadataProvider.class);
+        return provider.get();
+    }
+    
+    protected Map<String, Object> prepareProjectTemplateVariables(final OverlayProjectDescription project) {
         var properties = applicationContext.getBean(CasInitializrProperties.class);
-
-        var templateVariables = new HashMap<>(provider.get().defaults());
-        var configuration = provider.get().getConfiguration();
+        
+        var provider = getInitializrMetadata();
+        var templateVariables = new HashMap<>(provider.defaults());
+        var configuration = provider.getConfiguration();
         var boms = configuration.getEnv().getBoms();
 
         var type = project.getBuildSystem().id();
@@ -261,7 +280,7 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         templateVariables.put("casVersion", casVersion);
 
         var parsedCasVersion = VersionUtils.parse(casVersion);
-        IntStream.rangeClosed(6, MAX_CAS_MAJOR_VERSION).forEach(value -> {
+        IntStream.rangeClosed(MIN_CAS_MAJOR_VERSION, MAX_CAS_MAJOR_VERSION).forEach(value -> {
             if (parsedCasVersion.getMajor() == value) {
                 templateVariables.put("casVersion" + value, Boolean.TRUE);
             }
@@ -271,14 +290,6 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         });
 
         templateVariables.put("springBootVersion", project.getSpringBootVersion());
-
-        var cmp = VersionUtils.parse(project.getSpringBootVersion()).compareTo(Version.parse("2.6.0"));
-        if (cmp >= 0) {
-            templateVariables.put("mainClass", "mainClass");
-        } else {
-            templateVariables.put("mainClass", "mainClassName");
-        }
-
         templateVariables.put("buildSystemId", type);
 
         val dockerSupported = getOverlayProjectDescription().isDockerSupported();
@@ -311,15 +322,6 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
             templateVariables.put("configServer", Boolean.TRUE);
             templateVariables.put("appName", "casconfigserver");
         }
-
-        /*
-         * Starting from CAS 6.5, projects can take advantage of Gradle's
-         * support for BOMs. Prior to this version, the dependency management plugin
-         * must be used to handle BOMs.
-         */
-        var bomCapableVersion = VersionUtils.parse("6.5.0");
-        var currentCasProject = VersionUtils.parse(project.getCasVersion());
-        templateVariables.put("springDependencyMgmt", currentCasProject.compareTo(bomCapableVersion) < 0);
 
         templateVariables.putAll(getVariables());
         templateVariables.put("dependencies", handleProjectRequestedDependencies(project));

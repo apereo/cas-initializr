@@ -22,9 +22,9 @@ import org.apereo.cas.initializr.contrib.project.OverlayWebXmlContributor;
 import org.apereo.cas.initializr.contrib.project.ProjectLicenseContributor;
 import org.apereo.cas.initializr.contrib.project.SdkmanJavaVersionContributor;
 import org.apereo.cas.initializr.metadata.CasOverlayInitializrMetadataUpdateStrategy;
+import org.apereo.cas.initializr.metadata.InitializrMetadataFetcher;
 import org.apereo.cas.initializr.web.ui.InitializrHomeController;
 import org.apereo.cas.overlay.casserver.contrib.docker.CasOverlayDockerContributor;
-
 import io.spring.initializr.generator.project.ProjectGenerationConfiguration;
 import io.spring.initializr.generator.project.contributor.ProjectContributor;
 import io.spring.initializr.web.support.InitializrMetadataUpdateStrategy;
@@ -35,7 +35,6 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-
 import javax.cache.configuration.MutableConfiguration;
 import javax.cache.expiry.CreatedExpiryPolicy;
 import javax.cache.expiry.Duration;
@@ -67,7 +66,7 @@ public class CasInitializrConfiguration {
     public ProjectContributor ignoreRulesContributor() {
         return new IgnoreRulesContributor();
     }
-
+    
     @Bean
     public ProjectContributor jenvJavaVersionContributor() {
         return new JenvJavaVersionContributor(applicationContext);
@@ -141,10 +140,11 @@ public class CasInitializrConfiguration {
     public InitializrHomeController initializrHomeController() {
         return new InitializrHomeController();
     }
-
+    
     @Bean
-    public InitializrMetadataUpdateStrategy initializrMetadataUpdateStrategy(final CasInitializrProperties initializrProperties) {
-        return new CasOverlayInitializrMetadataUpdateStrategy(initializrProperties);
+    public InitializrMetadataUpdateStrategy initializrMetadataUpdateStrategy(
+        final InitializrMetadataFetcher fetcher) {
+        return new CasOverlayInitializrMetadataUpdateStrategy(fetcher);
     }
 
     @Bean
@@ -157,6 +157,7 @@ public class CasInitializrConfiguration {
     public JCacheManagerCustomizer initializrMetadataCacheManagerCustomizer() {
         return cacheManager -> {
             var cacheDuration = Duration.ONE_DAY;
+            
             var config = new MutableConfiguration<>()
                 .setStoreByValue(false)
                 .setManagementEnabled(true)
@@ -164,14 +165,14 @@ public class CasInitializrConfiguration {
                 .setExpiryPolicyFactory(CreatedExpiryPolicy.factoryOf(cacheDuration));
             log.info("Initialize metadata is cached for 1 day");
             cacheManager.createCache("initializr.metadata", config);
-            
+
             var propertiesConfig = new MutableConfiguration<>()
                 .setStoreByValue(false)
                 .setManagementEnabled(true)
                 .setStatisticsEnabled(true)
                 .setExpiryPolicyFactory(CreatedExpiryPolicy.factoryOf(cacheDuration));
-            log.info("CAS properties metadata is cached for 1 day");
-            cacheManager.createCache("cas.properties", propertiesConfig);
+            log.info("CAS modules metadata is cached for 1 day");
+            cacheManager.createCache("cas.modules", propertiesConfig);
         };
     }
 }

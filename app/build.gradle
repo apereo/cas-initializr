@@ -96,7 +96,6 @@ processResources {
         To support the Gradle configuration cache...
     */
     def version = project.providers.gradleProperty("version").get()
-    def gradleDependencyManagementPluginVersion = project.providers.gradleProperty("gradleDependencyManagementPluginVersion").get()
     def gradleFreeFairPluginVersion = project.providers.gradleProperty("gradleFreeFairPluginVersion").get()
     def gradleDownloadTaskPluginVersion = project.providers.gradleProperty("gradleDownloadTaskPluginVersion").get()
     def openRewriteVersion = project.providers.gradleProperty("openRewriteVersion").get()
@@ -129,7 +128,6 @@ processResources {
     filesMatching(['**/*.yml', '**/*.properties', '**/*.md', '**/*.mustache']) {
         filter org.apache.tools.ant.filters.ReplaceTokens, tokens: [
                 "version"                                : version,
-                "gradleDependencyManagementPluginVersion": gradleDependencyManagementPluginVersion,
                 "gradleFreeFairPluginVersion"            : gradleFreeFairPluginVersion,
                 "gradleDownloadTaskPluginVersion"        : gradleDownloadTaskPluginVersion,
                 "openRewriteVersion"                     : openRewriteVersion,
