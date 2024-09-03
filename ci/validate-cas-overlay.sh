@@ -214,7 +214,7 @@ printgreen "Build Container Image w/ Docker"
 ./gradlew casBuildDockerImage
 
 printgreen "Build Container Image w/ Docker Compose"
-docker-compose build
+docker compose build
 
 if [[ "$CAS_MAJOR_VERSION" -ge 7 ]]; then
   # targetVersion=${CAS_VERSION%-SNAPSHOT}
