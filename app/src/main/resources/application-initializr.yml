@@ -24,6 +24,20 @@ cas-initializr:
       plugins:
         jib-version: ${jibVersion}
         open-rewrite-version: ${openRewriteVersion}
+    - version: 7.1.0
+      platform-version: 7.1.0
+      boot-version: 3.3.3
+      sync: true
+      validate: true
+      branch: master
+      type: cas
+      tomcat-version: 10.1.28
+      java-version: 21
+      container-base-image: azul/zulu-openjdk:21
+      gradle-version: "8.10"
+      plugins:
+        jib-version: ${jibVersion}
+        open-rewrite-version: ${openRewriteVersion}
     - version: ${casLatestVersion}
       platform-version: ${casLatestVersion}
       boot-version: ${springBootLatestVersion}
