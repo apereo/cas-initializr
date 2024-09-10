@@ -38,6 +38,7 @@ import org.springframework.core.annotation.Order;
 import javax.cache.configuration.MutableConfiguration;
 import javax.cache.expiry.CreatedExpiryPolicy;
 import javax.cache.expiry.Duration;
+import java.util.concurrent.TimeUnit;
 
 @ProjectGenerationConfiguration
 @Slf4j
@@ -154,16 +155,17 @@ public class CasInitializrConfiguration {
 
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
-    public JCacheManagerCustomizer initializrMetadataCacheManagerCustomizer() {
+    public JCacheManagerCustomizer initializrMetadataCacheManagerCustomizer(final CasInitializrProperties properties) {
         return cacheManager -> {
-            var cacheDuration = Duration.ONE_DAY;
+            var cacheDuration = new Duration(TimeUnit.MINUTES,
+                properties.getMetadataCacheDuration().toMinutes());
             
             var config = new MutableConfiguration<>()
                 .setStoreByValue(false)
                 .setManagementEnabled(true)
                 .setStatisticsEnabled(true)
                 .setExpiryPolicyFactory(CreatedExpiryPolicy.factoryOf(cacheDuration));
-            log.info("Initialize metadata is cached for 1 day");
+            log.info("Initialize metadata is cached for {}", cacheDuration);
             cacheManager.createCache("initializr.metadata", config);
 
             var propertiesConfig = new MutableConfiguration<>()
@@ -171,7 +173,7 @@ public class CasInitializrConfiguration {
                 .setManagementEnabled(true)
                 .setStatisticsEnabled(true)
                 .setExpiryPolicyFactory(CreatedExpiryPolicy.factoryOf(cacheDuration));
-            log.info("CAS modules metadata is cached for 1 day");
+            log.info("CAS modules metadata is cached for {}", cacheDuration);
             cacheManager.createCache("cas.modules", propertiesConfig);
         };
     }

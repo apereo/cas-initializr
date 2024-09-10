@@ -29,6 +29,7 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -101,8 +102,8 @@ public class CasInitializrApplication {
     }
 
     @Bean
-    public InitializrMetadataFetcher casOverlayInitializrMetadataFetcher(final CasInitializrProperties initializrProperties) {
-        return new CasOverlayInitializrMetadataFetcher(initializrProperties);
+    public InitializrMetadataFetcher casOverlayInitializrMetadataFetcher(final MongoTemplate mongoTemplate) {
+        return new CasOverlayInitializrMetadataFetcher(mongoTemplate);
     }
     
     @Bean

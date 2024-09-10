@@ -1,6 +1,4 @@
-cas-initializr:
-  metadata-api-key: ${CAS_PROJECT_DB_API_KEY:}
-  metadata-url: ${CAS_PROJECT_DB_URL_ENDPOINT:}
+
 server:
   port: ${PORT:8080}
   ssl:
@@ -39,6 +37,9 @@ logging:
       spring:
         initializr: info
 spring:
+  data:
+    mongodb:
+      uri: ${CAS_MODULE_METADATA_MONGODB_URL}
   profiles:
     include: initializr
   cloud:
@@ -108,3 +109,5 @@ initializr:
         format: project
       default: false
       action: /starter.tgz
+cas-initializr:
+  metadata-cache-duration: PT8H
