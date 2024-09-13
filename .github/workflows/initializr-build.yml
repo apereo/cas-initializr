@@ -7,8 +7,7 @@ env:
   DOCKER_USER: ${{ secrets.DOCKER_USER }}
   DOCKER_PWD: ${{ secrets.DOCKER_PWD }}
   GH_TOKEN: ${{ secrets.GH_TOKEN }}
-  CAS_PROJECT_DB_URL_ENDPOINT: ${{ secrets.CAS_PROJECT_DB_URL_ENDPOINT }}
-  CAS_PROJECT_DB_API_KEY: ${{ secrets.CAS_PROJECT_DB_API_KEY }}
+  CAS_MODULE_METADATA_MONGODB_URL: ${{ secrets.CAS_MODULE_METADATA_MONGODB_URL }}
 
 ##########################################################################
 
