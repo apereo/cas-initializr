@@ -489,3 +489,21 @@ dependencies {
     testImplementation "org.springframework.boot:spring-boot-starter-test"
 }
 
+if (project.hasProperty("tomcatVersion")) {
+    bootWar {
+        overlays {
+            /*
+                https://docs.freefair.io/gradle-plugins/current/reference/#_io_freefair_war_overlay
+                Note: The "excludes" property is only for files in the war dependency.
+                If a jar is excluded from the war, it could be brought back into the final war as a dependency
+                of non-war dependencies. Those should be excluded via normal gradle dependency exclusions.
+            */
+            cas {
+                from "org.apereo.cas:cas-server-webapp${project.appServer}:${project.'cas.version'}@war"
+                provided = false
+                // Exclude base CAS tomcat jars when overriden
+                excludes = ["WEB-INF/lib/tomcat-*.jar"]
+            }
+        }
+    }
+}
