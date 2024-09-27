@@ -91,4 +91,4 @@ jobs:
           HELM_CAS_VERSION: "${{ fromJSON(needs.latest-versions-cas.outputs.supported-versions).cas-version }}"
         run: ./ci/validate-helm-build-images.sh $HELM_CAS_VERSION
       - name: Validate Helm Chart
-        run: ./ci/validate-helm.sh
+        run: ./ci/validate-helm.sh $HELM_CAS_VERSION
