@@ -10,7 +10,7 @@ initializr:
         version: ${casLatestVersion}
 cas-initializr:
   supported-versions:
-    - version: 7.0.9
+    - version: 7.0.10
       platform-version: 7.0.0
       boot-version: 3.2.1
       sync: true
