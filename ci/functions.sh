@@ -34,7 +34,7 @@ function downloadTomcat() {
   if [[ ! -f "apache-tomcat-${tomcatVersion}.zip" ]]; then
     for i in $(seq 1 5); do
         echo "Attempt $i - Downloading Apache Tomcat from ${tomcatUrl}"
-        wget --no-check-certificate --retry-connrefused "${tomcatUrl}" -O tomcat.tar.gz > /dev/null 2>&1 && success=true && break
+        wget --no-check-certificate --retry-connrefused "${tomcatUrl}" > /dev/null 2>&1 && success=true && break
         echo "Download failed. Retrying..."
         sleep 3
     done
