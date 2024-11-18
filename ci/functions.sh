@@ -30,20 +30,17 @@ function downloadTomcat() {
   echo "Removing ${CATALINA_HOME}"
   rm -Rf "${CATALINA_HOME}" > /dev/null 2>&1
 
+  success=false
   if [[ ! -f "apache-tomcat-${tomcatVersion}.zip" ]]; then
     for i in $(seq 1 5); do
         echo "Attempt $i - Downloading Apache Tomcat from ${tomcatUrl}"
-        wget --no-check-certificate --retry-connrefused "${tomcatUrl}" -O tomcat.tar.gz > /dev/null 2>&1
-        if [[ $? -eq 0 ]]; then
-            echo "Apache Tomcat downloaded successfully."
-            break
-        fi
+        wget --no-check-certificate --retry-connrefused "${tomcatUrl}" -O tomcat.tar.gz > /dev/null 2>&1 && success=true && break
         echo "Download failed. Retrying..."
         sleep 3
     done
   fi
-  if [[ ! -f "apache-tomcat-${tomcatVersion}.zip" ]]; then
-    echo "Failed to download Apache Tomcat"
+  if [ "$success" = false ]; then
+    echo "Failed to download Apache Tomcat ${tomcatVersion}"
     exit 1
   fi
   unzip apache-tomcat-"${tomcatVersion}".zip > /dev/null 2>&1
