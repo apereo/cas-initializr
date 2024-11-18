@@ -31,11 +31,21 @@ function downloadTomcat() {
   rm -Rf "${CATALINA_HOME}" > /dev/null 2>&1
 
   if [[ ! -f "apache-tomcat-${tomcatVersion}.zip" ]]; then
-    echo "Downloading Apache Tomcat from ${tomcatUrl}"
-    wget --no-check-certificate ${tomcatUrl} > /dev/null 2>&1
-    [ $? -eq 0 ] && echo "Apache Tomcat downloaded successfully." || exit 1
+    for i in $(seq 1 5); do
+        echo "Attempt $i - Downloading Apache Tomcat from ${tomcatUrl}"
+        wget --no-check-certificate --retry-connrefused "${tomcatUrl}" -O tomcat.tar.gz > /dev/null 2>&1
+        if [[ $? -eq 0 ]]; then
+            echo "Apache Tomcat downloaded successfully."
+            break
+        fi
+        echo "Download failed. Retrying..."
+        sleep 3
+    done
   fi
-    
+  if [[ ! -f "apache-tomcat-${tomcatVersion}.zip" ]]; then
+    echo "Failed to download Apache Tomcat"
+    exit 1
+  fi
   unzip apache-tomcat-"${tomcatVersion}".zip > /dev/null 2>&1
   chmod +x "${CATALINA_HOME}"/bin/*.sh > /dev/null 2>&1
   rm -Rf "${CATALINA_HOME}"/webapps/examples ${CATALINA_HOME}/webapps/docs ${CATALINA_HOME}/webapps/host-manager ${CATALINA_HOME}/webapps/manager
