@@ -12,14 +12,12 @@ import org.apereo.cas.initializr.web.OverlayProjectRequestToDescriptionConverter
 import org.apereo.cas.initializr.web.SupportedVersionsEndpoint;
 import org.apereo.cas.initializr.web.generator.CasInitializrProjectAssetGenerator;
 import org.apereo.cas.initializr.web.generator.CasInitializrProjectGenerationInvoker;
-
 import io.spring.initializr.metadata.DependencyMetadataProvider;
 import io.spring.initializr.metadata.InitializrMetadataProvider;
 import io.spring.initializr.web.controller.ProjectMetadataController;
 import io.spring.initializr.web.project.DefaultProjectRequestPlatformVersionTransformer;
 import io.spring.initializr.web.project.ProjectRequestPlatformVersionTransformer;
 import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.actuate.info.InfoContributor;
@@ -85,7 +83,6 @@ public class CasInitializrApplication {
     }
 
     @Bean
-    @Autowired
     public WebMvcConfigurer rateLimitingWebMvcConfigurer(
         @Qualifier("rateLimitInterceptor") final HandlerInterceptor rateLimitInterceptor) {
         return new WebMvcConfigurer() {

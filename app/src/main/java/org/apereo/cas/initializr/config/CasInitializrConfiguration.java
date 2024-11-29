@@ -43,11 +43,10 @@ import java.util.concurrent.TimeUnit;
 @ProjectGenerationConfiguration
 @Slf4j
 public class CasInitializrConfiguration {
-    @Autowired
-    private ConfigurableApplicationContext applicationContext;
 
     @Bean
-    public ChainingSingleResourceProjectContributor openRewriteContributor() {
+    public ChainingSingleResourceProjectContributor openRewriteContributor(
+        final ConfigurableApplicationContext applicationContext) {
         var chain = new ChainingSingleResourceProjectContributor();
         chain.addContributor(new OpenRewriteContributor(applicationContext));
         return chain;
@@ -59,7 +58,7 @@ public class CasInitializrConfiguration {
     }
 
     @Bean
-    public ProjectContributor overlayLombokConfigContributor() {
+    public ProjectContributor overlayLombokConfigContributor(final ConfigurableApplicationContext applicationContext) {
         return new OverlayLombokConfigContributor(applicationContext);
     }
 
@@ -69,12 +68,12 @@ public class CasInitializrConfiguration {
     }
     
     @Bean
-    public ProjectContributor jenvJavaVersionContributor() {
+    public ProjectContributor jenvJavaVersionContributor(final ConfigurableApplicationContext applicationContext) {
         return new JenvJavaVersionContributor(applicationContext);
     }
 
     @Bean
-    public ProjectContributor sdkmanJavaVersionContributor() {
+    public ProjectContributor sdkmanJavaVersionContributor(final ConfigurableApplicationContext applicationContext) {
         return new SdkmanJavaVersionContributor(applicationContext);
     }
 
@@ -84,7 +83,7 @@ public class CasInitializrConfiguration {
     }
 
     @Bean
-    public ChainingSingleResourceProjectContributor herokuContributor() {
+    public ChainingSingleResourceProjectContributor herokuContributor(final ConfigurableApplicationContext applicationContext) {
         var chain = new ChainingSingleResourceProjectContributor();
         chain.addContributor(new HerokuProcFileContributor(applicationContext));
         chain.addContributor(new HerokuSystemPropertiesFileContributor(applicationContext));
@@ -92,21 +91,21 @@ public class CasInitializrConfiguration {
     }
 
     @Bean
-    public ChainingSingleResourceProjectContributor nativeImageContributor() {
+    public ChainingSingleResourceProjectContributor nativeImageContributor(final ConfigurableApplicationContext applicationContext) {
         var chain = new ChainingSingleResourceProjectContributor();
         chain.addContributor(new GraalVMNativeImageContributor(applicationContext));
         return chain;
     }
 
     @Bean
-    public ChainingSingleResourceProjectContributor githubContributor() {
+    public ChainingSingleResourceProjectContributor githubContributor(final ConfigurableApplicationContext applicationContext) {
         var chain = new ChainingSingleResourceProjectContributor();
         chain.addContributor(new GithubResourcesContributor(applicationContext));
         return chain;
     }
     
     @Bean
-    public ChainingMultipleResourcesProjectContributor gradleWrapperContributor() {
+    public ChainingMultipleResourcesProjectContributor gradleWrapperContributor(final ConfigurableApplicationContext applicationContext) {
         var chain = new ChainingMultipleResourcesProjectContributor();
         chain.addContributor(new GradleWrapperConfigurationContributor(applicationContext));
         chain.addContributor(new GradleWrapperExecutablesContributor());
@@ -114,7 +113,7 @@ public class CasInitializrConfiguration {
     }
 
     @Bean
-    public ChainingSingleResourceProjectContributor overlayGradleBuildContributor() {
+    public ChainingSingleResourceProjectContributor overlayGradleBuildContributor(final ConfigurableApplicationContext applicationContext) {
         var chain = new ChainingSingleResourceProjectContributor();
         chain.addContributor(new OverlayGradleSettingsContributor(applicationContext));
         chain.addContributor(new OverlayGradleTasksContributor(applicationContext));
@@ -124,7 +123,7 @@ public class CasInitializrConfiguration {
     }
 
     @Bean
-    public ChainingSingleResourceProjectContributor overlayOverrideSpringConfigContributor() {
+    public ChainingSingleResourceProjectContributor overlayOverrideSpringConfigContributor(final ConfigurableApplicationContext applicationContext) {
         var chain = new ChainingSingleResourceProjectContributor();
         chain.addContributor(new OverlayOverrideConfigurationContributor(applicationContext));
         return chain;
@@ -149,7 +148,7 @@ public class CasInitializrConfiguration {
     }
 
     @Bean
-    public CasOverlayDockerContributor casOverlayDockerContributor() {
+    public CasOverlayDockerContributor casOverlayDockerContributor(final ConfigurableApplicationContext applicationContext) {
         return new CasOverlayDockerContributor(applicationContext);
     }
 
