@@ -468,6 +468,9 @@ dependencies {
     
     developmentOnly "org.springframework.boot:spring-boot-devtools:${project.springBootVersion}"
     {{/nativeImageSupported}}
+    {{#dockerSupported}}
+    developmentOnly "org.springframework.boot:spring-boot-docker-compose:${project.springBootVersion}"
+    {{/dockerSupported}}
     {{/casServer}}
         
     /**

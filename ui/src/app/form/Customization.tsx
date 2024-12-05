@@ -85,10 +85,11 @@ export default function Customization() {
         <>
             <Typography
                 variant="h5"
-                component="h2"
+                component="h3"
                 style={{ marginBottom: "1rem" }}
             >
-                Build your CAS deployment
+                Select your CAS target CAS server version and add the required dependencies to your build.
+                Then download the generated project, and start your CAS deployment right away!
             </Typography>
             <Divider style={{ marginBottom: "2rem" }} />
             <form>
