@@ -31,7 +31,7 @@ cas-initializr:
       validate: true
       branch: "7.1"
       type: cas
-      tomcat-version: 10.1.34
+      tomcat-version: ${apacheTomcat10LatestVersion}
       java-version: 21
       container-base-image: azul/zulu-openjdk:21
       gradle-version: "8.10"
