@@ -1,6 +1,8 @@
 import React from "react";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { atomDark } from "react-syntax-highlighter/dist/esm/styles/prism";
+import {Prism, SyntaxHighlighterProps} from 'react-syntax-highlighter';
+
+const SyntaxHighlighter = Prism as typeof React.Component<SyntaxHighlighterProps>;
 
 export default function CodeRenderer({ code, language }: { code: string, language: string }) {
     return (

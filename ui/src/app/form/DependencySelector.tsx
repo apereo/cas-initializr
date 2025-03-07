@@ -85,11 +85,11 @@ export default function DependencySelector({ onSelectedChange }: DependencySelec
     const depTypes = useDependencyListTypes();
 
     /* STATE */
-    
+
     const [open, setOpen] = React.useState(false);
     const [filterType, setFilterType] = React.useState<string | null>(null);
     const [searchQuery, setSearchQuery] = React.useState<string>('');
-    const searchRef = useRef<HTMLElement>();
+    const searchRef = useRef<HTMLElement>(null);
 
     /* SEARCH */
 
@@ -98,7 +98,7 @@ export default function DependencySelector({ onSelectedChange }: DependencySelec
                       (d: Dependency) => d.type === filterType
                   )
                 : [...available], [filterType, available]);
-    
+
     const options = React.useMemo(() => ({
         includeScore: true,
         threshold: 0,
