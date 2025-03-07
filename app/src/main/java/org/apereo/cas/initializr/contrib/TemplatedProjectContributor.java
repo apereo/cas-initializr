@@ -282,7 +282,8 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         var parsedCasVersion = VersionUtils.parse(casVersion);
         IntStream.rangeClosed(MIN_CAS_MAJOR_VERSION, MAX_CAS_MAJOR_VERSION).forEach(value -> {
             if (parsedCasVersion.getMajor() == value) {
-                templateVariables.put("casVersion" + value, Boolean.TRUE);
+                templateVariables.put("casVersion" + parsedCasVersion.getMajor(), Boolean.TRUE);
+                templateVariables.put("casVersion" + parsedCasVersion.getMajor() + parsedCasVersion.getMinor(), Boolean.TRUE);
             }
             if (parsedCasVersion.getMajor() >= value) {
                 templateVariables.put("casVersion" + value + "OrAbove", Boolean.TRUE);

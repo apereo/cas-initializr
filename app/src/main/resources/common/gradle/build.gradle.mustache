@@ -48,7 +48,12 @@ buildscript {
         {{/sbomSupported}}
         classpath "de.undercouch:gradle-download-task:${project.gradleDownloadTaskVersion}"
         classpath "org.apereo.cas:cas-server-core-api-configuration-model:${project.'cas.version'}"
+        {{#casVersion72}}
+        classpath "org.apereo.cas:cas-server-support-configuration-metadata-repository:${project.'cas.version'}"
+        {{/casVersion72}}
+        {{^casVersion72}}
         classpath "org.apereo.cas:cas-server-core-configuration-metadata-repository:${project.'cas.version'}"
+        {{/casVersion72}}
         {{/casServer}}
     }
 }
