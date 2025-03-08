@@ -22,12 +22,12 @@ buildscript {
         gradlePluginPortal()
         {{#casServer}}
         maven {
-            url 'https://oss.sonatype.org/content/repositories/snapshots'
+            url = 'https://oss.sonatype.org/content/repositories/snapshots'
             mavenContent { snapshotsOnly() }
         }
         {{/casServer}}
         maven {
-            url "https://repo.spring.io/milestone"
+            url = "https://repo.spring.io/milestone"
             mavenContent { releasesOnly() }
         }
     }
@@ -70,25 +70,25 @@ repositories {
     }
     mavenLocal()
     mavenCentral()
-    maven { url 'https://oss.sonatype.org/content/repositories/releases' }
+    maven { url = 'https://oss.sonatype.org/content/repositories/releases' }
     maven {
-        url 'https://oss.sonatype.org/content/repositories/snapshots'
+        url = 'https://oss.sonatype.org/content/repositories/snapshots'
         mavenContent { snapshotsOnly() }
     }
     maven {
-        url "https://repository.apache.org/content/repositories/snapshots"
+        url = "https://repository.apache.org/content/repositories/snapshots"
         mavenContent { snapshotsOnly() }
     }
     maven {
-        url 'https://build.shibboleth.net/nexus/content/repositories/releases/'
+        url = 'https://build.shibboleth.net/nexus/content/repositories/releases/'
         mavenContent { releasesOnly() }
     }
     maven {
-        url "https://build.shibboleth.net/nexus/content/repositories/snapshots"
+        url = "https://build.shibboleth.net/nexus/content/repositories/snapshots"
         mavenContent { snapshotsOnly() }
     }
     maven {
-        url "https://repo.spring.io/milestone"
+        url = "https://repo.spring.io/milestone"
         mavenContent { releasesOnly() }
     }
 }
