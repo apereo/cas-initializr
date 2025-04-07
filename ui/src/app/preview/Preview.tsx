@@ -3,7 +3,9 @@ import { Breadcrumbs, Button, Drawer } from "@mui/material";
 
 import { setPreviewState, useIsPreviewing, usePreviewSelected } from "../store/PreviewReducer";
 import { useAppDispatch } from "../store/hooks";
-import { Download, NavigateNext, VisibilitySharp } from "@mui/icons-material";
+import Download from "@mui/icons-material/Download";
+import NavigateNext from "@mui/icons-material/NavigateNext";
+import VisibilitySharp from "@mui/icons-material/VisibilitySharp";
 import Dialog from "@mui/material/Dialog";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";

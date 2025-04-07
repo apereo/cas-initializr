@@ -7,7 +7,7 @@ import FormControl from "@mui/material/FormControl";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import InputLabel from "@mui/material/InputLabel";
 import InputAdornment from "@mui/material/InputAdornment";
-import { CopyAll } from "@mui/icons-material";
+import CopyAllIcon from '@mui/icons-material/CopyAll';
 import useCopyToClipboard from "../core/UseCopyToClipboard";
 
 export interface SimpleDialogProps {
@@ -29,7 +29,7 @@ interface TabPanelProps {
     index: number;
     value: number;
 }
-  
+
 function TabPanel(props: TabPanelProps) {
     const { children, value, index, ...other } = props;
 
@@ -109,7 +109,7 @@ export default function ShareOverlayDialog({ onClose, open, uiUrl, curlUrl }: Si
                                             onClick={() => handleCopy(curlUrl)}
                                             edge="end"
                                         >
-                                            <CopyAll />
+                                            <CopyAllIcon />
                                         </IconButton>
                                     </Tooltip>
                                 </InputAdornment>
@@ -139,7 +139,7 @@ export default function ShareOverlayDialog({ onClose, open, uiUrl, curlUrl }: Si
                                             onClick={() => handleCopy(uiUrl)}
                                             edge="end"
                                         >
-                                            <CopyAll />
+                                            <CopyAllIcon />
                                         </IconButton>
                                     </Tooltip>
                                 </InputAdornment>

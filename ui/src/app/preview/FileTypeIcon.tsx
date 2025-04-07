@@ -1,4 +1,10 @@
-import { Code, Css, Folder, Html, Javascript, Settings, TextSnippet } from "@mui/icons-material";
+import Code from "@mui/icons-material/Code";
+import Css from "@mui/icons-material/Css";
+import Folder from "@mui/icons-material/Folder";
+import Html from "@mui/icons-material/Html";
+import Javascript from "@mui/icons-material/Javascript";
+import Settings from "@mui/icons-material/Settings";
+import TextSnippet from "@mui/icons-material/TextSnippet";
 
 export function FileTypeIcon({ type }: { type: string }) {
     switch (type) {
