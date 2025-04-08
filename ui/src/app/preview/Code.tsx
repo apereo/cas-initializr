@@ -32,6 +32,7 @@ export function Code() {
                         <CodeRenderer
                             code={selected.content}
                             language={selected.type}
+                            filename={selected.name}
                         />
                     );
             }
