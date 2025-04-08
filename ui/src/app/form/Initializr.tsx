@@ -147,24 +147,24 @@ export default function Initializr() {
             >
                 {apiLoaded && versionsLoaded ? (
                     <>
-                        <Grid item xs={6} style={{ padding: "1rem" }}>
+                        <Grid size={{ xs: 6}} style={{ padding: "1rem" }}>
                             <Customization />
                             <Divider style={{ margin: "1rem 0rem" }} />
                             <Grid container spacing={2}>
-                                <Grid item xl={4} xs={12}>
+                                <Grid size={{ xs: 12, xl: 4}}>
                                     <DownloadOverlay
                                         handleDownload={() => download(overlay)}
                                         disabled={!canDownload || loading}
                                     />
                                 </Grid>
-                                <Grid item xl={4} xs={12}>
+                                <Grid size={{ xs: 12, xl: 4}}>
                                     <Preview
                                         handlePreview={() => explore(overlay)}
                                         handleDownload={() => download(overlay)}
                                         disabled={!canDownload || loading}
                                     />
                                 </Grid>
-                                <Grid item xl={4} xs={12}>
+                                <Grid size={{ xs: 12, xl: 4}}>
                                     <ShareOverlay
                                         overlay={overlay}
                                         disabled={!canDownload || loading}
@@ -183,7 +183,8 @@ export default function Initializr() {
                                 </div>
                             )}
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid size={{xs: 6}}>
+
                             <Box sx={{ borderBottom: 1, borderColor: 'divider', mt: 1 }}>
                                 <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
                                     <Tab label="Dependencies" {...a11yProps(0)} />
@@ -196,14 +197,12 @@ export default function Initializr() {
                     </>
                 ) : (
                     <Grid
-                        item
-                        xs={12}
+                        size={{xs: 12}}
                         style={{
                             padding: "1rem",
                             justifyContent: "center",
                             display: "flex",
                         }}
-                        zeroMinWidth
                     >
                         <CircularProgress />
                     </Grid>

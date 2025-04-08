@@ -50,7 +50,7 @@ export default function Dependencies() {
                 alignItems="center"
                 spacing={1}
             >
-                <Grid item md={6}>
+                <Grid size={{ md:6 }}>
                     <DependencySelector
                         onSelectedChange={(sel: string[]) =>
                             dispatch(setDependencies(sel))
@@ -59,9 +59,7 @@ export default function Dependencies() {
                 </Grid>
 
                 {selected?.length > 0 && (
-                    <Grid
-                        item
-                        md={6}
+                    <Grid size={{md:6 }}
                         sx={{
                             textAlign: "end",
                         }}

@@ -25,7 +25,7 @@ import moment from 'moment';
 import logo from "./cas-logo.png";
 import { API_PATH } from '../../App.constant';
 import { Divider, Link } from '@mui/material';
-import { Close } from '@mui/icons-material';
+import CloseIcon from '@mui/icons-material/Menu';
 
 const fetchProps = {
     headers: {
@@ -112,7 +112,7 @@ export default function MainAppBar() {
                             onClick={() => setOpen(false)}
                             onMouseDown={() => setOpen(false)}
                         >
-                            <Close />
+                            <CloseIcon />
                         </IconButton>
                     </div>
                     <Divider />
