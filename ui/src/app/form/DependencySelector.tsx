@@ -25,7 +25,9 @@ import {
     useDependencyList,
     useDependencyListTypes,
 } from "../store/OptionReducer";
-import { Close, FilterAlt, HighlightOff } from "@mui/icons-material";
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import CloseIcon from '@mui/icons-material/Close';
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
 
 import { Components, GroupedVirtuoso } from "react-virtuoso";
 import { useOverlayDependencies } from "../store/OverlayReducer";
@@ -194,7 +196,7 @@ export default function DependencySelector({ onSelectedChange }: DependencySelec
                         onMouseDown={() => handleClose()}
                         edge="end"
                     >
-                        <Close />
+                        <CloseIcon />
                     </IconButton>
                 </div>
                 <div
@@ -221,7 +223,7 @@ export default function DependencySelector({ onSelectedChange }: DependencySelec
                                         onMouseDown={() => setSearchQuery("")}
                                         edge="end"
                                     >
-                                        <HighlightOff />
+                                        <HighlightOffIcon />
                                     </IconButton>
                                 </InputAdornment>
                             }
@@ -240,7 +242,7 @@ export default function DependencySelector({ onSelectedChange }: DependencySelec
                             aria-haspopup="true"
                             aria-expanded={open ? "true" : undefined}
                             onClick={handleClick}
-                            startIcon={<FilterAlt />}
+                            startIcon={<FilterAltIcon />}
                             variant="contained"
                         >
                             Filter
