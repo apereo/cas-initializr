@@ -2,7 +2,7 @@
 import React, { Fragment } from "react";
 import { Button } from "@mui/material";
 import { Action, useCommand } from "../core/Keyboard";
-import { Download } from "@mui/icons-material";
+import DownloadIcon from '@mui/icons-material/Download';
 import { useHotkeys } from "react-hotkeys-hook";
 
 export interface PreviewProps {
@@ -30,7 +30,7 @@ export default function DownloadOverlay({ handleDownload, disabled }: PreviewPro
                 type="submit"
                 onClick={() => handleDownload()}
                 disabled={disabled}
-                startIcon={<Download />}
+                startIcon={<DownloadIcon />}
             >
                 {label} (
                 {React.createElement(modifierIcon, { fontSize: "small" })}+

@@ -2,7 +2,7 @@ import React, { Fragment } from "react";
 import {
     Button,
 } from "@mui/material";
-import { Link } from "@mui/icons-material";
+import LinkIcon from "@mui/icons-material/Link";
 import ShareOverlayDialog from "./ShareOverlayDialog";
 import { Overlay } from "../data/Overlay";
 import { getOverlayQuery } from "../data/Url";
@@ -43,7 +43,7 @@ export default function ShareOverlay({ overlay, disabled }: ShareOverlayProps) {
                 onClick={() => setOpen(true)}
                 variant="contained"
                 disabled={disabled}
-                startIcon={<Link />}
+                startIcon={<LinkIcon />}
             >
                 {label} ({React.createElement(modifierIcon, {fontSize: 'small'})}+{keys})
             </Button>
