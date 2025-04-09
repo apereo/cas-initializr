@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from 'react';
+import React, { Fragment, useEffect, useContext } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -10,6 +10,10 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemIcon from "@mui/material/ListItemIcon";
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import Button from '@mui/material/Button';
+import Tooltip from '@mui/material/Tooltip';
 
 import MenuIcon from "@mui/icons-material/Menu";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
@@ -19,6 +23,12 @@ import HelpIcon from "@mui/icons-material/Help";
 import MailIcon from "@mui/icons-material/Mail";
 import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
 import FeedIcon from "@mui/icons-material/Feed";
+import PaletteIcon from '@mui/icons-material/Palette';
+import BrightnessHighIcon from '@mui/icons-material/BrightnessHigh';
+import Brightness4Icon from '@mui/icons-material/Brightness4';
+import ContrastIcon from '@mui/icons-material/Contrast';
+import InvertColorsIcon from '@mui/icons-material/InvertColors';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 import moment from 'moment';
 
@@ -26,11 +36,171 @@ import logo from "./cas-logo.png";
 import { API_PATH } from '../../App.constant';
 import { Divider, Link } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Menu';
+import { ThemeContext } from '../../App';
+import { ThemeType } from '../../theme/CasTheme';
 
 const fetchProps = {
     headers: {
         "Content-Type": "application/json",
     },
+};
+
+// Theme switcher component
+const ThemeSwitcher = () => {
+    const { currentTheme, setTheme } = useContext(ThemeContext);
+    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+    const open = Boolean(anchorEl);
+
+    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
+    const handleThemeChange = (theme: ThemeType) => {
+        setTheme(theme);
+        handleClose();
+    };
+
+    // Get the appropriate icon for the current theme
+    const getThemeIcon = () => {
+        switch (currentTheme) {
+            case 'light':
+                return <BrightnessHighIcon />;
+            case 'dark':
+                return <Brightness4Icon />;
+            case 'highContrast':
+                return <ContrastIcon />;
+            case 'blue':
+                return <InvertColorsIcon />;
+            case 'solarizedLight':
+                return <BrightnessHighIcon />;
+            case 'solarizedDark':
+                return <Brightness4Icon />;
+            case 'vscodeLight':
+                return <BrightnessHighIcon />;
+            case 'vscodeDark':
+                return <Brightness4Icon />;
+            default:
+                return <PaletteIcon />;
+        }
+    };
+
+    return (
+        <div>
+            <Tooltip title="Change theme">
+                <Button
+                    id="theme-button"
+                    aria-controls={open ? 'theme-menu' : undefined}
+                    aria-haspopup="true"
+                    aria-expanded={open ? 'true' : undefined}
+                    onClick={handleClick}
+                    startIcon={getThemeIcon()}
+                    endIcon={<KeyboardArrowDownIcon />}
+                    sx={{
+                        color: 'inherit',
+                        textTransform: 'none',
+                        ml: 2
+                    }}
+                >
+                    {currentTheme === 'light' ? 'Light' :
+                     currentTheme === 'dark' ? 'Dark' :
+                     currentTheme === 'highContrast' ? 'High Contrast' :
+                     currentTheme === 'blue' ? 'Blue' :
+                     currentTheme === 'solarizedLight' ? 'Solarized Light' :
+                     currentTheme === 'solarizedDark' ? 'Solarized Dark' :
+                     currentTheme === 'vscodeLight' ? 'VS Code Light' :
+                     currentTheme === 'vscodeDark' ? 'VS Code Dark' : 'Theme'}
+                </Button>
+            </Tooltip>
+            <Menu
+                id="theme-menu"
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleClose}
+                MenuListProps={{
+                    'aria-labelledby': 'theme-button',
+                }}
+            >
+                <MenuItem
+                    onClick={() => handleThemeChange('light')}
+                    selected={currentTheme === 'light'}
+                >
+                    <ListItemIcon>
+                        <BrightnessHighIcon fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText>Light</ListItemText>
+                </MenuItem>
+                <MenuItem
+                    onClick={() => handleThemeChange('dark')}
+                    selected={currentTheme === 'dark'}
+                >
+                    <ListItemIcon>
+                        <Brightness4Icon fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText>Dark</ListItemText>
+                </MenuItem>
+                <MenuItem
+                    onClick={() => handleThemeChange('highContrast')}
+                    selected={currentTheme === 'highContrast'}
+                >
+                    <ListItemIcon>
+                        <ContrastIcon fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText>High Contrast</ListItemText>
+                </MenuItem>
+                <MenuItem
+                    onClick={() => handleThemeChange('blue')}
+                    selected={currentTheme === 'blue'}
+                >
+                    <ListItemIcon>
+                        <InvertColorsIcon fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText>Blue</ListItemText>
+                </MenuItem>
+                <Divider />
+                <MenuItem
+                    onClick={() => handleThemeChange('solarizedLight')}
+                    selected={currentTheme === 'solarizedLight'}
+                >
+                    <ListItemIcon>
+                        <BrightnessHighIcon fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText>Solarized Light</ListItemText>
+                </MenuItem>
+                <MenuItem
+                    onClick={() => handleThemeChange('solarizedDark')}
+                    selected={currentTheme === 'solarizedDark'}
+                >
+                    <ListItemIcon>
+                        <Brightness4Icon fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText>Solarized Dark</ListItemText>
+                </MenuItem>
+                <Divider />
+                <MenuItem
+                    onClick={() => handleThemeChange('vscodeLight')}
+                    selected={currentTheme === 'vscodeLight'}
+                >
+                    <ListItemIcon>
+                        <BrightnessHighIcon fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText>VS Code Light</ListItemText>
+                </MenuItem>
+                <MenuItem
+                    onClick={() => handleThemeChange('vscodeDark')}
+                    selected={currentTheme === 'vscodeDark'}
+                >
+                    <ListItemIcon>
+                        <Brightness4Icon fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText>VS Code Dark</ListItemText>
+                </MenuItem>
+            </Menu>
+        </div>
+    );
 };
 
 export default function MainAppBar() {
@@ -81,6 +251,7 @@ export default function MainAppBar() {
                         <img src={logo} alt="CAS Logo" height="32px" />
                         &nbsp;Initializr
                     </Typography>
+                    <ThemeSwitcher />
                 </Toolbar>
             </AppBar>
             <Drawer anchor={"left"} open={open} onClose={() => setOpen(!open)}>
@@ -182,19 +353,6 @@ export default function MainAppBar() {
                                     <MailIcon />
                                 </ListItemIcon>
                                 <ListItemText primary={"Mailing Lists"} />
-                            </ListItemButton>
-                        </ListItem>
-                        <ListItem disablePadding>
-                            <ListItemButton
-                                component="a"
-                                href="https://gitter.im/apereo/cas"
-                                target="_blank"
-                                rel="noopener"
-                            >
-                                <ListItemIcon>
-                                    <QuestionAnswerIcon />
-                                </ListItemIcon>
-                                <ListItemText primary={"Chatroom"} />
                             </ListItemButton>
                         </ListItem>
                         <ListItem disablePadding>

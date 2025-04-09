@@ -1,13 +1,46 @@
-import React, { useState } from "react";
-import { atomDark } from "react-syntax-highlighter/dist/esm/styles/prism";
+import React, { useState, useContext } from "react";
+import {
+    atomDark,
+    prism,
+    vscDarkPlus,
+    solarizedlight,
+    solarizedDarkAtom,
+    dracula,
+    materialOceanic
+} from "react-syntax-highlighter/dist/esm/styles/prism";
 import {Prism, SyntaxHighlighterProps} from 'react-syntax-highlighter';
-import { Box, IconButton, Tooltip } from "@mui/material";
+import { Box, IconButton, Tooltip, useTheme } from "@mui/material";
+import { ThemeContext } from "../../App";
 
 const SyntaxHighlighter = Prism as typeof React.Component<SyntaxHighlighterProps>;
 
 export default function CodeRenderer({ code, language, filename = "file" }: { code: string, language: string, filename?: string }) {
     const [copySuccess, setCopySuccess] = useState(false);
     const [downloadSuccess, setDownloadSuccess] = useState(false);
+    const { currentTheme } = useContext(ThemeContext);
+    const theme = useTheme();
+
+    // Select the appropriate syntax highlighter theme based on the application theme
+    const getSyntaxHighlighterTheme = () => {
+        switch (currentTheme) {
+            case 'light':
+                return prism;
+            case 'dark':
+                return atomDark;
+            case 'highContrast':
+                return dracula;
+            case 'blue':
+                return materialOceanic;
+            case 'solarizedLight':
+                return solarizedlight;
+            case 'solarizedDark':
+                return solarizedDarkAtom;
+            case 'vscodeDark':
+                return vscDarkPlus;
+            default:
+                return atomDark;
+        }
+    };
 
     const handleCopy = async () => {
         try {
@@ -50,10 +83,10 @@ export default function CodeRenderer({ code, language, filename = "file" }: { co
                         position: 'absolute',
                         top: '10px',
                         right: '60px',
-                        backgroundColor: 'rgba(33, 33, 33, 0.7)',
-                        color: 'white',
+                        backgroundColor: `${theme.palette.mode === 'light' ? 'rgba(0, 0, 0, 0.5)' : 'rgba(33, 33, 33, 0.7)'}`,
+                        color: theme.palette.common.white,
                         '&:hover': {
-                            backgroundColor: 'rgba(66, 66, 66, 0.9)',
+                            backgroundColor: `${theme.palette.mode === 'light' ? 'rgba(0, 0, 0, 0.7)' : 'rgba(66, 66, 66, 0.9)'}`,
                         },
                         zIndex: 1,
                     }}
@@ -76,10 +109,10 @@ export default function CodeRenderer({ code, language, filename = "file" }: { co
                         position: 'absolute',
                         top: '10px',
                         right: '15px',
-                        backgroundColor: 'rgba(33, 33, 33, 0.7)',
-                        color: 'white',
+                        backgroundColor: `${theme.palette.mode === 'light' ? 'rgba(0, 0, 0, 0.5)' : 'rgba(33, 33, 33, 0.7)'}`,
+                        color: theme.palette.common.white,
                         '&:hover': {
-                            backgroundColor: 'rgba(66, 66, 66, 0.9)',
+                            backgroundColor: `${theme.palette.mode === 'light' ? 'rgba(0, 0, 0, 0.7)' : 'rgba(66, 66, 66, 0.9)'}`,
                         },
                         zIndex: 1,
                     }}
@@ -94,7 +127,7 @@ export default function CodeRenderer({ code, language, filename = "file" }: { co
             </Tooltip>
             <SyntaxHighlighter
                 language={language}
-                style={atomDark}
+                style={getSyntaxHighlighterTheme()}
                 showLineNumbers={true}
                 wrapLongLines={true}
                 showInlineLineNumbers={true}
@@ -106,7 +139,7 @@ export default function CodeRenderer({ code, language, filename = "file" }: { co
                     margin: 0,
                     height: "100%",
                     boxSizing: "border-box",
-                    backgroundColor: "#212121",
+                    backgroundColor: theme.palette.background.paper,
                 }}
                 codeTagProps={{
                     style: {},
