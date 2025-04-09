@@ -21,7 +21,6 @@ import CallMergeIcon from "@mui/icons-material/CallMerge";
 import InfoIcon from "@mui/icons-material/Info";
 import HelpIcon from "@mui/icons-material/Help";
 import MailIcon from "@mui/icons-material/Mail";
-import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
 import FeedIcon from "@mui/icons-material/Feed";
 import PaletteIcon from '@mui/icons-material/Palette';
 import BrightnessHighIcon from '@mui/icons-material/BrightnessHigh';

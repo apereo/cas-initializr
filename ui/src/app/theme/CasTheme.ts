@@ -1,9 +1,5 @@
-
-import { ThemeOptions } from '@mui/material/styles';
-import { createTheme } from '@mui/material/styles';
-
-import { cyan, teal, grey, yellow, blue } from "@mui/material/colors";
-import { PaletteMode, alpha } from '@mui/material';
+import {blue, cyan, grey, teal, yellow} from "@mui/material/colors";
+import {alpha, PaletteMode} from '@mui/material';
 
 export type ThemeType = 'light' | 'dark' | 'highContrast' | 'blue' | 'solarizedLight' | 'solarizedDark' | 'vscodeLight' | 'vscodeDark';
 
@@ -346,35 +342,3 @@ export const getDesignTokens = (themeType: ThemeType) => {
             };
     }
 };
-
-export const CasTheme = createTheme({
-    palette: {
-        mode: "dark",
-        primary: {
-            main: "#338a9d",
-        },
-        secondary: {
-            main: "#f50057",
-        },
-        text: {
-            primary: "#fff",
-            secondary: grey[500],
-        },
-        background: {
-            default: "#303030",
-            paper: "#424242",
-        },
-    },
-    typography: {
-        fontFamily: [
-            "Droid Sans",
-            '"Segoe UI"',
-            '"Helvetica Neue"',
-            "Arial",
-            "sans-serif",
-            '"Apple Color Emoji"',
-            '"Segoe UI Emoji"',
-            '"Segoe UI Symbol"',
-        ].join(","),
-    },
-} as ThemeOptions);
