@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
     ThemeProvider,
     createTheme,
@@ -24,14 +24,33 @@ export const ThemeContext = React.createContext<ThemeContextType>({
     setTheme: () => {},
 });
 
+// Helper function to validate if a theme is valid
+const isValidTheme = (theme: string): theme is ThemeType => {
+    return ['light', 'dark', 'highContrast', 'blue', 'solarizedLight', 'solarizedDark', 'vscodeLight', 'vscodeDark'].includes(theme as ThemeType);
+};
+
+// Local storage key for theme
+const THEME_STORAGE_KEY = 'cas-initializr-theme';
+
 function App() {
-    const [currentTheme, setCurrentTheme] = React.useState<ThemeType>("dark");
+    // Initialize theme from localStorage or fall back to default
+    const [currentTheme, setCurrentTheme] = React.useState<ThemeType>(() => {
+        const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+        // Check if the saved theme is valid, otherwise use default
+        return savedTheme && isValidTheme(savedTheme) ? savedTheme as ThemeType : "dark";
+    });
+
+    // Save theme to localStorage whenever it changes
+    useEffect(() => {
+        localStorage.setItem(THEME_STORAGE_KEY, currentTheme);
+    }, [currentTheme]);
 
     const themeContextValue = React.useMemo(
         () => ({
             currentTheme,
             setTheme: (theme: ThemeType) => {
                 setCurrentTheme(theme);
+                // No need to set localStorage here as the useEffect will handle it
             },
         }),
         [currentTheme]
