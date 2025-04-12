@@ -10,7 +10,7 @@ initializr:
         version: ${casLatestVersion}
 cas-initializr:
   supported-versions:
-    - version: 7.0.10
+    - version: 7.0.10.1
       platform-version: 7.0.0
       boot-version: 3.2.1
       sync: true
@@ -24,7 +24,7 @@ cas-initializr:
       plugins:
         jib-version: ${jibVersion}
         open-rewrite-version: ${openRewriteVersion}
-    - version: 7.1.5
+    - version: 7.1.6
       platform-version: 7.1.0
       boot-version: 3.3.3
       sync: true
@@ -38,7 +38,7 @@ cas-initializr:
       plugins:
         jib-version: ${jibVersion}
         open-rewrite-version: ${openRewriteVersion}
-    - version: 7.2.0
+    - version: 7.2.1
       platform-version: 7.2.0
       boot-version: 3.4.4
       sync: true
