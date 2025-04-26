@@ -52,17 +52,17 @@ cas-initializr:
       plugins:
         jib-version: ${jibVersion}
         open-rewrite-version: ${openRewriteVersion}
-    # - version: ${casLatestVersion}
-    #   platform-version: ${casLatestVersion}
-    #   boot-version: ${springBootLatestVersion}
-    #   sync: true
-    #   validate: true
-    #   branch: master
-    #   type: cas
-    #   tomcat-version: ${apacheTomcat10LatestVersion}
-    #   java-version: 21
-    #   container-base-image: azul/zulu-openjdk:21
-    #   gradle-version: "${gradleLatestVersion}"
-    #   plugins:
-    #     jib-version: ${jibVersion}
-    #     open-rewrite-version: ${openRewriteVersion}
+    - version: ${casLatestVersion}
+      platform-version: ${casLatestVersion}
+      boot-version: ${springBootLatestVersion}
+      sync: true
+      validate: true
+      branch: master
+      type: cas
+      tomcat-version: ${apacheTomcat11LatestVersion}
+      java-version: 21
+      container-base-image: azul/zulu-openjdk:21
+      gradle-version: "${gradleLatestVersion}"
+      plugins:
+        jib-version: ${jibVersion}
+        open-rewrite-version: ${openRewriteVersion}
