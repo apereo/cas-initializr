@@ -27,12 +27,12 @@ buildscript {
     }
     dependencies {
         classpath "org.apache.ivy:ivy:${project.ivyVersion}"
-        {{#casVersion72}}
+        {{#casVersion72OrAbove}}
         classpath "org.apereo.cas:cas-server-support-configuration-metadata-repository:${project.'cas.version'}"
-        {{/casVersion72}}
-        {{^casVersion72}}
+        {{/casVersion72OrAbove}}
+        {{^casVersion72OrAbove}}
         classpath "org.apereo.cas:cas-server-core-configuration-metadata-repository:${project.'cas.version'}"
-        {{/casVersion72}}
+        {{/casVersion72OrAbove}}
     }
 }
 apply plugin: "de.undercouch.download"
