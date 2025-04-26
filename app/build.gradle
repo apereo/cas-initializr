@@ -108,6 +108,7 @@ processResources {
     def gradleLatestVersion = project.providers.gradleProperty("gradleLatestVersion").get()
 
     def apacheTomcat10LatestVersion = project.providers.gradleProperty("apacheTomcat10LatestVersion").get()
+    def apacheTomcat11LatestVersion = project.providers.gradleProperty("apacheTomcat11LatestVersion").get()
     def casLatestVersion = project.providers.gradleProperty("casLatestVersion").get()
 
     def graalVmVersion = project.providers.gradleProperty("graalVmVersion").get()
@@ -119,6 +120,7 @@ processResources {
         expand (
                 springBootLatestVersion: springBootLatestVersion,
                 apacheTomcat10LatestVersion: apacheTomcat10LatestVersion,
+                apacheTomcat11LatestVersion: apacheTomcat11LatestVersion,
                 gradleLatestVersion: gradleLatestVersion,
                 casLatestVersion: casLatestVersion,
                 "openRewriteVersion"         : openRewriteVersion,
