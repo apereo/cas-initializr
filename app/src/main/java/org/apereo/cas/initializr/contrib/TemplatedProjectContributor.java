@@ -49,8 +49,8 @@ import java.util.stream.IntStream;
 @Accessors(chain = true)
 public abstract class TemplatedProjectContributor implements ProjectContributor {
     private static final int MIN_CAS_MAJOR_VERSION = 7;
-    private static final int MAX_CAS_MAJOR_VERSION = 50;
-    private static final int MAX_GRADLE_MAJOR_VERSION = 50;
+    private static final int MAX_CAS_MAJOR_VERSION = 100;
+    private static final int MAX_GRADLE_MAJOR_VERSION = 100;
     
     protected final ApplicationContext applicationContext;
 
@@ -287,6 +287,7 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
             }
             if (parsedCasVersion.getMajor() >= value) {
                 templateVariables.put("casVersion" + value + "OrAbove", Boolean.TRUE);
+                templateVariables.put("casVersion" + parsedCasVersion.getMajor() + parsedCasVersion.getMinor() + "OrAbove", Boolean.TRUE);
             }
         });
 
