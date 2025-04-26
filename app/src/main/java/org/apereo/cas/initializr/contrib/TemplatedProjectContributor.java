@@ -41,6 +41,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -241,7 +242,7 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         var properties = applicationContext.getBean(CasInitializrProperties.class);
         
         var provider = getInitializrMetadata();
-        var templateVariables = new HashMap<>(provider.defaults());
+        var templateVariables = new TreeMap<>(provider.defaults());
         var configuration = provider.getConfiguration();
         var boms = configuration.getEnv().getBoms();
 
@@ -284,6 +285,11 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
             if (parsedCasVersion.getMajor() == value) {
                 templateVariables.put("casVersion" + parsedCasVersion.getMajor(), Boolean.TRUE);
                 templateVariables.put("casVersion" + parsedCasVersion.getMajor() + parsedCasVersion.getMinor(), Boolean.TRUE);
+                IntStream.rangeClosed(0, 10).forEach(minor -> {
+                    if (minor <= parsedCasVersion.getMinor()) {
+                        templateVariables.put("casVersion" + parsedCasVersion.getMajor() + minor + "OrAbove", Boolean.TRUE);
+                    }
+                });
             }
             if (parsedCasVersion.getMajor() >= value) {
                 templateVariables.put("casVersion" + value + "OrAbove", Boolean.TRUE);
