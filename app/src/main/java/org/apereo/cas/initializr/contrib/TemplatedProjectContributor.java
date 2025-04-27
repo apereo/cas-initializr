@@ -1,5 +1,6 @@
 package org.apereo.cas.initializr.contrib;
 
+import lombok.RequiredArgsConstructor;
 import org.apereo.cas.initializr.config.CasInitializrProperties;
 import org.apereo.cas.initializr.metadata.InitializrMetadataFetcher;
 import org.apereo.cas.initializr.web.OverlayProjectDescription;
@@ -48,11 +49,15 @@ import java.util.stream.IntStream;
 @Slf4j
 @Getter
 @Accessors(chain = true)
+@RequiredArgsConstructor
 public abstract class TemplatedProjectContributor implements ProjectContributor {
     private static final int MIN_CAS_MAJOR_VERSION = 7;
     private static final int MAX_CAS_MAJOR_VERSION = 100;
+    private static final int MIN_GRADLE_MAJOR_VERSION = 8;
     private static final int MAX_GRADLE_MAJOR_VERSION = 100;
-    
+    private static final int MIN_CAS_MINOR_VERSION = 0;
+    private static final int MAX_CAS_MINOR_VERSION = 20;
+
     protected final ApplicationContext applicationContext;
 
     protected final PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
@@ -60,12 +65,7 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
     private final Map<String, Object> variables = new HashMap<>();
 
     private final Map<String, String> pathsAndResourcesMap;
-
-    public TemplatedProjectContributor(final ApplicationContext applicationContext,
-                                       final Map<String, String> pathsAndResourcesMap) {
-        this.pathsAndResourcesMap = pathsAndResourcesMap;
-        this.applicationContext = applicationContext;
-    }
+    
 
     public TemplatedProjectContributor(final ApplicationContext applicationContext,
                                        final String relativePath, final String resourcePattern) {
@@ -264,7 +264,7 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
                 templateVariables.put("branch", version.getBranch());
 
                 var gradleVersion = VersionUtils.parse(version.getGradleVersion());
-                IntStream.rangeClosed(7, MAX_GRADLE_MAJOR_VERSION).forEach(value -> {
+                IntStream.rangeClosed(MIN_GRADLE_MAJOR_VERSION, MAX_GRADLE_MAJOR_VERSION).forEach(value -> {
                     if (gradleVersion.getMajor() == value) {
                         templateVariables.put("gradleVersion" + value, Boolean.TRUE);
                     }
@@ -285,7 +285,7 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
             if (parsedCasVersion.getMajor() == value) {
                 templateVariables.put("casVersion" + parsedCasVersion.getMajor(), Boolean.TRUE);
                 templateVariables.put("casVersion" + parsedCasVersion.getMajor() + parsedCasVersion.getMinor(), Boolean.TRUE);
-                IntStream.rangeClosed(0, 10).forEach(minor -> {
+                IntStream.rangeClosed(MIN_CAS_MINOR_VERSION, MAX_CAS_MINOR_VERSION).forEach(minor -> {
                     if (minor <= parsedCasVersion.getMinor()) {
                         templateVariables.put("casVersion" + parsedCasVersion.getMajor() + minor + "OrAbove", Boolean.TRUE);
                     }
@@ -343,7 +343,7 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
     protected boolean resourceExists(final String projectResource) {
         try {
             var resource = resolver.getResource(projectResource);
-            return resource.getInputStream().available() > 0;
+            return resource.getInputStream().available() > MIN_CAS_MINOR_VERSION;
         } catch (Exception e) {
             return false;
         }
