@@ -47,8 +47,14 @@ if [[ -d /tmp ]] ; then
   sudo mkdir /tmp
 fi
 
-printgreen "Building CAS Native Image. This may take several minutes..."
-./gradlew clean build nativeCompile -PnativeImage=true --warning-mode all --no-daemon --no-configuration-cache
+JAVA_VERSION=$(getJavaMajorVersion)
+printgreen "Building CAS Native Image using Java ${JAVA_VERSION}. This may take several minutes..."
+./gradlew clean build nativeCompile \
+  -PnativeImage=true \
+  -PtargetCompatibility="${JAVA_VERSION}" \
+  -PsourceCompatibility="${JAVA_VERSION}" \
+  --warning-mode all \
+  --no-daemon --no-configuration-cache
 
 if [[ $? -ne 0 ]]; then
   printred "CAS native image build failed"

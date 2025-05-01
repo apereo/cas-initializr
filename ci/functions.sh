@@ -15,6 +15,11 @@ function printred() {
   printf "🔥 ${RED}$1${ENDCOLOR}\n"
 }
 
+function getJavaMajorVersion() {
+  majorVersion=$(java -version 2>&1 | sed -En 's/.*version "([^"]+)".*/\1/p' | sed -E 's/^1\.([0-9]+).*/\1/; s/^([0-9]+).*/\1/')
+  echo "$majorVersion"
+}
+
 function downloadTomcat() {
   tomcatVersion=$1
   echo "Apache Tomcat version: ${tomcatVersion}"
