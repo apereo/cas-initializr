@@ -83,7 +83,7 @@ jobs:
         uses: actions/setup-java@v4
         if: ${{ matrix.versions.sync == true && matrix.versions.branch == 'master' }}
         with:
-          java-version: ${{ matrix.versions.graalvm-version }}
+          java-version: ${{ env.JDK_CURRENT }}
           distribution: ${{ env.JDK_DISTRO }}
       - name: Validate Initializr
         if: ${{ matrix.versions.sync == true && matrix.versions.branch == 'master' }}
