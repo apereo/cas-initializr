@@ -29,6 +29,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    name: Build Initializr
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK
@@ -46,6 +47,7 @@ jobs:
           path: ./**/build/libs/*.*
   ##########################################################################
   latest-versions-cas:
+    name: CAS Latest Versions
     needs: [ build ]
     runs-on: ubuntu-latest
     outputs:
@@ -68,6 +70,7 @@ jobs:
         run: echo "supported-versions=$(./gradlew --no-daemon -q latestCasVersion)" >> $GITHUB_OUTPUT
   ##########################################################################
   supported-versions-cas:
+    name: CAS Supported Versions
     needs: [ build ]
     runs-on: ubuntu-latest
     outputs:
@@ -287,6 +290,7 @@ jobs:
         run: ./ci/sync-overlay.sh ${{ matrix.versions.version }} ${{ matrix.versions.boot-version }} ${{ matrix.versions.branch }} cas-config-server-overlay
   ##########################################################################
   publish:
+    name: Publish Docker Image
     needs: [ build ]
     runs-on: ubuntu-latest
     # if: ${{ false }}
@@ -313,6 +317,7 @@ jobs:
           docker push apereo/cas-initializr:"$imageTag"
   ##########################################################################
   complete:
+    name: Complete Build
     needs: [ build,publish,validate-cas-overlay,validate-cas-configserver-overlay ]
     runs-on: ubuntu-latest
     steps:

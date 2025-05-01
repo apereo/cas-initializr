@@ -28,6 +28,7 @@ concurrency:
 
 jobs:
   initialize:
+    name: Initialize
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -47,6 +48,7 @@ jobs:
   ##########################################################################
   
   supported-versions-cas:
+    name: CAS Supported Versions
     needs: [ initialize ]
     runs-on: ubuntu-latest
     outputs:
@@ -81,7 +83,7 @@ jobs:
         uses: actions/setup-java@v4
         if: ${{ matrix.versions.sync == true && matrix.versions.branch == 'master' }}
         with:
-          java-version: ${{ env.JDK_CURRENT }}
+          java-version: ${{ matrix.versions.graalvm-version }}
           distribution: ${{ env.JDK_DISTRO }}
       - name: Validate Initializr
         if: ${{ matrix.versions.sync == true && matrix.versions.branch == 'master' }}
