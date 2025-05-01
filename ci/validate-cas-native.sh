@@ -54,7 +54,8 @@ printgreen "Building CAS Native Image using Java ${JAVA_VERSION}. This may take 
   -PtargetCompatibility="${JAVA_VERSION}" \
   -PsourceCompatibility="${JAVA_VERSION}" \
   --warning-mode all \
-  --no-daemon --no-configuration-cache
+  --no-daemon --no-configuration-cache  \
+  --stacktrace --info
 
 if [[ $? -ne 0 ]]; then
   printred "CAS native image build failed"
