@@ -31,6 +31,8 @@ public class SupportedVersion {
     private String gradleVersion;
 
     private String javaVersion;
+    
+    private String graalvmVersion;
 
     private Plugins plugins = new Plugins();
 

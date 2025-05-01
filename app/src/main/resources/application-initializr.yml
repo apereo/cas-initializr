@@ -19,6 +19,7 @@ cas-initializr:
       type: cas
       tomcat-version: ${apacheTomcat10LatestVersion}
       java-version: 21
+      graalvm-version: 21
       container-base-image: azul/zulu-openjdk:21
       gradle-version: "8.10"
       plugins:
@@ -33,6 +34,7 @@ cas-initializr:
       type: cas
       tomcat-version: ${apacheTomcat10LatestVersion}
       java-version: 21
+      graalvm-version: 21
       container-base-image: azul/zulu-openjdk:21
       gradle-version: "8.13"
       plugins:
@@ -47,6 +49,7 @@ cas-initializr:
       type: cas
       tomcat-version: ${apacheTomcat11LatestVersion}
       java-version: 21
+      graalvm-version: 24
       container-base-image: azul/zulu-openjdk:21
       gradle-version: "${gradleLatestVersion}"
       plugins:
