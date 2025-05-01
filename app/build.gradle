@@ -101,6 +101,7 @@ processResources {
     def gradleDownloadTaskPluginVersion = project.providers.gradleProperty("gradleDownloadTaskPluginVersion").get()
     def openRewriteVersion = project.providers.gradleProperty("openRewriteVersion").get()
     def jibVersion = project.providers.gradleProperty("jibVersion").get()
+    def lombokVersion = project.providers.gradleProperty("lombokVersion").get()
     def gradleDockerPluginVersion = project.providers.gradleProperty("gradleDockerPluginVersion").get()
     def gradleFoojayPluginVersion = project.providers.gradleProperty("gradleFoojayPluginVersion").get()
 
@@ -124,7 +125,8 @@ processResources {
                 gradleLatestVersion: gradleLatestVersion,
                 casLatestVersion: casLatestVersion,
                 "openRewriteVersion"         : openRewriteVersion,
-                jibVersion: jibVersion
+                jibVersion: jibVersion,
+                lombokVersion: lombokVersion,
         )
     }
 
@@ -135,6 +137,7 @@ processResources {
                 "gradleDownloadTaskPluginVersion"        : gradleDownloadTaskPluginVersion,
                 "openRewriteVersion"                     : openRewriteVersion,
                 "jibVersion"                             : jibVersion,
+                "lombokVersion"                          : lombokVersion,
                 "gradleDockerPluginVersion"              : gradleDockerPluginVersion,
                 "gradleFoojayPluginVersion"              : gradleFoojayPluginVersion,
                 "graalVmVersion"                         : graalVmVersion,

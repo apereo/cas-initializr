@@ -107,6 +107,9 @@ apply plugin: "war"
 
 apply plugin: "org.springframework.boot"
 apply plugin: "io.freefair.lombok"
+lombok {
+    version = "${project.lombokVersion}"
+}
 
 {{#sbomSupported}}
 apply plugin: "org.cyclonedx.bom"
