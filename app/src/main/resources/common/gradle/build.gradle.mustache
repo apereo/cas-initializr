@@ -469,7 +469,7 @@ dependencies {
     implementation "org.apereo.cas:cas-server-core-api-configuration-model"
     implementation "org.apereo.cas:cas-server-webapp-init"
 
-    if (appServer == 'tomcat') {
+    if (appServer == '-tomcat') {
         implementation "org.apereo.cas:cas-server-webapp-init-tomcat"
     }
     
