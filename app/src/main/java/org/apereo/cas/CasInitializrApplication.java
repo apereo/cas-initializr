@@ -1,5 +1,7 @@
 package org.apereo.cas;
 
+import io.spring.initializr.web.controller.ProjectGenerationController;
+import io.spring.initializr.web.project.ProjectRequest;
 import org.apereo.cas.initializr.config.CasInitializrProperties;
 import org.apereo.cas.initializr.event.CasInitializrEventListener;
 import org.apereo.cas.initializr.info.DependencyAliasesInfoContributor;
@@ -54,7 +56,7 @@ public class CasInitializrApplication {
     }
 
     @Bean
-    public OverlayProjectGenerationController projectGenerationController(
+    public ProjectGenerationController projectGenerationController(
         final CasInitializrProperties properties,
         final InitializrMetadataProvider metadataProvider,
         final ApplicationContext applicationContext,
