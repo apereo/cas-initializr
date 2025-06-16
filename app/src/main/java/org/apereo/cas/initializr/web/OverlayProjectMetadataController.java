@@ -61,7 +61,8 @@ public class OverlayProjectMetadataController extends ProjectMetadataController 
             .body(content);
     }
 
-    private ResponseEntity<String> dependenciesFor(final InitializrMetadataVersion version, final String casVersion) {
+    @Override
+    protected ResponseEntity<String> dependenciesFor(final InitializrMetadataVersion version, final String casVersion) {
         var metadata = this.metadataProvider.get();
 
         var properties = applicationContext.getBean(CasInitializrProperties.class);
@@ -74,7 +75,7 @@ public class OverlayProjectMetadataController extends ProjectMetadataController 
 
         var versionToChoose = (casVersion != null)
             ? VersionUtils.parse(casVersion)
-            : VersionUtils.parse(supportedVersions.get(0));
+            : VersionUtils.parse(supportedVersions.getFirst());
         var platform = metadata.getConfiguration().getEnv().getPlatform();
         if (!platform.isCompatibleVersion(versionToChoose)) {
             throw new InvalidProjectRequestException("Invalid CAS version '" + casVersion
