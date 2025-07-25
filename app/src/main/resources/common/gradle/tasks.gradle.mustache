@@ -243,12 +243,7 @@ task downloadShell(group: "Shell", description: "Download CAS shell jar from sna
             }
         }
     } else {
-        {{#casVersion725OrAbove}}
         downloadFile = "https://github.com/apereo/cas/releases/download/v${casVersion}/cas-server-support-shell-${casVersion}.jar"
-        {{/casVersion725OrAbove}}
-        {{^casVersion725OrAbove}}
-        downloadFile = "https://repo1.maven.org/maven2/org/apereo/cas/cas-server-support-shell/${casVersion}/cas-server-support-shell-${casVersion}.jar"
-        {{/casVersion725OrAbove}}
     }
     new File("${shellDir}").mkdir()
     logger.info "Downloading file: ${downloadFile} into ${shellDir}"
