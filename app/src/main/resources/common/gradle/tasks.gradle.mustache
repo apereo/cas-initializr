@@ -243,10 +243,10 @@ task downloadShell(group: "Shell", description: "Download CAS shell jar from sna
             }
         }
     } else {
-        downloadFile = "https://repo1.maven.org/maven2/org/apereo/cas/cas-server-support-shell/${casVersion}/cas-server-support-shell-${casVersion}.jar"
+        downloadFile = "https://github.com/apereo/cas/releases/download/v${casVersion}/cas-server-support-shell-${casVersion}.jar"
     }
     new File("${shellDir}").mkdir()
-    logger.info "Downloading file: ${downloadFile}"
+    logger.info "Downloading file: ${downloadFile} into ${shellDir}"
     src downloadFile
     dest new File("${shellDir}", "cas-server-support-shell-${casVersion}.jar")
     overwrite false
@@ -254,19 +254,21 @@ task downloadShell(group: "Shell", description: "Download CAS shell jar from sna
 
 task runShell(group: "Shell", description: "Run the CAS shell") {
     dependsOn downloadShell
+    def shellDir = project.providers.gradleProperty("shellDir").get()
     def casVersion = project.providers.gradleProperty("cas.version").get()
     doLast {
-        println "Run the following command to launch the shell:\n\tjava -jar ${project.shellDir}/cas-server-support-shell-${casVersion}.jar"
+        println "Run the following command to launch the shell:\n\tjava -jar ${shellDir}/cas-server-support-shell-${casVersion}.jar"
     }
 }
 
 task debugShell(group: "Shell", description: "Run the CAS shell with debug options, wait for debugger on port 5005") {
     dependsOn downloadShell
     def casVersion = project.providers.gradleProperty("cas.version").get()
+    def shellDir = project.providers.gradleProperty("shellDir").get()
     doLast {
         println """
         Run the following command to launch the shell:\n\t
-        java -Xrunjdwp:transport=dt_socket,address=5000,server=y,suspend=y -jar ${project.shellDir}/cas-server-support-shell-${casVersion}.jar
+        java -Xrunjdwp:transport=dt_socket,address=5000,server=y,suspend=y -jar ${shellDir}/cas-server-support-shell-${casVersion}.jar
         """
     }
 }
