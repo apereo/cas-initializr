@@ -294,6 +294,8 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
             if (parsedCasVersion.getMajor() >= value) {
                 templateVariables.put("casVersion" + value + "OrAbove", Boolean.TRUE);
                 templateVariables.put("casVersion" + parsedCasVersion.getMajor() + parsedCasVersion.getMinor() + "OrAbove", Boolean.TRUE);
+                templateVariables.put("casVersion" + parsedCasVersion.getMajor()
+                                      + parsedCasVersion.getMinor() + parsedCasVersion.getPatch() + "OrAbove", Boolean.TRUE);
             }
         });
 
