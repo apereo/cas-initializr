@@ -183,7 +183,7 @@ printgreen "Verify Java Version"
 [ $? -eq 0 ] && echo "Gradle command ran successfully." || exit 1
 
 printgreen "Downloading Shell"
-./gradlew --no-daemon downloadShell
+./gradlew --no-daemon downloadShell runShell
 [ $? -eq 0 ] && echo "Gradle command ran successfully." || exit 1
 
 printgreen "Listing Views"
