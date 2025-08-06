@@ -59,7 +59,7 @@ jobs:
         with:
           java-version: ${{ env.JDK_CURRENT }}
           distribution: ${{ env.JDK_DISTRO }}
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v5
         with:
           name: binary-artifacts
       - id: print-supported-versions
@@ -82,7 +82,7 @@ jobs:
         with:
           java-version: ${{ env.JDK_CURRENT }}
           distribution: ${{ env.JDK_DISTRO }}
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v5
         with:
           name: binary-artifacts
       - id: print-supported-versions
@@ -113,7 +113,7 @@ jobs:
         with:
           java-version: ${{ env.JDK_CURRENT }}
           distribution: ${{ env.JDK_DISTRO }}
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v5
         if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
         with:
           name: binary-artifacts
@@ -152,7 +152,7 @@ jobs:
         with:
           java-version: ${{ env.JDK_CURRENT }}
           distribution: ${{ env.JDK_DISTRO }}
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v5
         if: ${{ matrix.versions.validate == true }}
         with:
           name: binary-artifacts
@@ -184,7 +184,7 @@ jobs:
         with:
           java-version: ${{ env.JDK_CURRENT }}
           distribution: ${{ env.JDK_DISTRO }}
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v5
         if: ${{ matrix.versions.validate == true }}
         with:
           name: binary-artifacts
@@ -228,7 +228,7 @@ jobs:
         with:
           java-version: ${{ env.JDK_CURRENT }}
           distribution: ${{ env.JDK_DISTRO }}
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v5
         if: ${{ matrix.versions.validate == true }}
         with:
           name: binary-artifacts
@@ -270,7 +270,7 @@ jobs:
         with:
           java-version: ${{ env.JDK_CURRENT }}
           distribution: ${{ env.JDK_DISTRO }}
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v5
         if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
         with:
           name: binary-artifacts
@@ -303,7 +303,7 @@ jobs:
           distribution: ${{ env.JDK_DISTRO }}
       - name: Initialize
         run: ls ./ci && find ./ci -type f -name "*.sh" -exec chmod +x "{}" \;
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v5
         with:
           name: binary-artifacts
       - name: Build Docker Image
