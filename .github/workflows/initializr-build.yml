@@ -67,7 +67,7 @@ jobs:
         run: ./gradlew -x test --no-daemon -q latestCasVersion
       - id: get-supported-versions
         name: Get supported versions for matrix
-        run: echo "supported-versions=$(./gradlew --no-daemon -q latestCasVersion)" >> $GITHUB_OUTPUT
+        run: echo "supported-versions=$(./gradlew -x test -x javadoc -x check --no-daemon -q latestCasVersion)" >> $GITHUB_OUTPUT
   ##########################################################################
   supported-versions-cas:
     name: CAS Supported Versions
@@ -90,7 +90,7 @@ jobs:
         run: ./gradlew -x test --no-daemon -q versions-cas
       - id: get-supported-versions
         name: Get supported versions for matrix
-        run: echo "supported-versions=$(./gradlew --no-daemon -q versions-cas)" >> $GITHUB_OUTPUT
+        run: echo "supported-versions=$(./gradlew -x test -x javadoc -x check --no-daemon -q versions-cas)" >> $GITHUB_OUTPUT
 
   ##########################################################################
   sync-cas-overlay:
