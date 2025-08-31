@@ -58,7 +58,7 @@ dependencies {
     implementation "org.springframework.retry:spring-retry"
 
     implementation("javax.cache:cache-api")
-    implementation("org.ehcache:ehcache:3.11.0")
+    implementation("org.ehcache:ehcache:3.11.1")
 
     implementation "io.spring.initializr:initializr-web"
     implementation "io.spring.initializr:initializr-actuator"
