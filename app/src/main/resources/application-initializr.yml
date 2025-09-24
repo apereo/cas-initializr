@@ -49,7 +49,7 @@ cas-initializr:
       type: cas
       tomcat-version: ${apacheTomcat11LatestVersion}
       java-version: 21
-      graalvm-version: 24
+      graalvm-version: 25
       container-base-image: azul/zulu-openjdk:21
       gradle-version: "${gradleLatestVersion}"
       plugins:
