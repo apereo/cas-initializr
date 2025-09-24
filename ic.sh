@@ -2,7 +2,7 @@
 
 rm -Rf ./tmp
 
-CAS_VERSION="7.2.3"
+CAS_VERSION="7.3.0-RC4"
 
 curl -k http://localhost:8080/starter.tgz -d dependencies="$1" \
   -d "casVersion=${CAS_VERSION}" \

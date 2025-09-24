@@ -177,8 +177,6 @@ A `docker-compose.yml` is also provided to orchestrate the build:
 docker-compose build
 ```
 
-{{#casVersion7OrAbove}}
-    
 ## Spring Boot
 
 You can use the Spring Boot build plugin for Gradle to create CAS container images.
@@ -194,7 +192,5 @@ Spring Boot applications such as CAS, and the image is layered efficiently.
 
 The first build might take a long time because it has to download some container
 images and the JDK, but subsequent builds should be fast.
-
-{{/casVersion7OrAbove}}
 
 {{/dockerSupported}}

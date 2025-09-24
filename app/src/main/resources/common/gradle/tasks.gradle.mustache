@@ -38,6 +38,51 @@ buildscript {
 apply plugin: "de.undercouch.download"
 {{/casServer}}
 
+{{#casVersion73OrAbove}}
+tasks.register('debug', JavaExec) {
+    group = "CAS"
+    description = "Debug the CAS web application in embedded container mode on port 5005"
+    jvmArgs = [
+        "-server",
+        "-Xmx2048M",
+        "-XX:+TieredCompilation",
+        "-XX:TieredStopAtLevel=1"
+    ]
+    debug = true
+    systemProperties = System.properties
+    classpath = files("$buildDir/libs/cas.war")
+}
+tasks.register('run', JavaExec) {
+    group = "CAS"
+    description = "Run the CAS web application in embedded container mode"
+    jvmArgs = [
+        "-server",
+        "-Xmx2048M",
+        "-XX:+TieredCompilation",
+        "-XX:TieredStopAtLevel=1"
+    ]
+    debug = false
+    systemProperties = System.properties
+    classpath = files("$buildDir/libs/cas.war")
+}
+{{/casVersion73OrAbove}}
+
+{{^casVersion73OrAbove}}
+task debug(group: "CAS", description: "Debug the CAS web application in embedded mode on port 5005") {
+    dependsOn 'build'
+    doLast {
+        logger.info "Debugging process is started in a suspended state, listening on port 5005."
+        def casArgs = Arrays.asList("-Xmx2048M".split(" "))
+        project.javaexec {
+            jvmArgs = casArgs
+            debug = true
+            classpath = project.files("build/libs/{{appName}}.war")
+            systemProperties = System.properties
+            logger.info "Started ${commandLine}"
+        }
+    }
+}
+
 task run(group: "build", description: "Run the CAS web application in embedded container mode") {
     dependsOn 'build'
     doLast {
@@ -50,6 +95,7 @@ task run(group: "build", description: "Run the CAS web application in embedded c
         }
     }
 }
+{{/casVersion73OrAbove}}
 
 task setExecutable(group: "CAS", description: "Configure the project to run in executable mode") {
     doFirst {
@@ -67,22 +113,6 @@ task executable(type: Exec, group: "CAS", description: "Run the CAS web applicat
         }
         logger.info "Running ${bootWar.archivePath}"
         commandLine bootWar.archivePath
-    }
-}
-
-
-task debug(group: "CAS", description: "Debug the CAS web application in embedded mode on port 5005") {
-    dependsOn 'build'
-    doLast {
-        logger.info "Debugging process is started in a suspended state, listening on port 5005."
-        def casArgs = Arrays.asList("-Xmx2048M".split(" "))
-        project.javaexec {
-            jvmArgs = casArgs
-            debug = true
-            classpath = project.files("build/libs/{{appName}}.war")
-            systemProperties = System.properties
-            logger.info "Started ${commandLine}"
-        }
     }
 }
 
