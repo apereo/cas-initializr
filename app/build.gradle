@@ -74,6 +74,15 @@ dependencies {
 
 bootBuildImage {
     imageName = "apereo/cas-initializr:${project.version}"
+    docker {
+        publishRegistry {
+            token = System.getenv("DOCKER_REGISTRY_TOKEN")
+        }
+        builderRegistry {
+            token = System.getenv("DOCKER_REGISTRY_TOKEN")
+        }
+    }
+
 }
 
 bootJar {
