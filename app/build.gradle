@@ -76,10 +76,12 @@ bootBuildImage {
     imageName = "apereo/cas-initializr:${project.version}"
     docker {
         publishRegistry {
-            token = System.getenv("DOCKER_REGISTRY_TOKEN")
+            username = System.getenv("DOCKER_USER")
+            password = System.getenv("DOCKER_REGISTRY_TOKEN")
         }
         builderRegistry {
-            token = System.getenv("DOCKER_REGISTRY_TOKEN")
+            username = System.getenv("DOCKER_USER")
+            password = System.getenv("DOCKER_REGISTRY_TOKEN")
         }
     }
 
