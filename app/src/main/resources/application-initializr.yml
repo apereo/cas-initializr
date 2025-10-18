@@ -22,6 +22,10 @@ cas-initializr:
       graalvm-version: 21
       container-base-image: azul/zulu-openjdk:21
       gradle-version: "8.10"
+      app-servers:
+        - tomcat
+        - jetty
+        - undertow
       plugins:
         jib-version: ${jibVersion}
         open-rewrite-version: ${openRewriteVersion}
@@ -37,6 +41,10 @@ cas-initializr:
       graalvm-version: 21
       container-base-image: azul/zulu-openjdk:21
       gradle-version: "8.13"
+      app-servers:
+        - tomcat
+        - jetty
+        - undertow
       plugins:
         jib-version: ${jibVersion}
         open-rewrite-version: ${openRewriteVersion}
@@ -52,6 +60,10 @@ cas-initializr:
       graalvm-version: 25
       container-base-image: azul/zulu-openjdk:21
       gradle-version: "9.1.0"
+      app-servers:
+        - tomcat
+        - jetty
+        - undertow
       plugins:
         jib-version: ${jibVersion}
         open-rewrite-version: ${openRewriteVersion}
@@ -67,6 +79,10 @@ cas-initializr:
       graalvm-version: 25
       container-base-image: azul/zulu-openjdk:25
       gradle-version: "${gradleLatestVersion}"
+      app-servers:
+        - tomcat
+        - jetty
+#        - undertow
       plugins:
         jib-version: ${jibVersion}
         open-rewrite-version: ${openRewriteVersion}

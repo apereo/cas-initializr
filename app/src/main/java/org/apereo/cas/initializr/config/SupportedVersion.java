@@ -3,6 +3,8 @@ package org.apereo.cas.initializr.config;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 /**
  * Information about versions of CAS supported by the CAS Initializr.
  * @author Hal Deadman
@@ -35,6 +37,8 @@ public class SupportedVersion {
     private String graalvmVersion;
 
     private Plugins plugins = new Plugins();
+
+    private List<String> appServers;
 
     @Getter
     @Setter

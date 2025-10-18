@@ -170,7 +170,6 @@ jobs:
     strategy:
       matrix:
         versions: ${{fromJSON(needs.supported-versions-cas.outputs.supported-versions)}}
-        appServer: ["tomcat", "jetty", "undertow"]
     name: Validate CAS Server ${{ matrix.versions.version }} / ${{ matrix.appServer }}
     steps:
       - uses: actions/checkout@v5
@@ -191,9 +190,16 @@ jobs:
       - name: Fetch CAS Overlay / ${{ matrix.appServer }}
         if: ${{ matrix.versions.validate == true }}
         run: |
-          ./ci/validate-cas-overlay.sh --fetch-only --cas ${{ matrix.versions.version }} \
-            --apache-tomcat ${{ matrix.versions.tomcat-version }} \
-            --app-server ${{ matrix.appServer }}
+          appServers='${{ toJSON(matrix.versions.app-servers) }}'
+          echo "App Servers: $appServers"
+          
+          for app in $(echo "appServers" | jq -r '.[]'); do
+            echo "Running CAS with application server: $app"
+            ./ci/validate-cas-overlay.sh --fetch-only \
+              --cas ${{ matrix.versions.version }} \
+              --apache-tomcat ${{ matrix.versions.tomcat-version }} \
+              --app-server "$app"
+          done
       - name: Set up JDK 
         uses: actions/setup-java@v5
         if: ${{ matrix.versions.validate == true }}

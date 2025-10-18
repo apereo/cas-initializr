@@ -173,7 +173,7 @@ export default function Customization() {
                                 <Typography variant="body2" my={1}><strong>Java Version:</strong> {selectedVersion.javaVersion}</Typography>
                                 <Typography variant="body2" my={1}><strong>Spring Boot Version:</strong> {selectedVersion.bootVersion}</Typography>
                                 <Typography variant="body2" my={1}><strong>Gradle Version:</strong> {selectedVersion.gradleVersion}</Typography>
-                                <Typography variant="body2" mt={1}><strong>Tomcat Version:</strong> {selectedVersion.tomcatVersion}</Typography>
+                                <Typography variant="body2" mt={1}><strong>Apache Tomcat Version:</strong> {selectedVersion.tomcatVersion}</Typography>
                             </Paper>
                             }
                             <Accordion>

@@ -19,6 +19,7 @@ export interface CasVersionOption {
     type: string;
     platformVersion: string;
     tomcatVersion: string;
+    appServers: string[];
     javaVersion: string;
     gradleVersion: string;
 }
