@@ -40,6 +40,21 @@ cas-initializr:
       plugins:
         jib-version: ${jibVersion}
         open-rewrite-version: ${openRewriteVersion}
+    - version: 7.3.0
+      platform-version: 7.3.0
+      boot-version: 3.5.6
+      sync: true
+      validate: true
+      branch: "7.3"
+      type: cas
+      tomcat-version: ${apacheTomcat11LatestVersion}
+      java-version: 21
+      graalvm-version: 25
+      container-base-image: azul/zulu-openjdk:21
+      gradle-version: "9.1.0"
+      plugins:
+        jib-version: ${jibVersion}
+        open-rewrite-version: ${openRewriteVersion}
     - version: ${casLatestVersion}
       platform-version: ${casLatestVersion}
       boot-version: ${springBootLatestVersion}
@@ -48,9 +63,9 @@ cas-initializr:
       branch: master
       type: cas
       tomcat-version: ${apacheTomcat11LatestVersion}
-      java-version: 21
+      java-version: 25
       graalvm-version: 25
-      container-base-image: azul/zulu-openjdk:21
+      container-base-image: azul/zulu-openjdk:25
       gradle-version: "${gradleLatestVersion}"
       plugins:
         jib-version: ${jibVersion}
