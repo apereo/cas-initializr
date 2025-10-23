@@ -17,7 +17,7 @@ buildscript {
         mavenCentral()
         gradlePluginPortal()
         maven {
-            url = 'https://oss.sonatype.org/content/repositories/snapshots'
+            url = 'https://central.sonatype.com/repository/maven-snapshots/'
             mavenContent { snapshotsOnly() }
         }
         maven {
@@ -264,7 +264,7 @@ task downloadShell(group: "Shell", description: "Download CAS shell jar from sna
     def casVersion = project.providers.gradleProperty("cas.version").get()
     def downloadFile
     if (casVersion.contains("-SNAPSHOT")) {
-        def snapshotDir = "https://oss.sonatype.org/content/repositories/snapshots/org/apereo/cas/cas-server-support-shell/${casVersion}/"
+        def snapshotDir = https://central.sonatype.com/repository/maven-snapshots/org/apereo/cas/cas-server-support-shell/${casVersion}/"
         def files = new org.apache.ivy.util.url.ApacheURLLister().listFiles(new URL(snapshotDir))
         files = files.sort { it.path }
         files.each {
