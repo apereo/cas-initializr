@@ -2,7 +2,7 @@ name: Initializr Build
 
 env:
   TERM: xterm-256color
-  JDK_CURRENT: 21
+  JDK_CURRENT: 25
   JDK_DISTRO: 'corretto'
   DOCKER_USER: ${{ secrets.DOCKER_USER }}
   DOCKER_REGISTRY_TOKEN: ${{ secrets.DOCKER_REGISTRY_TOKEN }}

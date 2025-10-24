@@ -2,7 +2,7 @@ name: Initializr Helm Charts
 
 env:
   TERM: xterm-256color
-  JDK_CURRENT: 21
+  JDK_CURRENT: 25
   JDK_DISTRO: 'corretto'
   CAS_MODULE_METADATA_MONGODB_URL: ${{ secrets.CAS_MODULE_METADATA_MONGODB_URL }}
 

@@ -103,6 +103,10 @@ bootRun {
 }
 
 
+tasks.withType(AbstractTestTask).configureEach {
+    failOnNoDiscoveredTests = false
+}
+
 processResources {
     /*
         To support the Gradle configuration cache...
