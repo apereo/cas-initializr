@@ -40,6 +40,12 @@ CAS_MAJOR_VERSION=`echo $CAS_VERSION | cut -d. -f1`
 CAS_MINOR_VERSION=`echo $CAS_VERSION | cut -d. -f2`
 CAS_PATCH_VERSION=`echo $CAS_VERSION | cut -d. -f3`
 
+if [[ "${FETCH_OVERLAY}" == "true" ]]; then
+  printgreen "Building CAS Initializr to fetch overlay ${CAS_VERSION}"
+  ./gradlew --build-cache --configure-on-demand --no-daemon \
+    clean build -x test -x javadoc -x check --parallel -q
+fi
+
 mkdir -p tmp
 cd tmp || exit
 echo "Working directory: ${PWD}"

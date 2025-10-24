@@ -41,10 +41,6 @@ jobs:
         run: ./gradlew --build-cache --configure-on-demand --no-daemon clean build -x test -x javadoc -x check --parallel
       - name: Validate Initializr
         run: ./ci/validate-initializr.sh
-      - uses: actions/upload-artifact@v4
-        with:
-          name: binary-artifacts
-          path: ./**/build/libs/*.*
   ##########################################################################
   latest-versions-cas:
     name: CAS Latest Versions
@@ -110,7 +106,8 @@ jobs:
       - name: Fetch Overlay
         if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
         run: |
-          ./ci/validate-cas-overlay.sh --fetch-only --cas ${{ matrix.versions.version }} \
+          ./ci/validate-cas-overlay.sh --fetch-only \
+              --cas ${{ matrix.versions.version }} \
               --apache-tomcat ${{ matrix.versions.tomcat-version }}
       - name: Set up JDK
         if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
