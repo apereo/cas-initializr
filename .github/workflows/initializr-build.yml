@@ -38,7 +38,7 @@ jobs:
           java-version: ${{ env.JDK_CURRENT }}
           distribution: ${{ env.JDK_DISTRO }}
       - name: Build Initializr
-        run: ./gradlew --build-cache --configure-on-demand --no-daemon clean build -x test -x javadoc -x check --parallel
+        run: ./gradlew --configure-on-demand --no-daemon clean build -x test -x javadoc -x check --parallel
       - name: Validate Initializr
         run: ./ci/validate-initializr.sh
   ##########################################################################
