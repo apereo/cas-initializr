@@ -3,11 +3,16 @@
 source ./ci/functions.sh
 
 FETCH_OVERLAY="false"
+BUILD_ONLY="false"
 APP_SERVER="tomcat"
 JVM_VENDOR=""
 
 while (( "$#" )); do
     case "$1" in
+    --build-only)
+        BUILD_ONLY="true"
+        shift 1
+        ;;
     --fetch-only)
         FETCH_OVERLAY="true"
         shift 1
@@ -54,18 +59,20 @@ if [[ "${FETCH_OVERLAY}" == "true" ]]; then
   [ "$CI" = "true" ] && pkill java
   ls
   printgreen "Downloaded CAS overlay ${CAS_VERSION} successfully."
+  exit 0
+fi
 
-  if [[ -n "${JVM_VENDOR}" ]]; then
+if [[ "${BUILD_ONLY}" == "true" ]]; then
     printgreen "Chosen JVM vendor: ${JVM_VENDOR}"
     cd $PWD
     printgreen "Building CAS overlay in $PWD"
     ./gradlew clean build -PjvmVendor="${JVM_VENDOR}" --warning-mode all --no-daemon
-    if [[ $? -ne 0 ]]; then 
+    if [[ $? -ne 0 ]]; then
       printred "Failed to build CAS overlay ${CAS_VERSION} with JVM vendor ${JVM_VENDOR}"
       exit 1
     fi
-  fi
-  exit 0
+    printgreen "Built CAS overlay ${CAS_VERSION} with JVM vendor ${JVM_VENDOR} successfully."
+    exit 0
 fi
 
 dname="${dname:-CN=cas.example.org,OU=Example,OU=Org,C=US}"

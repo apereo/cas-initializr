@@ -156,13 +156,26 @@ jobs:
         if: ${{ matrix.versions.validate == true }}
         with:
           name: binary-artifacts
+      - name: Fetch CAS Overlay / ${{ matrix.jvmVendor }}
+        if: ${{ matrix.versions.validate == true }}
+        run: |
+          ./ci/validate-cas-overlay.sh --fetch-only \
+            --cas ${{ matrix.versions.version }} \
+            --apache-tomcat ${{ matrix.versions.tomcat-version }} \
+            --jvm-vendor ${{ matrix.jvmVendor }}
+      - name: Set up JDK
+        uses: actions/setup-java@v5
+        if: ${{ matrix.versions.validate == true }}
+        with:
+          java-version: ${{ matrix.versions.java-version }}
+          distribution: ${{ env.JDK_DISTRO }}
       - name: Build CAS Overlay / ${{ matrix.jvmVendor }}
         if: ${{ matrix.versions.validate == true }}
         run: |
-          ./ci/validate-cas-overlay.sh --fetch-only --cas ${{ matrix.versions.version }} \
+          ./ci/validate-cas-overlay.sh --build-only \
+            --cas ${{ matrix.versions.version }} \
             --apache-tomcat ${{ matrix.versions.tomcat-version }} \
             --jvm-vendor ${{ matrix.jvmVendor }}
-
 ##########################################################################
   validate-cas-overlay:
     needs: [ supported-versions-cas ]
