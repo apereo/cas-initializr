@@ -59,9 +59,6 @@ jobs:
         with:
           java-version: ${{ env.JDK_CURRENT }}
           distribution: ${{ env.JDK_DISTRO }}
-      - uses: actions/download-artifact@v5
-        with:
-          name: binary-artifacts
       - id: print-supported-versions
         name: Print supported versions
         run: ./gradlew -x test --no-daemon -q latestCasVersion
@@ -82,9 +79,6 @@ jobs:
         with:
           java-version: ${{ env.JDK_CURRENT }}
           distribution: ${{ env.JDK_DISTRO }}
-      - uses: actions/download-artifact@v5
-        with:
-          name: binary-artifacts
       - id: print-supported-versions
         name: Print supported versions
         run: ./gradlew -x test --no-daemon -q versions-cas
@@ -113,10 +107,6 @@ jobs:
         with:
           java-version: ${{ env.JDK_CURRENT }}
           distribution: ${{ env.JDK_DISTRO }}
-      - uses: actions/download-artifact@v5
-        if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
-        with:
-          name: binary-artifacts
       - name: Fetch Overlay
         if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
         run: |
@@ -152,10 +142,6 @@ jobs:
         with:
           java-version: ${{ env.JDK_CURRENT }}
           distribution: ${{ env.JDK_DISTRO }}
-      - uses: actions/download-artifact@v5
-        if: ${{ matrix.versions.validate == true }}
-        with:
-          name: binary-artifacts
       - name: Fetch CAS Overlay / ${{ matrix.jvmVendor }}
         if: ${{ matrix.versions.validate == true }}
         run: |
@@ -196,10 +182,6 @@ jobs:
         with:
           java-version: ${{ env.JDK_CURRENT }}
           distribution: ${{ env.JDK_DISTRO }}
-      - uses: actions/download-artifact@v5
-        if: ${{ matrix.versions.validate == true }}
-        with:
-          name: binary-artifacts
       - name: Fetch CAS Overlay / ${{ matrix.appServer }}
         if: ${{ matrix.versions.validate == true }}
         run: |
@@ -223,9 +205,16 @@ jobs:
         if: ${{ matrix.versions.validate == true }}
         timeout-minutes: 40
         run: |
-          ./ci/validate-cas-overlay.sh --cas ${{ matrix.versions.version }} \
-            --apache-tomcat ${{ matrix.versions.tomcat-version }} \
-            --app-server ${{ matrix.appServer }}
+          appServers='${{ toJSON(matrix.versions.app-servers) }}'
+          echo "App Servers: $appServers"
+          
+          for app in $(echo "appServers" | jq -r '.[]'); do
+            echo "Running CAS with application server: $app"
+            ./ci/validate-cas-overlay.sh \
+              --cas ${{ matrix.versions.version }} \
+              --apache-tomcat ${{ matrix.versions.tomcat-version }} \
+              --app-server "$app"
+          done
   ##########################################################################
   validate-cas-configserver-overlay:
     needs: [ supported-versions-cas ]
@@ -247,14 +236,11 @@ jobs:
         with:
           java-version: ${{ env.JDK_CURRENT }}
           distribution: ${{ env.JDK_DISTRO }}
-      - uses: actions/download-artifact@v5
-        if: ${{ matrix.versions.validate == true }}
-        with:
-          name: binary-artifacts
       - name: Fetch Overlay
         if: ${{ matrix.versions.validate == true }}
         run: |
-          ./ci/validate-cas-configserver-overlay.sh --fetch-only --cas ${{ matrix.versions.version }} \
+          ./ci/validate-cas-configserver-overlay.sh --fetch-only \
+            --cas ${{ matrix.versions.version }} \
             --apache-tomcat ${{ matrix.versions.tomcat-version }}
       - name: Set up JDK
         uses: actions/setup-java@v5
@@ -266,7 +252,8 @@ jobs:
         if: ${{ matrix.versions.validate == true }}
         timeout-minutes: 20
         run: |
-          ./ci/validate-cas-configserver-overlay.sh --cas ${{ matrix.versions.version }} \
+          ./ci/validate-cas-configserver-overlay.sh \
+            --cas ${{ matrix.versions.version }} \
             --apache-tomcat ${{ matrix.versions.tomcat-version }}
   ##########################################################################
   sync-cas-configserver-overlay:
@@ -289,14 +276,11 @@ jobs:
         with:
           java-version: ${{ env.JDK_CURRENT }}
           distribution: ${{ env.JDK_DISTRO }}
-      - uses: actions/download-artifact@v5
-        if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
-        with:
-          name: binary-artifacts
       - name: Fetch Overlay
         if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
         run: |
-          ./ci/validate-cas-configserver-overlay.sh --fetch-only --cas ${{ matrix.versions.version }} \
+          ./ci/validate-cas-configserver-overlay.sh --fetch-only \
+            --cas ${{ matrix.versions.version }} \
             --apache-tomcat ${{ matrix.versions.tomcat-version }}
       - name: Set up JDK
         if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
@@ -322,9 +306,6 @@ jobs:
           distribution: ${{ env.JDK_DISTRO }}
       - name: Initialize
         run: ls ./ci && find ./ci -type f -name "*.sh" -exec chmod +x "{}" \;
-      - uses: actions/download-artifact@v5
-        with:
-          name: binary-artifacts
       - name: Build Docker Image
         run: |
           echo "${DOCKER_REGISTRY_TOKEN}" | docker login --username "$DOCKER_USER" --password-stdin
