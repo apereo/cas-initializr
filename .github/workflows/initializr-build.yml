@@ -125,7 +125,7 @@ jobs:
     strategy:
       matrix:
         versions: ${{fromJSON(needs.supported-versions-cas.outputs.supported-versions)}}
-        jvmVendor: ["AMAZON", "AZUL", "ADOPTIUM", "MICROSOFT", "ORACLE"]
+        jvmVendor: ["AMAZON", "AZUL", "ADOPTIUM", "MICROSOFT", "ORACLE", "BELLSOFT", "IBM"]
     name: Build CAS Server ${{ matrix.versions.version }} / ${{ matrix.jvmVendor }}
     steps:
       - uses: actions/checkout@v5
