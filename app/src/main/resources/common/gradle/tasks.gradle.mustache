@@ -97,6 +97,7 @@ task run(group: "build", description: "Run the CAS web application in embedded c
 }
 {{/casVersion73OrAbove}}
 
+{{#executable}}
 task setExecutable(group: "CAS", description: "Configure the project to run in executable mode") {
     doFirst {
         project.setProperty("executable", "true")
@@ -115,6 +116,7 @@ task executable(type: Exec, group: "CAS", description: "Run the CAS web applicat
         commandLine bootWar.archivePath
     }
 }
+{{/executable}}
 
 task showConfiguration(group: "CAS", description: "Show configurations for each dependency, etc") {
     doLast() {
@@ -265,6 +267,7 @@ task downloadShell(group: "Shell", description: "Download CAS shell jar from sna
     def downloadFile
     if (casVersion.contains("-SNAPSHOT")) {
         def snapshotDir = "https://central.sonatype.com/repository/maven-snapshots/org/apereo/cas/cas-server-support-shell/${casVersion}/"
+        println "Fetching CAS shell from ${snapshotDir}"
         def files = new org.apache.ivy.util.url.ApacheURLLister().listFiles(new URL(snapshotDir))
         files = files.sort { it.path }
         files.each {

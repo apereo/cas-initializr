@@ -134,10 +134,19 @@ if [ "${APP_SERVER}" == "tomcat" ]; then
 fi
 #ps -ef
 
-printgreen "Running CAS Overlay as an executable WAR file"
-./gradlew clean build -Pexecutable=true --no-daemon
-./build/libs/cas.war --spring.profiles.active=none --cas.service-registry.core.init-from-json=true \
-  --server.ssl.enabled=false --server.port=8090 &
+if [ "$CAS_MAJOR_VERSION" -lt 8 ]; then
+  printgreen "Running CAS Overlay as a standalone executable WAR file"
+  ./gradlew clean build -Pexecutable=true --no-daemon
+  ./build/libs/cas.war --spring.profiles.active=none --cas.service-registry.core.init-from-json=true \
+    --server.ssl.enabled=false --server.port=8090 &
+else
+   printgreen "Running CAS Overlay as an executable WAR file"
+   ./gradlew clean build --no-daemon
+   java -jar ./build/libs/cas.war --spring.profiles.active=none \
+      --cas.service-registry.core.init-from-json=true \
+      --server.ssl.enabled=false --server.port=8090 &
+fi
+
 pid=$!
 sleep 15
 echo "Launched executable CAS with pid ${pid}. Waiting for CAS server to come online..."

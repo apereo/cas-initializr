@@ -181,22 +181,24 @@ jobs:
           distribution: ${{ env.JDK_DISTRO }}
       - name: Fetch & Validate CAS Overlay
         if: ${{ matrix.versions.validate == true }}
-        timeout-minutes: 40
+        timeout-minutes: 60
         run: |
           appServers='${{ toJSON(matrix.versions.app-servers) }}'
           echo "App Servers: $appServers"
 
           for app in $(echo "$appServers" | jq -r '.[]'); do
-            echo "Running CAS with application server: $app"
+            echo "Fetching CAS Overlay with application server: $app"
             ./ci/validate-cas-overlay.sh --fetch-only \
               --cas ${{ matrix.versions.version }} \
               --apache-tomcat ${{ matrix.versions.tomcat-version }} \
               --app-server "$app"
           
+            echo "Validating CAS Overlay with application server: $app"
             ./ci/validate-cas-overlay.sh \
               --cas ${{ matrix.versions.version }} \
               --apache-tomcat ${{ matrix.versions.tomcat-version }} \
               --app-server "$app"
+          
             echo "Completed CAS validation with application server: $app"
           done
   ##########################################################################
