@@ -166,7 +166,7 @@ jobs:
     strategy:
       matrix:
         versions: ${{fromJSON(needs.supported-versions-cas.outputs.supported-versions)}}
-    name: Validate CAS Server ${{ matrix.versions.version }} / ${{ matrix.appServer }}
+    name: Validate CAS Server ${{ matrix.versions.version }}
     steps:
       - uses: actions/checkout@v5
         if: ${{ matrix.versions.validate == true }}
@@ -185,7 +185,7 @@ jobs:
           appServers='${{ toJSON(matrix.versions.app-servers) }}'
           echo "App Servers: $appServers"
           
-          for app in $(echo "appServers" | jq -r '.[]'); do
+          for app in $(echo "$appServers" | jq -r '.[]'); do
             echo "Running CAS with application server: $app"
             ./ci/validate-cas-overlay.sh --fetch-only \
               --cas ${{ matrix.versions.version }} \
@@ -205,7 +205,7 @@ jobs:
           appServers='${{ toJSON(matrix.versions.app-servers) }}'
           echo "App Servers: $appServers"
           
-          for app in $(echo "appServers" | jq -r '.[]'); do
+          for app in $(echo "$appServers" | jq -r '.[]'); do
             echo "Running CAS with application server: $app"
             ./ci/validate-cas-overlay.sh \
               --cas ${{ matrix.versions.version }} \
