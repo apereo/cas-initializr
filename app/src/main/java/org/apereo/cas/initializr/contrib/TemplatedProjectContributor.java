@@ -326,7 +326,7 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         }
         templateVariables.put("githubActionsSupported", getOverlayProjectDescription().isGithubActionsSupported());
 
-        if (type.equalsIgnoreCase(CasOverlayBuildSystem.ID) && parsedCasVersion.getMajor() >= 7 && parsedCasVersion.getMinor() >= 1) {
+        if (type.equalsIgnoreCase(CasOverlayBuildSystem.ID)) {
             templateVariables.put("sbomSupported", getOverlayProjectDescription().isSbomSupported());
             templateVariables.put("nativeImageSupported", getOverlayProjectDescription().isNativeImageSupported());
         }
