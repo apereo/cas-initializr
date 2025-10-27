@@ -4,6 +4,7 @@ env:
   TERM: xterm-256color
   JDK_CURRENT: 25
   JDK_DISTRO: 'corretto'
+  JAVA_TOOL_OPTIONS: "--enable-native-access=ALL-UNNAMED"
   DOCKER_USER: ${{ secrets.DOCKER_USER }}
   DOCKER_REGISTRY_TOKEN: ${{ secrets.DOCKER_REGISTRY_TOKEN }}
   GH_TOKEN: ${{ secrets.GH_TOKEN }}
@@ -173,6 +174,8 @@ jobs:
       - name: Initialize
         if: ${{ matrix.versions.validate == true }}
         run: ls ./ci && find ./ci -type f -name "*.sh" -exec chmod +x "{}" \;
+      - name: AppArmor User Namespace Restrictions
+        run: echo 0 | sudo tee /proc/sys/kernel/apparmor_restrict_unprivileged_userns
       - name: Set up JDK 
         uses: actions/setup-java@v5
         if: ${{ matrix.versions.validate == true }}
@@ -181,7 +184,7 @@ jobs:
           distribution: ${{ env.JDK_DISTRO }}
       - name: Fetch & Validate CAS Overlay
         if: ${{ matrix.versions.validate == true }}
-        timeout-minutes: 60
+        timeout-minutes: 65
         run: |
           appServers='${{ toJSON(matrix.versions.app-servers) }}'
           echo "App Servers: $appServers"

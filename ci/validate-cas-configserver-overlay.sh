@@ -27,6 +27,12 @@ while (( "$#" )); do
     esac
 done
 
+if [[ "${FETCH_OVERLAY}" == "true" ]]; then
+  printgreen "Building CAS Initializr to fetch overlay ${CAS_VERSION}"
+  ./gradlew --configure-on-demand --no-daemon -DskipUI=true \
+    clean build -x test -x javadoc -x check --parallel -q
+fi
+
 mkdir -p tmp
 cd tmp || exit
 echo "Working directory: ${PWD}"
