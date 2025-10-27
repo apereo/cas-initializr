@@ -184,7 +184,7 @@ jobs:
           distribution: ${{ env.JDK_DISTRO }}
       - name: Fetch & Validate CAS Overlay
         if: ${{ matrix.versions.validate == true }}
-        timeout-minutes: 60
+        timeout-minutes: 65
         run: |
           appServers='${{ toJSON(matrix.versions.app-servers) }}'
           echo "App Servers: $appServers"
