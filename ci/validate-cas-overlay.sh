@@ -3,11 +3,16 @@
 source ./ci/functions.sh
 
 FETCH_OVERLAY="false"
+BUILD_ONLY="false"
 APP_SERVER="tomcat"
 JVM_VENDOR=""
 
 while (( "$#" )); do
     case "$1" in
+    --build-only)
+        BUILD_ONLY="true"
+        shift 1
+        ;;
     --fetch-only)
         FETCH_OVERLAY="true"
         shift 1
@@ -35,6 +40,12 @@ CAS_MAJOR_VERSION=`echo $CAS_VERSION | cut -d. -f1`
 CAS_MINOR_VERSION=`echo $CAS_VERSION | cut -d. -f2`
 CAS_PATCH_VERSION=`echo $CAS_VERSION | cut -d. -f3`
 
+if [[ "${FETCH_OVERLAY}" == "true" ]]; then
+  printgreen "Building CAS Initializr to fetch overlay ${CAS_VERSION}"
+  ./gradlew --configure-on-demand --no-daemon -DskipUI=true \
+    clean build -x test -x javadoc -x check --parallel -q
+fi
+
 mkdir -p tmp
 cd tmp || exit
 echo "Working directory: ${PWD}"
@@ -54,18 +65,20 @@ if [[ "${FETCH_OVERLAY}" == "true" ]]; then
   [ "$CI" = "true" ] && pkill java
   ls
   printgreen "Downloaded CAS overlay ${CAS_VERSION} successfully."
+  exit 0
+fi
 
-  if [[ -n "${JVM_VENDOR}" ]]; then
+if [[ "${BUILD_ONLY}" == "true" ]]; then
     printgreen "Chosen JVM vendor: ${JVM_VENDOR}"
     cd $PWD
     printgreen "Building CAS overlay in $PWD"
     ./gradlew clean build -PjvmVendor="${JVM_VENDOR}" --warning-mode all --no-daemon
-    if [[ $? -ne 0 ]]; then 
+    if [[ $? -ne 0 ]]; then
       printred "Failed to build CAS overlay ${CAS_VERSION} with JVM vendor ${JVM_VENDOR}"
       exit 1
     fi
-  fi
-  exit 0
+    printgreen "Built CAS overlay ${CAS_VERSION} with JVM vendor ${JVM_VENDOR} successfully."
+    exit 0
 fi
 
 dname="${dname:-CN=cas.example.org,OU=Example,OU=Org,C=US}"
@@ -121,10 +134,19 @@ if [ "${APP_SERVER}" == "tomcat" ]; then
 fi
 #ps -ef
 
-printgreen "Running CAS Overlay as an executable WAR file"
-./gradlew clean build -Pexecutable=true --no-daemon
-./build/libs/cas.war --spring.profiles.active=none --cas.service-registry.core.init-from-json=true \
-  --server.ssl.enabled=false --server.port=8090 &
+if [ "$CAS_MAJOR_VERSION" -lt 8 ]; then
+  printgreen "Running CAS Overlay as a standalone executable WAR file"
+  ./gradlew clean build -Pexecutable=true --no-daemon
+  ./build/libs/cas.war --spring.profiles.active=none --cas.service-registry.core.init-from-json=true \
+    --server.ssl.enabled=false --server.port=8090 &
+else
+   printgreen "Running CAS Overlay as an executable WAR file"
+   ./gradlew clean build --no-daemon
+   java -jar ./build/libs/cas.war --spring.profiles.active=none \
+      --cas.service-registry.core.init-from-json=true \
+      --server.ssl.enabled=false --server.port=8090 &
+fi
+
 pid=$!
 sleep 15
 echo "Launched executable CAS with pid ${pid}. Waiting for CAS server to come online..."
@@ -182,9 +204,9 @@ printgreen "Verify Java Version"
 ./gradlew --no-daemon verifyRequiredJavaVersion
 [ $? -eq 0 ] && echo "Gradle command ran successfully." || exit 1
 
-# printgreen "Downloading Shell"
-# ./gradlew --no-daemon downloadShell runShell
-# [ $? -eq 0 ] && echo "Gradle command ran successfully." || exit 1
+printgreen "Downloading Shell"
+./gradlew --no-daemon downloadShell runShell
+[ $? -eq 0 ] && echo "Gradle command ran successfully." || exit 1
 
 printgreen "Listing Views"
 ./gradlew --no-daemon listTemplateViews

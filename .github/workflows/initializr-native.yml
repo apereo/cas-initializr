@@ -4,8 +4,9 @@ env:
   JAVA_OPTS: "-Xms512m -Xmx6048m -Xss128m -XX:ReservedCodeCacheSize=512m -server"
   GRADLE_OPTS: "-Xms512m -Xmx6048m -Xss128m -XX:ReservedCodeCacheSize=512m -server"
   TERM: xterm-256color
-  JDK_CURRENT: 21
+  JDK_CURRENT: 25
   JDK_DISTRO: 'corretto'
+  JAVA_TOOL_OPTIONS: "--enable-native-access=ALL-UNNAMED"
   GH_TOKEN: ${{ secrets.GH_TOKEN }}
   CAS_MODULE_METADATA_MONGODB_URL: ${{ secrets.CAS_MODULE_METADATA_MONGODB_URL }}
 
@@ -79,6 +80,8 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v5
         if: ${{ matrix.versions.sync == true && matrix.versions.branch == 'master' }}
+      - name: AppArmor User Namespace Restrictions
+        run: echo 0 | sudo tee /proc/sys/kernel/apparmor_restrict_unprivileged_userns
       - name: Set up JDK
         uses: actions/setup-java@v5
         if: ${{ matrix.versions.sync == true && matrix.versions.branch == 'master' }}
