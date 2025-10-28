@@ -60,7 +60,7 @@ export const OverlaySlice = createSlice({
         commandlineShellSupported: 'true',
         helmSupported: 'false',
         herokuSupported: 'false',
-        sbomSupported: 'false',
+        sbomSupported: 'true',
         deploymentType: 'executable'
     },
     reducers: {
