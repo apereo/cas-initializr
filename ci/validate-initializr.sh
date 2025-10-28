@@ -5,7 +5,7 @@ set -e
 source ./ci/functions.sh
 
 echo "Building CAS Initializr"
-./gradlew --build-cache --configure-on-demand --no-daemon \
+./gradlew --configure-on-demand --no-daemon \
   clean build -x test -x javadoc -x check --parallel -q
 
 echo "Launching CAS Initializr"

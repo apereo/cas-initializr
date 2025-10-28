@@ -182,14 +182,11 @@ java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(project.targetCompatibility)
         {{^nativeImageSupported}}
+
         def chosenJvmVendor = null
-        JvmVendorSpec.declaredFields.each { field ->
-            if (field.type == JvmVendorSpec && Modifier.isStatic(field.getModifiers())) {
-                if (field.name == project.jvmVendor?.toUpperCase()) {
-                    chosenJvmVendor = field.get(null)
-                    return
-                }
-            }
+        if (project.jvmVendor != null) {
+            out.withStyle(Style.Info).println("JVM vendor ${project.jvmVendor} is requested for the Java toolchain")
+            chosenJvmVendor = JvmVendorSpec.of(project.jvmVendor?.toUpperCase())
         }
         if (chosenJvmVendor != null) {
             vendor = chosenJvmVendor

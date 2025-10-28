@@ -111,11 +111,13 @@ Or via:
 java -Xdebug -Xrunjdwp:transport=dt_socket,address=5000,server=y,suspend=y -jar build/libs/{{appName}}.war
 ```
 
+{{#executable}}
 Run the CAS web application as a *standalone* executable WAR:
 
 ```bash
 ./gradlew[.bat] clean executable
 ```
+{{/executable}}
 
 ### CDS Support
 
@@ -124,8 +126,7 @@ now has support for easy creation of a CDS friendly layout. This layout can be c
 with the help of the `tools` jarmode:
 
 ```bash
-# Note:
-# You must first build the web application with "executable" turned off
+{{#executable}}# Note: You must first build the web application with "executable" turned off{{/executable}}
 java -Djarmode=tools -jar build/libs/{{appName}}.war extract
 
 # Perform a training run once

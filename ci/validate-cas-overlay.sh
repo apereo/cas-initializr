@@ -42,7 +42,7 @@ CAS_PATCH_VERSION=`echo $CAS_VERSION | cut -d. -f3`
 
 if [[ "${FETCH_OVERLAY}" == "true" ]]; then
   printgreen "Building CAS Initializr to fetch overlay ${CAS_VERSION}"
-  ./gradlew --build-cache --configure-on-demand --no-daemon \
+  ./gradlew --configure-on-demand --no-daemon -DskipUI=true \
     clean build -x test -x javadoc -x check --parallel -q
 fi
 
@@ -134,10 +134,19 @@ if [ "${APP_SERVER}" == "tomcat" ]; then
 fi
 #ps -ef
 
-printgreen "Running CAS Overlay as an executable WAR file"
-./gradlew clean build -Pexecutable=true --no-daemon
-./build/libs/cas.war --spring.profiles.active=none --cas.service-registry.core.init-from-json=true \
-  --server.ssl.enabled=false --server.port=8090 &
+if [ "$CAS_MAJOR_VERSION" -lt 8 ]; then
+  printgreen "Running CAS Overlay as a standalone executable WAR file"
+  ./gradlew clean build -Pexecutable=true --no-daemon
+  ./build/libs/cas.war --spring.profiles.active=none --cas.service-registry.core.init-from-json=true \
+    --server.ssl.enabled=false --server.port=8090 &
+else
+   printgreen "Running CAS Overlay as an executable WAR file"
+   ./gradlew clean build --no-daemon
+   java -jar ./build/libs/cas.war --spring.profiles.active=none \
+      --cas.service-registry.core.init-from-json=true \
+      --server.ssl.enabled=false --server.port=8090 &
+fi
+
 pid=$!
 sleep 15
 echo "Launched executable CAS with pid ${pid}. Waiting for CAS server to come online..."

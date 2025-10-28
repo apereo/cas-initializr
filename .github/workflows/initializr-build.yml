@@ -4,6 +4,7 @@ env:
   TERM: xterm-256color
   JDK_CURRENT: 25
   JDK_DISTRO: 'corretto'
+  JAVA_TOOL_OPTIONS: "--enable-native-access=ALL-UNNAMED"
   DOCKER_USER: ${{ secrets.DOCKER_USER }}
   DOCKER_REGISTRY_TOKEN: ${{ secrets.DOCKER_REGISTRY_TOKEN }}
   GH_TOKEN: ${{ secrets.GH_TOKEN }}
@@ -38,7 +39,7 @@ jobs:
           java-version: ${{ env.JDK_CURRENT }}
           distribution: ${{ env.JDK_DISTRO }}
       - name: Build Initializr
-        run: ./gradlew --build-cache --configure-on-demand --no-daemon clean build -x test -x javadoc -x check --parallel
+        run: ./gradlew --configure-on-demand --no-daemon clean build -x test -x javadoc -x check --parallel
       - name: Validate Initializr
         run: ./ci/validate-initializr.sh
   ##########################################################################
@@ -125,7 +126,7 @@ jobs:
     strategy:
       matrix:
         versions: ${{fromJSON(needs.supported-versions-cas.outputs.supported-versions)}}
-        jvmVendor: ["AMAZON", "AZUL", "ADOPTIUM", "MICROSOFT", "ORACLE"]
+        jvmVendor: ["AMAZON", "AZUL", "ADOPTIUM", "MICROSOFT", "ORACLE", "BELLSOFT", "IBM"]
     name: Build CAS Server ${{ matrix.versions.version }} / ${{ matrix.jvmVendor }}
     steps:
       - uses: actions/checkout@v5
@@ -166,51 +167,42 @@ jobs:
     strategy:
       matrix:
         versions: ${{fromJSON(needs.supported-versions-cas.outputs.supported-versions)}}
-    name: Validate CAS Server ${{ matrix.versions.version }} / ${{ matrix.appServer }}
+    name: Validate CAS Server ${{ matrix.versions.version }}
     steps:
       - uses: actions/checkout@v5
         if: ${{ matrix.versions.validate == true }}
       - name: Initialize
         if: ${{ matrix.versions.validate == true }}
         run: ls ./ci && find ./ci -type f -name "*.sh" -exec chmod +x "{}" \;
-      - name: Set up JDK
-        uses: actions/setup-java@v5
-        if: ${{ matrix.versions.validate == true }}
-        with:
-          java-version: ${{ env.JDK_CURRENT }}
-          distribution: ${{ env.JDK_DISTRO }}
-      - name: Fetch CAS Overlay / ${{ matrix.appServer }}
-        if: ${{ matrix.versions.validate == true }}
-        run: |
-          appServers='${{ toJSON(matrix.versions.app-servers) }}'
-          echo "App Servers: $appServers"
-          
-          for app in $(echo "appServers" | jq -r '.[]'); do
-            echo "Running CAS with application server: $app"
-            ./ci/validate-cas-overlay.sh --fetch-only \
-              --cas ${{ matrix.versions.version }} \
-              --apache-tomcat ${{ matrix.versions.tomcat-version }} \
-              --app-server "$app"
-          done
+      - name: AppArmor User Namespace Restrictions
+        run: echo 0 | sudo tee /proc/sys/kernel/apparmor_restrict_unprivileged_userns
       - name: Set up JDK 
         uses: actions/setup-java@v5
         if: ${{ matrix.versions.validate == true }}
         with:
           java-version: ${{ matrix.versions.java-version }}
           distribution: ${{ env.JDK_DISTRO }}
-      - name: Validate Overlay / ${{ matrix.appServer }}
+      - name: Fetch & Validate CAS Overlay
         if: ${{ matrix.versions.validate == true }}
-        timeout-minutes: 40
+        timeout-minutes: 65
         run: |
           appServers='${{ toJSON(matrix.versions.app-servers) }}'
           echo "App Servers: $appServers"
+
+          for app in $(echo "$appServers" | jq -r '.[]'); do
+            echo "Fetching CAS Overlay with application server: $app"
+            ./ci/validate-cas-overlay.sh --fetch-only \
+              --cas ${{ matrix.versions.version }} \
+              --apache-tomcat ${{ matrix.versions.tomcat-version }} \
+              --app-server "$app"
           
-          for app in $(echo "appServers" | jq -r '.[]'); do
-            echo "Running CAS with application server: $app"
+            echo "Validating CAS Overlay with application server: $app"
             ./ci/validate-cas-overlay.sh \
               --cas ${{ matrix.versions.version }} \
               --apache-tomcat ${{ matrix.versions.tomcat-version }} \
               --app-server "$app"
+          
+            echo "Completed CAS validation with application server: $app"
           done
   ##########################################################################
   validate-cas-configserver-overlay:

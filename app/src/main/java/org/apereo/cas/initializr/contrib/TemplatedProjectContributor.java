@@ -27,6 +27,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -65,7 +66,7 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
     private final Map<String, Object> variables = new HashMap<>();
 
     private final Map<String, String> pathsAndResourcesMap;
-    
+
 
     public TemplatedProjectContributor(final ApplicationContext applicationContext,
                                        final String relativePath, final String resourcePattern) {
@@ -93,13 +94,17 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         }
 
         defaults.put("appServer", appServer);
-        defaults.put("executable", project.getDeploymentType() == OverlayProjectDescription.DeploymentTypes.EXECUTABLE);
+
+        var parsedCasVersion = VersionUtils.parse(project.getCasVersion());
+        if (parsedCasVersion.getMajor() < 8) {
+            defaults.put("executable", project.getDeploymentType() == OverlayProjectDescription.DeploymentTypes.EXECUTABLE);
+        }
     }
 
     protected static void createTemplateFile(final Path output, final String template) throws IOException {
         log.info("Processing template file {}", output.toFile().getAbsolutePath());
         copyResourceToOutput(new BufferedInputStream(new ByteArrayInputStream(template.getBytes(StandardCharsets.UTF_8))),
-            Files.newOutputStream(output, StandardOpenOption.APPEND));
+                Files.newOutputStream(output, StandardOpenOption.APPEND));
         val filename = output.getFileName().toFile().getName();
         val result = output.toFile().setExecutable(filename.endsWith(".sh") || filename.endsWith(".bat"));
         log.debug("{} was marked as executable: {}", filename, result);
@@ -111,19 +116,19 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         var provider = getInitializrMetadata();
         var configuration = provider.getConfiguration();
         var boms = configuration.getEnv().getBoms();
-        
+
         var casVersion = project.resolveCasVersion(boms.get("cas-bom"));
         var availableDependencies = fetcher.fetch(casVersion);
         log.info("Available overlay dependencies for {}: {}", project.getVersion(), availableDependencies.size());
-        
+
         var dependencies = project.getRequestedDependencies()
-            .values()
-            .stream()
-            .filter(dep -> !CasOverlayGradleBuild.WEBAPP_ARTIFACTS.contains(dep.getArtifactId()))
-            .filter(dep -> availableDependencies.stream().anyMatch(dependency -> dependency.getName().equalsIgnoreCase(dep.getArtifactId())
-                && dependency.getGroup().equalsIgnoreCase(dep.getGroupId())))
-            .map(dep -> new CasDependency(dep.getGroupId(), dep.getArtifactId()))
-            .collect(Collectors.toList());
+                .values()
+                .stream()
+                .filter(dep -> !CasOverlayGradleBuild.WEBAPP_ARTIFACTS.contains(dep.getArtifactId()))
+                .filter(dep -> availableDependencies.stream().anyMatch(dependency -> dependency.getName().equalsIgnoreCase(dep.getArtifactId())
+                                                                                     && dependency.getGroup().equalsIgnoreCase(dep.getGroupId())))
+                .map(dep -> new CasDependency(dep.getGroupId(), dep.getArtifactId()))
+                .collect(Collectors.toList());
         log.debug("Requested overlay dependencies: {}", dependencies);
         return dependencies;
     }
@@ -187,14 +192,14 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         var project = applicationContext.getBean(OverlayProjectDescription.class);
         var templateVariables = prepareProjectTemplateVariables(project);
         var model = contributeInternal(project);
-        if (model instanceof Map mapModule) {
+        if (model instanceof final Map mapModule) {
             mapModule.putAll(templateVariables);
         }
         return templateVariables;
     }
 
     protected void processTemplatedFile(final Path output,
-                                      final String resourcePattern) throws IOException {
+                                        final String resourcePattern) throws IOException {
         createFileAndParentDirectories(output);
         var templateVariables = getProjectTemplateVariables();
         var project = applicationContext.getBean(OverlayProjectDescription.class);
@@ -237,10 +242,10 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         var provider = applicationContext.getBean(InitializrMetadataProvider.class);
         return provider.get();
     }
-    
+
     protected Map<String, Object> prepareProjectTemplateVariables(final OverlayProjectDescription project) {
         var properties = applicationContext.getBean(CasInitializrProperties.class);
-        
+
         var provider = getInitializrMetadata();
         var templateVariables = new TreeMap<>(provider.defaults());
         var configuration = provider.getConfiguration();
@@ -250,32 +255,32 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         templateVariables.put("type", type);
 
         properties.getSupportedVersions()
-            .stream()
-            .filter(version -> version.getType().equals(project.getBuildSystem().overlayType())
-                && version.getVersion().equals(project.getCasVersion()))
-            .findFirst()
-            .ifPresentOrElse(version -> {
-                templateVariables.put("tomcatVersion", version.getTomcatVersion());
-                templateVariables.put("javaVersion", version.getJavaVersion());
-                templateVariables.put("jibVersion", version.getPlugins().getJibVersion());
-                templateVariables.put("openRewriteVersion", version.getPlugins().getOpenRewriteVersion());
-                templateVariables.put("containerBaseImageName", version.getContainerBaseImage());
-                templateVariables.put("gradleVersion", version.getGradleVersion());
-                templateVariables.put("branch", version.getBranch());
+                .stream()
+                .filter(version -> version.getType().equals(project.getBuildSystem().overlayType())
+                                   && version.getVersion().equals(project.getCasVersion()))
+                .findFirst()
+                .ifPresentOrElse(version -> {
+                    templateVariables.put("tomcatVersion", version.getTomcatVersion());
+                    templateVariables.put("javaVersion", version.getJavaVersion());
+                    templateVariables.put("jibVersion", version.getPlugins().getJibVersion());
+                    templateVariables.put("openRewriteVersion", version.getPlugins().getOpenRewriteVersion());
+                    templateVariables.put("containerBaseImageName", version.getContainerBaseImage());
+                    templateVariables.put("gradleVersion", version.getGradleVersion());
+                    templateVariables.put("branch", version.getBranch());
 
-                var gradleVersion = VersionUtils.parse(version.getGradleVersion());
-                IntStream.rangeClosed(MIN_GRADLE_MAJOR_VERSION, MAX_GRADLE_MAJOR_VERSION).forEach(value -> {
-                    if (gradleVersion.getMajor() == value) {
-                        templateVariables.put("gradleVersion" + value, Boolean.TRUE);
-                    }
-                    if (gradleVersion.getMajor() >= value) {
-                        templateVariables.put("gradleVersion" + value + "Compatible", Boolean.TRUE);
-                    }
+                    var gradleVersion = VersionUtils.parse(version.getGradleVersion());
+                    IntStream.rangeClosed(MIN_GRADLE_MAJOR_VERSION, MAX_GRADLE_MAJOR_VERSION).forEach(value -> {
+                        if (gradleVersion.getMajor() == value) {
+                            templateVariables.put("gradleVersion" + value, Boolean.TRUE);
+                        }
+                        if (gradleVersion.getMajor() >= value) {
+                            templateVariables.put("gradleVersion" + value + "Compatible", Boolean.TRUE);
+                        }
+                    });
+                }, () -> {
+                    throw new UnsupportedVersionException(project.getCasVersion(),
+                            "Unsupported version " + project.getCasVersion() + " for project type " + project.getBuildSystem().overlayType());
                 });
-            }, () -> {
-                throw new UnsupportedVersionException(project.getCasVersion(),
-                    "Unsupported version " + project.getCasVersion() + " for project type " + project.getBuildSystem().overlayType());
-            });
 
         var casVersion = project.resolveCasVersion(boms.get("cas-bom"));
         templateVariables.put("casVersion", casVersion);
@@ -301,7 +306,7 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
                     templateVariables.put("casVersion" + value + minor + "OrAbove", Boolean.TRUE);
                 });
             }
-            
+
         });
 
         templateVariables.put("springBootVersion", project.getSpringBootVersion());
@@ -321,7 +326,7 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         }
         templateVariables.put("githubActionsSupported", getOverlayProjectDescription().isGithubActionsSupported());
 
-        if (type.equalsIgnoreCase(CasOverlayBuildSystem.ID) && parsedCasVersion.getMajor() >= 7 && parsedCasVersion.getMinor() >= 1) {
+        if (type.equalsIgnoreCase(CasOverlayBuildSystem.ID)) {
             templateVariables.put("sbomSupported", getOverlayProjectDescription().isSbomSupported());
             templateVariables.put("nativeImageSupported", getOverlayProjectDescription().isNativeImageSupported());
         }
@@ -371,8 +376,8 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
                                                      final String relativePath) throws IOException {
         val relativePathFile = new File(relativePath);
         val parentFile = resource.isFile()
-            ? resource.getFile().getParentFile()
-            : new File(((ClassPathResource) resource).getPath()).getParentFile();
+                ? resource.getFile().getParentFile()
+                : new File(((ClassPathResource) resource).getPath()).getParentFile();
         val resourceParentName = parentFile.getName();
         if (!resourceParentName.equals(relativePathFile.getName())) {
             return "/" + resourceParentName + "/" + filename;
