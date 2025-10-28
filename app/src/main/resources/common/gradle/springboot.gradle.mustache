@@ -113,6 +113,7 @@ bootWar {
 {{#sbomSupported}}
     dependsOn cyclonedxBom
 {{/sbomSupported}}
+{{#executable}}
     def executable = project.hasProperty("executable") && Boolean.valueOf(project.getProperty("executable"))
     if (executable) {
         logger.info "Including launch script for executable WAR artifact"
@@ -120,6 +121,7 @@ bootWar {
     } else {
         logger.info "WAR artifact is not marked as an executable"
     }
+{{/executable}}
 
     archiveFileName = "{{appName}}.war"
     archiveBaseName = "{{appName}}"

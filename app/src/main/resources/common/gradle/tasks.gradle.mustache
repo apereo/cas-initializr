@@ -6,7 +6,8 @@ import org.gradle.internal.logging.text.*
 
 import groovy.json.*
 import groovy.time.*
-
+import groovy.xml.*
+ 
 import java.nio.file.*
 import java.util.*
 import java.security.*
@@ -17,7 +18,7 @@ buildscript {
         mavenCentral()
         gradlePluginPortal()
         maven {
-            url = 'https://oss.sonatype.org/content/repositories/snapshots'
+            url = 'https://central.sonatype.com/repository/maven-snapshots/'
             mavenContent { snapshotsOnly() }
         }
         maven {
@@ -97,6 +98,7 @@ task run(group: "build", description: "Run the CAS web application in embedded c
 }
 {{/casVersion73OrAbove}}
 
+{{#executable}}
 task setExecutable(group: "CAS", description: "Configure the project to run in executable mode") {
     doFirst {
         project.setProperty("executable", "true")
@@ -115,6 +117,7 @@ task executable(type: Exec, group: "CAS", description: "Run the CAS web applicat
         commandLine bootWar.archivePath
     }
 }
+{{/executable}}
 
 task showConfiguration(group: "CAS", description: "Show configurations for each dependency, etc") {
     doLast() {
@@ -264,14 +267,16 @@ task downloadShell(group: "Shell", description: "Download CAS shell jar from sna
     def casVersion = project.providers.gradleProperty("cas.version").get()
     def downloadFile
     if (casVersion.contains("-SNAPSHOT")) {
-        def snapshotDir = "https://oss.sonatype.org/content/repositories/snapshots/org/apereo/cas/cas-server-support-shell/${casVersion}/"
-        def files = new org.apache.ivy.util.url.ApacheURLLister().listFiles(new URL(snapshotDir))
-        files = files.sort { it.path }
-        files.each {
-            if (it.path.endsWith(".jar")) {
-                downloadFile = it
-            }
-        }
+        def snapshotDir = "https://central.sonatype.com/repository/maven-snapshots/org/apereo/cas/cas-server-support-shell/${casVersion}"
+        def metaUrl = "${snapshotDir}/maven-metadata.xml"
+        def xml = new XmlSlurper().parse(metaUrl.toURL().openStream())
+        def sv = xml.versioning.snapshotVersions.snapshotVersion.findAll {
+            it.extension.text() == "jar" && it.classifier.text() == ""
+        }.sort { a, b -> a.updated.text() <=> b.updated.text() }.last()
+        def stamped = sv.value.text()
+        def jarName = "cas-server-support-shell-${stamped}.jar"
+        def jarUrl  = "${snapshotDir}/${jarName}"
+        downloadFile = jarUrl
     } else {
         downloadFile = "https://github.com/apereo/cas/releases/download/v${casVersion}/cas-server-support-shell-${casVersion}.jar"
     }

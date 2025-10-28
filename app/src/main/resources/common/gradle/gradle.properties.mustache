@@ -69,10 +69,12 @@ dockerImagePlatform=amd64:linux
 {{/dockerSupported}}
 
 {{#appServer}}
+{{#executable}}
 # Include a launch script for executable WAR artifact
 # Setting this to true allows the final web application
 # to be fully executable on its own.
 executable={{executable}}
+{{/executable}}
 {{#nativeImageSupported}}
 # Control whether the final outcome of the Gradle build
 # should be a native image that is built via GraalVM

@@ -21,7 +21,7 @@ cas-initializr:
       java-version: 21
       graalvm-version: 21
       container-base-image: azul/zulu-openjdk:21
-      gradle-version: "8.10"
+      gradle-version: "8.13"
       app-servers:
         - tomcat
         - jetty
