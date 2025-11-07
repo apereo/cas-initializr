@@ -38,6 +38,7 @@
         "react-scripts": "^5.0.1",
         "react-syntax-highlighter": "^16.0.0",
         "react-virtuoso": "^4.10.2",
+        "refractor": "^4.8.1",
         "sass": "^1.77.8",
         "semver": "^7.6.3",
         "typescript": "^5.5.4",
