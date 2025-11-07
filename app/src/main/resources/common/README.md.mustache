@@ -45,7 +45,7 @@ This can either be done using the JDK's `keytool` utility or via the following c
 Use the password `changeit` for both the keystore and the key/certificate entries. 
 Ensure the keystore is loaded up with keys and certificates of the server.
 
-## Extension Modules
+# Extension Modules
 
 Extension modules may be specified under the `dependencies` block of the [Gradle build script](build.gradle):
 
@@ -195,3 +195,20 @@ The first build might take a long time because it has to download some container
 images and the JDK, but subsequent builds should be fast.
 
 {{/dockerSupported}}
+
+{{#sbomSupported}}
+# Software Bill of Materials (SBOM)
+
+The build supports generating a Software Bill of Materials (SBOM) for the CAS web application. This is done using
+the Gradle CycloneDX plugin, which creates an aggregate of all direct and transitive dependencies of a project
+and creates a valid CycloneDX SBOM. CycloneDX is a lightweight software bill of materials (SBOM)
+specification designed for use in application security contexts and supply chain component analysis.
+
+You may run the following Gradle task to generate the SBOM:
+
+```bash
+./gradlew cyclonedxBom
+```
+
+The generated SBOM file will be located in the `build/META-INF/sbom/application.cdx` file.
+{{/sbomSupported}}

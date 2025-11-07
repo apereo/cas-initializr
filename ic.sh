@@ -2,7 +2,7 @@
 
 rm -Rf ./tmp
 
-CAS_VERSION="7.3.0-RC4"
+CAS_VERSION="8.0.0-SNAPSHOT"
 
 curl -k http://localhost:8080/starter.tgz -d dependencies="$1" \
   -d "casVersion=${CAS_VERSION}" \
@@ -10,6 +10,7 @@ curl -k http://localhost:8080/starter.tgz -d dependencies="$1" \
   -d herokuSupported=false \
   -d nativeImageSupported=true \
   -d openRewriteSupported=true \
+  -d sbomSupported=true \
   -d dependencyCoordinates=cas-server-support-rest \
   -d type=cas-overlay -d baseDir=tmp | tar -xzvf -
 #  -d deploymentType=web \

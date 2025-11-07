@@ -123,7 +123,7 @@ export const OptionSlice = createSlice({
             },
             sbomSupported: {
                 type: "",
-                default: 'false'
+                default: 'true'
             },
             deploymentType: {
                 type: "",
@@ -171,7 +171,7 @@ export const OptionSlice = createSlice({
             state.packageName = packageName;
             state.dockerSupported = dockerSupported || {default: 'true'};
             state.helmSupported = helmSupported || { default: 'false' };
-            state.sbomSupported = sbomSupported || { default: 'false' };
+            state.sbomSupported = sbomSupported || { default: 'true' };
             state.herokuSupported = herokuSupported || {default: 'false'};
             state.puppeteerSupported = puppeteerSupported || {default: 'true'};
             state.githubActionsSupported = githubActionsSupported || {default: 'true'};
