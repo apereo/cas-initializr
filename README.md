@@ -7,7 +7,7 @@ This service is available at: https://getcas.apereo.org/ui
 
 ## Build
 
-You will need JDK 17 to run the CAS Initializr locally.
+You will need JDK 21 to run the CAS Initializr locally.
 
 ```bash
 ./gradlew clean build
