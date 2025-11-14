@@ -78,7 +78,7 @@ if [[ $? -ne 0 ]]; then
 fi
 
 printgreen "Launching CAS native image..."  
-./build/native/nativeCompile/cas --spring.profiles.active=native &
+./build/native/nativeCompile/cas -XX:StartFlightRecording=filename=recording.jfr --spring.profiles.active=native &
 pid=$!
 sleep 15
 curl -k -L --connect-timeout 10 --output /dev/null --silent --fail https://localhost:8443/cas/login

@@ -250,6 +250,7 @@ graalvmNative {
             buildArgs.add('-J-Xmx14G')
             buildArgs.add('-J-Xms4G')
             buildArgs.add('--native-image-info')
+            buildArgs.add('--enable-monitoring=jfr')
             buildArgs.add('-march=native')
 
             buildArgs.add('--trace-class-initialization=true')
