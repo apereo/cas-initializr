@@ -32,7 +32,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Build Initializr
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Set up JDK
         uses: actions/setup-java@v5
         with:
@@ -50,7 +50,7 @@ jobs:
     outputs:
       supported-versions: ${{ steps.get-supported-versions.outputs.supported-versions }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Set up JDK
         uses: actions/setup-java@v5
         with:
@@ -70,7 +70,7 @@ jobs:
     outputs:
       supported-versions: ${{ steps.get-supported-versions.outputs.supported-versions }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Set up JDK
         uses: actions/setup-java@v5
         with:
@@ -93,7 +93,7 @@ jobs:
         versions: ${{fromJSON(needs.supported-versions-cas.outputs.supported-versions)}}
     name: Sync CAS Server ${{ matrix.versions.version }} Branch ${{ matrix.versions.branch }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
       - name: Initialize
         if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
@@ -129,7 +129,7 @@ jobs:
         jvmVendor: ["AMAZON", "AZUL", "ADOPTIUM", "MICROSOFT", "ORACLE", "BELLSOFT", "IBM"]
     name: Build CAS Server ${{ matrix.versions.version }} / ${{ matrix.jvmVendor }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         if: ${{ matrix.versions.validate == true }}
       - name: Initialize
         if: ${{ matrix.versions.validate == true }}
@@ -169,7 +169,7 @@ jobs:
         versions: ${{fromJSON(needs.supported-versions-cas.outputs.supported-versions)}}
     name: Validate CAS Server ${{ matrix.versions.version }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         if: ${{ matrix.versions.validate == true }}
       - name: Initialize
         if: ${{ matrix.versions.validate == true }}
@@ -214,7 +214,7 @@ jobs:
         versions: ${{fromJSON(needs.supported-versions-cas.outputs.supported-versions)}}
     name: Validate Config Server ${{ matrix.versions.version }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         if: ${{ matrix.versions.validate == true }}
       - name: Initialize
         if: ${{ matrix.versions.validate == true }}
@@ -254,7 +254,7 @@ jobs:
         versions: ${{fromJSON(needs.supported-versions-cas.outputs.supported-versions)}}
     name: Sync Config Server ${{ matrix.versions.version }} Branch ${{ matrix.versions.branch }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
       - name: Initialize
         if: ${{ matrix.versions.sync == true && github.event_name == 'push' && env.GH_TOKEN != null }}
@@ -287,7 +287,7 @@ jobs:
     runs-on: ubuntu-latest
     # if: ${{ false }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Set up JDK
         uses: actions/setup-java@v5
         with:
