@@ -39,7 +39,7 @@ jobs:
           java-version: ${{ env.JDK_CURRENT }}
           distribution: 'temurin'
       - name: Setup Gradle Wrapper Cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.gradle/wrapper
           key: ${{ runner.os }}-${{ github.sha }}-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
