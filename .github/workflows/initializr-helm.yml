@@ -34,7 +34,7 @@ jobs:
           distribution: ${{ env.JDK_DISTRO }}
       - name: Build Initializr
         run: ./gradlew --build-cache --configure-on-demand --no-daemon clean build -x test -x javadoc -x check --parallel
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@v6
         with:
           name: binary-artifacts
           path: ./**/build/libs/*.*
@@ -51,7 +51,7 @@ jobs:
         with:
           java-version: ${{ env.JDK_CURRENT }}
           distribution: ${{ env.JDK_DISTRO }}
-      - uses: actions/download-artifact@v6
+      - uses: actions/download-artifact@v7
         with:
           name: binary-artifacts
       - id: print-supported-versions
@@ -80,7 +80,7 @@ jobs:
         with:
           java-version: ${{ env.JDK_CURRENT }}
           distribution: ${{ env.JDK_DISTRO }}
-      - uses: actions/download-artifact@v6
+      - uses: actions/download-artifact@v7
         with:
           name: binary-artifacts
       - name: Install K3S and Helm
