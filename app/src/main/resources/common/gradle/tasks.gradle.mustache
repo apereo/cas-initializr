@@ -157,12 +157,12 @@ task springBootVersion(description: "Display current Spring Boot version") {
     }
 }
 
-task zip(type: Zip) {
+task zip(type: Zip, description: "Package the CAS overlay into a zip archive", group: "CAS") {
     from projectDir
     exclude '**/.idea/**', '.gradle', 'tmp', '.git', '**/build/**', '**/bin/**', '**/out/**', '**/.settings/**'
     destinationDirectory = buildDir
     archiveFileName = "${project.name}.zip"
-    def zipFile = new File("${buildDir}/${archiveFileName}")
+    def zipFile = new File("${buildDir}/${archiveFileName.get()}")
     doLast {
         if (zipFile.exists()) {
             println "Zip archive is available at ${zipFile.absolutePath}"
