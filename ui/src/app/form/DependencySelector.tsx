@@ -298,7 +298,7 @@ export default function DependencySelector({ onSelectedChange }: DependencySelec
                         groupCounts={groupCount}
                         components={MUIComponents}
                         groupContent={(index: any) => (
-                            <div>{groups[index]}</div>
+                            <h3>{groups[index]}</h3>
                         )}
                         itemContent={(index) => {
                             const record = hits[index];
