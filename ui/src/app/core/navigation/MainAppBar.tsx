@@ -379,7 +379,7 @@ export default function MainAppBar() {
                 <Toolbar>
                     <Typography variant="body2" component="div" style={{display: 'block', width: '100%'}}>
                         <div style={{ display: "flex", justifyContent: 'center' }}>
-                            <p>Copyright © 2005–2025 Apereo, Inc.</p>
+                            <p>Copyright © 2005–2026 Apereo, Inc.</p>
                             <p
                                 style={{
                                     marginRight: "2rem",
