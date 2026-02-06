@@ -48,7 +48,7 @@ cas-initializr:
       plugins:
         jib-version: ${jibVersion}
         open-rewrite-version: ${openRewriteVersion}
-    - version: 7.3.3
+    - version: 7.3.4
       platform-version: 7.3.0
       boot-version: 3.5.6
       sync: true
