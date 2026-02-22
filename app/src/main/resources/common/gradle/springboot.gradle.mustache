@@ -100,12 +100,12 @@ springBoot {
 
 {{#sbomSupported}}
 tasks.cyclonedxDirectBom {
+    dependsOn("extractCasBootWarOverlay")
     xmlOutput.unsetConvention()
-    jsonOutput.set(file("$buildDir/META-INF/sbom/application.cdx"))
 }
 tasks.cyclonedxBom {
+    dependsOn("extractCasBootWarOverlay")
     xmlOutput.unsetConvention()
-    jsonOutput.set(file("$buildDir/META-INF/sbom/application.cdx"))
 }
 {{/sbomSupported}}
 
@@ -137,11 +137,6 @@ bootWar {
         archiveClasses = true
     */
 
-    {{#sbomSupported}}
-    from("$buildDir/META-INF/sbom") {
-        into "META-INF/sbom"
-    }
-    {{/sbomSupported}}
 
     overlays {
         /*
