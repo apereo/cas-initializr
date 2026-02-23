@@ -99,14 +99,14 @@ springBoot {
 }
 
 {{#sbomSupported}}
-tasks.cyclonedxDirectBom {
-    dependsOn("extractCasBootWarOverlay")
-    xmlOutput.unsetConvention()
+def wireOverlayDependency = { Task t ->
+    def overlay = tasks.findByName("extractCasBootWarOverlay")
+    if (overlay != null) {
+        t.dependsOn(overlay)
+    }
 }
-tasks.cyclonedxBom {
-    dependsOn("extractCasBootWarOverlay")
-    xmlOutput.unsetConvention()
-}
+tasks.named("cyclonedxBom").configure { wireOverlayDependency(delegate) }
+tasks.named("cyclonedxDirectBom").configure { wireOverlayDependency(delegate) }
 {{/sbomSupported}}
 
 {{#nativeImageSupported}}
