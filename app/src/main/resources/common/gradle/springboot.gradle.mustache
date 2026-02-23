@@ -100,10 +100,10 @@ springBoot {
 
 {{#sbomSupported}}
 def wireOverlayDependency = { Task t ->
-    def overlay = tasks.findByName("extractCasBootWarOverlay")
-    if (overlay != null) {
-        t.dependsOn(overlay)
-    }
+    ["extractCasBootWarOverlay", "processTestResources"]
+        .collect { tasks.findByName(it) }
+        .findAll { it != null }
+        .each { t.dependsOn(it) }
 }
 tasks.named("cyclonedxBom").configure { wireOverlayDependency(delegate) }
 tasks.named("cyclonedxDirectBom").configure { wireOverlayDependency(delegate) }
