@@ -1,7 +1,11 @@
 package org.apereo.cas;
 
+import io.spring.initializr.metadata.DependencyMetadataProvider;
+import io.spring.initializr.metadata.InitializrMetadataProvider;
 import io.spring.initializr.web.controller.ProjectGenerationController;
-import io.spring.initializr.web.project.ProjectRequest;
+import io.spring.initializr.web.controller.ProjectMetadataController;
+import io.spring.initializr.web.project.DefaultProjectRequestPlatformVersionTransformer;
+import io.spring.initializr.web.project.ProjectRequestPlatformVersionTransformer;
 import org.apereo.cas.initializr.config.CasInitializrProperties;
 import org.apereo.cas.initializr.event.CasInitializrEventListener;
 import org.apereo.cas.initializr.info.DependencyAliasesInfoContributor;
@@ -14,11 +18,6 @@ import org.apereo.cas.initializr.web.OverlayProjectRequestToDescriptionConverter
 import org.apereo.cas.initializr.web.SupportedVersionsEndpoint;
 import org.apereo.cas.initializr.web.generator.CasInitializrProjectAssetGenerator;
 import org.apereo.cas.initializr.web.generator.CasInitializrProjectGenerationInvoker;
-import io.spring.initializr.metadata.DependencyMetadataProvider;
-import io.spring.initializr.metadata.InitializrMetadataProvider;
-import io.spring.initializr.web.controller.ProjectMetadataController;
-import io.spring.initializr.web.project.DefaultProjectRequestPlatformVersionTransformer;
-import io.spring.initializr.web.project.ProjectRequestPlatformVersionTransformer;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
@@ -37,8 +36,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-import static org.springframework.security.config.Customizer.withDefaults;
 
 /**
  * {@code @ProjectGenerationConfiguration}-annotated types should not be
@@ -115,7 +112,6 @@ public class CasInitializrApplication {
 
     @Bean
     public SecurityFilterChain filterChain(final HttpSecurity http) {
-        http.redirectToHttps(withDefaults());
         http.csrf(AbstractHttpConfigurer::disable);
         http.headers(c -> {
             c.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin);
