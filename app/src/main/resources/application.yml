@@ -11,19 +11,20 @@ management:
   server:
     port: ${MGMT_PORT:${PORT:8080}}
   endpoints:
-    enabled-by-default: false
     web:
       exposure:
         include: 'info,health,shutdown,supportedVersions'
+    access:
+      default: unrestricted
   endpoint:
     info:
-      enabled: true
+      access: unrestricted
     health:
-      enabled: true
+      access: unrestricted
     shutdown:
-      enabled: ${SHUTDOWN_ENABLED:true}
+      access: unrestricted
     supportedVersions:
-      enabled: true
+      access: unrestricted
 
 logging:
   level:
@@ -37,9 +38,6 @@ logging:
       spring:
         initializr: info
 spring:
-  data:
-    mongodb:
-      uri: ${CAS_MODULE_METADATA_MONGODB_URL}
   profiles:
     include: initializr
   cloud:
@@ -47,6 +45,8 @@ spring:
       enabled: false
   main:
     allow-bean-definition-overriding: true
+  mongodb:
+    uri: ${CAS_MODULE_METADATA_MONGODB_URL}
 
 initializr:
   env:
