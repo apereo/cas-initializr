@@ -8,8 +8,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.RegExUtils;
-import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.Retryable;
+import org.springframework.resilience.annotation.Retryable;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +19,7 @@ public class CasOverlayInitializrMetadataUpdateStrategy implements InitializrMet
     private final InitializrMetadataFetcher fetcher;
 
     @Override
-    @Retryable(maxAttempts = 5, backoff = @Backoff(delay = 1000))
+    @Retryable
     public synchronized InitializrMetadata update(final InitializrMetadata metadata) {
         try {
             var casVersion = metadata.getConfiguration().getEnv().getBoms().get("cas-bom").getVersion();

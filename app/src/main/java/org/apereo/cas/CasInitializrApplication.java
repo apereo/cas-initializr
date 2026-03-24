@@ -30,7 +30,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
@@ -38,6 +37,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import static org.springframework.security.config.Customizer.withDefaults;
 
 /**
  * {@code @ProjectGenerationConfiguration}-annotated types should not be
@@ -48,7 +49,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @SpringBootApplication(scanBasePackages = "org.apereo.cas.initializr")
 @EnableConfigurationProperties(CasInitializrProperties.class)
 @EnableCaching
-@EnableRetry
 public class CasInitializrApplication {
 
     public static void main(final String[] args) {
@@ -114,8 +114,8 @@ public class CasInitializrApplication {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(final HttpSecurity http) throws Exception {
-        http.requiresChannel(c -> c.requestMatchers(r -> r.getHeader("X-Forwarded-Proto") != null).requiresSecure());
+    public SecurityFilterChain filterChain(final HttpSecurity http) {
+        http.redirectToHttps(withDefaults());
         http.csrf(AbstractHttpConfigurer::disable);
         http.headers(c -> {
             c.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin);
