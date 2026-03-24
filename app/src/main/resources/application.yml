@@ -32,12 +32,14 @@ logging:
       mongodb: warn
       ehcache: warn
       springframework:
-        web: warn
+        web: debug
+        boot: debug
+        security: debug
       apereo:
         cas: info
     io:
       spring:
-        initializr: info
+        initializr: debug
 spring:
   profiles:
     include: initializr

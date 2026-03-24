@@ -60,9 +60,19 @@ if [[ "${FETCH_OVERLAY}" == "true" ]]; then
   sleep 5
   printgreen "Fecthing Initializr metadata to ensure the server is up and running"
   curl http://localhost:8080 | jq
+  if [[ $? -ne 0 ]]; then
+    printred "Failed to fetch Initializr metadata from the server. Please check the server logs for more details."
+    kill -9 $pid
+    exit 1
+  fi
   sleep 10
   printgreen "Requesting CAS overlay for ${parameters}"
   curl http://localhost:8080/starter.tgz --connect-timeout 30 -d "${parameters}" | tar -xzvf -
+  if [[ $? -ne 0 ]]; then
+    printred "Failed to fetch CAS overlay ${CAS_VERSION} with parameters ${parameters}"
+    kill -9 $pid
+    exit 1
+  fi
   kill -9 $pid
   echo -e "CAS overlay is downloaded into directory: " && echo "$PWD"
   [ "$CI" = "true" ] && pkill java
