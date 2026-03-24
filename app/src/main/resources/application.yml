@@ -29,6 +29,7 @@ management:
 logging:
   level:
     org:
+      mongodb: warn
       ehcache: warn
       springframework:
         web: warn
