@@ -1,7 +1,11 @@
 package org.apereo.cas;
 
+import io.spring.initializr.metadata.DependencyMetadataProvider;
+import io.spring.initializr.metadata.InitializrMetadataProvider;
 import io.spring.initializr.web.controller.ProjectGenerationController;
-import io.spring.initializr.web.project.ProjectRequest;
+import io.spring.initializr.web.controller.ProjectMetadataController;
+import io.spring.initializr.web.project.DefaultProjectRequestPlatformVersionTransformer;
+import io.spring.initializr.web.project.ProjectRequestPlatformVersionTransformer;
 import org.apereo.cas.initializr.config.CasInitializrProperties;
 import org.apereo.cas.initializr.event.CasInitializrEventListener;
 import org.apereo.cas.initializr.info.DependencyAliasesInfoContributor;
@@ -14,11 +18,6 @@ import org.apereo.cas.initializr.web.OverlayProjectRequestToDescriptionConverter
 import org.apereo.cas.initializr.web.SupportedVersionsEndpoint;
 import org.apereo.cas.initializr.web.generator.CasInitializrProjectAssetGenerator;
 import org.apereo.cas.initializr.web.generator.CasInitializrProjectGenerationInvoker;
-import io.spring.initializr.metadata.DependencyMetadataProvider;
-import io.spring.initializr.metadata.InitializrMetadataProvider;
-import io.spring.initializr.web.controller.ProjectMetadataController;
-import io.spring.initializr.web.project.DefaultProjectRequestPlatformVersionTransformer;
-import io.spring.initializr.web.project.ProjectRequestPlatformVersionTransformer;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
@@ -30,7 +29,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
@@ -48,7 +46,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @SpringBootApplication(scanBasePackages = "org.apereo.cas.initializr")
 @EnableConfigurationProperties(CasInitializrProperties.class)
 @EnableCaching
-@EnableRetry
 public class CasInitializrApplication {
 
     public static void main(final String[] args) {
@@ -114,8 +111,7 @@ public class CasInitializrApplication {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(final HttpSecurity http) throws Exception {
-        http.requiresChannel(c -> c.requestMatchers(r -> r.getHeader("X-Forwarded-Proto") != null).requiresSecure());
+    public SecurityFilterChain filterChain(final HttpSecurity http) {
         http.csrf(AbstractHttpConfigurer::disable);
         http.headers(c -> {
             c.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin);

@@ -57,9 +57,14 @@ if [[ "${FETCH_OVERLAY}" == "true" ]]; then
   fi
   java -jar ../app/build/libs/app.jar &
   pid=$!
-  sleep 30
+  sleep 10
   printgreen "Requesting CAS overlay for ${parameters}"
   curl http://localhost:8080/starter.tgz --connect-timeout 30 -d "${parameters}" | tar -xzvf -
+  if [[ $? -ne 0 ]]; then
+    printred "Failed to fetch CAS overlay ${CAS_VERSION} with parameters ${parameters}"
+    kill -9 $pid
+    exit 1
+  fi
   kill -9 $pid
   echo -e "CAS overlay is downloaded into directory: " && echo "$PWD"
   [ "$CI" = "true" ] && pkill java

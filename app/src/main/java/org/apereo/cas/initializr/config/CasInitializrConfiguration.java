@@ -1,5 +1,9 @@
 package org.apereo.cas.initializr.config;
 
+import io.spring.initializr.generator.project.ProjectGenerationConfiguration;
+import io.spring.initializr.generator.project.contributor.ProjectContributor;
+import io.spring.initializr.web.support.InitializrMetadataUpdateStrategy;
+import lombok.extern.slf4j.Slf4j;
 import org.apereo.cas.initializr.contrib.ChainingMultipleResourcesProjectContributor;
 import org.apereo.cas.initializr.contrib.ChainingSingleResourceProjectContributor;
 import org.apereo.cas.initializr.contrib.github.GithubResourcesContributor;
@@ -25,16 +29,12 @@ import org.apereo.cas.initializr.metadata.CasOverlayInitializrMetadataUpdateStra
 import org.apereo.cas.initializr.metadata.InitializrMetadataFetcher;
 import org.apereo.cas.initializr.web.ui.InitializrHomeController;
 import org.apereo.cas.overlay.casserver.contrib.docker.CasOverlayDockerContributor;
-import io.spring.initializr.generator.project.ProjectGenerationConfiguration;
-import io.spring.initializr.generator.project.contributor.ProjectContributor;
-import io.spring.initializr.web.support.InitializrMetadataUpdateStrategy;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.cache.JCacheManagerCustomizer;
+import org.springframework.boot.cache.autoconfigure.JCacheManagerCustomizer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+
 import javax.cache.configuration.MutableConfiguration;
 import javax.cache.expiry.CreatedExpiryPolicy;
 import javax.cache.expiry.Duration;

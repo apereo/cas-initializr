@@ -1,6 +1,7 @@
 package org.apereo.cas.initializr.contrib;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.Strings;
 import org.apereo.cas.initializr.config.CasInitializrProperties;
 import org.apereo.cas.initializr.metadata.InitializrMetadataFetcher;
 import org.apereo.cas.initializr.web.OverlayProjectDescription;
@@ -181,11 +182,11 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
     protected Path determineOutputResourcePath(final Path projectRoot, final Resource resource,
                                                final String relativePath) throws IOException {
         val filename = determineOutputResourceFileName(resource, relativePath);
-        return projectRoot.resolve(StringUtils.appendIfMissing(relativePath, "/") + filename);
+        return projectRoot.resolve(Strings.CI.appendIfMissing(relativePath, "/") + filename);
     }
 
     protected String determineOutputResourceFileName(final Resource resource, final String relativePath) throws IOException {
-        return StringUtils.remove(resource.getFilename(), ".mustache");
+        return Strings.CI.remove(resource.getFilename(), ".mustache");
     }
 
     protected Map<String, Object> getProjectTemplateVariables() {
