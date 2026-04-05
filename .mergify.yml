@@ -1,13 +1,12 @@
 pull_request_rules:
-- name: Automatically merge pull requests by renovate
-  conditions:
-    - status-success=complete
-    - base=master
-    - author=renovate[bot]
-    - label=dependencies
-    - "#changes-requested-reviews-by=0"
-  actions:
-    merge:
-      method: merge
-    update:
-    delete_head_branch:
+  - name: Automatically merge pull requests by renovate
+    conditions:
+      - status-success=complete
+      - base=master
+      - author=renovate[bot]
+      - label=dependencies
+      - "#changes-requested-reviews-by=0"
+    actions:
+      merge:
+        method: merge
+      update:
