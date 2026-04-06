@@ -324,6 +324,10 @@ processAot {
     })
 }
 
+tasks.named("jibBuildTar") {
+    dependsOn(tasks.named("jar"))
+}
+
 def imagePlatforms = project.dockerImagePlatform.split(",")
 def dockerUsername = providers.systemProperty("dockerUsername").getOrNull()
 def dockerPassword = providers.systemProperty("dockerPassword").getOrNull()
