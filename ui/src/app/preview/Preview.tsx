@@ -76,7 +76,7 @@ export function Preview({ handleDownload, handlePreview, disabled }: PreviewProp
                 fullScreen
                 open={open}
                 onClose={handleClose}
-                TransitionComponent={Transition}
+                slots={{ transition: Transition }}
             >
                 <Box sx={{ display: "flex" }}>
                     <Drawer

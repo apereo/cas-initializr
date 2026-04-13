@@ -114,15 +114,17 @@ const ThemeSwitcher = () => {
                      currentTheme === 'vscodeDark' ? 'VS Code Dark' : 'Theme'}
                 </Button>
             </Tooltip>
-            <Menu
-                id="theme-menu"
-                anchorEl={anchorEl}
-                open={open}
-                onClose={handleClose}
-                MenuListProps={{
-                    'aria-labelledby': 'theme-button',
-                }}
-            >
+                <Menu
+                    id="theme-menu"
+                    anchorEl={anchorEl}
+                    open={open}
+                    onClose={handleClose}
+                    slotProps={{
+                        list: {
+                            'aria-labelledby': 'theme-button',
+                        },
+                    }}
+                >
                 <MenuItem
                     onClick={() => handleThemeChange('light')}
                     selected={currentTheme === 'light'}

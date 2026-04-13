@@ -3,7 +3,7 @@ import {
     ThemeProvider,
     createTheme,
 } from "@mui/material/styles";
-import { Box, Divider, Grid } from '@mui/material';
+import { Box, Divider, Stack } from '@mui/material';
 import { Provider } from "react-redux";
 
 import './App.scss';
@@ -78,13 +78,11 @@ function App() {
                                 color: theme.palette.text.primary,
                             }}
                         >
-                            <Grid
-                                container
-                                direction="column"
-                                alignItems="center"
+                            <Stack
                                 spacing={2}
+                                sx={{ width: "100%", alignItems: "center" }}
                             >
-                                <Grid size={12}>
+                                <Box sx={{ width: "100%" }}>
                                     <MainAppBar />
                                     <Divider
                                         style={{
@@ -93,8 +91,8 @@ function App() {
                                         }}
                                     ></Divider>
                                     <Initializr />
-                                </Grid>
-                            </Grid>
+                                </Box>
+                            </Stack>
                         </Box>
                     </DataContext>
                 </Provider>

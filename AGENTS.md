@@ -49,9 +49,13 @@ All generated overlay file contributions implement `ProjectContributor`. The bas
 3. Writes output to the generated project root
 
 **To add a new file to generated overlays:**
-- Create a `.mustache` template under `app/src/main/resources/overlay/<category>/`
+- Create a `.mustache` template under `app/src/main/resources/overlay/<category>/` (CAS overlay), `app/src/main/resources/configserver-overlay/` (config server), or `app/src/main/resources/common/` (shared by both)
 - Create a contributor class extending `TemplatedProjectContributor`
 - Register it as a `@Bean` in `CasInitializrConfiguration` (for all overlay types) or in `CasOverlayProjectGenerationConfiguration` / `CasConfigServerOverlayProjectGenerationConfiguration` (type-specific, annotated with `@ConditionalOnBuildSystem`)
+
+Contributors are often grouped using `ChainingSingleResourceProjectContributor` (sequential, ordered) or `ChainingMultipleResourcesProjectContributor` (for multi-resource patterns). See `CasInitializrConfiguration` for examples.
+
+**Important:** `@SpringBootApplication(scanBasePackages = "org.apereo.cas.initializr")` limits component scanning. Overlay-specific `@ProjectGenerationConfiguration` classes under `org.apereo.cas.overlay` are **not** auto-scanned — they are discovered exclusively via `spring.factories`.
 
 ## Spring Factories Registration
 
@@ -65,15 +69,18 @@ New `@ProjectGenerationConfiguration` classes **must** be added here to be disco
 Key boolean variables injected per version (used for conditional blocks in templates):
 - `casVersion7`, `casVersion8` — exact major match
 - `casVersion7OrAbove`, `casVersion80OrAbove` — cumulative range flags
+- `casVersion<major><minor>` (e.g. `casVersion73`) — exact major+minor match
+- `casVersion<major><minor>OrAbove` (e.g. `casVersion73OrAbove`) — cumulative minor range flags
 - `gradleVersion8`, `gradleVersion9Compatible` — Gradle version guards
 - `casServer` / `configServer` — overlay type flag
-- `dockerSupported`, `helmSupported`, `puppeteerSupported`, `nativeImageSupported`, `githubActionsSupported`, `openRewriteSupported`, `sbomSupported` — feature flags from the HTTP request
+- `appName` — `"cas"` for CAS overlay, `"casconfigserver"` for config server overlay
+- `dockerSupported`, `helmSupported`, `herokuSupported`, `puppeteerSupported`, `nativeImageSupported`, `githubActionsSupported`, `openRewriteSupported`, `sbomSupported`, `shellSupported` — feature flags from the HTTP request
 
 ## Key Request Parameters
 
 Beyond standard Spring Initializr parameters (`dependencies`, `type`, `bootVersion`), CAS-specific params:
 - `casVersion` — override resolved CAS version
-- `dockerSupported`, `helmSupported`, `puppeteerSupported`, `nativeImageSupported`, `openRewriteSupported`, `sbomSupported`, `githubActionsSupported`, `commandlineShellSupported` (all boolean, default `true` except `nativeImageSupported`)
+- `dockerSupported`, `helmSupported`, `herokuSupported`, `puppeteerSupported`, `nativeImageSupported`, `openRewriteSupported`, `sbomSupported`, `githubActionsSupported`, `commandlineShellSupported` (all boolean, default `true` except `nativeImageSupported`)
 - `deploymentType` — `EXECUTABLE` (default) or `WEB`
 - `dependencyCoordinates` — raw `groupId:artifactId[:version]` coordinates added beyond the metadata lookup
 
@@ -83,10 +90,15 @@ Beyond standard Spring Initializr parameters (`dependencies`, `type`, `bootVersi
 |------|---------|
 | `app/src/main/resources/application-initializr.yml` | Supported CAS version matrix (expanded from `gradle.properties`) |
 | `app/src/main/resources/overlay/` | Mustache templates for generated overlays |
+| `app/src/main/resources/configserver-overlay/` | Config-server-specific overlay templates |
+| `app/src/main/resources/common/` | Shared templates used by both overlay types (Gradle build, GitHub workflows, Heroku, etc.) |
 | `app/src/main/resources/META-INF/spring.factories` | Contributor/BuildSystem discovery |
+| `app/src/main/java/.../CasInitializrApplication.java` | Main `@SpringBootApplication` class; wires core beans (controllers, rate limiter, security, event listeners) |
 | `app/src/main/java/.../initializr/contrib/TemplatedProjectContributor.java` | Base class for all file contributors |
 | `app/src/main/java/.../initializr/config/CasInitializrConfiguration.java` | Central `@ProjectGenerationConfiguration` bean wiring |
 | `app/src/main/java/.../overlay/casserver/config/CasOverlayProjectGenerationConfiguration.java` | CAS-overlay-only beans |
+| `app/src/main/java/.../overlay/configserver/config/CasConfigServerOverlayProjectGenerationConfiguration.java` | Config-server-overlay-only beans |
+| `app/src/main/java/.../initializr/web/OverlayProjectRequestToDescriptionConverter.java` | Maps HTTP request params to `OverlayProjectDescription` (boolean feature flags, dependency coordinates) |
 | `app/src/main/java/.../initializr/metadata/CasOverlayInitializrMetadataFetcher.java` | MongoDB-backed dependency fetch, cached under `cas.modules` |
 | `gradle.properties` | Single source of truth for all dependency/plugin/CAS versions |
 | `ci/validate-initializr.sh` | Smoke-test script used in CI (boots the jar and curls endpoints) |

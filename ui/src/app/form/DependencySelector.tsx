@@ -252,13 +252,15 @@ export default function DependencySelector({ onSelectedChange }: DependencySelec
                             anchorEl={anchorEl}
                             open={menuOpen}
                             onClose={handleMenuClose}
-                            MenuListProps={{
-                                "aria-labelledby": "basic-button",
-                            }}
-                            PaperProps={{
-                                style: {
-                                    maxHeight: ITEM_HEIGHT * 10.5,
-                                    width: "30ch",
+                            slotProps={{
+                                list: {
+                                    "aria-labelledby": "basic-button",
+                                },
+                                paper: {
+                                    style: {
+                                        maxHeight: ITEM_HEIGHT * 10.5,
+                                        width: "30ch",
+                                    },
                                 },
                             }}
                         >

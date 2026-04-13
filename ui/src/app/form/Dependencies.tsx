@@ -46,9 +46,8 @@ export default function Dependencies() {
         <>
             <Grid
                 container
-                justifyContent="space-between"
-                alignItems="center"
                 spacing={1}
+                sx={{ justifyContent: "space-between", alignItems: "center" }}
             >
                 <Grid size={{ md:6 }}>
                     <DependencySelector
