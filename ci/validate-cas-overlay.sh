@@ -243,6 +243,10 @@ printgreen "Build Container Image w/ Docker"
 printgreen "Build Container Image w/ Docker Compose"
 docker compose build
 
+printgreen "Create Keystore"
+./gradlew --no-daemon createKeystore -PcertDir=./certs
+[ $? -eq 0 ] && echo "Gradle command ran successfully." || exit 1
+
 if [[ "$CAS_MAJOR_VERSION" -ge 7 ]]; then
   # targetVersion=${CAS_VERSION%-SNAPSHOT}
   targetVersion="${CAS_VERSION}"

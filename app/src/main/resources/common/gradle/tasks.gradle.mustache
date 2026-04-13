@@ -170,45 +170,63 @@ task zip(type: Zip, description: "Package the CAS overlay into a zip archive", g
     }
 }
 
-task createKeystore(group: "CAS", description: "Create CAS keystore") {
-    def dn = "CN=cas.example.org,OU=Example,OU=Org,C=US"
-    if (project.hasProperty("certificateDn")) {
-        dn = project.getProperty("certificateDn")
-    }
-    def subjectAltName = "dns:example.org,dns:localhost,ip:127.0.0.1"
-    if (project.hasProperty("certificateSubAltName")) {
-        subjectAltName = project.getProperty("certificateSubAltName")
-    }
+def dn = providers.gradleProperty("certificateDn").orElse("CN=cas.example.org,OU=Example,OU=Org,C=US")
+def subjectAltName = providers.gradleProperty("certificateSubAltName").orElse("dns:example.org,dns:localhost,ip:127.0.0.1")
+def certDir = providers.gradleProperty("certDir").orElse("/etc/cas")
+def serverKeyStore = providers.gradleProperty("serverKeystore").orElse("thekeystore")
+def exportedServerCert = providers.gradleProperty("exportedServerCert").orElse("cas.crt")
+def storeType = providers.gradleProperty("storeType").orElse("PKCS12")
 
-    doFirst {
-        def certDir = project.getProperty("certDir")
-        def serverKeyStore = project.getProperty("serverKeystore")
-        def exportedServerCert = project.getProperty("exportedServerCert")
-        def storeType = project.getProperty("storeType")
-        def keystorePath = "$certDir/$serverKeyStore"
-        def serverCert = "$certDir/$exportedServerCert"
+def keystorePath = certDir.zip(serverKeyStore) { dir, file -> "${dir}/${file}" }
+def serverCert = certDir.zip(exportedServerCert) { dir, file -> "${dir}/${file}" }
 
-        mkdir certDir
-        // this will fail if thekeystore exists and has cert with cas alias already (so delete if you want to recreate)
-        logger.info "Generating keystore for CAS with DN ${dn}"
-        exec {
-            workingDir "."
-            commandLine "keytool", "-genkeypair", "-alias", "cas",
-                    "-keyalg", "RSA",
-                    "-keypass", "changeit", "-storepass", "changeit",
-                    "-keystore", keystorePath,
-                    "-dname", dn, "-ext", "SAN=${subjectAltName}",
-                    "-storetype", storeType
+tasks.register("prepareKeystoreDir") {
+    group = "CAS"
+    description = "Prepare CAS keystore directory"
+    
+    def outputDir = layout.dir(certDir.map { new File(it) })
+    outputs.dir(outputDir)
+
+    doLast {
+        def dir = outputDir.get().asFile
+        if (!dir.exists() && !dir.mkdirs()) {
+            throw new GradleException("Failed to create directory: ${dir}")
         }
-        logger.info "Exporting cert from keystore..."
-        exec {
-            workingDir "."
-            commandLine "keytool", "-exportcert", "-alias", "cas",
-                    "-storepass", "changeit", "-keystore", keystorePath,
-                    "-file", serverCert
-        }
-        logger.info "Import $serverCert into your Java truststore (\$JAVA_HOME/lib/security/cacerts)"
     }
+}
+
+tasks.register("generateCasKeystore", Exec) {
+    group = "CAS"
+    description = "Generate CAS keystore"
+    dependsOn("prepareKeystoreDir")
+
+    commandLine "keytool", "-genkeypair",
+        "-alias", "cas",
+        "-keyalg", "RSA",
+        "-keypass", "changeit",
+        "-storepass", "changeit",
+        "-keystore", keystorePath.get(),
+        "-dname", dn.get(),
+        "-ext", "SAN=${subjectAltName.get()}",
+        "-storetype", storeType.get()
+}
+
+tasks.register("exportCasCertificate", Exec) {
+    group = "CAS"
+    description = "Export CAS certificate"
+    dependsOn("generateCasKeystore")
+
+    commandLine "keytool", "-exportcert",
+    "-alias", "cas",
+    "-storepass", "changeit",
+    "-keystore", keystorePath.get(),
+    "-file", serverCert.get()
+}
+
+tasks.register("createKeystore") {
+    group = "CAS"
+    description = "Create CAS keystore"
+    dependsOn("exportCasCertificate")
 }
 
 task unzipWAR(type: Copy, group: "CAS", description: "Explodes the CAS web application archive") {
