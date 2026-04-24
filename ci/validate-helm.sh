@@ -12,7 +12,7 @@ echo "Image tag is ${imageTag}"
 cd helm
 chmod +x *.sh
 
-export NAMESPACE=${1:-default}
+export NAMESPACE=${2:-default}
 if [[ $NAMESPACE != "default" ]]; then
   kubectl create namespace $NAMESPACE || true
 fi
