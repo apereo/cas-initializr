@@ -183,8 +183,8 @@ casServerContainer:
 
       # secure endpoints to localhost
 
-      cas.monitor.endpoints.endpoint.defaults.access[0]=AUTHENTICATED
-      cas.monitor.endpoints.endpoint.health.access[0]=IP_ADDRESS
+      cas.monitor.endpoints.endpoint.defaults.access=AUTHENTICATED
+      cas.monitor.endpoints.endpoint.health.access=IP_ADDRESS
       cas.monitor.endpoints.endpoint.health.requiredIpAddresses[0]=127.0.0.1
       cas.monitor.endpoints.endpoint.health.requiredIpAddresses[1]=0:0:0:0:0:0:0:1
       cas.monitor.endpoints.endpoint.health.requiredIpAddresses[2]=10\\..*
