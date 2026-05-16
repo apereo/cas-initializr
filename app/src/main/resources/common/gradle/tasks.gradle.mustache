@@ -1,15 +1,3 @@
-def bootArchive = providers.provider {
-    if (tasks.findByName("bootWar")?.enabled) {
-        tasks.named("bootWar").get().archiveFile.get().asFile
-    } else {
-        tasks.named("bootJar").get().archiveFile.get().asFile
-    }
-}
-
-def bootDir = providers.provider {
-    bootArchive.get().name == "bootWar" ? "WEB-INF" : "BOOT-INF"
-}
-
 {{#casServer}}
 import static org.gradle.internal.logging.text.StyledTextOutput.Style
 
@@ -63,7 +51,7 @@ tasks.register('debug', JavaExec) {
     ]
     debug = true
     systemProperties = System.properties
-    classpath = files(bootArchive)
+    classpath = files("$buildDir/libs/{{archiveFileName}}")
 }
 tasks.register('run', JavaExec) {
     group = "CAS"
@@ -76,7 +64,7 @@ tasks.register('run', JavaExec) {
     ]
     debug = false
     systemProperties = System.properties
-    classpath = files(bootArchive)
+    classpath = files("$buildDir/libs/{{archiveFileName}}")
 }
 {{/casVersion73OrAbove}}
 
@@ -245,7 +233,7 @@ task unzipWAR(type: Copy, group: "CAS", description: "Explodes the CAS web appli
     dependsOn 'build'
     def destination = "${buildDir}/app"
 
-    from zipTree(bootArchive)
+    from zipTree("$buildDir/libs/{{archiveFileName}}")
     into "${destination}"
     doLast {
         println "Unzipped WAR into ${destination}"
@@ -280,10 +268,10 @@ def templateViewsJarName = "cas-server-support-thymeleaf"
 
 task unzip(type: Copy, group: "CAS", description: "Explodes the CAS archive and resources jar from the CAS web application archive") {
     dependsOn unzipWAR
-    from zipTree("${explodedDir}/${bootDir.get()}/lib/${templateViewsJarName}-${project.'cas.version'}.jar")
+    from zipTree("${explodedDir}/{{archiveInfoDirectoryName}}/lib/${templateViewsJarName}-${project.'cas.version'}.jar")
     into explodedResourcesDir
 
-    from zipTree("${explodedDir}/${bootDir.get()}/lib/${resourcesJarName}-${project.'cas.version'}.jar")
+    from zipTree("${explodedDir}/{{archiveInfoDirectoryName}}/lib/${resourcesJarName}-${project.'cas.version'}.jar")
     into explodedResourcesDir
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     doLast {

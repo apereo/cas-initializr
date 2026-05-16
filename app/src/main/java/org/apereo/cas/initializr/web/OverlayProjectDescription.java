@@ -16,7 +16,8 @@ public class OverlayProjectDescription extends MutableProjectDescription {
 
     public enum DeploymentTypes {
         WEB,
-        EXECUTABLE
+        EXECUTABLE,
+        JAR
     }
 
     private String casVersion;

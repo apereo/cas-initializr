@@ -100,6 +100,9 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         if (parsedCasVersion.getMajor() < 8) {
             defaults.put("executable", project.getDeploymentType() == OverlayProjectDescription.DeploymentTypes.EXECUTABLE);
         }
+
+        defaults.put("archiveFileName", project.getName() + ".war");
+        defaults.put("archiveInfoDirectoryName", project.getName() + ".war");
     }
 
     protected static void createTemplateFile(final Path output, final String template) throws IOException {
