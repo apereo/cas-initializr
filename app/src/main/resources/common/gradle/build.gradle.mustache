@@ -167,10 +167,16 @@ configurations {
 }
 
 {{#deploymentTypeIsWar}}
+{{#nativeImageSupported}}
 war {
-    def nativeImageSupported = {{nativeImageSupported}}
-    enabled = (nativeImageSupported == false) || !nativeImage
+    enabled = !nativeImage
 }
+{{/nativeImageSupported}}
+{{^nativeImageSupported}}
+    war {
+        enabled = false
+    }
+{{/nativeImageSupported}}
 {{/deploymentTypeIsWar}}
 
 java {
