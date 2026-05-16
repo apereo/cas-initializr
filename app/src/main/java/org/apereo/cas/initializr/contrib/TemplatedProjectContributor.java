@@ -110,12 +110,16 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
             }
         }
 
-        var extension = OverlayProjectDescription.DeploymentTypes.JAR == project.getDeploymentType() ? "jar" : "war";
         var directory = OverlayProjectDescription.DeploymentTypes.JAR == project.getDeploymentType() ? "BOOT-INF" : "WEB-INF";
-        defaults.put("archiveFileName", project.getName() + "." + extension);
         defaults.put("archiveInfoDirectoryName", directory);
-
         
+        var extension = OverlayProjectDescription.DeploymentTypes.JAR == project.getDeploymentType() ? "jar" : "war";
+        if (type.equalsIgnoreCase(CasOverlayBuildSystem.ID)) {
+            defaults.put("archiveFileName", "cas." + extension);
+        }
+        if (type.equalsIgnoreCase(CasConfigServerOverlayBuildSystem.ID)) {
+            defaults.put("archiveFileName", "casconfigserver." + extension);
+        }
     }
 
     protected static void createTemplateFile(final Path output, final String template) throws IOException {
