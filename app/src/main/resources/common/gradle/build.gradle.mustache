@@ -448,7 +448,39 @@ dependencies {
     **/
     implementation enforcedPlatform("org.apereo.cas:cas-server-support-bom:${project.'cas.version'}")
     implementation platform(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES)
+
     {{#casServer}}
+    def casModules = providers.gradleProperty("casModules")
+        .orElse(providers.systemProperty("casModules"))
+        .map { it.trim() }
+        .getOrElse("")
+
+    if (casModules) {
+        casModules.split(",")
+            .collect { it.trim() }
+            .findAll { it }
+            .each { module ->
+                def moduleToAdd = ""
+                if (module.contains(":")) {
+                    moduleToAdd = module
+                } else if (module.startsWith("cas-server-")) {
+                    moduleToAdd = implementation "org.apereo.cas:${module}"
+                } else if (module.contains("/")) {
+                    def parts = module.split("/", 2)
+                    def variant = parts[0].trim()
+                    def name = parts[1].trim()
+                    moduleToAdd = "org.apereo.cas:cas-server-${variant}-${name}"
+                } else {
+                    moduleToAdd = "org.apereo.cas:cas-server-support-${module}"
+                }
+                if (moduleToAdd.isEmpty()) {
+                    throw new GradleException("Unable to determine the CAS module to add for entry: ${module}")
+                } else {
+                    out.withStyle(Style.Success).println("Adding CAS module: ${moduleToAdd}")
+                    implementation moduleToAdd
+                }
+            }
+    }
 
     {{#nativeImageSupported}}
     if (nativeImage) {

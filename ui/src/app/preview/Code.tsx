@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import Editor from "@monaco-editor/react";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { usePreviewSelected } from "../store/PreviewReducer";
 import { ThemeContext } from "../App";
 
@@ -110,7 +111,7 @@ export function Code({ fontSize = 14, minimap = true, wordWrap = true, markdownP
                     .md-preview hr{border:none;border-top:1px solid ${isDark?"#333":"#ddd"};margin:1.5em 0}
                     .md-preview img{max-width:100%;border-radius:4px}
                 `}</style>
-                <ReactMarkdown>{selected.content}</ReactMarkdown>
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>{selected.content}</ReactMarkdown>
             </div>
         );
     }
