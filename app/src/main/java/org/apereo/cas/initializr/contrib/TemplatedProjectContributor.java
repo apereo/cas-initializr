@@ -1,6 +1,18 @@
 package org.apereo.cas.initializr.contrib;
 
+import com.github.mustachejava.DefaultMustacheFactory;
+import io.spring.initializr.generator.project.ProjectDescription;
+import io.spring.initializr.generator.project.contributor.ProjectContributor;
+import io.spring.initializr.metadata.InitializrMetadata;
+import io.spring.initializr.metadata.InitializrMetadataProvider;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
+import lombok.experimental.Accessors;
+import lombok.extern.slf4j.Slf4j;
+import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Strings;
 import org.apereo.cas.initializr.config.CasInitializrProperties;
 import org.apereo.cas.initializr.metadata.InitializrMetadataFetcher;
@@ -10,18 +22,6 @@ import org.apereo.cas.initializr.web.VersionUtils;
 import org.apereo.cas.overlay.casserver.buildsystem.CasOverlayBuildSystem;
 import org.apereo.cas.overlay.casserver.buildsystem.CasOverlayGradleBuild;
 import org.apereo.cas.overlay.configserver.buildsystem.CasConfigServerOverlayBuildSystem;
-import com.github.mustachejava.DefaultMustacheFactory;
-import io.spring.initializr.generator.project.ProjectDescription;
-import io.spring.initializr.generator.project.contributor.ProjectContributor;
-import io.spring.initializr.metadata.InitializrMetadata;
-import io.spring.initializr.metadata.InitializrMetadataProvider;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.ToString;
-import lombok.experimental.Accessors;
-import lombok.extern.slf4j.Slf4j;
-import lombok.val;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -83,26 +83,33 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
     private static void handleApplicationServerType(final OverlayProjectDescription project, final Map<String, Object> defaults) {
         var dependencies = project.getRequestedDependencies();
 
-        var appServer = "-tomcat";
-        if (dependencies.containsKey("webapp-jetty")) {
-            appServer = "-jetty";
-        } else if (dependencies.containsKey("webapp-undertow")) {
-            appServer = "-undertow";
-        }
+        if (project.getDeploymentType() != OverlayProjectDescription.DeploymentTypes.JAR) {
+            var appServer = "-tomcat";
+            if (dependencies.containsKey("webapp-jetty")) {
+                appServer = "-jetty";
+            } else if (dependencies.containsKey("webapp-undertow")) {
+                appServer = "-undertow";
+            }
 
-        if (dependencies.containsKey("webapp") || project.getDeploymentType() == OverlayProjectDescription.DeploymentTypes.WEB) {
-            appServer = "";
+            if (dependencies.containsKey("webapp") || project.getDeploymentType() == OverlayProjectDescription.DeploymentTypes.WEB) {
+                appServer = "";
+            }
+            defaults.put("appServer", appServer);
         }
-
-        defaults.put("appServer", appServer);
+        defaults.put("deploymentTypeIsJar", project.getDeploymentType() == OverlayProjectDescription.DeploymentTypes.JAR);
+        defaults.put("deploymentTypeIsWar", project.getDeploymentType() != OverlayProjectDescription.DeploymentTypes.JAR);
 
         var parsedCasVersion = VersionUtils.parse(project.getCasVersion());
-        if (parsedCasVersion.getMajor() < 8) {
+        if (parsedCasVersion.getMajor() < 8 && project.getDeploymentType() != OverlayProjectDescription.DeploymentTypes.JAR) {
             defaults.put("executable", project.getDeploymentType() == OverlayProjectDescription.DeploymentTypes.EXECUTABLE);
         }
 
-        defaults.put("archiveFileName", project.getName() + ".war");
-        defaults.put("archiveInfoDirectoryName", project.getName() + ".war");
+        var extension = OverlayProjectDescription.DeploymentTypes.JAR == project.getDeploymentType() ? "jar" : "war";
+        var directory = OverlayProjectDescription.DeploymentTypes.JAR == project.getDeploymentType() ? "BOOT-INF" : "WEB-INF";
+        defaults.put("archiveFileName", project.getName() + "." + extension);
+        defaults.put("archiveInfoDirectoryName", directory);
+
+        
     }
 
     protected static void createTemplateFile(final Path output, final String template) throws IOException {

@@ -69,16 +69,21 @@ On a successful deployment via the following methods, the server will be availab
 {{#casServer}}* `https://localhost:8443/cas`{{/casServer}}
 {{#configServer}}* `https:/localhost:8888/casconfigserver`{{/configServer}}
 
-## Executable WAR
+## Executable
 
-Run the server web application as an executable WAR. Note that running an executable WAR requires CAS to use an embedded container such as Apache Tomcat, Jetty, etc.
+Run the server web application as an executable artifact. Note that running an executable artiffact requires CAS to
+use an embedded container such as Apache Tomcat, Jetty, etc.
 
+{{#deploymentTypeIsWar}}
 {{#appServer}}The current servlet container is specified as `{{appServer}}`.{{/appServer}}
 {{^appServer}}No servlet container is specified for the current build. Examine your `gradle.properties` file
 and modify the `appServer` property to point to the appropriate container of choice.{{/appServer}}
+{{/deploymentTypeIsWar}}
+
+{{#deploymentTypeIsJar}}The current servlet container is Apache Tomcat.{{/deploymentTypeIsJar}}
 
 ```bash
-java -jar build/libs/{{appName}}.war
+java -jar build/libs/{{archiveFileName}}
 ```
 
 Or via:
@@ -91,7 +96,7 @@ It is often an advantage to explode the generated web application and run it in 
 One way to run an unpacked archive is by starting the appropriate launcher, as follows:
 
 ```bash
-jar -xf build/libs/{{appName}}.war
+jar -xf build/libs/{{archiveFileName}}
 cd build/libs
 java org.springframework.boot.loader.launch.JarLauncher
 ```
@@ -108,7 +113,7 @@ Debug the CAS web application as an executable WAR:
 Or via:
 
 ```bash
-java -Xdebug -Xrunjdwp:transport=dt_socket,address=5000,server=y,suspend=y -jar build/libs/{{appName}}.war
+java -Xdebug -Xrunjdwp:transport=dt_socket,address=5000,server=y,suspend=y -jar build/libs/{{archiveFileName}}
 ```
 
 {{#executable}}
@@ -127,13 +132,13 @@ with the help of the `tools` jarmode:
 
 ```bash
 {{#executable}}# Note: You must first build the web application with "executable" turned off{{/executable}}
-java -Djarmode=tools -jar build/libs/{{appName}}.war extract
+java -Djarmode=tools -jar build/libs/{{archiveFileName}} extract
 
 # Perform a training run once
-java -XX:ArchiveClassesAtExit=cas.jsa -Dspring.context.exit=onRefresh -jar {{appName}}/{{appName}}.war
+java -XX:ArchiveClassesAtExit=cas.jsa -Dspring.context.exit=onRefresh -jar {{appName}}/{{archiveFileName}}
 
 # Run the CAS web application via CDS
-java XX:SharedArchiveFile=cas.jsa -jar {{appName}}/{{appName}}.war
+java XX:SharedArchiveFile=cas.jsa -jar {{appName}}/{{archiveFileName}}
 ```
 
 ## External

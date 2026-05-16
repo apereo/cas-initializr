@@ -92,11 +92,13 @@ gradleCyclonePluginVersion=@gradleCyclonePluginVersion@
 {{/sbomSupported}}
 {{/appServer}}
 
+{{#appServer}}
 # Use -tomcat, -jetty, -undertow for deployment to control the embedded server container
 # that will be used to deploy and manage your CAS deployment.
 # You should set this to blank if you want to deploy to an external container.
 # and want to set up, download and manage the container (i.e. Apache Tomcat) yourself.
 appServer={{appServer}}
+{{/appServer}}
 
 # If you are using an embedded Apache Tomcat container to deploy and run CAS,
 # and need to override the Apache Tomcat version, uncomment the property below

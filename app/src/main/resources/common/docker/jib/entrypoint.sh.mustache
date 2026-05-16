@@ -25,6 +25,6 @@ if [ $ENTRYPOINT_DEBUG = "true" ]; then
   echo "\nJava args: ${JVM_MEM_OPTS} ${JVM_EXTRA_OPTS}"
 fi
 
-echo "\nRunning CAS @ {{appName}}.war"
+echo "\nRunning CAS @ {{archiveFileName}}"
 # shellcheck disable=SC2086
-exec java $JVM_EXTRA_OPTS $JVM_MEM_OPTS -jar {{appName}}.war "$@"
+exec java $JVM_EXTRA_OPTS $JVM_MEM_OPTS -jar {{archiveFileName}} "$@"

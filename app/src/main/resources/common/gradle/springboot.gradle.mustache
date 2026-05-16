@@ -112,7 +112,7 @@ tasks.named("cyclonedxDirectBom").configure { wireOverlayDependency(delegate) }
 {{#nativeImageSupported}}
 if (!nativeImage) {
 {{/nativeImageSupported}}
-bootWar {
+{{#deploymentTypeIsWar}}bootWar{{/deploymentTypeIsWar}}{{^deploymentTypeIsWar}}bootJar{{/deploymentTypeIsWar}} {
 {{#sbomSupported}}
     dependsOn cyclonedxBom
 {{/sbomSupported}}
@@ -126,17 +126,16 @@ bootWar {
     }
 {{/executable}}
 
-    archiveFileName = "{{appName}}.war"
+    archiveFileName = "{{archiveFileName}}"
     archiveBaseName = "{{appName}}"
 
     entryCompression = ZipEntryCompression.STORED
-
+    {{#deploymentTypeIsWar}}
     /*
         attachClasses = true
         classesClassifier = 'classes'
         archiveClasses = true
     */
-
 
     overlays {
         /*
@@ -171,6 +170,7 @@ bootWar {
             */
         }
     }
+    {{/deploymentTypeIsWar}}
 }
 {{#nativeImageSupported}}
 }
