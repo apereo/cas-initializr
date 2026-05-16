@@ -1047,7 +1047,6 @@ function highlightMatch(text: string, query: string): React.ReactNode {
     const q = query.toLowerCase();
     const parts: React.ReactNode[] = [];
     let cursor = 0;
-    let idx = lower.indexOf(q[0]);
     // simple character-by-character highlight for fuzzy feel
     const matchSet = new Set<number>();
     let qi = 0;

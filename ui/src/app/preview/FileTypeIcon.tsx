@@ -196,8 +196,7 @@ export function FileTypeIcon({
         case "archive":     return <ArchiveIcon size={size} />;
         case "image":       return <ImageIcon size={size} />;
         case "markup":      return <Badge color={C.xml}     label="TPL" size={size} />;
-        case "plaintext":
-        case "bash":        return <Badge color={C.text}    label="TXT" size={size} />;
+        case "plaintext":   return <Badge color={C.text}    label="TXT" size={size} />;
         default:            return <Badge color={C.code}    label="<>"  size={size} />;
     }
 }
