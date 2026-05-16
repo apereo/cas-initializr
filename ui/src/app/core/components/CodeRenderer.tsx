@@ -10,15 +10,25 @@ import {
 } from "react-syntax-highlighter/dist/esm/styles/prism";
 import {Prism, SyntaxHighlighterProps} from 'react-syntax-highlighter';
 import { Box, IconButton, Tooltip, useTheme } from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
+import RemoveIcon from "@mui/icons-material/Remove";
 import { ThemeContext } from "../../App";
 
 const SyntaxHighlighter = Prism as typeof React.Component<SyntaxHighlighterProps>;
 
+const DEFAULT_FONT_SIZE = 14;
+const MIN_FONT_SIZE = 8;
+const MAX_FONT_SIZE = 32;
+
 export default function CodeRenderer({ code, language, filename = "file" }: { code: string, language: string, filename?: string }) {
     const [copySuccess, setCopySuccess] = useState(false);
     const [downloadSuccess, setDownloadSuccess] = useState(false);
+    const [fontSize, setFontSize] = useState(DEFAULT_FONT_SIZE);
     const { currentTheme } = useContext(ThemeContext);
     const theme = useTheme();
+
+    const handleIncreaseFontSize = () => setFontSize(prev => Math.min(prev + 1, MAX_FONT_SIZE));
+    const handleDecreaseFontSize = () => setFontSize(prev => Math.max(prev - 1, MIN_FONT_SIZE));
 
     // Select the appropriate syntax highlighter theme based on the application theme
     const getSyntaxHighlighterTheme = () => {
@@ -72,6 +82,52 @@ export default function CodeRenderer({ code, language, filename = "file" }: { co
 
     return (
         <Box sx={{ position: 'relative', height: '100%' }}>
+            <Tooltip title="Increase font size" placement="top">
+                <IconButton
+                    onClick={handleIncreaseFontSize}
+                    disabled={fontSize >= MAX_FONT_SIZE}
+                    sx={{
+                        position: 'absolute',
+                        top: '10px',
+                        right: '150px',
+                        backgroundColor: `${theme.palette.mode === 'light' ? 'rgba(0, 0, 0, 0.5)' : 'rgba(33, 33, 33, 0.7)'}`,
+                        color: theme.palette.common.white,
+                        '&:hover': {
+                            backgroundColor: `${theme.palette.mode === 'light' ? 'rgba(0, 0, 0, 0.7)' : 'rgba(66, 66, 66, 0.9)'}`,
+                        },
+                        '&.Mui-disabled': {
+                            color: 'rgba(255,255,255,0.3)',
+                        },
+                        zIndex: 1,
+                    }}
+                    size="medium"
+                >
+                    <AddIcon fontSize="small" />
+                </IconButton>
+            </Tooltip>
+            <Tooltip title="Decrease font size" placement="top">
+                <IconButton
+                    onClick={handleDecreaseFontSize}
+                    disabled={fontSize <= MIN_FONT_SIZE}
+                    sx={{
+                        position: 'absolute',
+                        top: '10px',
+                        right: '105px',
+                        backgroundColor: `${theme.palette.mode === 'light' ? 'rgba(0, 0, 0, 0.5)' : 'rgba(33, 33, 33, 0.7)'}`,
+                        color: theme.palette.common.white,
+                        '&:hover': {
+                            backgroundColor: `${theme.palette.mode === 'light' ? 'rgba(0, 0, 0, 0.7)' : 'rgba(66, 66, 66, 0.9)'}`,
+                        },
+                        '&.Mui-disabled': {
+                            color: 'rgba(255,255,255,0.3)',
+                        },
+                        zIndex: 1,
+                    }}
+                    size="medium"
+                >
+                    <RemoveIcon fontSize="small" />
+                </IconButton>
+            </Tooltip>
             <Tooltip
                 title={copySuccess ? "Copied!" : "Copy to clipboard"}
                 placement="top"
@@ -140,6 +196,7 @@ export default function CodeRenderer({ code, language, filename = "file" }: { co
                     height: "100%",
                     boxSizing: "border-box",
                     backgroundColor: theme.palette.background.paper,
+                    fontSize: `${fontSize}px`,
                 }}
                 codeTagProps={{
                     style: {},

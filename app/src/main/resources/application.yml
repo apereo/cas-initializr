@@ -63,7 +63,7 @@ initializr:
   group-id:
     value: org.apereo.cas
   artifact-id:
-    value: cas
+    value: cas-server-overlay
   version:
     value: 1.0.0
   package-name:
