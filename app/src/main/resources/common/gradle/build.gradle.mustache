@@ -168,14 +168,16 @@ configurations {
 
 {{#deploymentTypeIsWar}}
 {{#nativeImageSupported}}
-war {
-    enabled = !nativeImage
-}
-{{/nativeImageSupported}}
-{{^nativeImageSupported}}
+if (!nativeImage) {
     war {
         enabled = false
     }
+}
+{{/nativeImageSupported}}
+{{^nativeImageSupported}}
+war {
+    enabled = false
+}
 {{/nativeImageSupported}}
 {{/deploymentTypeIsWar}}
 
