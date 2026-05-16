@@ -15,6 +15,7 @@ import lombok.val;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Strings;
 import org.apereo.cas.initializr.config.CasInitializrProperties;
+import org.apereo.cas.initializr.metadata.CasDependency;
 import org.apereo.cas.initializr.metadata.InitializrMetadataFetcher;
 import org.apereo.cas.initializr.web.OverlayProjectDescription;
 import org.apereo.cas.initializr.web.UnsupportedVersionException;
@@ -81,30 +82,32 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
     }
 
     private static void handleApplicationServerType(final OverlayProjectDescription project, final Map<String, Object> defaults) {
-        var dependencies = project.getRequestedDependencies();
         var type = project.getBuildSystem().id();
-        
-        if (project.getDeploymentType() != OverlayProjectDescription.DeploymentTypes.JAR) {
-            var appServer = "-tomcat";
-            if (dependencies.containsKey("webapp-jetty")) {
-                appServer = "-jetty";
-            } else if (dependencies.containsKey("webapp-undertow")) {
-                appServer = "-undertow";
-            }
-
-            if (dependencies.containsKey("webapp") || project.getDeploymentType() == OverlayProjectDescription.DeploymentTypes.WEB) {
-                appServer = "";
-            }
-            defaults.put("appServer", appServer);
-        }
         defaults.put("deploymentTypeIsJar", project.getDeploymentType() == OverlayProjectDescription.DeploymentTypes.JAR);
         var deploymentTypeIsWar = (project.getDeploymentType() != OverlayProjectDescription.DeploymentTypes.JAR)
                 || type.equalsIgnoreCase(CasConfigServerOverlayBuildSystem.ID);
         defaults.put("deploymentTypeIsWar", deploymentTypeIsWar);
 
-        var parsedCasVersion = VersionUtils.parse(project.getCasVersion());
-        if (parsedCasVersion.getMajor() < 8 && project.getDeploymentType() != OverlayProjectDescription.DeploymentTypes.JAR) {
-            defaults.put("executable", project.getDeploymentType() == OverlayProjectDescription.DeploymentTypes.EXECUTABLE);
+        if (type.equalsIgnoreCase(CasOverlayBuildSystem.ID)) {
+            var dependencies = project.getRequestedDependencies();
+            if (project.getDeploymentType() != OverlayProjectDescription.DeploymentTypes.JAR) {
+                var appServer = "-tomcat";
+                if (dependencies.containsKey("webapp-jetty")) {
+                    appServer = "-jetty";
+                } else if (dependencies.containsKey("webapp-undertow")) {
+                    appServer = "-undertow";
+                }
+
+                if (dependencies.containsKey("webapp") || project.getDeploymentType() == OverlayProjectDescription.DeploymentTypes.WEB) {
+                    appServer = "";
+                }
+                defaults.put("appServer", appServer);
+            }
+
+            var parsedCasVersion = VersionUtils.parse(project.getCasVersion());
+            if (parsedCasVersion.getMajor() < 8 && project.getDeploymentType() != OverlayProjectDescription.DeploymentTypes.JAR) {
+                defaults.put("executable", project.getDeploymentType() == OverlayProjectDescription.DeploymentTypes.EXECUTABLE);
+            }
         }
 
         var extension = OverlayProjectDescription.DeploymentTypes.JAR == project.getDeploymentType() ? "jar" : "war";
@@ -334,8 +337,8 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
 
         templateVariables.put("initializrUrl", generateAppUrl());
 
+        handleApplicationServerType(project, templateVariables);
         if (type.equalsIgnoreCase(CasOverlayBuildSystem.ID)) {
-            handleApplicationServerType(project, templateVariables);
             templateVariables.put("dockerSupported", dockerSupported);
         }
         templateVariables.put("githubActionsSupported", getOverlayProjectDescription().isGithubActionsSupported());

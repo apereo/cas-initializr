@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { FileTreeItem } from "../file/tree";
 import { FileTypeIcon } from "./FileTypeIcon";
 
-const EDITOR_FONT = "Consolas, 'Courier New', monospace";
-const ITEM_HEIGHT = 26;
+const EDITOR_FONT = "'Comic Mono', 'Ubuntu', Consolas, 'Courier New', monospace";
+const ITEM_HEIGHT = 28;
 
 export function FileListItem({
     item,
@@ -50,7 +50,7 @@ export function FileListItem({
                     cursor: "pointer",
                     backgroundColor: rowBg,
                     color: "#cccccc",
-                    fontSize: 16,
+                    fontSize: 18,
                     fontFamily: EDITOR_FONT,
                     userSelect: "none",
                     whiteSpace: "nowrap",
@@ -114,7 +114,7 @@ export function FileListItem({
                                 height: ITEM_HEIGHT,
                                 lineHeight: `${ITEM_HEIGHT}px`,
                         color: "#858585",
-                        fontSize: 14,
+                        fontSize: 16,
                         fontStyle: "italic",
                         fontFamily: EDITOR_FONT,
                             }}

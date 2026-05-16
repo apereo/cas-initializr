@@ -48,7 +48,7 @@ const MAX_FONT = 32;
 const DEFAULT_FONT = 14;
 
 /** Font stack that matches Monaco editor's default */
-const EDITOR_FONT = "Consolas, 'Courier New', monospace";
+const EDITOR_FONT = "'Comic Mono', 'Ubuntu', Consolas, 'Courier New', monospace";
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & { children: React.ReactElement },
@@ -112,7 +112,11 @@ export function Preview({ handleDownload, handlePreview, disabled }: PreviewProp
     const [sidebarOpen, setSidebarOpen] = useState(true);
     const [sidebarWidth, setSidebarWidth] = useState(240);
     const [openTabs, setOpenTabs] = useState<FileTreeItem[]>([]);
-    const [fontSize, setFontSize] = useState(DEFAULT_FONT);
+    const [fontSize, setFontSize] = useState<number>(() => {
+        const saved = localStorage.getItem("cas-initializr-preview-font-size");
+        const parsed = saved ? parseInt(saved, 10) : NaN;
+        return isNaN(parsed) ? DEFAULT_FONT : Math.min(MAX_FONT, Math.max(MIN_FONT, parsed));
+    });
     const [quickOpenVisible, setQuickOpenVisible] = useState(false);
     const [minimapEnabled, setMinimapEnabled] = useState(true);
     const [wordWrapEnabled, setWordWrapEnabled] = useState(true);
@@ -175,11 +179,15 @@ export function Preview({ handleDownload, handlePreview, disabled }: PreviewProp
         }
     }, [selected]);
 
+    /* Persist font size to localStorage ────────────────────────── */
+    useEffect(() => {
+        localStorage.setItem("cas-initializr-preview-font-size", String(fontSize));
+    }, [fontSize]);
+
     /* Reset tabs when dialog closes ──────────────────────────── */
     useEffect(() => {
         if (!open) {
             setOpenTabs([]);
-            setFontSize(DEFAULT_FONT);
         }
     }, [open]);
 
