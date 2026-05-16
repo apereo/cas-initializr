@@ -16,7 +16,8 @@ export enum Action {
     EXPLORE = '[hotkey] explore',
     DOWNLOAD = '[hotkey] download',
     CLEAR = '[hotkey] clear',
-    SHARE = '[hotkey] share'
+    SHARE = '[hotkey] share',
+    QUICK_OPEN = '[hotkey] quick_open',
 }
 
 export function useIsIOS () {
@@ -51,6 +52,11 @@ export function useCommand (command: Action): KeyboardCommand {
             label = `Clear`;
             modifier = ios ? "mod" : "ctrl";
             keys = `C`;
+            break;
+        case Action.QUICK_OPEN:
+            label = `Go to File`;
+            modifier = ios ? "mod" : "ctrl";
+            keys = `P`;
             break;
     }
 

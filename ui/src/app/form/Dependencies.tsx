@@ -20,6 +20,7 @@ import {
     useOverlayDependencies,
 } from "../store/OverlayReducer";
 import { Action, useCommand } from "../core/Keyboard";
+import { useIsPreviewing } from "../store/PreviewReducer";
 
 export default function Dependencies() {
     const selectedDependencies = useMappedOverlayDependencies();
@@ -35,9 +36,10 @@ export default function Dependencies() {
     };
 
     const { label, keys, modifier, modifierIcon } = useCommand(Action.CLEAR);
+    const isPreviewing = useIsPreviewing();
 
-    useHotkeys(`${modifier}+${keys}`, () => clear(), { preventDefault: true }, [
-        clear,
+    useHotkeys(`${modifier}+${keys}`, () => clear(), { preventDefault: true, enabled: !isPreviewing }, [
+        clear, isPreviewing,
     ]);
 
     const dependencies: Dependency[] = React.useMemo(() => selectedDependencies.filter(d => !!d), [selectedDependencies]);

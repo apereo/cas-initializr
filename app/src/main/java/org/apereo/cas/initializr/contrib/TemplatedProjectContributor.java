@@ -82,7 +82,8 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
 
     private static void handleApplicationServerType(final OverlayProjectDescription project, final Map<String, Object> defaults) {
         var dependencies = project.getRequestedDependencies();
-
+        var type = project.getBuildSystem().id();
+        
         if (project.getDeploymentType() != OverlayProjectDescription.DeploymentTypes.JAR) {
             var appServer = "-tomcat";
             if (dependencies.containsKey("webapp-jetty")) {
@@ -97,7 +98,9 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
             defaults.put("appServer", appServer);
         }
         defaults.put("deploymentTypeIsJar", project.getDeploymentType() == OverlayProjectDescription.DeploymentTypes.JAR);
-        defaults.put("deploymentTypeIsWar", project.getDeploymentType() != OverlayProjectDescription.DeploymentTypes.JAR);
+        var deploymentTypeIsWar = (project.getDeploymentType() != OverlayProjectDescription.DeploymentTypes.JAR)
+                || type.equalsIgnoreCase(CasConfigServerOverlayBuildSystem.ID);
+        defaults.put("deploymentTypeIsWar", deploymentTypeIsWar);
 
         var parsedCasVersion = VersionUtils.parse(project.getCasVersion());
         if (parsedCasVersion.getMajor() < 8 && project.getDeploymentType() != OverlayProjectDescription.DeploymentTypes.JAR) {
