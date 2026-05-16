@@ -1,3 +1,15 @@
+def bootArchive = providers.provider {
+    if (tasks.findByName("bootWar")?.enabled) {
+        tasks.named("bootWar").get().archiveFile.get().asFile
+    } else {
+        tasks.named("bootJar").get().archiveFile.get().asFile
+    }
+}
+
+def bootDir = providers.provider {
+    bootArchive.get().name == "bootWar" ? "WEB-INF" : "BOOT-INF"
+}
+
 {{#casServer}}
 import static org.gradle.internal.logging.text.StyledTextOutput.Style
 
@@ -51,7 +63,7 @@ tasks.register('debug', JavaExec) {
     ]
     debug = true
     systemProperties = System.properties
-    classpath = files("$buildDir/libs/cas.war")
+    classpath = files(bootArchive)
 }
 tasks.register('run', JavaExec) {
     group = "CAS"
@@ -64,7 +76,7 @@ tasks.register('run', JavaExec) {
     ]
     debug = false
     systemProperties = System.properties
-    classpath = files("$buildDir/libs/cas.war")
+    classpath = files(bootArchive)
 }
 {{/casVersion73OrAbove}}
 
@@ -77,7 +89,7 @@ task debug(group: "CAS", description: "Debug the CAS web application in embedded
         project.javaexec {
             jvmArgs = casArgs
             debug = true
-            classpath = project.files("build/libs/{{appName}}.war")
+            classpath = project.files(bootArchive)
             systemProperties = System.properties
             logger.info "Started ${commandLine}"
         }
@@ -90,7 +102,7 @@ task run(group: "build", description: "Run the CAS web application in embedded c
         def casRunArgs = Arrays.asList("-server -noverify -Xmx2048M -XX:+TieredCompilation -XX:TieredStopAtLevel=1".split(" "))
         project.javaexec {
             jvmArgs = casRunArgs
-            classpath = project.files("build/libs/{{appName}}.war")
+            classpath = project.files(bootArchive)
             systemProperties = System.properties
             logger.info "Started ${commandLine}"
         }
@@ -233,7 +245,7 @@ task unzipWAR(type: Copy, group: "CAS", description: "Explodes the CAS web appli
     dependsOn 'build'
     def destination = "${buildDir}/app"
 
-    from zipTree("build/libs/{{appName}}.war")
+    from zipTree(bootArchive)
     into "${destination}"
     doLast {
         println "Unzipped WAR into ${destination}"
@@ -268,10 +280,10 @@ def templateViewsJarName = "cas-server-support-thymeleaf"
 
 task unzip(type: Copy, group: "CAS", description: "Explodes the CAS archive and resources jar from the CAS web application archive") {
     dependsOn unzipWAR
-    from zipTree("${explodedDir}/WEB-INF/lib/${templateViewsJarName}-${project.'cas.version'}.jar")
+    from zipTree("${explodedDir}/${bootDir.get()}/lib/${templateViewsJarName}-${project.'cas.version'}.jar")
     into explodedResourcesDir
 
-    from zipTree("${explodedDir}/WEB-INF/lib/${resourcesJarName}-${project.'cas.version'}.jar")
+    from zipTree("${explodedDir}/${bootDir.get()}/lib/${resourcesJarName}-${project.'cas.version'}.jar")
     into explodedResourcesDir
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     doLast {
