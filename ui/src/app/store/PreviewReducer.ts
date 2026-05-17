@@ -30,7 +30,7 @@ export const AppSlice = createSlice({
         setPreviewTree(state, action: PayloadAction<FileTreeItem[]>) {
             state.tree = action.payload;
         },
-        setPreviewSelected(state, action: PayloadAction<FileTreeItem>) {
+        setPreviewSelected(state, action: PayloadAction<FileTreeItem | null>) {
             state.selected = action.payload;
         },
     },

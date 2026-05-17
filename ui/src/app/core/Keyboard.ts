@@ -18,6 +18,7 @@ export enum Action {
     CLEAR = '[hotkey] clear',
     SHARE = '[hotkey] share',
     QUICK_OPEN = '[hotkey] quick_open',
+    CLOSE_TAB = '[hotkey] close_tab',
 }
 
 export function useIsIOS () {
@@ -57,6 +58,11 @@ export function useCommand (command: Action): KeyboardCommand {
             label = `Go to File`;
             modifier = ios ? "mod" : "ctrl";
             keys = `P`;
+            break;
+        case Action.CLOSE_TAB:
+            label = `Close Tab`;
+            modifier = "alt";
+            keys = `W`;
             break;
     }
 

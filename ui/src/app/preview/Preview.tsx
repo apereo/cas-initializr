@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef, useMemo } from "react";
-import { Button, Dialog } from "@mui/material";
+import { Button, Dialog, GlobalStyles } from "@mui/material";
 import {
     setPreviewSelected,
     setPreviewState,
@@ -112,6 +112,7 @@ export function Preview({ handleDownload, handlePreview, disabled }: PreviewProp
     const [sidebarOpen, setSidebarOpen] = useState(true);
     const [sidebarWidth, setSidebarWidth] = useState(240);
     const [openTabs, setOpenTabs] = useState<FileTreeItem[]>([]);
+    const [tabContextMenu, setTabContextMenu] = useState<{ path: string; x: number; y: number } | null>(null);
     const [fontSize, setFontSize] = useState<number>(() => {
         const saved = localStorage.getItem("cas-initializr-preview-font-size");
         const parsed = saved ? parseInt(saved, 10) : NaN;
@@ -215,7 +216,7 @@ export function Preview({ handleDownload, handlePreview, disabled }: PreviewProp
                 if (selected?.path === path) {
                     const idx = prev.findIndex((t) => t.path === path);
                     const fallback = next[idx] ?? next[idx - 1] ?? next[0] ?? null;
-                    if (fallback) dispatch(setPreviewSelected(fallback));
+                    dispatch(setPreviewSelected(fallback));
                 }
                 return next;
             });
@@ -223,8 +224,44 @@ export function Preview({ handleDownload, handlePreview, disabled }: PreviewProp
         [selected, dispatch]
     );
 
-    const { label, keys, modifier, modifierIcon } = useCommand(Action.EXPLORE);
+    const closeAllTabs = useCallback(() => {
+        setOpenTabs([]);
+        dispatch(setPreviewSelected(null));
+    }, [dispatch]);
+
+    const closeTabsToRight = useCallback((path: string) => {
+        setOpenTabs((prev) => {
+            const idx = prev.findIndex((t) => t.path === path);
+            if (idx < 0) return prev;
+            const next = prev.slice(0, idx + 1);
+            // if selected tab was to the right, switch to this tab
+            if (selected && !next.some((t) => t.path === selected.path)) {
+                const pivot = next[next.length - 1];
+                if (pivot) dispatch(setPreviewSelected(pivot));
+            }
+            return next;
+        });
+    }, [selected, dispatch]);
+
+    const tabScrollRef = useRef<HTMLDivElement>(null);
+
+    const onTabWheel = useCallback((e: React.WheelEvent) => {
+        const el = tabScrollRef.current;
+        if (!el) return;
+        e.preventDefault();
+        el.scrollLeft += e.deltaY !== 0 ? e.deltaY : e.deltaX;
+    }, []);
+
+    /* Scroll active tab into view when selection changes ─────── */
+    useEffect(() => {
+        if (!selected || !tabScrollRef.current) return;
+        const el = tabScrollRef.current.querySelector<HTMLDivElement>(`[data-tabpath="${CSS.escape(selected.path)}"]`);
+        el?.scrollIntoView({ block: "nearest", inline: "nearest" });
+    }, [selected]);
+
     const { modifier: qoModifier, keys: qoKeys } = useCommand(Action.QUICK_OPEN);
+    const { label, keys, modifier, modifierIcon } = useCommand(Action.EXPLORE);
+    const { modifier: ctModifier, keys: ctKeys } = useCommand(Action.CLOSE_TAB);
 
     useHotkeys(
         `${modifier}+${keys}`,
@@ -245,6 +282,20 @@ export function Preview({ handleDownload, handlePreview, disabled }: PreviewProp
         () => { if (open && selected?.type === "markdown") setMarkdownPreview((v) => !v); },
         { preventDefault: true, enableOnFormTags: true, enableOnContentEditable: true },
         [open, selected]
+    );
+
+    useHotkeys(
+        `${ctModifier}+${ctKeys}`,
+        () => { if (open && selected) closeTab(selected.path); },
+        { preventDefault: true, enableOnFormTags: true, enableOnContentEditable: true },
+        [open, selected, closeTab]
+    );
+
+    useHotkeys(
+        `alt+shift+w`,
+        () => { if (open) closeAllTabs(); },
+        { preventDefault: true, enableOnFormTags: true, enableOnContentEditable: true },
+        [open, closeAllTabs]
     );
 
     /* ── Render trigger button (outside dialog) ─────────────── */
@@ -282,6 +333,7 @@ export function Preview({ handleDownload, handlePreview, disabled }: PreviewProp
                     overflow: "hidden",
                     }}
                 >
+                    <GlobalStyles styles={{ ".vs-tabs-scroll::-webkit-scrollbar": { display: "none" } }} />
                     {/* ── Menu bar (replaces title bar) ─────────────── */}
                     <MenuBar
                         sidebarOpen={sidebarOpen}
@@ -304,6 +356,8 @@ export function Preview({ handleDownload, handlePreview, disabled }: PreviewProp
                         onGoToFile={() => setQuickOpenVisible(true)}
                         onDownloadOverlay={handleDownload}
                         onDownloadFile={handleDownloadFile}
+                        onCloseTab={() => selected && closeTab(selected.path)}
+                        onCloseAllTabs={closeAllTabs}
                         onClose={handleClose}
                     />
 
@@ -416,7 +470,7 @@ export function Preview({ handleDownload, handlePreview, disabled }: PreviewProp
                             {/* Tab bar */}
                             <div
                                 style={{
-                                    height: 35,
+                                    height: 46,
                                     background: VS.tabBar,
                                     display: "flex",
                                     alignItems: "stretch",
@@ -425,24 +479,33 @@ export function Preview({ handleDownload, handlePreview, disabled }: PreviewProp
                                     borderBottom: `1px solid ${VS.border}`,
                                 }}
                             >
-                                {/* Tabs */}
+                                {/* Tabs — scrollable, scrollbar hidden */}
                                 <div
+                                    ref={tabScrollRef}
+                                    onWheel={onTabWheel}
+                                    className="vs-tabs-scroll"
                                     style={{
                                         display: "flex",
                                         alignItems: "stretch",
                                         flex: 1,
-                                        overflow: "hidden",
-                                    }}
+                                        minWidth: 0,          /* ← lets flex child shrink so overflow:auto kicks in */
+                                        overflowX: "auto",
+                                        overflowY: "hidden",
+                                        scrollbarWidth: "none",
+                                        msOverflowStyle: "none",
+                                    } as React.CSSProperties}
                                 >
-                                    {openTabs.map((tab) => (
+                                     {openTabs.map((tab) => (
                                         <Tab
                                             key={tab.path}
                                             tab={tab}
                                             isActive={tab.path === selected?.path}
+                                            fontSize={fontSize}
                                             onSelect={() =>
                                                 dispatch(setPreviewSelected(tab))
                                             }
                                             onClose={() => closeTab(tab.path)}
+                                            onContextMenu={(x, y) => setTabContextMenu({ path: tab.path, x, y })}
                                         />
                                     ))}
                                 </div>
@@ -596,6 +659,20 @@ export function Preview({ handleDownload, handlePreview, disabled }: PreviewProp
                         </div>
                     </div>
 
+                    {/* ── Tab context menu ────────────────────────────── */}
+                    {tabContextMenu && (
+                        <TabContextMenu
+                            x={tabContextMenu.x}
+                            y={tabContextMenu.y}
+                            isLastTab={openTabs.length <= 1}
+                            isRightmostTab={openTabs[openTabs.length - 1]?.path === tabContextMenu.path}
+                            onClose={() => { closeTab(tabContextMenu.path); setTabContextMenu(null); }}
+                            onCloseAll={() => { closeAllTabs(); setTabContextMenu(null); }}
+                            onCloseToRight={() => { closeTabsToRight(tabContextMenu.path); setTabContextMenu(null); }}
+                            onDismiss={() => setTabContextMenu(null)}
+                        />
+                    )}
+
                     {/* ── Quick Open overlay ───────────────────────────── */}
                     {quickOpenVisible && (
                         <QuickOpen
@@ -647,6 +724,8 @@ interface MenuBarProps {
     onGoToFile: () => void;
     onDownloadOverlay: () => void;
     onDownloadFile: () => void;
+    onCloseTab: () => void;
+    onCloseAllTabs: () => void;
     onClose: () => void;
 }
 
@@ -675,6 +754,9 @@ function MenuBar(props: MenuBarProps) {
             items: [
                 { label: "Download Overlay ZIP", action: props.onDownloadOverlay },
                 { label: "Download Current File", action: props.onDownloadFile, disabled: !props.hasFile },
+                { separator: true, label: "" },
+                { label: "Close Tab",    shortcut: "Alt+W",       action: props.onCloseTab,    disabled: !props.hasFile },
+                { label: "Close All",    shortcut: "Alt+Shift+W", action: props.onCloseAllTabs, disabled: !props.hasFile },
                 { separator: true, label: "" },
                 { label: "Close Preview", shortcut: "Esc", action: props.onClose },
             ],
@@ -1105,20 +1187,26 @@ function ActivityBarIcon({
 function Tab({
     tab,
     isActive,
+    fontSize,
     onSelect,
     onClose,
+    onContextMenu,
 }: {
     tab: FileTreeItem;
     isActive: boolean;
+    fontSize: number;
     onSelect: () => void;
     onClose: () => void;
+    onContextMenu: (x: number, y: number) => void;
 }) {
     const [hov, setHov] = useState(false);
     const [closeHov, setCloseHov] = useState(false);
 
     return (
         <div
+            data-tabpath={tab.path}
             onClick={onSelect}
+            onContextMenu={(e) => { e.preventDefault(); onContextMenu(e.clientX, e.clientY); }}
             onMouseEnter={() => setHov(true)}
             onMouseLeave={() => { setHov(false); setCloseHov(false); }}
             style={{
@@ -1131,7 +1219,7 @@ function Tab({
                 borderRight: `1px solid ${VS.border}`,
                 borderTop: `2px solid ${isActive ? VS.tabActiveBorder : "transparent"}`,
                 cursor: "pointer",
-                fontSize: 13,
+                fontSize: fontSize,
                 userSelect: "none",
                 whiteSpace: "nowrap",
                 flexShrink: 0,
@@ -1176,3 +1264,106 @@ function Tab({
     );
 }
 
+/* ── Tab context menu ────────────────────────────────────────────── */
+function TabContextMenu({
+    x,
+    y,
+    isLastTab,
+    isRightmostTab,
+    onClose,
+    onCloseAll,
+    onCloseToRight,
+    onDismiss,
+}: {
+    x: number;
+    y: number;
+    isLastTab: boolean;
+    isRightmostTab: boolean;
+    onClose: () => void;
+    onCloseAll: () => void;
+    onCloseToRight: () => void;
+    onDismiss: () => void;
+}) {
+    const menuRef = useRef<HTMLDivElement>(null);
+
+    /* Close on outside click or Escape */
+    useEffect(() => {
+        const handleClick = (e: MouseEvent) => {
+            if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+                onDismiss();
+            }
+        };
+        const handleKey = (e: KeyboardEvent) => {
+            if (e.key === "Escape") onDismiss();
+        };
+        document.addEventListener("mousedown", handleClick);
+        document.addEventListener("keydown", handleKey);
+        return () => {
+            document.removeEventListener("mousedown", handleClick);
+            document.removeEventListener("keydown", handleKey);
+        };
+    }, [onDismiss]);
+
+    const items: { label: string; shortcut?: string; action: () => void; disabled?: boolean }[] = [
+        { label: "Close",              shortcut: "Alt+W",        action: onClose },
+        { label: "Close All",          shortcut: "Alt+Shift+W",  action: onCloseAll,     disabled: isLastTab },
+        { label: "Close to the Right",                           action: onCloseToRight, disabled: isRightmostTab },
+    ];
+
+    return (
+        <div
+            ref={menuRef}
+            style={{
+                position: "fixed",
+                top: y,
+                left: x,
+                zIndex: 99999,
+                background: "#252526",
+                border: "1px solid #474747",
+                borderRadius: 4,
+                boxShadow: "0 4px 16px rgba(0,0,0,0.6)",
+                paddingTop: 4,
+                paddingBottom: 4,
+                minWidth: 200,
+            }}
+        >
+            {items.map((item, i) => (
+                <TabContextMenuItem key={i} item={item} />
+            ))}
+        </div>
+    );
+}
+
+function TabContextMenuItem({
+    item,
+}: {
+    item: { label: string; shortcut?: string; action: () => void; disabled?: boolean };
+}) {
+    const [hov, setHov] = useState(false);
+    return (
+        <div
+            onClick={() => !item.disabled && item.action()}
+            onMouseEnter={() => setHov(true)}
+            onMouseLeave={() => setHov(false)}
+            style={{
+                display: "flex",
+                alignItems: "center",
+                padding: "5px 16px 5px 16px",
+                background: hov && !item.disabled ? "#094771" : "transparent",
+                color: item.disabled ? "#555" : "#cccccc",
+                cursor: item.disabled ? "default" : "pointer",
+                fontSize: 13,
+                fontFamily: EDITOR_FONT,
+                userSelect: "none",
+                gap: 8,
+            }}
+        >
+            <span style={{ flex: 1 }}>{item.label}</span>
+            {item.shortcut && (
+                <span style={{ color: item.disabled ? "#444" : "#858585", fontSize: 11, marginLeft: 24, flexShrink: 0 }}>
+                    {item.shortcut}
+                </span>
+            )}
+        </div>
+    );
+}

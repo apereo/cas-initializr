@@ -1,25 +1,3 @@
-# Dynamic CAS Modules
-
-CAS module dependencies are typically defined beforehand inside
-the `dependencies {}` block in the `build.gradle` file towards the end:
-
-```groovy
-implementation "org.apereo.cas:cas-server-support-xyz"
-```
-
-You may also define dynamic dependencies that are not hardcoded in the `build.gradle` file but instead are
-supplied as command-line arguments when invoking Gradle. This allows you to build CAS with a custom
-set of modules without having to edit the `build.gradle` file.
-
-| Command                                                      | Result                                                      |
-|--------------------------------------------------------------|-------------------------------------------------------------|
-| `./gradlew[.bat] build -PcasModules=xyz`                     | `implementation "org.apereo.cas:cas-server-support-xyz"`    |
-| `./gradlew[.bat] build -PcasModules=core/xyz`                | `implementation "org.apereo.cas:cas-server-core-xyz"`       |
-| `./gradlew[.bat] build -PcasModules=support/xyz`             | `implementation "org.apereo.cas:cas-server-support-xyz"`    |
-| `./gradlew[.bat] build -PcasModules=cas-server-core-xyz`     | `implementation "org.apereo.cas:cas-server-core-xyz"`       |
-
-The `casModules` property accepts a comma-separated list of CAS modules.
-
 {{#shellSupported}}
 # CAS Command-line Shell
 
