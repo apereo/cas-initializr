@@ -42,6 +42,12 @@ public class OverlayProjectDescription extends MutableProjectDescription {
 
     private boolean sbomSupported;
 
+    private boolean terraformAwsAppRunner;
+
+    private boolean terraformAzureContainerApps;
+
+    private boolean terraformGcpCloudRun;
+    
     private DeploymentTypes deploymentType = DeploymentTypes.EXECUTABLE;
 
     public String resolveCasVersion(final BillOfMaterials billOfMaterials) {

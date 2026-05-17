@@ -61,7 +61,10 @@ export const OverlaySlice = createSlice({
         helmSupported: 'false',
         herokuSupported: 'false',
         sbomSupported: 'true',
-        deploymentType: 'executable'
+        deploymentType: 'executable',
+        terraformAwsAppRunner: 'false',
+        terraformGcpCloudRun: 'false',
+        terraformAzureContainerApps: 'false',
     },
     reducers: {
         setDependencies(state, action: PayloadAction<string[]>) {
@@ -94,6 +97,9 @@ export const OverlaySlice = createSlice({
                 openRewriteSupported,
                 commandlineShellSupported,
                 deploymentType,
+                terraformAwsAppRunner,
+                terraformGcpCloudRun,
+                terraformAzureContainerApps,
             } = action.payload;
             state.type = type;
             state.casVersion = casVersion;
@@ -117,6 +123,9 @@ export const OverlaySlice = createSlice({
             state.openRewriteSupported = openRewriteSupported;
             state.commandlineShellSupported = commandlineShellSupported;
             state.deploymentType = deploymentType;
+            state.terraformAwsAppRunner = terraformAwsAppRunner;
+            state.terraformGcpCloudRun = terraformGcpCloudRun;
+            state.terraformAzureContainerApps = terraformAzureContainerApps;
         },
     },
 });

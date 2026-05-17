@@ -175,4 +175,3 @@ export default function BuildFeatures({ control }: BuildFeaturesProps) {
         </Accordion>
     );
 }
-

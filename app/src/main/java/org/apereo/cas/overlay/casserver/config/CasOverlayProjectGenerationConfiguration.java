@@ -10,6 +10,9 @@ import org.apereo.cas.overlay.casserver.contrib.CasOverlayConfigurationDirectori
 import org.apereo.cas.overlay.casserver.contrib.CasOverlayLoggingConfigurationContributor;
 import org.apereo.cas.overlay.casserver.contrib.helm.CasOverlayHelmContributor;
 import org.apereo.cas.overlay.casserver.contrib.puppeteer.CasOverlayPuppeteerContributor;
+import org.apereo.cas.overlay.casserver.contrib.terraform.CasOverlayTerraformAwsAppRunnerContributor;
+import org.apereo.cas.overlay.casserver.contrib.terraform.CasOverlayTerraformAzureContainerAppsContributor;
+import org.apereo.cas.overlay.casserver.contrib.terraform.CasOverlayTerraformGcpCloudRunContributor;
 import org.apereo.cas.overlay.casserver.customize.DefaultDependenciesBuildCustomizer;
 
 import io.spring.initializr.generator.buildsystem.BuildItemResolver;
@@ -27,6 +30,21 @@ import org.springframework.context.annotation.Bean;
 public class CasOverlayProjectGenerationConfiguration {
     @Autowired
     private ConfigurableApplicationContext applicationContext;
+
+    @Bean
+    public CasOverlayTerraformAzureContainerAppsContributor casOverlayTerraformAzureContainerAppsContributor() {
+        return new CasOverlayTerraformAzureContainerAppsContributor(applicationContext);
+    }
+
+    @Bean
+    public CasOverlayTerraformGcpCloudRunContributor  casOverlayTerraformGcpCloudRunContributor() {
+        return new CasOverlayTerraformGcpCloudRunContributor(applicationContext);
+    }
+    
+    @Bean
+    public CasOverlayTerraformAwsAppRunnerContributor casOverlayTerraformAwsAppRunnerContributor() {
+        return new CasOverlayTerraformAwsAppRunnerContributor(applicationContext);
+    }
 
     @Bean
     public CasOverlayPuppeteerContributor casOverlayPuppeteerContributor() {

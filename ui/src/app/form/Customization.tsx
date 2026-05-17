@@ -33,6 +33,7 @@ import { setCustomization } from "../store/OverlayReducer";
 import { getOverlayFromQs } from "../data/Url";
 import { defaults } from "lodash";
 import BuildFeatures from "./BuildFeatures";
+import CloudDeployments from "./CloudDeployments";
 
 const Accordion = styled((props: AccordionProps) => (
     <MuiAccordion disableGutters {...props} />
@@ -275,6 +276,7 @@ export default function Customization() {
                                 </AccordionDetails>
                             </Accordion>
                             <BuildFeatures control={control} />
+                            <CloudDeployments control={control} />
                         </React.Fragment>
                     )}
                 </Stack>

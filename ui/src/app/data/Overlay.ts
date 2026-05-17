@@ -22,4 +22,7 @@ export interface Overlay {
     openRewriteSupported: string;
     commandlineShellSupported: string;
     deploymentType: string;
+    terraformAwsAppRunner: string;
+    terraformGcpCloudRun: string;
+    terraformAzureContainerApps: string;
 }

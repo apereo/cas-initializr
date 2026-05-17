@@ -155,6 +155,10 @@ public class OverlayProjectRequestToDescriptionConverter implements ProjectReque
         description.setCommandlineShellSupported(getBooleanParameter(request, "commandlineShellSupported", Boolean.TRUE));
         description.setOpenRewriteSupported(getBooleanParameter(request, "openRewriteSupported", Boolean.TRUE));
         description.setSbomSupported(getBooleanParameter(request, "sbomSupported", Boolean.TRUE));
+        
+        description.setTerraformAwsAppRunner(getBooleanParameter(request, "terraformAwsAppRunner", Boolean.FALSE));
+        description.setTerraformAzureContainerApps(getBooleanParameter(request, "terraformAzureContainerApps", Boolean.FALSE));
+        description.setTerraformGcpCloudRun(getBooleanParameter(request, "terraformGcpCloudRun", Boolean.FALSE));
 
         if (request.getParameters().containsKey("deploymentType")) {
             var deploymentType = OverlayProjectDescription.DeploymentTypes.valueOf(getStringParameter(request, "deploymentType").toUpperCase());
