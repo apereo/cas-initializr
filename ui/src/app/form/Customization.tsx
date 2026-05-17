@@ -8,13 +8,11 @@ import {
     Typography,
     Stack,
     Divider,
-    Checkbox,
-    FormControlLabel,
     Tooltip,
     RadioGroup,
     Radio,
     FormLabel,
-    Paper
+    FormControlLabel,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import MuiAccordion, { AccordionProps } from "@mui/material/Accordion";
@@ -34,6 +32,7 @@ import { useAppDispatch } from "../store/hooks";
 import { setCustomization } from "../store/OverlayReducer";
 import { getOverlayFromQs } from "../data/Url";
 import { defaults } from "lodash";
+import BuildFeatures from "./BuildFeatures";
 
 const Accordion = styled((props: AccordionProps) => (
     <MuiAccordion disableGutters {...props} />
@@ -163,18 +162,21 @@ export default function Customization() {
                                 />
                             </FormControl>
                             { selectedVersion &&
-                            <Paper
-                                sx={{
-                                    p: 2
-                                }}
-                            >
-                                <Typography variant="subtitle1" component="h3" sx={{ mt: 0 }}>Platform Requirements</Typography>
-                                <Divider sx={{ backgroundColor: 'background.paper', mx: 0, my: 2 }} />
-                                <Typography variant="body2" sx={{ my: 1 }}><strong>Java Version:</strong> {selectedVersion.javaVersion}</Typography>
-                                <Typography variant="body2" sx={{ my: 1 }}><strong>Spring Boot Version:</strong> {selectedVersion.bootVersion}</Typography>
-                                <Typography variant="body2" sx={{ my: 1 }}><strong>Gradle Version:</strong> {selectedVersion.gradleVersion}</Typography>
-                                <Typography variant="body2" sx={{ mt: 1 }}><strong>Apache Tomcat Version:</strong> {selectedVersion.tomcatVersion}</Typography>
-                            </Paper>
+                            <Accordion defaultExpanded>
+                                <AccordionSummary
+                                    expandIcon={<ExpandMoreIcon />}
+                                    aria-controls="platform-requirements-content"
+                                    id="platform-requirements-header"
+                                >
+                                    <Typography>Platform Requirements</Typography>
+                                </AccordionSummary>
+                                <AccordionDetails>
+                                    <Typography variant="body2" sx={{ my: 1 }}><strong>Java Version:</strong> {selectedVersion.javaVersion}</Typography>
+                                    <Typography variant="body2" sx={{ my: 1 }}><strong>Spring Boot Version:</strong> {selectedVersion.bootVersion}</Typography>
+                                    <Typography variant="body2" sx={{ my: 1 }}><strong>Gradle Version:</strong> {selectedVersion.gradleVersion}</Typography>
+                                    <Typography variant="body2" sx={{ mt: 1 }}><strong>Apache Tomcat Version:</strong> {selectedVersion.tomcatVersion}</Typography>
+                                </AccordionDetails>
+                            </Accordion>
                             }
                             <Accordion>
                                 <AccordionSummary
@@ -182,7 +184,7 @@ export default function Customization() {
                                     aria-controls="panel1a-content"
                                     id="panel1a-header"
                                 >
-                                    <Typography>Advanced Options</Typography>
+                                    <Typography>Metadata</Typography>
                                 </AccordionSummary>
                                 <AccordionDetails>
                                     <FormControl
@@ -270,315 +272,9 @@ export default function Customization() {
                                             {...register("description")}
                                         />
                                     </FormControl>
-                                    <Controller
-                                        control={control}
-                                        name="dockerSupported"
-                                        render={({
-                                            field: {
-                                                onChange,
-                                                onBlur,
-                                                value,
-                                                ref,
-                                            },
-                                        }) => (
-                                            <FormControlLabel
-                                                control={
-                                                    <Checkbox
-                                                        checked={
-                                                            value === "true"
-                                                        }
-                                                        onChange={(
-                                                            event: React.ChangeEvent<HTMLInputElement>
-                                                        ) =>
-                                                            onChange(
-                                                                event.target
-                                                                    .checked
-                                                                    ? "true"
-                                                                    : "false"
-                                                            )
-                                                        }
-                                                    />
-                                                }
-                                                label="Docker"
-                                                labelPlacement="end"
-                                            />
-                                        )}
-                                    />
-
-                                    <Controller
-                                        control={control}
-                                        name="helmSupported"
-                                        render={({
-                                            field: {
-                                                onChange,
-                                                onBlur,
-                                                value,
-                                                ref,
-                                            },
-                                        }) => (
-                                            <FormControlLabel
-                                                control={
-                                                    <Checkbox
-                                                        checked={
-                                                            value === "true"
-                                                        }
-                                                        onChange={(
-                                                            event: React.ChangeEvent<HTMLInputElement>
-                                                        ) =>
-                                                            onChange(
-                                                                event.target
-                                                                    .checked
-                                                                    ? "true"
-                                                                    : "false"
-                                                            )
-                                                        }
-                                                    />
-                                                }
-                                                label="Helm"
-                                                labelPlacement="end"
-                                            />
-                                        )}
-                                    />
-                                    <Controller
-                                        control={control}
-                                        name="herokuSupported"
-                                        render={({
-                                            field: {
-                                                onChange,
-                                                onBlur,
-                                                value,
-                                                ref,
-                                            },
-                                        }) => (
-                                            <FormControlLabel
-                                                control={
-                                                    <Checkbox
-                                                        checked={
-                                                            value === "true"
-                                                        }
-                                                        onChange={(
-                                                            event: React.ChangeEvent<HTMLInputElement>
-                                                        ) =>
-                                                            onChange(
-                                                                event.target
-                                                                    .checked
-                                                                    ? "true"
-                                                                    : "false"
-                                                            )
-                                                        }
-                                                    />
-                                                }
-                                                label="Heroku"
-                                                labelPlacement="end"
-                                            />
-                                        )}
-                                    />
-                                    <Controller
-                                        control={control}
-                                        name="commandlineShellSupported"
-                                        render={({
-                                                     field: {
-                                                         onChange,
-                                                         onBlur,
-                                                         value,
-                                                         ref,
-                                                     },
-                                                 }) => (
-                                            <FormControlLabel
-                                                control={
-                                                    <Checkbox
-                                                        checked={
-                                                            value === "true"
-                                                        }
-                                                        onChange={(
-                                                            event: React.ChangeEvent<HTMLInputElement>
-                                                        ) =>
-                                                            onChange(
-                                                                event.target
-                                                                    .checked
-                                                                    ? "true"
-                                                                    : "false"
-                                                            )
-                                                        }
-                                                    />
-                                                }
-                                                label="Shell"
-                                                labelPlacement="end"
-                                            />
-                                        )}
-                                    />
-                                    <Controller
-                                        control={control}
-                                        name="puppeteerSupported"
-                                        render={({
-                                                     field: {
-                                                         onChange,
-                                                         onBlur,
-                                                         value,
-                                                         ref,
-                                                     },
-                                                 }) => (
-                                            <FormControlLabel
-                                                control={
-                                                    <Checkbox
-                                                        checked={
-                                                            value === "true"
-                                                        }
-                                                        onChange={(
-                                                            event: React.ChangeEvent<HTMLInputElement>
-                                                        ) =>
-                                                            onChange(
-                                                                event.target
-                                                                    .checked
-                                                                    ? "true"
-                                                                    : "false"
-                                                            )
-                                                        }
-                                                    />
-                                                }
-                                                label="Puppeteer"
-                                                labelPlacement="end"
-                                            />
-                                        )}
-                                    />
-                                    <Controller
-                                        control={control}
-                                        name="sbomSupported"
-                                        render={({
-                                                     field: {
-                                                         onChange,
-                                                         onBlur,
-                                                         value,
-                                                         ref,
-                                                     },
-                                                 }) => (
-                                            <FormControlLabel
-                                                control={
-                                                    <Checkbox
-                                                        checked={
-                                                            value === "true"
-                                                        }
-                                                        onChange={(
-                                                            event: React.ChangeEvent<HTMLInputElement>
-                                                        ) =>
-                                                            onChange(
-                                                                event.target
-                                                                    .checked
-                                                                    ? "true"
-                                                                    : "false"
-                                                            )
-                                                        }
-                                                    />
-                                                }
-                                                label="SBOM"
-                                                labelPlacement="end"
-                                            />
-                                        )}
-                                    />
-                                    <Controller
-                                        control={control}
-                                        name="githubActionsSupported"
-                                        render={({
-                                                     field: {
-                                                         onChange,
-                                                         onBlur,
-                                                         value,
-                                                         ref,
-                                                     },
-                                                 }) => (
-                                            <FormControlLabel
-                                                control={
-                                                    <Checkbox
-                                                        checked={
-                                                            value === "true"
-                                                        }
-                                                        onChange={(
-                                                            event: React.ChangeEvent<HTMLInputElement>
-                                                        ) =>
-                                                            onChange(
-                                                                event.target
-                                                                    .checked
-                                                                    ? "true"
-                                                                    : "false"
-                                                            )
-                                                        }
-                                                    />
-                                                }
-                                                label="GitHub Actions"
-                                                labelPlacement="end"
-                                            />
-                                        )}
-                                    />
-                                    <Controller
-                                        control={control}
-                                        name="nativeImageSupported"
-                                        render={({
-                                                     field: {
-                                                         onChange,
-                                                         onBlur,
-                                                         value,
-                                                         ref,
-                                                     },
-                                                 }) => (
-                                            <FormControlLabel
-                                                control={
-                                                    <Checkbox
-                                                        checked={
-                                                            value === "true"
-                                                        }
-                                                        onChange={(
-                                                            event: React.ChangeEvent<HTMLInputElement>
-                                                        ) =>
-                                                            onChange(
-                                                                event.target
-                                                                    .checked
-                                                                    ? "true"
-                                                                    : "false"
-                                                            )
-                                                        }
-                                                    />
-                                                }
-                                                label="Native Image"
-                                                labelPlacement="end"
-                                            />
-                                        )}
-                                    />
-                                    <Controller
-                                        control={control}
-                                        name="openRewriteSupported"
-                                        render={({
-                                                     field: {
-                                                         onChange,
-                                                         onBlur,
-                                                         value,
-                                                         ref,
-                                                     },
-                                                 }) => (
-                                            <FormControlLabel
-                                                control={
-                                                    <Checkbox
-                                                        checked={
-                                                            value === "true"
-                                                        }
-                                                        onChange={(
-                                                            event: React.ChangeEvent<HTMLInputElement>
-                                                        ) =>
-                                                            onChange(
-                                                                event.target
-                                                                    .checked
-                                                                    ? "true"
-                                                                    : "false"
-                                                            )
-                                                        }
-                                                    />
-                                                }
-                                                label="Open Rewrite"
-                                                labelPlacement="end"
-                                            />
-                                        )}
-                                    />
                                 </AccordionDetails>
                             </Accordion>
+                            <BuildFeatures control={control} />
                         </React.Fragment>
                     )}
                 </Stack>
