@@ -139,6 +139,7 @@ Run the CAS web application as a *standalone* executable WAR:
 ```
 {{/executable}}
 
+{{^casVersion8OrAbove}}
 ### CDS Support
 
 CDS is a JVM feature that can help reduce the startup time and memory footprint of Java applications. CAS via Spring Boot
@@ -155,6 +156,31 @@ java -XX:ArchiveClassesAtExit=cas.jsa -Dspring.context.exit=onRefresh -jar {{app
 # Run the CAS web application via CDS
 java XX:SharedArchiveFile=cas.jsa -jar {{appName}}/{{archiveFileName}}
 ```
+{{/casVersion8OrAbove}}
+
+{{#casVersion8OrAbove}}
+### AOT Support
+
+The ahead-of-time cache is a JVM feature that can help reduce the startup time and memory footprint of Java applications.
+AOT cache is a natural evolution of Class Data Sharing (CDS). 
+
+To use this feature, an AOT cache should be created for the particular classpath of CAS. It is possible to
+create this cache on the deployed instance, or during a training
+run performed for example when packaging the application thanks to a hook-point provided by the
+Spring Framework to ease such use case. Once the cache is available, users should opt in to use
+it via a JVM flag.
+
+```bash
+{{#executable}}# Note: You must first build the web application with "executable" turned off{{/executable}}
+java -Djarmode=tools -jar build/libs/{{archiveFileName}} extract
+
+# Perform a training run once
+java -XX:AOTCacheOutput=${PWD}/cas/cas.aot -Dspring.context.exit=onRefresh -jar {{appName}}/{{archiveFileName}}
+
+# Run the CAS web application
+java -XX:AOTCache=${PWD}/cas/cas.aot -jar {{appName}}/{{archiveFileName}}
+```
+{{/casVersion8OrAbove}}
 
 ## External
 

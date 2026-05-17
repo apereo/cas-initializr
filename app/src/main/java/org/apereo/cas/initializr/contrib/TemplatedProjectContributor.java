@@ -344,7 +344,6 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         handleApplicationServerType(project, templateVariables);
         if (type.equalsIgnoreCase(CasOverlayBuildSystem.ID)) {
             templateVariables.put("dockerSupported", dockerSupported);
-            templateVariables.put("casServer", Boolean.TRUE);
         }
         templateVariables.put("githubActionsSupported", getOverlayProjectDescription().isGithubActionsSupported());
 

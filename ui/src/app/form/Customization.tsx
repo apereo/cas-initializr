@@ -218,7 +218,7 @@ export default function Customization() {
                                                     <Tooltip arrow placement="top" title="Build the CAS server as a traditional web application that is then deployed into an external servlet container of choice, such as Apache Tomcat, that is downloaded, configured and tuned by you.">
                                                         <FormControlLabel value="web" control={<Radio />} label="Web" />
                                                     </Tooltip>
-                                                    <Tooltip arrow placement="top" title="Build the CAS server as a Spring Boot executable JAR that using an Apache Tomcat starter module.">
+                                                    <Tooltip arrow placement="top" title="Build the CAS server as a Spring Boot executable JAR using an Apache Tomcat starter module.">
                                                         <FormControlLabel value="jar" control={<Radio />} label="JAR" />
                                                     </Tooltip>
                                                 </RadioGroup>
