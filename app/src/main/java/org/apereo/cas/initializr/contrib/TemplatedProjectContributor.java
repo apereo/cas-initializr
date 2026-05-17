@@ -15,7 +15,6 @@ import lombok.val;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Strings;
 import org.apereo.cas.initializr.config.CasInitializrProperties;
-import org.apereo.cas.initializr.metadata.CasDependency;
 import org.apereo.cas.initializr.metadata.InitializrMetadataFetcher;
 import org.apereo.cas.initializr.web.OverlayProjectDescription;
 import org.apereo.cas.initializr.web.UnsupportedVersionException;
