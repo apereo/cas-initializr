@@ -140,7 +140,7 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
 
         var casVersion = project.resolveCasVersion(boms.get("cas-bom"));
         var availableDependencies = fetcher.fetch(casVersion);
-        log.info("Available overlay dependencies for {}: {}", project.getVersion(), availableDependencies.size());
+        log.debug("Available overlay dependencies for {}: {}", project.getVersion(), availableDependencies.size());
 
         var dependencies = project.getRequestedDependencies()
                 .values()
@@ -167,7 +167,7 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
                     for (val resource : resources) {
                         if (resource.isReadable()) {
                             val output = determineOutputResourcePath(projectRoot, resource, relativePath);
-                            log.info("Output file {}", output.toFile().getAbsolutePath());
+                            log.debug("Output file {}", output.toFile().getAbsolutePath());
                             createFileAndParentDirectories(output);
                             if (resource.getFilename().endsWith(".mustache")) {
                                 var templateVariables = getProjectTemplateVariables();
