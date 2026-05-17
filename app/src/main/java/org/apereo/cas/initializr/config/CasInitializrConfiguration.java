@@ -27,6 +27,9 @@ import org.apereo.cas.initializr.contrib.project.ProjectLicenseContributor;
 import org.apereo.cas.initializr.contrib.project.SdkmanJavaVersionContributor;
 import org.apereo.cas.initializr.metadata.CasOverlayInitializrMetadataUpdateStrategy;
 import org.apereo.cas.initializr.metadata.InitializrMetadataFetcher;
+import org.apereo.cas.initializr.web.capture.LogRequestCaptureService;
+import org.apereo.cas.initializr.web.capture.RequestCaptureFilter;
+import org.apereo.cas.initializr.web.capture.RequestCaptureSerice;
 import org.apereo.cas.initializr.web.ui.InitializrHomeController;
 import org.apereo.cas.overlay.casserver.contrib.docker.CasOverlayDockerContributor;
 import org.springframework.boot.cache.autoconfigure.JCacheManagerCustomizer;
@@ -175,5 +178,15 @@ public class CasInitializrConfiguration {
             log.info("CAS modules metadata is cached for {}", cacheDuration);
             cacheManager.createCache("cas.modules", propertiesConfig);
         };
+    }
+
+    @Bean
+    public RequestCaptureFilter requestCaptureFilter(final RequestCaptureSerice requestCaptureSerice) {
+        return new RequestCaptureFilter(requestCaptureSerice);
+    }
+
+    @Bean
+    public RequestCaptureSerice requestCaptureSerice() {
+        return new LogRequestCaptureService();
     }
 }

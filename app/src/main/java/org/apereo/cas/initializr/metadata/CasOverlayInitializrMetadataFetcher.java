@@ -36,7 +36,7 @@ public class CasOverlayInitializrMetadataFetcher implements InitializrMetadataFe
 
     private List<CasDependency> getFetchDependencies(final String versionToUse) {
         var collection = "casmodules" + versionToUse;
-        log.info("Fetching CAS modules from collection {} for {}", collection, versionToUse);
+        log.debug("Fetching CAS modules from collection {} for {}", collection, versionToUse);
         return mongoTemplate.findAll(CasDependency.class, collection);
     }
 

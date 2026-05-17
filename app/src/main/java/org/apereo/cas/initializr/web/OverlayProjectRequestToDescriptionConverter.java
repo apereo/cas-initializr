@@ -188,7 +188,7 @@ public class OverlayProjectRequestToDescriptionConverter implements ProjectReque
             });
         }
         resolvedDependencies.forEach(dependency -> description.addDependency(dependency.getId(), MetadataBuildItemMapper.toDependency(dependency)));
-        log.info("Requested overlay project description {}", description);
+        log.debug("Requested overlay project description {}", description);
     }
 
     private Boolean getBooleanParameter(final OverlayProjectRequest request, final String name, final Boolean defaultValue) {
@@ -249,7 +249,7 @@ public class OverlayProjectRequestToDescriptionConverter implements ProjectReque
                 .findFirst()
                 .orElseThrow();
         }
-        log.info("Resolving Spring Boot version {} for {}", versionText, casVersion);
+        log.debug("Resolving Spring Boot version {} for {}", versionText, casVersion);
         return this.platformVersionTransformer.transform(VersionUtils.parse(versionText), metadata);
     }
 }
