@@ -232,9 +232,10 @@ public class OverlayProjectRequestToDescriptionConverter implements ProjectReque
 
         var casVersion = determineCasVersion(request, metadata);
         if (StringUtils.hasText(casVersion)) {
+            var resolvedVersion = getCasPlatformVersion(request, metadata);
             properties.getSupportedVersions()
                     .stream()
-                    .filter(version -> VersionUtils.parse(version.getVersion()).equals(casVersion))
+                    .filter(version -> VersionUtils.parse(version.getVersion()).equals(resolvedVersion))
                     .findFirst()
                     .orElseThrow(() ->  new UnsupportedVersionException(casVersion, "Unable to support CAS version " + casVersion));
         }
@@ -243,7 +244,7 @@ public class OverlayProjectRequestToDescriptionConverter implements ProjectReque
 
     private Version getCasPlatformVersion(final OverlayProjectRequest request, final InitializrMetadata metadata) {
         var versionText = determineCasVersion(request, metadata);
-        return this.platformVersionTransformer.transform(VersionUtils.parse(versionText), metadata);
+        return platformVersionTransformer.transform(VersionUtils.parse(versionText), metadata);
     }
 
     private Version getSpringBootPlatformVersion(final OverlayProjectRequest request,
