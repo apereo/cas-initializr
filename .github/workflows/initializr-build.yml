@@ -205,6 +205,38 @@ jobs:
             echo "Completed CAS validation with application server: $app"
           done
   ##########################################################################
+  validate-terraform-cloud-deployments:
+    needs: [ supported-versions-cas ]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        cloud: [ gcp, aws, azure ]
+    name: Validate Terraform Cloud - ${{ matrix.cloud }}
+    steps:
+      - uses: actions/checkout@v6
+      - name: Initialize
+        run: ls ./ci && find ./ci -type f -name "*.sh" -exec chmod +x "{}" \;
+      - name: Set up JDK
+        uses: actions/setup-java@v5
+        with:
+          java-version: ${{ env.JDK_CURRENT }}
+          distribution: ${{ env.JDK_DISTRO }}
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v4
+      - name: Fetch Overlay
+        run: ./ci/validate-cas-overlay.sh --fetch-only --deployment-type jar --terraform
+      - name: Build Overlay
+        run: ./ci/validate-cas-overlay.sh --build-only
+      - name: Terraform Format
+        run: terraform fmt -check -recursive tmp/terraform/
+      - name: Terraform Init
+        run: terraform -chdir=tmp/terraform/${{ matrix.cloud }} init -backend=false
+      - name: Terraform Validate
+        run: terraform -chdir=tmp/terraform/${{ matrix.cloud }} validate
+      - name: Terraform Tests
+        run: terraform -chdir=tmp/terraform/${{ matrix.cloud }} test
+  ##########################################################################
   validate-cas-configserver-overlay:
     needs: [ supported-versions-cas ]
     runs-on: ubuntu-latest

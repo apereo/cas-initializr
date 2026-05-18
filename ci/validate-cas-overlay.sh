@@ -6,6 +6,8 @@ FETCH_OVERLAY="false"
 BUILD_ONLY="false"
 APP_SERVER="tomcat"
 JVM_VENDOR=""
+DEPLOYMENT_TYPE=""
+TERRAFORM=""
 
 while (( "$#" )); do
     case "$1" in
@@ -33,6 +35,14 @@ while (( "$#" )); do
         TOMCAT_VERSION="$2"
         shift 2
         ;;
+    --deployment-type)
+        DEPLOYMENT_TYPE="$2"
+        shift 2
+        ;;
+    --terraform)
+        TERRAFORM="true"
+        shift 1
+        ;;
     esac
 done
 
@@ -55,7 +65,16 @@ if [[ "${FETCH_OVERLAY}" == "true" ]]; then
     printgreen "Requesting application server ${APP_SERVER}"
     parameters="${parameters}&dependencies=webapp-${APP_SERVER}"
   fi
-  java -jar ../app/build/libs/app.jar &
+  if [ ! -z "${DEPLOYMENT_TYPE}" ]; then
+    printgreen "Requesting deployment type ${DEPLOYMENT_TYPE}"
+    parameters="${parameters}&deploymentType=${DEPLOYMENT_TYPE}"
+  fi
+  if [ ! -z "${TERRAFORM}" ]; then
+    printgreen "Requesting Terraform cloud providers"
+    parameters="${parameters}&terraformAwsAppRunner=true&terraformAzureContainerApps=true&terraformGcpCloudRun=true"
+  fi
+  
+  java -Xdebug -Xrunjdwp:transport=dt_socket,address=5005,server=y,suspend=n -jar ../app/build/libs/app.jar &
   pid=$!
   sleep 10
   printgreen "Requesting CAS overlay for ${parameters}"

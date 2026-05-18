@@ -83,14 +83,13 @@ graalVmVersion=@graalVmVersion@
 graalVmMetadataRepositoryVersion=@graalVmMetadataRepositoryVersion@
 gradleGraalVmNativePluginVersion=@gradleGraalVmNativePluginVersion@
 {{/nativeImageSupported}}
-
+{{/appServer}}
 {{#sbomSupported}}
 # The plugin creates an aggregate of all dependencies of the CAS project
 # and creates a valid SBOM, designed for use in application security contexts
 # and supply chain component analysis.
 gradleCyclonePluginVersion=@gradleCyclonePluginVersion@
 {{/sbomSupported}}
-{{/appServer}}
 
 {{#appServer}}
 # Use -tomcat, -jetty, -undertow for deployment to control the embedded server container

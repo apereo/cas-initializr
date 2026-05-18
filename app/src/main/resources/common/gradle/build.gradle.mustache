@@ -187,15 +187,16 @@ java {
         {{^nativeImageSupported}}
 
         def chosenJvmVendor = null
-        if (project.jvmVendor != null) {
-            out.withStyle(Style.Info).println("JVM vendor ${project.jvmVendor} is requested for the Java toolchain")
-            chosenJvmVendor = JvmVendorSpec.of(project.jvmVendor?.toUpperCase())
+        def jvmVendor = project.findProperty('jvmVendor') ?: ''
+        if (!jvmVendor.isEmpty()) {
+            out.withStyle(Style.Info).println("JVM vendor ${jvmVendor} is requested for the Java toolchain")
+            chosenJvmVendor = JvmVendorSpec.of(jvmVendor?.toUpperCase())
         }
         if (chosenJvmVendor != null) {
             vendor = chosenJvmVendor
             out.withStyle(Style.Success).println("Using ${chosenJvmVendor} as the JVM vendor for the Java toolchain")
-        } else {
-            out.withStyle(Style.Info).println("JVM vendor ${project.jvmVendor} is not recognized")
+        } else if (!jvmVendor.isEmpty()) { {
+            out.withStyle(Style.Info).println("JVM vendor ${jvmVendor} is not recognized")
         }
         {{/nativeImageSupported}}
     }

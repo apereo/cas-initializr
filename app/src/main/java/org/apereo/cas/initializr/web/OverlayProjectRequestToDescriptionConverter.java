@@ -107,7 +107,7 @@ public class OverlayProjectRequestToDescriptionConverter implements ProjectReque
     }
 
     private static String determineCasVersion(final OverlayProjectRequest request, final InitializrMetadata metadata) {
-        if (request.getCasVersion() != null) {
+        if (StringUtils.hasText(request.getCasVersion())) {
             return request.getCasVersion();
         }
         var boms = metadata.getConfiguration().getEnv().getBoms();
