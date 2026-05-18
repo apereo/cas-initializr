@@ -229,6 +229,16 @@ public class OverlayProjectRequestToDescriptionConverter implements ProjectReque
             throw new InvalidProjectRequestException("Invalid version '" + platformVersion
                                                      + "', Compatibility range is " + platform.determineCompatibilityRangeRequirement());
         }
+
+        var casVersion = determineCasVersion(request, metadata);
+        if (StringUtils.hasText(casVersion)) {
+            properties.getSupportedVersions()
+                    .stream()
+                    .filter(version -> VersionUtils.parse(version.getVersion()).equals(casVersion))
+                    .findFirst()
+                    .orElseThrow(() ->  new UnsupportedVersionException(casVersion, "Unable to support CAS version " + casVersion));
+        }
+        
     }
 
     private Version getCasPlatformVersion(final OverlayProjectRequest request, final InitializrMetadata metadata) {
@@ -247,9 +257,9 @@ public class OverlayProjectRequestToDescriptionConverter implements ProjectReque
                 .filter(version -> VersionUtils.parse(version.getVersion()).equals(casVersion))
                 .map(SupportedVersion::getBootVersion)
                 .findFirst()
-                .orElseThrow();
+                .orElseThrow(() ->  new UnsupportedVersionException(casVersion.toString(), "Unable to find Spring Boot for CAS " + casVersion));
         }
         log.debug("Resolving Spring Boot version {} for {}", versionText, casVersion);
-        return this.platformVersionTransformer.transform(VersionUtils.parse(versionText), metadata);
+        return platformVersionTransformer.transform(VersionUtils.parse(versionText), metadata);
     }
 }
