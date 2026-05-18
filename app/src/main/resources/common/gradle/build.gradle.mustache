@@ -185,7 +185,6 @@ java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(project.targetCompatibility)
         {{^nativeImageSupported}}
-
         def chosenJvmVendor = null
         def jvmVendor = project.findProperty('jvmVendor') ?: ''
         if (!jvmVendor.isEmpty()) {
@@ -195,7 +194,7 @@ java {
         if (chosenJvmVendor != null) {
             vendor = chosenJvmVendor
             out.withStyle(Style.Success).println("Using ${chosenJvmVendor} as the JVM vendor for the Java toolchain")
-        } else if (!jvmVendor.isEmpty()) { {
+        } else if (!jvmVendor.isEmpty()) {
             out.withStyle(Style.Info).println("JVM vendor ${jvmVendor} is not recognized")
         }
         {{/nativeImageSupported}}
