@@ -10,25 +10,6 @@ initializr:
         version: ${casLatestVersion}
 cas-initializr:
   supported-versions:
-    - version: 7.2.7.1
-      platform-version: 7.2.0
-      boot-version: 3.4.4
-      sync: false
-      validate: false
-      branch: "7.2"
-      type: cas
-      tomcat-version: ${apacheTomcat10LatestVersion}
-      java-version: 21
-      graalvm-version: 21
-      container-base-image: azul/zulu-openjdk:21
-      gradle-version: "8.13"
-      app-servers:
-        - tomcat
-        - jetty
-#        - undertow
-      plugins:
-        jib-version: ${jibVersion}
-        open-rewrite-version: ${openRewriteVersion}
     - version: 7.3.7
       platform-version: 7.3.0
       boot-version: 3.5.6
