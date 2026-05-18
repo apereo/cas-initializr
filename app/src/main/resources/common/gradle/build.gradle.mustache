@@ -442,6 +442,10 @@ if (project.hasProperty("appServer")) {
 }
 {{/deploymentTypeIsWar}}
 
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
 dependencies {
     /**
     * Do NOT modify the lines below or else you will risk breaking dependency management.
@@ -517,6 +521,9 @@ dependencies {
     {{/deploymentTypeIsJar}}
     
     developmentOnly "org.springframework.boot:spring-boot-devtools:${project.springBootVersion}"
+    testImplementation 'org.springframework.boot:spring-boot-starter-test:${project.springBootVersion}'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    
     {{/nativeImageSupported}}
     {{#dockerSupported}}
     // developmentOnly "org.springframework.boot:spring-boot-docker-compose:${project.springBootVersion}"

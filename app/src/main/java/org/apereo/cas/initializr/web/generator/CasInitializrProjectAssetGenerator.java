@@ -45,7 +45,8 @@ public class CasInitializrProjectAssetGenerator implements ProjectAssetGenerator
     }
 
     private static void cleanUpAndFinalize(final Path projectRoot) throws Exception {
-        delete(projectRoot, "src/test");
+        delete(projectRoot, "src/test/java/org/apereo/CasApplicationTests.java");
+        delete(projectRoot, "src/test/java/org/apereo/cas/cas_server_overlay");
         delete(projectRoot, "src/main/resources/application.properties");
         delete(projectRoot, "src/main/java/org/apereo/cas/cas");
         val git = Git.init()

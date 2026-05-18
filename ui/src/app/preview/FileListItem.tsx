@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FileTreeItem } from "../file/tree";
 import { FileTypeIcon } from "./FileTypeIcon";
 
@@ -10,21 +10,35 @@ export function FileListItem({
     select,
     depth = 0,
     selectedPath,
+    forceExpanded = false,
 }: {
     item: FileTreeItem;
     select: (item: FileTreeItem) => void;
     depth: number;
     selectedPath?: string;
+    forceExpanded?: boolean;
 }) {
     const [open, setOpen] = useState(false);
+    const [expandChildren, setExpandChildren] = useState(false);
     const [hovered, setHovered] = useState(false);
 
     const isDir = item.type === "dir";
     const isSelected = !isDir && selectedPath === item.path;
 
+    // When a parent expands us, open and cascade down to our children
+    useEffect(() => {
+        if (forceExpanded && isDir) {
+            setOpen(true);
+            setExpandChildren(true);
+        }
+    }, [forceExpanded, isDir]);
+
     const handleClick = () => {
         if (isDir) {
-            setOpen((o) => !o);
+            const next = !open;
+            setOpen(next);
+            // Expand all descendants when opening; reset when closing
+            setExpandChildren(next);
         } else {
             select(item);
         }
@@ -105,6 +119,7 @@ export function FileListItem({
                                 select={select}
                                 depth={depth + 1}
                                 selectedPath={selectedPath}
+                                forceExpanded={expandChildren}
                             />
                         ))
                     ) : (

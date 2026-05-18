@@ -49,12 +49,12 @@ public class CasInitializrConfiguration {
 
     @Bean
     public ChainingSingleResourceProjectContributor openRewriteContributor(
-        final ConfigurableApplicationContext applicationContext) {
+            final ConfigurableApplicationContext applicationContext) {
         var chain = new ChainingSingleResourceProjectContributor();
         chain.addContributor(new OpenRewriteContributor(applicationContext));
         return chain;
     }
-    
+
     @Bean
     public ProjectContributor projectLicenseContributor() {
         return new ProjectLicenseContributor();
@@ -69,7 +69,7 @@ public class CasInitializrConfiguration {
     public ProjectContributor ignoreRulesContributor() {
         return new IgnoreRulesContributor();
     }
-    
+
     @Bean
     public ProjectContributor jenvJavaVersionContributor(final ConfigurableApplicationContext applicationContext) {
         return new JenvJavaVersionContributor(applicationContext);
@@ -106,7 +106,7 @@ public class CasInitializrConfiguration {
         chain.addContributor(new GithubResourcesContributor(applicationContext));
         return chain;
     }
-    
+
     @Bean
     public ChainingMultipleResourcesProjectContributor gradleWrapperContributor(final ConfigurableApplicationContext applicationContext) {
         var chain = new ChainingMultipleResourcesProjectContributor();
@@ -126,9 +126,9 @@ public class CasInitializrConfiguration {
     }
 
     @Bean
-    public ChainingSingleResourceProjectContributor overlayOverrideSpringConfigContributor(final ConfigurableApplicationContext applicationContext) {
+    public ChainingSingleResourceProjectContributor overlayOverrideSpringConfigContributor() {
         var chain = new ChainingSingleResourceProjectContributor();
-        chain.addContributor(new OverlayOverrideConfigurationContributor(applicationContext));
+        chain.addContributor(new OverlayOverrideConfigurationContributor());
         return chain;
     }
 
@@ -143,10 +143,10 @@ public class CasInitializrConfiguration {
     public InitializrHomeController initializrHomeController() {
         return new InitializrHomeController();
     }
-    
+
     @Bean
     public InitializrMetadataUpdateStrategy initializrMetadataUpdateStrategy(
-        final InitializrMetadataFetcher fetcher) {
+            final InitializrMetadataFetcher fetcher) {
         return new CasOverlayInitializrMetadataUpdateStrategy(fetcher);
     }
 
@@ -160,21 +160,21 @@ public class CasInitializrConfiguration {
     public JCacheManagerCustomizer initializrMetadataCacheManagerCustomizer(final CasInitializrProperties properties) {
         return cacheManager -> {
             var cacheDuration = new Duration(TimeUnit.MINUTES,
-                properties.getMetadataCacheDuration().toMinutes());
-            
+                    properties.getMetadataCacheDuration().toMinutes());
+
             var config = new MutableConfiguration<>()
-                .setStoreByValue(false)
-                .setManagementEnabled(true)
-                .setStatisticsEnabled(true)
-                .setExpiryPolicyFactory(CreatedExpiryPolicy.factoryOf(cacheDuration));
+                    .setStoreByValue(false)
+                    .setManagementEnabled(true)
+                    .setStatisticsEnabled(true)
+                    .setExpiryPolicyFactory(CreatedExpiryPolicy.factoryOf(cacheDuration));
             log.info("Initialize metadata is cached for {}", cacheDuration);
             cacheManager.createCache("initializr.metadata", config);
 
             var propertiesConfig = new MutableConfiguration<>()
-                .setStoreByValue(false)
-                .setManagementEnabled(true)
-                .setStatisticsEnabled(true)
-                .setExpiryPolicyFactory(CreatedExpiryPolicy.factoryOf(cacheDuration));
+                    .setStoreByValue(false)
+                    .setManagementEnabled(true)
+                    .setStatisticsEnabled(true)
+                    .setExpiryPolicyFactory(CreatedExpiryPolicy.factoryOf(cacheDuration));
             log.info("CAS modules metadata is cached for {}", cacheDuration);
             cacheManager.createCache("cas.modules", propertiesConfig);
         };
