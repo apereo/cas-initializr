@@ -30,6 +30,16 @@ export default function ShareOverlay({ overlay, disabled }: ShareOverlayProps) {
         [overlay]
     );
 
+    const httpieUrl = React.useMemo(
+        () => `http --download "${APP_ORIGIN}${API_PATH}starter.${type}?${getOverlayQuery(overlay)}" | tar -xzvf -`,
+        [overlay]
+    );
+
+    const wgetUrl = React.useMemo(
+        () => `wget -qO- "${APP_ORIGIN}${API_PATH}starter.${type}?${getOverlayQuery(overlay)}" | tar -xzvf -`,
+        [overlay]
+    );
+
     const { label, keys, modifier, modifierIcon } = useCommand(Action.SHARE);
 
     useHotkeys(`${modifier}+${keys}`, () => setOpen(true), {preventDefault: true}, [keys]);
@@ -50,6 +60,8 @@ export default function ShareOverlay({ overlay, disabled }: ShareOverlayProps) {
             <ShareOverlayDialog
                 uiUrl={ uiUrl }
                 curlUrl={ curlUrl }
+                httpieUrl={ httpieUrl }
+                wgetUrl={ wgetUrl }
                 onClose={() => setOpen(false)}
                 open={open}
             />

@@ -308,7 +308,7 @@ export default function DependencySelector({ onSelectedChange }: DependencySelec
 
                             const checked = selected.indexOf(item.id) > -1;
 
-                            const { id, description } = item;
+                            const { id, description, aliases } = item;
                             return (
                                 <ListItemButton
                                     onClick={() => handleToggle(id)}
@@ -328,7 +328,32 @@ export default function DependencySelector({ onSelectedChange }: DependencySelec
                                                 attribute="name"
                                             />
                                         }
-                                        secondary={description}
+                                        secondary={
+                                            <>
+                                                {description && (
+                                                    <Typography
+                                                        variant="body2"
+                                                        sx={{ display: "block", color: "text.secondary" }}
+                                                    >
+                                                        {description}
+                                                    </Typography>
+                                                )}
+                                                {aliases && aliases.length > 0 && (
+                                                    <Typography
+                                                        variant="caption"
+                                                        sx={{
+                                                            display: "block",
+                                                            fontFamily: "monospace",
+                                                            mt: 0.5,
+                                                            color: "text.disabled",
+                                                            wordBreak: "break-all",
+                                                        }}
+                                                    >
+                                                        {JSON.stringify(aliases)}
+                                                    </Typography>
+                                                )}
+                                            </>
+                                        }
                                     />
                                 </ListItemButton>
                             );

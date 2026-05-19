@@ -28,6 +28,7 @@ export interface DependencyOptionValue extends OptionValue {
     id: string;
     name: string;
     description?: string;
+    aliases?: string[];
     type?: string;
 }
 

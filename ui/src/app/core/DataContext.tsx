@@ -4,7 +4,7 @@ import { useEffect } from "react";
 
 import { setApiLoaded, setVersionsLoaded } from '../store/AppReducer';
 import { useAppDispatch } from '../store/hooks';
-import { setApiOptions, setCasVersionOptions } from "../store/OptionReducer";
+import { setApiOptions, setCasVersionOptions, setAliasMap } from "../store/OptionReducer";
 
 import { API_PATH } from '../App.constant';
 
@@ -21,6 +21,7 @@ export const DataContext: React.FC<PropsWithChildren<{}>> = ({ children }) => {
     useEffect(() => {
         initializeApiData();
         initializeVersions();
+        initializeAliases();
     }, []);
 
     async function initializeApiData() {
@@ -36,6 +37,25 @@ export const DataContext: React.FC<PropsWithChildren<{}>> = ({ children }) => {
         if (response.ok) {
             dispatch(setCasVersionOptions(await response.json()));
             dispatch(setVersionsLoaded(true))
+        }
+    }
+
+    async function initializeAliases() {
+        try {
+            const response = await fetch(`${API_PATH}actuator/info`, fetchProps);
+            if (response.ok) {
+                const info = await response.json();
+                const depAliases: Record<string, string[]> = {};
+                const raw = info?.["dependency-aliases"] ?? {};
+                Object.entries(raw).forEach(([id, dep]: [string, any]) => {
+                    if (Array.isArray(dep?.aliases) && dep.aliases.length > 0) {
+                        depAliases[id] = dep.aliases;
+                    }
+                });
+                dispatch(setAliasMap(depAliases));
+            }
+        } catch (_) {
+            // non-fatal — aliases are optional
         }
     }
 

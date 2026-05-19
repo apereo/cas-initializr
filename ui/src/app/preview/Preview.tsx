@@ -1011,15 +1011,15 @@ function QuickOpen({
                 background: "rgba(0,0,0,0.5)",
                 display: "flex",
                 justifyContent: "center",
-                paddingTop: 60,
+                alignItems: "center",
             }}
         >
             {/* Panel */}
             <div
                 onClick={(e) => e.stopPropagation()}
                 style={{
-                    width: "min(640px, 90vw)",
-                    maxHeight: "60vh",
+                    width: "min(820px, 92vw)",
+                    maxHeight: "75vh",
                     background: "#252526",
                     border: "1px solid #474747",
                     borderRadius: 6,
@@ -1030,9 +1030,9 @@ function QuickOpen({
                 }}
             >
                 {/* Search input */}
-                <div style={{ display: "flex", alignItems: "center", padding: "8px 12px", borderBottom: "1px solid #474747" }}>
+                <div style={{ display: "flex", alignItems: "center", padding: "12px 16px", borderBottom: "1px solid #474747" }}>
                     {/* Magnifier icon */}
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#858585" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, marginRight: 8 }}>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#858585" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, marginRight: 10 }}>
                         <circle cx="11" cy="11" r="8" />
                         <line x1="21" y1="21" x2="16.65" y2="16.65" />
                     </svg>
@@ -1048,17 +1048,18 @@ function QuickOpen({
                             border: "none",
                             outline: "none",
                             color: "#cccccc",
-                            fontSize: 14,
+                            fontSize: 19,
                             fontFamily: EDITOR_FONT,
+                            lineHeight: "1.5",
                         }}
                     />
-                    <span style={{ color: "#858585", fontSize: 11, marginLeft: 8, flexShrink: 0, fontFamily: EDITOR_FONT }}>Esc to close</span>
+                    <span style={{ color: "#858585", fontSize: 15, marginLeft: 10, flexShrink: 0, fontFamily: EDITOR_FONT }}>Esc to close</span>
                 </div>
 
                 {/* Results list */}
                 <div ref={listRef} style={{ overflowY: "auto", flex: 1 }}>
                     {results.length === 0 && (
-                        <div style={{ padding: "12px 16px", color: "#858585", fontSize: 13 }}>No files found</div>
+                        <div style={{ padding: "16px 20px", color: "#858585", fontSize: 17, fontFamily: EDITOR_FONT }}>No files found</div>
                     )}
                     {results.map((item, idx) => (
                         <QuickOpenRow
@@ -1103,19 +1104,19 @@ function QuickOpenRow({
             style={{
                 display: "flex",
                 alignItems: "center",
-                padding: "4px 12px",
+                padding: "6px 16px",
                 cursor: "pointer",
                 background: active ? "#094771" : "transparent",
-                gap: 8,
+                gap: 10,
             }}
         >
-            <span style={{ color: "#75beff", display: "inline-flex", alignItems: "center", flexShrink: 0 }}>
+            <span style={{ color: "#75beff", display: "inline-flex", alignItems: "center", flexShrink: 0, fontSize: 20 }}>
                 <FileTypeIcon type={item.type} fontSize="small" />
             </span>
-            <span style={{ color: "#cccccc", fontSize: 13, fontFamily: EDITOR_FONT }}>
+            <span style={{ color: "#cccccc", fontSize: 17, fontFamily: EDITOR_FONT }}>
                 {highlighted}
             </span>
-            <span style={{ color: "#858585", fontSize: 11, marginLeft: "auto", paddingLeft: 12, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 260, fontFamily: "monospace", flexShrink: 1 }}>
+            <span style={{ color: "#858585", fontSize: 15, marginLeft: "auto", paddingLeft: 12, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 320, fontFamily: EDITOR_FONT, flexShrink: 1 }}>
                 {item.path}
             </span>
         </div>

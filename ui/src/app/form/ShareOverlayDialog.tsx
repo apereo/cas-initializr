@@ -15,6 +15,8 @@ export interface SimpleDialogProps {
     onClose: () => void;
     uiUrl: string;
     curlUrl: string;
+    httpieUrl: string;
+    wgetUrl: string;
 }
 
 function a11yProps(index: number) {
@@ -50,7 +52,7 @@ function TabPanel(props: TabPanelProps) {
     );
 }
 
-export default function ShareOverlayDialog({ onClose, open, uiUrl, curlUrl }: SimpleDialogProps) {
+export default function ShareOverlayDialog({ onClose, open, uiUrl, curlUrl, httpieUrl, wgetUrl }: SimpleDialogProps) {
     /*eslint-disable @typescript-eslint/no-unused-vars*/
     const copy = useCopyToClipboard();
 
@@ -85,7 +87,9 @@ export default function ShareOverlayDialog({ onClose, open, uiUrl, curlUrl }: Si
                 <Box sx={{borderBottom: 1, borderColor: 'divider'}}>
                     <Tabs value={tab} onChange={handleChange} aria-label="basic tabs example">
                         <Tab label="Curl" {...a11yProps(0)} />
-                        <Tab label="Web" {...a11yProps(1)} />
+                        <Tab label="HTTPie" {...a11yProps(1)} />
+                        <Tab label="wget" {...a11yProps(2)} />
+                        <Tab label="Web" {...a11yProps(3)} />
                     </Tabs>
                 </Box>
                 <TabPanel value={tab} index={0}>
@@ -119,6 +123,66 @@ export default function ShareOverlayDialog({ onClose, open, uiUrl, curlUrl }: Si
                     </FormControl>
                 </TabPanel>
                 <TabPanel value={tab} index={1}>
+                    <FormControl sx={{ mt: 2, width: "100%" }} variant="outlined">
+                        <InputLabel htmlFor="outlined-adornment-url">
+                            Configuration Url
+                        </InputLabel>
+                        <OutlinedInput
+                            id="outlined-adornment-url"
+                            value={httpieUrl}
+                            endAdornment={
+                                <InputAdornment position="end">
+                                    <Tooltip
+                                        open={copied}
+                                        title="Copied!"
+                                        arrow
+                                        placement="top"
+                                    >
+                                        <IconButton
+                                            aria-label="copy url"
+                                            onClick={() => handleCopy(httpieUrl)}
+                                            edge="end"
+                                        >
+                                            <CopyAllIcon />
+                                        </IconButton>
+                                    </Tooltip>
+                                </InputAdornment>
+                            }
+                            label="Configuration Url"
+                        />
+                    </FormControl>
+                </TabPanel>
+                <TabPanel value={tab} index={2}>
+                    <FormControl sx={{ mt: 2, width: "100%" }} variant="outlined">
+                        <InputLabel htmlFor="outlined-adornment-url">
+                            Configuration Url
+                        </InputLabel>
+                        <OutlinedInput
+                            id="outlined-adornment-url"
+                            value={wgetUrl}
+                            endAdornment={
+                                <InputAdornment position="end">
+                                    <Tooltip
+                                        open={copied}
+                                        title="Copied!"
+                                        arrow
+                                        placement="top"
+                                    >
+                                        <IconButton
+                                            aria-label="copy url"
+                                            onClick={() => handleCopy(wgetUrl)}
+                                            edge="end"
+                                        >
+                                            <CopyAllIcon />
+                                        </IconButton>
+                                    </Tooltip>
+                                </InputAdornment>
+                            }
+                            label="Configuration Url"
+                        />
+                    </FormControl>
+                </TabPanel>
+                <TabPanel value={tab} index={3}>
                     <FormControl sx={{ mt: 2, width: "100%" }} variant="outlined">
                         <InputLabel htmlFor="outlined-adornment-url">
                             Configuration Url

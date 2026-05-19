@@ -13,8 +13,15 @@ import {
     Radio,
     FormLabel,
     FormControlLabel,
+    Grid,
+    Box,
+    Paper,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import CodeIcon from "@mui/icons-material/Code";
+import LocalFloristIcon from "@mui/icons-material/LocalFlorist";
+import BuildIcon from "@mui/icons-material/Build";
+import StorageIcon from "@mui/icons-material/Storage";
 import MuiAccordion, { AccordionProps } from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
@@ -172,10 +179,28 @@ export default function Customization() {
                                     <Typography>Platform Requirements</Typography>
                                 </AccordionSummary>
                                 <AccordionDetails>
-                                    <Typography variant="body2" sx={{ my: 1 }}><strong>Java Version:</strong> {selectedVersion.javaVersion}</Typography>
-                                    <Typography variant="body2" sx={{ my: 1 }}><strong>Spring Boot Version:</strong> {selectedVersion.bootVersion}</Typography>
-                                    <Typography variant="body2" sx={{ my: 1 }}><strong>Gradle Version:</strong> {selectedVersion.gradleVersion}</Typography>
-                                    <Typography variant="body2" sx={{ mt: 1 }}><strong>Apache Tomcat Version:</strong> {selectedVersion.tomcatVersion}</Typography>
+                                    <Grid container spacing={2}>
+                                        {[
+                                            { icon: <CodeIcon color="primary" />, label: "Java Version", value: selectedVersion.javaVersion },
+                                            { icon: <LocalFloristIcon sx={{ color: "#6db33f" }} />, label: "Spring Boot Version", value: selectedVersion.bootVersion },
+                                            { icon: <BuildIcon sx={{ color: "#02303a" }} />, label: "Gradle Version", value: selectedVersion.gradleVersion },
+                                            { icon: <StorageIcon sx={{ color: "#f8dc75" }} />, label: "Apache Tomcat Version", value: selectedVersion.tomcatVersion },
+                                        ].map(({ icon, label, value }) => (
+                                            <Grid size={{ xs: 12, sm: 6 }} key={label}>
+                                                <Paper variant="outlined" sx={{ p: 1.5, display: "flex", alignItems: "center", gap: 1.5, borderRadius: 2 }}>
+                                                    <Box sx={{ display: "flex", alignItems: "center", flexShrink: 0 }}>{icon}</Box>
+                                                    <Box>
+                                                        <Typography variant="caption" color="text.secondary" sx={{ display: "block", lineHeight: 1.2 }}>
+                                                            {label}
+                                                        </Typography>
+                                                        <Typography variant="body2" sx={{ fontWeight: 600, fontSize: "1.2rem" }}>
+                                                            {value}
+                                                        </Typography>
+                                                    </Box>
+                                                </Paper>
+                                            </Grid>
+                                        ))}
+                                    </Grid>
                                 </AccordionDetails>
                             </Accordion>
                             }

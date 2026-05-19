@@ -22,7 +22,7 @@ public class RequestCaptureFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
         var clientIp = ClientIpResolver.resolve(request);
         var requestURI = request.getRequestURI();
-        if (requestURI.startsWith("/starter") || requestURI.startsWith("/actuator/") || requestURI.startsWith("/ui")) {
+        if (requestURI.startsWith("/starter")) {
 
             val parameters = new LinkedMultiValueMap<String, String>();
             request.getParameterMap().forEach((key, value) -> {

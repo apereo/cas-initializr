@@ -22,6 +22,7 @@ import { useSelectedCasVersion } from "./OverlayReducer";
 export interface OptionState extends ApiOptions {
     casVersion: CasVersionOption[];
     properties: PropertyOption;
+    aliasMap: Record<string, string[]>;
 }
 
 const mapVersions: { [id: string]: string } = {
@@ -37,6 +38,7 @@ export const OptionSlice = createSlice({
     initialState: () =>
         ({
             casVersion: [],
+            aliasMap: {},
             type: {
                 type: "",
                 default: "",
@@ -189,6 +191,10 @@ export const OptionSlice = createSlice({
             const { payload: properties } = action;
             state.properties = properties;
         },
+
+        setAliasMap(state, action: PayloadAction<Record<string, string[]>>) {
+            state.aliasMap = action.payload;
+        },
     },
 });
 
@@ -272,6 +278,7 @@ export const CasDefaultSelector = createSelector(
 
 export function useDependencyList(): Dependency[] {
     const deps = useSelector(OptionDependenciesSelector);
+    const aliasMap = useSelector((state: RootState) => (state.option as OptionState).aliasMap);
 
     const parsed = useMemo(() => {
         return deps?.reduce(
@@ -280,6 +287,7 @@ export function useDependencyList(): Dependency[] {
                     type.values.map((dep: DependencyOptionValue) => ({
                         ...dep,
                         type: type.name,
+                        aliases: aliasMap[dep.id] ?? dep.aliases ?? [],
                     })),
                     ["name"],
                     "asc"
@@ -289,7 +297,7 @@ export function useDependencyList(): Dependency[] {
             },
             [] as Dependency[]
         );
-    }, [deps]);
+    }, [deps, aliasMap]);
 
     return parsed as Dependency[];
 }
@@ -350,6 +358,6 @@ export function useDefaultValues(): Partial<Overlay> {
     return useSelector(CasDefaultSelector);
 }
 
-export const { setApiOptions, setCasVersionOptions } = OptionSlice.actions;
+export const { setApiOptions, setCasVersionOptions, setAliasMap } = OptionSlice.actions;
 
 export default OptionSlice;

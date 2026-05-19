@@ -96,7 +96,7 @@ if [[ "${BUILD_ONLY}" == "true" ]]; then
     printgreen "Chosen JVM vendor: ${JVM_VENDOR}"
     cd $PWD
     printgreen "Building CAS overlay in $PWD"
-    ./gradlew clean build -PjvmVendor="${JVM_VENDOR}" --warning-mode all --no-daemon
+    ./gradlew clean build -PjvmVendor="${JVM_VENDOR}" --warning-mode all --no-daemon --stacktrace
     if [[ $? -ne 0 ]]; then
       printred "Failed to build CAS overlay ${CAS_VERSION} with JVM vendor ${JVM_VENDOR}"
       exit 1

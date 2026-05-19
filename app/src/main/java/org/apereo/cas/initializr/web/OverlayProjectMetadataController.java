@@ -75,7 +75,7 @@ public class OverlayProjectMetadataController extends ProjectMetadataController 
 
         var versionToChoose = (casVersion != null)
             ? VersionUtils.parse(casVersion)
-            : VersionUtils.parse(supportedVersions.get(0));
+            : VersionUtils.parse(supportedVersions.getFirst());
         var platform = metadata.getConfiguration().getEnv().getPlatform();
         if (!platform.isCompatibleVersion(versionToChoose)) {
             throw new InvalidProjectRequestException("Invalid CAS version '" + casVersion

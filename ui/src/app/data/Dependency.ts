@@ -3,4 +3,5 @@ export interface Dependency {
     id: string;
     name: string;
     description: string;
+    aliases?: string[];
 }
