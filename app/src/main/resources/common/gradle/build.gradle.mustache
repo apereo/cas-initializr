@@ -128,6 +128,7 @@ apply plugin: "com.google.cloud.tools.jib"
 apply plugin: "com.bmuschko.docker-remote-api"
 {{/dockerSupported}}
 apply from: rootProject.file("gradle/tasks.gradle")
+apply from: rootProject.file("gradle/diff.gradle")
 
 def out = services.get(StyledTextOutputFactory).create("cas")
 def configurationCacheRequested = services.get(BuildFeatures).configurationCache.requested.getOrElse(true)
@@ -434,11 +435,21 @@ tasks.register("casPushDockerImage", DockerPushImage) {
 {{/dockerSupported}}
 
 {{#deploymentTypeIsWar}}
-if (project.hasProperty("appServer")) {
-    def appServer = project.findProperty('appServer') ?: ''
-    out.withStyle(Style.Success).println("Building CAS version ${project.version} with application server ${appServer}")
-} else {
-    out.withStyle(Style.Success).println("Building CAS version ${project.version} without an application server")
+["build", "assemble", "bootWar"].each { taskName ->
+    tasks.matching { it.name == taskName }.configureEach {
+        doFirst {
+            if (project.hasProperty("appServer")) {
+                def appServer = project.findProperty("appServer") ?: ""
+                out.withStyle(Style.Success).println(
+                    "Building CAS version ${project.version} with application server ${appServer}"
+                )
+            } else {
+                out.withStyle(Style.Success).println(
+                    "Building CAS version ${project.version} without an application server"
+                )
+            }
+        }
+    }
 }
 {{/deploymentTypeIsWar}}
 

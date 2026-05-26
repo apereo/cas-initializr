@@ -209,3 +209,37 @@ Afterward, review the changes, and when you are comfortable with the changes, co
 The run goal generates warnings in the build log wherever it makes changes to source files.
 
 {{/openRewriteSupported}}
+
+# Diffs and Comparisons
+
+This project includes a custom Gradle task named `diff` that compares local
+overlay files against the corresponding files from the Apereo CAS source repository. The task is useful when
+maintaining a CAS overlay and you want to understand how your local
+customizations differ from the upstream CAS version your overlay is based on.
+
+The `diff` task:
+
+- Prompts for a CAS version at execution time.
+- Defaults to the `cas.version` Gradle property when available.
+- Downloads the matching Apereo CAS GitHub source archive.
+- Caches the downloaded archive under `build/cas-diff/cache`.
+- Reuses the cached archive on later runs.
+- Scans local overlay files.
+- Finds matching upstream CAS files.
+- Produces raw unified diff files.
+- Produces colorized HTML diff files.
+- Produces a styled HTML summary report.
+- Prepares side-by-side upstream and overlay folders for IDE diff tools.
+
+```bash
+./gradlew[.bat] diff
+```
+
+After the task completes, you can examine the results via:
+
+```
+open build/cas-diff/reports/index.html
+```
+
+If the cached ZIP file already exists, the task reuses it and does not download it again. To force a fresh download,
+delete the cached archive via `./gradlew[.bat] clean`.

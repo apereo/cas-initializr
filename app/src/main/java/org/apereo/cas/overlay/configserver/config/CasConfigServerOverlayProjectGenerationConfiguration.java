@@ -7,6 +7,7 @@ import io.spring.initializr.generator.project.contributor.ProjectContributor;
 import io.spring.initializr.generator.spring.build.BuildCustomizer;
 
 import org.apereo.cas.initializr.contrib.ChainingSingleResourceProjectContributor;
+import org.apereo.cas.initializr.contrib.gradle.OverlayGradleDiffContributor;
 import org.apereo.cas.initializr.contrib.project.ProjectReadMeContributor;
 import org.apereo.cas.initializr.contrib.gradle.OverlayGradleBuildContributor;
 import org.apereo.cas.initializr.contrib.gradle.OverlayGradlePropertiesContributor;

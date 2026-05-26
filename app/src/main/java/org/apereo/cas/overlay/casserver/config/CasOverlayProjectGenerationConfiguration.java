@@ -1,6 +1,7 @@
 package org.apereo.cas.overlay.casserver.config;
 
 import org.apereo.cas.initializr.contrib.ChainingSingleResourceProjectContributor;
+import org.apereo.cas.initializr.contrib.gradle.OverlayGradleDiffContributor;
 import org.apereo.cas.initializr.contrib.project.ProjectReadMeContributor;
 import org.apereo.cas.initializr.contrib.gradle.OverlayGradleBuildContributor;
 import org.apereo.cas.initializr.contrib.gradle.OverlayGradlePropertiesContributor;
@@ -62,6 +63,7 @@ public class CasOverlayProjectGenerationConfiguration {
         chain.addContributor(new OverlayGradleBuildContributor(applicationContext));
         chain.addContributor(new CasOverlayConfigurationDirectoriesContributor());
         chain.addContributor(new CasOverlayLoggingConfigurationContributor());
+        chain.addContributor(new OverlayGradleDiffContributor(applicationContext));
         return chain;
     }
 
