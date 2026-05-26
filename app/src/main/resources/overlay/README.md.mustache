@@ -8,6 +8,27 @@ To launch into the CAS command-line shell:
 ```
 {{/shellSupported}}
 
+# Retrieve Java Classes
+
+This project includes a custom Gradle task named `getJavaClass` that copies a
+Java class from the upstream Apereo CAS source repository into the overlay project. The task uses
+the CAS version configured in `gradle.properties`, downloads
+the matching Apereo CAS source archive if needed, searches for the requested
+class, and copies the selected source file into `src/main/java` using the
+package structure declared by the class.
+
+```bash
+./gradlew[.bat] getJavaClass -PclassName=...
+```
+
+Note that only the simple/short class name is required.
+
+If exactly one matching class is found, the task copies it automatically. If multiple files
+with the same class name are found, the task prompts you to select one.
+
+Also note that the task **will overwrite** an existing file. If the destination file already exists,
+the task will **delete** and overwrite it.
+
 # Retrieve Overlay Resources
 
 To fetch and overlay a CAS resource or view, use:

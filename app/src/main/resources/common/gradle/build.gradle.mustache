@@ -129,6 +129,7 @@ apply plugin: "com.bmuschko.docker-remote-api"
 {{/dockerSupported}}
 apply from: rootProject.file("gradle/tasks.gradle")
 apply from: rootProject.file("gradle/diff.gradle")
+apply from: rootProject.file("gradle/getjavaclass.gradle")
 
 def out = services.get(StyledTextOutputFactory).create("cas")
 def configurationCacheRequested = services.get(BuildFeatures).configurationCache.requested.getOrElse(true)
