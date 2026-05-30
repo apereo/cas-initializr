@@ -53,6 +53,8 @@ All generated overlay file contributions implement `ProjectContributor`. The bas
 - Create a contributor class extending `TemplatedProjectContributor`
 - Register it as a `@Bean` in `CasInitializrConfiguration` (for all overlay types) or in `CasOverlayProjectGenerationConfiguration` / `CasConfigServerOverlayProjectGenerationConfiguration` (type-specific, annotated with `@ConditionalOnBuildSystem`)
 
+Contributors that do not need Mustache rendering may implement `ProjectContributor` directly (e.g. `JenvJavaVersionContributor` writes `.java-version`, `SdkmanJavaVersionContributor` writes `.sdkmanrc` — both read `javaVersion` from the matched `SupportedVersion` entry).
+
 Contributors are often grouped using `ChainingSingleResourceProjectContributor` (sequential, ordered) or `ChainingMultipleResourcesProjectContributor` (for multi-resource patterns). See `CasInitializrConfiguration` for examples.
 
 **Important:** `@SpringBootApplication(scanBasePackages = "org.apereo.cas.initializr")` limits component scanning. Overlay-specific `@ProjectGenerationConfiguration` classes under `org.apereo.cas.overlay` are **not** auto-scanned — they are discovered exclusively via `spring.factories`.
@@ -71,17 +73,25 @@ Key boolean variables injected per version (used for conditional blocks in templ
 - `casVersion7OrAbove`, `casVersion80OrAbove` — cumulative range flags
 - `casVersion<major><minor>` (e.g. `casVersion73`) — exact major+minor match
 - `casVersion<major><minor>OrAbove` (e.g. `casVersion73OrAbove`) — cumulative minor range flags
-- `gradleVersion8`, `gradleVersion9Compatible` — Gradle version guards
+- `casVersion<major><minor><patch>OrAbove` (e.g. `casVersion737OrAbove`) — cumulative patch-level range flags
+- `gradleVersion<N>` (e.g. `gradleVersion9`) — exact Gradle major match; `gradleVersion<N>Compatible` (e.g. `gradleVersion9Compatible`) — cumulative (>= N)
 - `casServer` / `configServer` — overlay type flag
 - `appName` — `"cas"` for CAS overlay, `"casconfigserver"` for config server overlay
 - `dockerSupported`, `helmSupported`, `herokuSupported`, `puppeteerSupported`, `nativeImageSupported`, `githubActionsSupported`, `openRewriteSupported`, `sbomSupported`, `shellSupported` — feature flags from the HTTP request
+- `terraformAwsAppRunner`, `terraformAzureContainerApps`, `terraformGcpCloudRun` — Terraform cloud platform flags
+- `deploymentTypeIsJar`, `deploymentTypeIsWar` — deployment packaging booleans
+- `archiveInfoDirectoryName` — `BOOT-INF` (JAR) or `WEB-INF` (WAR); `archiveFileName` — e.g. `cas.war` or `cas.jar`
+- `appServer` — embedded server suffix (e.g. `-tomcat`, `-jetty`, `-undertow`, or `""` for `webapp` dependency)
+- `tomcatVersion`, `javaVersion`, `jibVersion`, `openRewriteVersion`, `containerBaseImageName`, `gradleVersion`, `branch`, `springBootVersion` — resolved from the matched `SupportedVersion` entry
+- `containerImageName`, `containerImageOrg`, `initializrUrl` — container/service metadata
 
 ## Key Request Parameters
 
 Beyond standard Spring Initializr parameters (`dependencies`, `type`, `bootVersion`), CAS-specific params:
 - `casVersion` — override resolved CAS version
 - `dockerSupported`, `helmSupported`, `herokuSupported`, `puppeteerSupported`, `nativeImageSupported`, `openRewriteSupported`, `sbomSupported`, `githubActionsSupported`, `commandlineShellSupported` (all boolean, default `true` except `nativeImageSupported`)
-- `deploymentType` — `EXECUTABLE` (default) or `WEB`
+- `terraformAwsAppRunner`, `terraformAzureContainerApps`, `terraformGcpCloudRun` (all boolean, default `false`)
+- `deploymentType` — `EXECUTABLE` (default), `WEB`, or `JAR`
 - `dependencyCoordinates` — raw `groupId:artifactId[:version]` coordinates added beyond the metadata lookup
 
 ## Key Files & Directories
@@ -90,6 +100,7 @@ Beyond standard Spring Initializr parameters (`dependencies`, `type`, `bootVersi
 |------|---------|
 | `app/src/main/resources/application-initializr.yml` | Supported CAS version matrix (expanded from `gradle.properties`) |
 | `app/src/main/resources/overlay/` | Mustache templates for generated overlays |
+| `app/src/main/resources/overlay/terraform/{aws,azure,gcp}/` | Terraform templates for AWS App Runner, Azure Container Apps, GCP Cloud Run |
 | `app/src/main/resources/configserver-overlay/` | Config-server-specific overlay templates |
 | `app/src/main/resources/common/` | Shared templates used by both overlay types (Gradle build, GitHub workflows, Heroku, etc.) |
 | `app/src/main/resources/META-INF/spring.factories` | Contributor/BuildSystem discovery |

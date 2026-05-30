@@ -246,7 +246,7 @@ export const CasDefaultSelector = createSelector(
         }
 
         const stable = filtered.filter(({ version }) =>
-            /^(\d+\.)?(\d+\.)?(\*|\d+)$/.test(version)
+            /^(\d+\.)?(\d+\.)?(\d+\.)?(\*|\d+)$/.test(version)
         );
         const sorted = reverse(sortBy(stable, ["version"]));
 
