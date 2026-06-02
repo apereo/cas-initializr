@@ -280,24 +280,10 @@ task unzip(type: Copy, group: "CAS", description: "Explodes the CAS archive and 
 }
 
 {{#shellSupported}}
-task downloadShell(group: "Shell", description: "Download CAS shell jar from snapshot or release maven repo", type: Download) {
+task downloadShell(group: "Shell", group: "CAS", description: "Download CAS shell jar from snapshot or release maven repo", type: Download) {
     def shellDir = project.providers.gradleProperty("shellDir").get()
     def casVersion = project.providers.gradleProperty("cas.version").get()
-    def downloadFile
-    if (casVersion.contains("-SNAPSHOT")) {
-        def snapshotDir = "https://central.sonatype.com/repository/maven-snapshots/org/apereo/cas/cas-server-support-shell/${casVersion}"
-        def metaUrl = "${snapshotDir}/maven-metadata.xml"
-        def xml = new XmlSlurper().parse(metaUrl.toURL().openStream())
-        def sv = xml.versioning.snapshotVersions.snapshotVersion.findAll {
-            it.extension.text() == "jar" && it.classifier.text() == ""
-        }.sort { a, b -> a.updated.text() <=> b.updated.text() }.last()
-        def stamped = sv.value.text()
-        def jarName = "cas-server-support-shell-${stamped}.jar"
-        def jarUrl  = "${snapshotDir}/${jarName}"
-        downloadFile = jarUrl
-    } else {
-        downloadFile = "https://github.com/apereo/cas/releases/download/v${casVersion}/cas-server-support-shell-${casVersion}.jar"
-    }
+    def downloadFile = "https://github.com/apereo/cas/releases/download/v${casVersion}/cas-server-support-shell-${casVersion}.jar"
     new File("${shellDir}").mkdir()
     logger.info "Downloading file: ${downloadFile} into ${shellDir}"
     src downloadFile
@@ -305,7 +291,7 @@ task downloadShell(group: "Shell", description: "Download CAS shell jar from sna
     overwrite false
 }
 
-task runShell(group: "Shell", description: "Run the CAS shell") {
+task runShell(group: "Shell", group: "CAS", description: "Run the CAS shell") {
     dependsOn downloadShell
     def shellDir = project.providers.gradleProperty("shellDir").get()
     def casVersion = project.providers.gradleProperty("cas.version").get()
@@ -314,7 +300,7 @@ task runShell(group: "Shell", description: "Run the CAS shell") {
     }
 }
 
-task debugShell(group: "Shell", description: "Run the CAS shell with debug options, wait for debugger on port 5005") {
+task debugShell(group: "Shell", group: "CAS", description: "Run the CAS shell with debug options, wait for debugger on port 5005") {
     dependsOn downloadShell
     def casVersion = project.providers.gradleProperty("cas.version").get()
     def shellDir = project.providers.gradleProperty("shellDir").get()
