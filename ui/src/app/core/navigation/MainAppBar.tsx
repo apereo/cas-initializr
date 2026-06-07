@@ -27,10 +27,14 @@ import BrightnessHighIcon from '@mui/icons-material/BrightnessHigh';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import ContrastIcon from '@mui/icons-material/Contrast';
 import InvertColorsIcon from '@mui/icons-material/InvertColors';
+import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
+import AcUnitIcon from '@mui/icons-material/AcUnit';
+import GitHubIcon from '@mui/icons-material/GitHub';
+import ForestIcon from '@mui/icons-material/Forest';
+
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 import moment from 'moment';
-
 import logo from "./cas-logo.png";
 import { API_PATH } from '../../App.constant';
 import { Divider, Link } from '@mui/material';
@@ -63,28 +67,40 @@ const ThemeSwitcher = () => {
         handleClose();
     };
 
-    // Get the appropriate icon for the current theme
     const getThemeIcon = () => {
         switch (currentTheme) {
-            case 'light':
-                return <BrightnessHighIcon />;
-            case 'dark':
-                return <Brightness4Icon />;
-            case 'highContrast':
-                return <ContrastIcon />;
-            case 'blue':
-                return <InvertColorsIcon />;
-            case 'solarizedLight':
-                return <BrightnessHighIcon />;
-            case 'solarizedDark':
-                return <Brightness4Icon />;
-            case 'vscodeLight':
-                return <BrightnessHighIcon />;
-            case 'vscodeDark':
-                return <Brightness4Icon />;
-            default:
-                return <PaletteIcon />;
+            case 'light':       return <BrightnessHighIcon />;
+            case 'dark':        return <Brightness4Icon />;
+            case 'highContrast':return <ContrastIcon />;
+            case 'blue':        return <InvertColorsIcon />;
+            case 'solarizedLight': return <BrightnessHighIcon />;
+            case 'solarizedDark':  return <Brightness4Icon />;
+            case 'vscodeLight': return <BrightnessHighIcon />;
+            case 'vscodeDark':  return <Brightness4Icon />;
+            case 'dracula':     return <AutoAwesomeIcon />;
+            case 'nord':        return <AcUnitIcon />;
+            case 'githubLight': return <GitHubIcon />;
+            case 'monokai':     return <ForestIcon />;
+            default:            return <PaletteIcon />;
         }
+    };
+
+    const getThemeLabel = () => {
+        const labels: Record<ThemeType, string> = {
+            light: 'Light',
+            dark: 'Dark',
+            highContrast: 'High Contrast',
+            blue: 'Blue',
+            solarizedLight: 'Solarized Light',
+            solarizedDark: 'Solarized Dark',
+            vscodeLight: 'VS Code Light',
+            vscodeDark: 'VS Code Dark',
+            dracula: 'Dracula',
+            nord: 'Nord',
+            githubLight: 'GitHub Light',
+            monokai: 'Monokai',
+        };
+        return labels[currentTheme] ?? 'Theme';
     };
 
     return (
@@ -104,14 +120,7 @@ const ThemeSwitcher = () => {
                         ml: 2
                     }}
                 >
-                    {currentTheme === 'light' ? 'Light' :
-                     currentTheme === 'dark' ? 'Dark' :
-                     currentTheme === 'highContrast' ? 'High Contrast' :
-                     currentTheme === 'blue' ? 'Blue' :
-                     currentTheme === 'solarizedLight' ? 'Solarized Light' :
-                     currentTheme === 'solarizedDark' ? 'Solarized Dark' :
-                     currentTheme === 'vscodeLight' ? 'VS Code Light' :
-                     currentTheme === 'vscodeDark' ? 'VS Code Dark' : 'Theme'}
+                    {getThemeLabel()}
                 </Button>
             </Tooltip>
                 <Menu
@@ -198,6 +207,43 @@ const ThemeSwitcher = () => {
                         <Brightness4Icon fontSize="small" />
                     </ListItemIcon>
                     <ListItemText>VS Code Dark</ListItemText>
+                </MenuItem>
+                <Divider />
+                <MenuItem
+                    onClick={() => handleThemeChange('dracula')}
+                    selected={currentTheme === 'dracula'}
+                >
+                    <ListItemIcon>
+                        <AutoAwesomeIcon fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText>Dracula</ListItemText>
+                </MenuItem>
+                <MenuItem
+                    onClick={() => handleThemeChange('nord')}
+                    selected={currentTheme === 'nord'}
+                >
+                    <ListItemIcon>
+                        <AcUnitIcon fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText>Nord</ListItemText>
+                </MenuItem>
+                <MenuItem
+                    onClick={() => handleThemeChange('githubLight')}
+                    selected={currentTheme === 'githubLight'}
+                >
+                    <ListItemIcon>
+                        <GitHubIcon fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText>GitHub Light</ListItemText>
+                </MenuItem>
+                <MenuItem
+                    onClick={() => handleThemeChange('monokai')}
+                    selected={currentTheme === 'monokai'}
+                >
+                    <ListItemIcon>
+                        <ForestIcon fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText>Monokai</ListItemText>
                 </MenuItem>
             </Menu>
         </div>

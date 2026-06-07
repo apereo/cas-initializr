@@ -1,6 +1,8 @@
 import React, { Fragment } from "react";
 import {
+    Box,
     Button,
+    Chip,
     Grid,
     IconButton,
     List,
@@ -100,7 +102,20 @@ export default function Dependencies() {
                                         placement="top-start"
                                     >
                                         <ListItemText
-                                            primary={s.name}
+                                            primary={
+                                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                                    {s.type && (
+                                                        <Chip
+                                                            label={s.type}
+                                                            color="primary"
+                                                            variant="outlined"
+                                                            size="small"
+                                                            sx={{ fontWeight: 600, letterSpacing: '0.03em' }}
+                                                        />
+                                                    )}
+                                                    <span>{s.name}</span>
+                                                </Box>
+                                            }
                                             secondary={s.description}
                                         />
                                     </Tooltip>
