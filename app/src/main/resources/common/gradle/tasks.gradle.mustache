@@ -7,7 +7,8 @@ import org.gradle.internal.logging.text.*
 import groovy.json.*
 import groovy.time.*
 import groovy.xml.*
- 
+
+import java.net.*
 import java.nio.file.*
 import java.util.*
 import java.security.*
@@ -37,6 +38,24 @@ buildscript {
     }
 }
 apply plugin: "de.undercouch.download"
+
+def urlAvailable = { String location ->
+    HttpURLConnection connection = null
+    try {
+        connection = new URL(location).openConnection() as HttpURLConnection
+        connection.requestMethod = 'HEAD'
+        connection.instanceFollowRedirects = true
+        connection.connectTimeout = 10_000
+        connection.readTimeout = 10_000
+        def code = connection.responseCode
+        return code >= 200 && code < 400
+    } catch (Throwable e) {
+        println("URL is not available: ${location} (${e.class.simpleName}: ${e.message})")
+        return false
+    } finally {
+        connection?.disconnect()
+    }
+}
 {{/casServer}}
 
 {{#casVersion73OrAbove}}
@@ -280,34 +299,62 @@ task unzip(type: Copy, group: "CAS", description: "Explodes the CAS archive and 
 }
 
 {{#shellSupported}}
-task downloadShell(group: "Shell", group: "CAS", description: "Download CAS shell jar from snapshot or release maven repo", type: Download) {
+task downloadShell(group: "Shell", description: "Download CAS shell jar from snapshot or release maven repo", type: Download) {
     def shellDir = project.providers.gradleProperty("shellDir").get()
     def casVersion = project.providers.gradleProperty("cas.version").get()
     def downloadFile = "https://github.com/apereo/cas/releases/download/v${casVersion}/cas-server-support-shell-${casVersion}.jar"
+    def targetFile = new File("${shellDir}", "cas-server-support-shell-${casVersion}.jar")
+
+    onlyIf("CAS Shell artifact is available at ${downloadFile}") {
+        def available = urlAvailable(downloadFile)
+        if (!available) {
+            println "Skipping downloadShell; URL is not available: ${downloadFile}"
+        }
+        available
+    }
+
     new File("${shellDir}").mkdir()
     logger.info "Downloading file: ${downloadFile} into ${shellDir}"
     src downloadFile
-    dest new File("${shellDir}", "cas-server-support-shell-${casVersion}.jar")
+    dest targetFile
     overwrite false
 }
 
-task runShell(group: "Shell", group: "CAS", description: "Run the CAS shell") {
+task runShell(group: "Shell", description: "Run the CAS shell") {
     dependsOn downloadShell
     def shellDir = project.providers.gradleProperty("shellDir").get()
     def casVersion = project.providers.gradleProperty("cas.version").get()
+    def shellJar = new File("${shellDir}", "cas-server-support-shell-${casVersion}.jar")
+    onlyIf("CAS shell jar exists") {
+        def exists = shellJar.exists()
+        if (!exists) {
+            println "Skipping runShell; CAS shell jar does not exist: ${shellJar}"
+        }
+        exists
+    }
+
     doLast {
-        println "Run the following command to launch the shell:\n\tjava -jar ${shellDir}/cas-server-support-shell-${casVersion}.jar"
+        println "Run the following command to launch the shell:\n\tjava -jar ${shellJar}"
     }
 }
 
-task debugShell(group: "Shell", group: "CAS", description: "Run the CAS shell with debug options, wait for debugger on port 5005") {
+task debugShell(group: "Shell", description: "Run the CAS shell with debug options, wait for debugger on port 5005") {
     dependsOn downloadShell
     def casVersion = project.providers.gradleProperty("cas.version").get()
     def shellDir = project.providers.gradleProperty("shellDir").get()
+    def shellJar = new File("${shellDir}", "cas-server-support-shell-${casVersion}.jar")
+    onlyIf("CAS shell jar exists") {
+        def exists = shellJar.exists()
+        if (!exists) {
+            println "Skipping debugShell; CAS shell jar does not exist: ${shellJar}"
+        }
+        exists
+    }
+                                              
     doLast {
         println """
         Run the following command to launch the shell:\n\t
-        java -Xrunjdwp:transport=dt_socket,address=5000,server=y,suspend=y -jar ${shellDir}/cas-server-support-shell-${casVersion}.jar
+        java -Xrunjdwp:transport=dt_socket,address=5000,server=y,suspend=y -jar ${shellJar}
         """
     }
 }
