@@ -1,5 +1,6 @@
 package org.apereo.cas.initializr.web.ui;
 
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -13,7 +14,12 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class InitializrHomeController {
     @GetMapping("/ui")
-    public ModelAndView home() {
+    public ModelAndView ui() {
         return new ModelAndView("index");
+    }
+
+    @GetMapping(path = "/", produces = MediaType.TEXT_HTML_VALUE)
+    public String redirectToUi() {
+        return "forward:/ui";
     }
 }

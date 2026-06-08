@@ -1,7 +1,7 @@
 import {blue, cyan, grey, teal, yellow} from "@mui/material/colors";
 import {alpha, PaletteMode} from '@mui/material';
 
-export type ThemeType = 'light' | 'dark' | 'highContrast' | 'blue' | 'solarizedLight' | 'solarizedDark' | 'vscodeLight' | 'vscodeDark';
+export type ThemeType = 'light' | 'dark' | 'highContrast' | 'blue' | 'solarizedLight' | 'solarizedDark' | 'vscodeLight' | 'vscodeDark' | 'dracula' | 'nord' | 'githubLight' | 'monokai';
 
 export const getDesignTokens = (themeType: ThemeType) => {
     // Common typography settings
@@ -299,6 +299,156 @@ export const getDesignTokens = (themeType: ThemeType) => {
                                 ...(ownerState.variant === "contained" &&
                                     ownerState.color === "primary" && {
                                         backgroundColor: '#007acc', // VS Code blue
+                                    }),
+                            }),
+                        },
+                    },
+                },
+            };
+        case 'dracula':
+            return {
+                typography,
+                palette: {
+                    mode: 'dark' as PaletteMode,
+                    primary: {
+                        light: '#caa9fa',
+                        main: '#bd93f9',
+                        dark: '#9563e8',
+                        contrastText: '#f8f8f2',
+                    },
+                    secondary: {
+                        main: '#ff79c6',
+                    },
+                    divider: '#6272a4',
+                    background: {
+                        default: '#282a36',
+                        paper: '#44475a',
+                    },
+                    text: {
+                        primary: '#f8f8f2',
+                        secondary: '#6272a4',
+                    },
+                },
+                components: {
+                    MuiButton: {
+                        styleOverrides: {
+                            root: ({ ownerState }: any) => ({
+                                ...(ownerState.variant === 'contained' &&
+                                    ownerState.color === 'primary' && {
+                                        backgroundColor: '#bd93f9',
+                                        color: '#282a36',
+                                    }),
+                            }),
+                        },
+                    },
+                },
+            };
+        case 'nord':
+            return {
+                typography,
+                palette: {
+                    mode: 'dark' as PaletteMode,
+                    primary: {
+                        light: '#8fbcbb',
+                        main: '#88c0d0',
+                        dark: '#5e81ac',
+                        contrastText: '#2e3440',
+                    },
+                    secondary: {
+                        main: '#81a1c1',
+                    },
+                    divider: '#4c566a',
+                    background: {
+                        default: '#2e3440',
+                        paper: '#3b4252',
+                    },
+                    text: {
+                        primary: '#eceff4',
+                        secondary: '#d8dee9',
+                    },
+                },
+                components: {
+                    MuiButton: {
+                        styleOverrides: {
+                            root: ({ ownerState }: any) => ({
+                                ...(ownerState.variant === 'contained' &&
+                                    ownerState.color === 'primary' && {
+                                        backgroundColor: '#5e81ac',
+                                    }),
+                            }),
+                        },
+                    },
+                },
+            };
+        case 'githubLight':
+            return {
+                typography,
+                palette: {
+                    mode: 'light' as PaletteMode,
+                    primary: {
+                        light: '#54aeff',
+                        main: '#0969da',
+                        dark: '#0550ae',
+                        contrastText: '#ffffff',
+                    },
+                    secondary: {
+                        main: '#57606a',
+                    },
+                    divider: '#d0d7de',
+                    background: {
+                        default: '#ffffff',
+                        paper: '#f6f8fa',
+                    },
+                    text: {
+                        primary: '#1f2328',
+                        secondary: '#57606a',
+                    },
+                },
+                components: {
+                    MuiButton: {
+                        styleOverrides: {
+                            root: ({ ownerState }: any) => ({
+                                ...(ownerState.variant === 'contained' &&
+                                    ownerState.color === 'primary' && {
+                                        backgroundColor: '#0969da',
+                                    }),
+                            }),
+                        },
+                    },
+                },
+            };
+        case 'monokai':
+            return {
+                typography,
+                palette: {
+                    mode: 'dark' as PaletteMode,
+                    primary: {
+                        light: '#c4e88d',
+                        main: '#a6e22e',
+                        dark: '#7ab81e',
+                        contrastText: '#272822',
+                    },
+                    secondary: {
+                        main: '#f92672',
+                    },
+                    divider: '#75715e',
+                    background: {
+                        default: '#272822',
+                        paper: '#3e3d32',
+                    },
+                    text: {
+                        primary: '#f8f8f2',
+                        secondary: '#75715e',
+                    },
+                },
+                components: {
+                    MuiButton: {
+                        styleOverrides: {
+                            root: ({ ownerState }: any) => ({
+                                ...(ownerState.variant === 'contained' &&
+                                    ownerState.color === 'primary' && {
+                                        backgroundColor: '#a6e22e',
+                                        color: '#272822',
                                     }),
                             }),
                         },

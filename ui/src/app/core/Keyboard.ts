@@ -19,6 +19,7 @@ export enum Action {
     SHARE = '[hotkey] share',
     QUICK_OPEN = '[hotkey] quick_open',
     CLOSE_TAB = '[hotkey] close_tab',
+    ADD_DEPENDENCIES = '[hotkey] add_dependencies',
 }
 
 export function useIsIOS () {
@@ -63,6 +64,11 @@ export function useCommand (command: Action): KeyboardCommand {
             label = `Close Tab`;
             modifier = "alt";
             keys = `W`;
+            break;
+        case Action.ADD_DEPENDENCIES:
+            label = `Add Dependencies`;
+            modifier = ios ? "mod" : "ctrl";
+            keys = `A`;
             break;
     }
 
