@@ -1,0 +1,36 @@
+name: Initializr Pull Requests
+
+env:
+  TERM: xterm-256color
+  JDK_CURRENT: 25
+  JDK_DISTRO: 'corretto'
+  JAVA_TOOL_OPTIONS: "--enable-native-access=ALL-UNNAMED"
+  GH_TOKEN: ${{ secrets.GH_TOKEN }}
+
+##########################################################################
+
+on:
+  workflow_dispatch:
+  pull_request:
+
+concurrency:
+  group: "workflow = ${{ github.workflow }}, ref = ${{ github.event.ref }}, pr = ${{ github.event.pull_request.id }}"
+  cancel-in-progress: true
+  
+##########################################################################
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Build Initializr
+    steps:
+      - uses: actions/checkout@v6
+      - name: Set up JDK
+        uses: actions/setup-java@v5
+        with:
+          java-version: ${{ env.JDK_CURRENT }}
+          distribution: ${{ env.JDK_DISTRO }}
+      - name: Build Initializr
+        run: ./gradlew --configure-on-demand --quiet --no-daemon clean build -x test -x javadoc -x check --parallel
+      - name: Validate Initializr
+        run: ./ci/validate-initializr.sh

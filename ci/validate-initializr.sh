@@ -25,7 +25,10 @@ curl -H 'Accept: application/json' http://localhost:8080/actuator/info | jq
 echo "Checking CAS Initializr supported versions"
 curl -H 'Accept: application/json' http://localhost:8080/actuator/supportedVersions | jq
 
-echo "Checking CAS Initializr UI"
+echo "Checking CAS Initializr Home"
+curl http://localhost:8080
+
+echo "Checking CAS Initializr Home"
 curl http://localhost:8080/ui
 
 echo -e "\nAll CAS Initializr checks have passed"
