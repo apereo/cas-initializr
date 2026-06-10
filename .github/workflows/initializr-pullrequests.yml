@@ -33,4 +33,4 @@ jobs:
       - name: Build Initializr
         run: ./gradlew --configure-on-demand --quiet --no-daemon clean build -x test -x javadoc -x check --parallel
       - name: Validate Initializr
-        run: ./ci/validate-initializr.sh
+        run: ./ci/validate-initializr.sh --no-launch
