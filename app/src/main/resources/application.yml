@@ -41,6 +41,9 @@ logging:
       spring:
         initializr: warn
 spring:
+  output:
+    ansi:
+      enabled: always
   profiles:
     include: initializr
   cloud:
