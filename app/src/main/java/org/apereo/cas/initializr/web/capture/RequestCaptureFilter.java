@@ -51,7 +51,7 @@ public class RequestCaptureFilter extends OncePerRequestFilter {
             );
             captureSerice.capture(capturedRequest);
 
-            if (!RequestCaptureSerice.isLocalhost(clientIp)) {
+            if (!RequestCaptureSerice.isLocalhost(clientIp) && properties.getRequestCacheSize() > 0) {
                 var cachedRequest = requestCaptureCache.getIfPresent(clientIp);
                 if (cachedRequest != null) {
                     var seconds = Duration.between(cachedRequest.expiresAt(), LocalDateTime.now()).getSeconds();
