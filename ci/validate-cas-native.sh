@@ -21,7 +21,7 @@ CAS_MINOR_VERSION=`echo $CAS_VERSION | cut -d. -f2`
 
 if [[ "${FETCH_OVERLAY}" == "true" ]]; then
   parameters="casVersion=${CAS_VERSION}&nativeImageSupported=true"
-  java -jar app/build/libs/app.jar &
+  java -jar app/build/libs/app.jar --cas-initializr.request-cache-size=0 &
   pid=$!
   sleep 25
   printgreen "Requesting CAS overlay for ${parameters}"

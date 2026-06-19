@@ -1,7 +1,10 @@
 package org.apereo.cas.initializr.config;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import io.spring.initializr.generator.project.ProjectGenerationConfiguration;
 import io.spring.initializr.generator.project.contributor.ProjectContributor;
+import io.spring.initializr.metadata.InitializrProperties;
 import io.spring.initializr.web.support.InitializrMetadataUpdateStrategy;
 import lombok.extern.slf4j.Slf4j;
 import org.apereo.cas.initializr.contrib.ChainingMultipleResourcesProjectContributor;
@@ -27,11 +30,13 @@ import org.apereo.cas.initializr.contrib.project.ProjectLicenseContributor;
 import org.apereo.cas.initializr.contrib.project.SdkmanJavaVersionContributor;
 import org.apereo.cas.initializr.metadata.CasOverlayInitializrMetadataUpdateStrategy;
 import org.apereo.cas.initializr.metadata.InitializrMetadataFetcher;
+import org.apereo.cas.initializr.web.capture.CapturedRequest;
 import org.apereo.cas.initializr.web.capture.LogRequestCaptureService;
 import org.apereo.cas.initializr.web.capture.RequestCaptureFilter;
 import org.apereo.cas.initializr.web.capture.RequestCaptureSerice;
 import org.apereo.cas.initializr.web.ui.InitializrHomeController;
 import org.apereo.cas.overlay.casserver.contrib.docker.CasOverlayDockerContributor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.cache.autoconfigure.JCacheManagerCustomizer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -181,12 +186,24 @@ public class CasInitializrConfiguration {
     }
 
     @Bean
-    public RequestCaptureFilter requestCaptureFilter(final RequestCaptureSerice requestCaptureSerice) {
-        return new RequestCaptureFilter(requestCaptureSerice);
+    public RequestCaptureFilter requestCaptureFilter(
+            final CasInitializrProperties properties,
+            @Qualifier("requestCaptureCache")
+            final Cache<String, CapturedRequest> requestCaptureCache,
+            final RequestCaptureSerice requestCaptureSerice) {
+        return new RequestCaptureFilter(requestCaptureSerice, requestCaptureCache, properties);
     }
 
     @Bean
     public RequestCaptureSerice requestCaptureSerice() {
         return new LogRequestCaptureService();
+    }
+
+    @Bean
+    public Cache<String, CapturedRequest> requestCaptureCache(final CasInitializrProperties properties) {
+        return Caffeine.newBuilder()
+                .expireAfterWrite(properties.getRequestCacheDuration())
+                .maximumSize(properties.getRequestCacheSize())
+                .build();
     }
 }

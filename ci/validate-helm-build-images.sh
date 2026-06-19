@@ -70,7 +70,7 @@ if [[ ! -f app/build/libs/app.jar || "$CLEAN" == "clean" ]]; then
   ./gradlew clean build
 fi
 echo "Running CAS Initializr"
-java -jar app/build/libs/app.jar &
+java -jar app/build/libs/app.jar --cas-initializr.request-cache-size=0 &
 
 waitForInitializr
 

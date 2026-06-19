@@ -21,4 +21,8 @@ public class CasInitializrProperties {
     private List<SupportedVersion> supportedVersions = new ArrayList<>();
 
     private Duration metadataCacheDuration = Duration.ofMinutes(5);
+
+    private Duration requestCacheDuration = Duration.ofMinutes(5);
+
+    private int requestCacheSize = 1000;
 }

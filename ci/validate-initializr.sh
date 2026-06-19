@@ -20,7 +20,7 @@ echo "Building CAS Initializr"
 
 if [ "$LAUNCH_INITIALIZR" = "true" ]; then
   echo "Launching CAS Initializr"
-  java -jar app/build/libs/app.jar &
+  java -jar app/build/libs/app.jar --cas-initializr.request-cache-size=0 &
   pid=$!
   sleep 15
   

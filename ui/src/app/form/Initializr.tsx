@@ -1,5 +1,5 @@
 import React, {Fragment} from 'react';
-import { Backdrop, Box, CircularProgress, Divider, Grid, Tab, Tabs } from '@mui/material';
+import { Alert, AlertTitle, Backdrop, Box, CircularProgress, Divider, Grid, Tab, Tabs } from '@mui/material';
 import Customization from './Customization';
 import Dependencies from './Dependencies';
 import ShareOverlay from "./ShareOverlay";
@@ -40,6 +40,49 @@ interface TabPanelProps {
     value: number;
   }
 
+interface ArchiveRequestError {
+    title: string;
+    message: string;
+    body?: string;
+}
+
+const MAX_ERROR_BODY_LENGTH = 4000;
+
+const formatErrorBody = (body: string): string | undefined => {
+    const trimmed = body.trim();
+    if (!trimmed) {
+        return undefined;
+    }
+
+    let formatted = trimmed;
+    try {
+        formatted = JSON.stringify(JSON.parse(trimmed), null, 2);
+    } catch (_) {
+        formatted = trimmed;
+    }
+
+    if (formatted.length > MAX_ERROR_BODY_LENGTH) {
+        return `${formatted.substring(0, MAX_ERROR_BODY_LENGTH)}\n...`;
+    }
+    return formatted;
+};
+
+const getArchiveRequestError = async (response: Response, action: string): Promise<ArchiveRequestError> => {
+    let body = "";
+    try {
+        body = await response.text();
+    } catch (_) {
+        body = "";
+    }
+
+    const status = `${response.status}${response.statusText ? ` ${response.statusText}` : ""}`;
+    return {
+        title: `Unable to ${action}`,
+        message: `Server responded with ${status}.`,
+        body: formatErrorBody(body),
+    };
+};
+
 function TabPanel(props: TabPanelProps) {
     const { children, value, index, ...other } = props;
 
@@ -68,6 +111,7 @@ export default function Initializr() {
     const defaultValues = useDefaultValues();
     const dispatch = useAppDispatch();
     const [loading, setLoading] = React.useState(false);
+    const [requestError, setRequestError] = React.useState<ArchiveRequestError | null>(null);
 
     const fetchArchive = async (overlay: Overlay, type: string = "tgz") => {
         const string = getOverlayQuery(overlay);
@@ -75,23 +119,39 @@ export default function Initializr() {
     };
 
     const download = async (overlay: Overlay) => {
+        setRequestError(null);
         setLoading(true);
-        const response = await fetchArchive(overlay);
-        if (response.ok) {
+        try {
+            const response = await fetchArchive(overlay);
+            if (!response.ok) {
+                setRequestError(await getArchiveRequestError(response, "download the overlay"));
+                return;
+            }
             const file = await response.blob();
-            setLoading(false);
             downloadAsZip(
                 overlay.name ? overlay.name : defaultValues.name || "cas",
                 file
             );
+        } catch (e) {
+            setRequestError({
+                title: "Unable to download the overlay",
+                message: e instanceof Error ? e.message : "The request failed.",
+            });
+        } finally {
+            setLoading(false);
         }
     };
 
     const explore = async (overlay: Overlay) => {
 
+        setRequestError(null);
         setLoading(true);
-        const response = await fetchArchive(overlay, "zip");
-        if (response.ok) {
+        try {
+            const response = await fetchArchive(overlay, "zip");
+            if (!response.ok) {
+                setRequestError(await getArchiveRequestError(response, "preview the overlay"));
+                return;
+            }
             const file = await response.blob();
 
             try {
@@ -104,7 +164,18 @@ export default function Initializr() {
                 dispatch(setPreviewTree(tree));
                 dispatch(setPreviewSelected(selected));
                 dispatch(setPreviewState(true));
-            } catch (e) {}
+            } catch (e) {
+                setRequestError({
+                    title: "Unable to preview the overlay",
+                    message: e instanceof Error ? e.message : "Could not load the generated overlay.",
+                });
+            }
+        } catch (e) {
+            setRequestError({
+                title: "Unable to preview the overlay",
+                message: e instanceof Error ? e.message : "The request failed.",
+            });
+        } finally {
             setLoading(false);
         }
     };
@@ -182,6 +253,34 @@ export default function Initializr() {
                                     <CircularProgress />
                                 </div>
                             )}
+                            {requestError && (
+                                <Alert
+                                    severity="error"
+                                    onClose={() => setRequestError(null)}
+                                    sx={{ mt: 2, alignItems: "flex-start" }}
+                                >
+                                    <AlertTitle>{requestError.title}</AlertTitle>
+                                    {requestError.message}
+                                    {requestError.body && (
+                                        <Box
+                                            component="pre"
+                                            sx={{
+                                                bgcolor: "rgba(0, 0, 0, 0.12)",
+                                                borderRadius: 1,
+                                                fontFamily: "monospace",
+                                                fontSize: "0.75rem",
+                                                mt: 1,
+                                                overflow: "auto",
+                                                p: 1,
+                                                whiteSpace: "pre-wrap",
+                                                wordBreak: "break-word",
+                                            }}
+                                        >
+                                            {requestError.body}
+                                        </Box>
+                                    )}
+                                </Alert>
+                            )}
                         </Grid>
                         <Grid size={{xs: 6}}>
 
@@ -211,4 +310,3 @@ export default function Initializr() {
         </Fragment>
     );
 }
-
