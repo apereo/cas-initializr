@@ -54,7 +54,7 @@ public class RequestCaptureFilter extends OncePerRequestFilter {
             if (!RequestCaptureSerice.isLocalhost(clientIp) && properties.getRequestCacheSize() > 0) {
                 var cachedRequest = requestCaptureCache.getIfPresent(clientIp);
                 if (cachedRequest != null) {
-                    var seconds = Duration.between(cachedRequest.expiresAt(), LocalDateTime.now()).getSeconds();
+                    var seconds = Duration.between(LocalDateTime.now(), cachedRequest.expiresAt()).getSeconds();
                     log.warn("Request from {} is throttled. Expiration: {}, Expires in {} seconds",
                         clientIp, cachedRequest.expiresAt(), seconds);
                     response.sendError(HttpStatus.TOO_MANY_REQUESTS.value());
