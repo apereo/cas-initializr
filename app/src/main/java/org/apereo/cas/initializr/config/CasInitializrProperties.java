@@ -6,7 +6,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Custom configuration that might be used by CI or UI, but not for initializr arguments.
@@ -22,7 +24,9 @@ public class CasInitializrProperties {
 
     private Duration metadataCacheDuration = Duration.ofMinutes(5);
 
-    private Duration requestCacheDuration = Duration.ofMinutes(5);
+    private Duration requestCacheDuration = Duration.ofMinutes(15);
 
     private int requestCacheSize = 1000;
+
+    private Set<String> blockedIps = new HashSet<>();
 }

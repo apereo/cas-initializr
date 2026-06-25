@@ -117,3 +117,4 @@ initializr:
       action: /starter.tgz
 cas-initializr:
   metadata-cache-duration: PT8H
+  blocked-ips: ${BLOCKED_IPS:}
