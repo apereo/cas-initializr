@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apereo.cas.initializr.config.CasInitializrProperties;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -22,6 +23,7 @@ import java.util.List;
 @Slf4j
 public class RequestCaptureFilter extends OncePerRequestFilter {
 
+    private final MongoTemplate mongoTemplate;
     private final RequestCaptureSerice captureSerice;
     private final Cache<String, CapturedRequest> requestCaptureCache;
     private final CasInitializrProperties properties;
@@ -40,15 +42,17 @@ public class RequestCaptureFilter extends OncePerRequestFilter {
                 }
             });
             val expiresAt = LocalDateTime.now().plus(properties.getRequestCacheDuration());
-            val capturedRequest = new CapturedRequest(
-                    clientIp,
-                    request.getMethod(),
-                    requestURI,
-                    request.getHeader("User-Agent"),
-                    request.getHeader("Referer"),
-                    expiresAt,
-                    parameters
-            );
+            val capturedRequest = CapturedRequest
+                    .builder()
+                    .ip(clientIp)
+                    .method(request.getMethod())
+                    .path(requestURI)
+                    .userAgent(request.getHeader("User-Agent"))
+                    .referrer(request.getHeader("Referer"))
+                    .expiresAt(expiresAt)
+                    .parameters(parameters)
+                    .build();
+
             captureSerice.capture(capturedRequest);
 
             if (properties.getBlockedIps().contains(clientIp)) {
@@ -56,20 +60,25 @@ public class RequestCaptureFilter extends OncePerRequestFilter {
                 response.sendError(HttpStatus.TOO_MANY_REQUESTS.value());
                 return;
             }
-            
+
             if (!RequestCaptureSerice.isLocalhost(clientIp) && properties.getRequestCacheSize() > 0) {
                 var cachedRequest = requestCaptureCache.getIfPresent(clientIp);
                 if (cachedRequest != null) {
-                    var seconds = Duration.between(LocalDateTime.now(), cachedRequest.expiresAt()).getSeconds();
+                    var seconds = Duration.between(LocalDateTime.now(), cachedRequest.getExpiresAt()).getSeconds();
                     log.warn("Request from {} is throttled. Expiration: {}, Expires in {} seconds",
-                        clientIp, cachedRequest.expiresAt(), seconds);
+                            clientIp, cachedRequest.getExpiresAt(), seconds);
+                    store(capturedRequest.withThrottled(true));
                     response.sendError(HttpStatus.TOO_MANY_REQUESTS.value());
                     return;
                 }
                 requestCaptureCache.put(clientIp, capturedRequest);
+                store(capturedRequest);
             }
         }
         filterChain.doFilter(request, response);
     }
 
+    private void store(final CapturedRequest request) {
+        mongoTemplate.save(request, "cas-initializr");
+    }
 }

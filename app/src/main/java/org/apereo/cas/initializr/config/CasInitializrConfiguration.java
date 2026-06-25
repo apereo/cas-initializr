@@ -42,6 +42,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.data.mongodb.core.MongoTemplate;
 
 import javax.cache.configuration.MutableConfiguration;
 import javax.cache.expiry.CreatedExpiryPolicy;
@@ -188,11 +189,13 @@ public class CasInitializrConfiguration {
 
     @Bean
     public RequestCaptureFilter requestCaptureFilter(
+            final MongoTemplate mongoTemplate,
             final CasInitializrProperties properties,
             @Qualifier("requestCaptureCache")
             final Cache<String, CapturedRequest> requestCaptureCache,
             final RequestCaptureSerice requestCaptureSerice) {
-        return new RequestCaptureFilter(requestCaptureSerice, requestCaptureCache, properties);
+        return new RequestCaptureFilter(mongoTemplate, requestCaptureSerice,
+                requestCaptureCache, properties);
     }
 
     @Bean
