@@ -172,7 +172,8 @@ public class CasInitializrConfiguration {
                     .setManagementEnabled(true)
                     .setStatisticsEnabled(true)
                     .setExpiryPolicyFactory(CreatedExpiryPolicy.factoryOf(cacheDuration));
-            log.info("Initialize metadata is cached for {}", cacheDuration);
+            log.info("Initialize metadata is cached for {}/{}",
+                    cacheDuration.getDurationAmount(), cacheDuration.getTimeUnit());
             cacheManager.createCache("initializr.metadata", config);
 
             var propertiesConfig = new MutableConfiguration<>()
@@ -180,7 +181,7 @@ public class CasInitializrConfiguration {
                     .setManagementEnabled(true)
                     .setStatisticsEnabled(true)
                     .setExpiryPolicyFactory(CreatedExpiryPolicy.factoryOf(cacheDuration));
-            log.info("CAS modules metadata is cached for {}", cacheDuration);
+            log.info("CAS modules metadata is cached for {} {}", cacheDuration.getDurationAmount(), cacheDuration.getTimeUnit());
             cacheManager.createCache("cas.modules", propertiesConfig);
         };
     }

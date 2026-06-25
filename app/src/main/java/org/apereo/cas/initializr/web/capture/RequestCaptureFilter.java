@@ -51,6 +51,12 @@ public class RequestCaptureFilter extends OncePerRequestFilter {
             );
             captureSerice.capture(capturedRequest);
 
+            if (properties.getBlockedIps().contains(clientIp)) {
+                log.warn("Request from {} is blocked.", clientIp);
+                response.sendError(HttpStatus.TOO_MANY_REQUESTS.value());
+                return;
+            }
+            
             if (!RequestCaptureSerice.isLocalhost(clientIp) && properties.getRequestCacheSize() > 0) {
                 var cachedRequest = requestCaptureCache.getIfPresent(clientIp);
                 if (cachedRequest != null) {
