@@ -25,7 +25,6 @@ cas-initializr:
       app-servers:
         - tomcat
         - jetty
-#        - undertow
       plugins:
         jib-version: ${jibVersion}
         open-rewrite-version: ${openRewriteVersion}
