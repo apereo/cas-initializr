@@ -6,6 +6,9 @@ import java.lang.reflect.*
 import org.gradle.internal.logging.text.*
 import static org.gradle.internal.logging.text.StyledTextOutput.Style
 
+def ANSI_SUCCESS = "\u001B[1;32m"
+def ANSI_RESET = "\u001B[0m"
+
 buildscript {
     repositories {
         if (project.privateRepoUrl) {
@@ -446,20 +449,14 @@ tasks.register("casPushDockerImage", DockerPushImage) {
 {{/dockerSupported}}
 
 {{#deploymentTypeIsWar}}
-["build", "assemble", "bootWar"].each { taskName ->
-    tasks.matching { it.name == taskName }.configureEach {
-        doFirst {
-            if (project.hasProperty("appServer")) {
-                def appServer = project.findProperty("appServer") ?: ""
-                out.withStyle(Style.Success).println(
-                    "Building CAS version ${project.version} with application server ${appServer}"
-                )
-            } else {
-                out.withStyle(Style.Success).println(
-                    "Building CAS version ${project.version} without an application server"
-                )
-            }
-        }
+tasks.named("build").configure {
+    def casVersion = project.version.toString()
+    def appServer = providers.gradleProperty("appServer").orNull
+    def buildMessage = appServer
+        ? "Building CAS version ${casVersion} with application server ${appServer}"
+        : "Building CAS version ${casVersion} without an application server"
+    doFirst {
+        logger.lifecycle("${ANSI_SUCCESS}${buildMessage}${ANSI_RESET}")
     }
 }
 {{/deploymentTypeIsWar}}
