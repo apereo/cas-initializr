@@ -253,12 +253,14 @@ graalvmNative {
             buildArgs.add('-H:+InlineBeforeAnalysis')
             buildArgs.add('-H:+TraceSecurityServices')
             buildArgs.add('-H:+UnlockExperimentalVMOptions')
+            buildArgs.add('-H:+RuntimeClassLoading')
 
             buildArgs.add('-J-Xmx14G')
             buildArgs.add('-J-Xms4G')
             buildArgs.add('--native-image-info')
             buildArgs.add('--enable-monitoring=jfr')
             buildArgs.add('-march=native')
+            buildArgs.add('--gc=G1')
 
             buildArgs.add('--trace-class-initialization=true')
 
