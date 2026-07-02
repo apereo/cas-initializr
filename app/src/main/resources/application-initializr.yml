@@ -19,7 +19,7 @@ cas-initializr:
       type: cas
       tomcat-version: ${apacheTomcat11LatestVersion}
       java-version: 21
-      graalvm-version: "25.1.3"
+      graalvm-version: "latest-ea"
       container-base-image: azul/zulu-openjdk:21
       gradle-version: "9.1.0"
       app-servers:
@@ -37,7 +37,7 @@ cas-initializr:
       type: cas
       tomcat-version: ${apacheTomcat11LatestVersion}
       java-version: 25
-      graalvm-version: "25.1.3"
+      graalvm-version: "latest-ea"
       container-base-image: azul/zulu-openjdk:25
       gradle-version: "${gradleLatestVersion}"
       app-servers:
