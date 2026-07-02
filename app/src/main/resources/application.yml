@@ -1,4 +1,3 @@
-
 server:
   port: ${PORT:8080}
   ssl:
@@ -41,6 +40,11 @@ logging:
       spring:
         initializr: warn
 spring:
+  security:
+    user:
+      name: ${CAS_INITIALIZR_USERNAME}
+      password: ${CAS_INITIALIZR_PASSWORD}
+      roles: ADMIN
   output:
     ansi:
       enabled: always

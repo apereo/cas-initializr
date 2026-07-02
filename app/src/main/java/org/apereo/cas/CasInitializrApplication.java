@@ -29,7 +29,10 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
@@ -46,24 +49,27 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @SpringBootApplication(scanBasePackages = "org.apereo.cas.initializr")
 @EnableConfigurationProperties(CasInitializrProperties.class)
 @EnableCaching
+@EnableWebSecurity
+@EnableMethodSecurity(securedEnabled = true)
 public class CasInitializrApplication {
 
     public static void main(final String[] args) {
         SpringApplication.run(CasInitializrApplication.class, args);
     }
 
+
     @Bean
     public ProjectGenerationController projectGenerationController(
-        final CasInitializrProperties properties,
-        final InitializrMetadataProvider metadataProvider,
-        final ApplicationContext applicationContext,
-        final ObjectProvider<ProjectRequestPlatformVersionTransformer> platformVersionTransformer) {
+            final CasInitializrProperties properties,
+            final InitializrMetadataProvider metadataProvider,
+            final ApplicationContext applicationContext,
+            final ObjectProvider<ProjectRequestPlatformVersionTransformer> platformVersionTransformer) {
         var transformer = platformVersionTransformer.getIfAvailable(DefaultProjectRequestPlatformVersionTransformer::new);
         var converter = new OverlayProjectRequestToDescriptionConverter(transformer, properties);
         var invoker = new CasInitializrProjectGenerationInvoker(applicationContext, converter, new CasInitializrProjectAssetGenerator());
         return new OverlayProjectGenerationController(metadataProvider, invoker);
     }
-    
+
     @Bean
     public ProjectMetadataController projectMetadataController(final InitializrMetadataProvider metadataProvider,
                                                                final DependencyMetadataProvider dependencyMetadataProvider,
@@ -83,7 +89,7 @@ public class CasInitializrApplication {
 
     @Bean
     public WebMvcConfigurer rateLimitingWebMvcConfigurer(
-        @Qualifier("rateLimitInterceptor") final HandlerInterceptor rateLimitInterceptor) {
+            @Qualifier("rateLimitInterceptor") final HandlerInterceptor rateLimitInterceptor) {
         return new WebMvcConfigurer() {
             @Override
             public void addInterceptors(final InterceptorRegistry registry) {
@@ -101,11 +107,10 @@ public class CasInitializrApplication {
     public InitializrMetadataFetcher casOverlayInitializrMetadataFetcher(final MongoTemplate mongoTemplate) {
         return new CasOverlayInitializrMetadataFetcher(mongoTemplate);
     }
-    
+
     @Bean
     public InfoContributor dependencyAliasesInfoContributor(final InitializrMetadataProvider provider,
-                                                            @Qualifier("jCacheCacheManager")
-                                                            final javax.cache.CacheManager jCacheCacheManager,
+                                                            @Qualifier("jCacheCacheManager") final javax.cache.CacheManager jCacheCacheManager,
                                                             final ConfigurableApplicationContext applicationContext) {
         return new DependencyAliasesInfoContributor(provider, applicationContext, jCacheCacheManager);
     }
@@ -117,7 +122,11 @@ public class CasInitializrApplication {
             c.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin);
             c.contentSecurityPolicy(s -> s.policyDirectives("frame-src https://apereo.github.io/cas"));
         });
+        http.authorizeHttpRequests(authz -> authz
+                    .requestMatchers("/throttled").authenticated()
+                )
+                .httpBasic(Customizer.withDefaults());
         return http.build();
     }
-    
+
 }
