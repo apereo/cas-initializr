@@ -77,15 +77,23 @@ if [[ $? -ne 0 ]]; then
   exit 1
 fi
 
-printgreen "Launching CAS native image..."  
-./build/native/nativeCompile/cas -XX:StartFlightRecording=filename=recording.jfr --spring.profiles.active=native &
+printgreen "Launching CAS native image..."
+logFile="cas-native.log"
+./build/native/nativeCompile/cas \
+  -Djava.home="${JAVA_HOME}" \
+  -XX:StartFlightRecording=filename=recording.jfr \
+  --spring.profiles.active=native \
+  > "$logFile" 2>&1 &
 pid=$!
-sleep 15
+echo "CAS started with PID ${pid}"
+sleep 10
 curl -k -L --connect-timeout 10 --output /dev/null --silent --fail https://localhost:8443/cas/login
 if [[ $? -ne 0 ]]; then
   printred "CAS native image failed to launch"
+  cat ${logFile}
   exit 1
 fi
 kill -9 $pid
 [ "$CI" = "true" ] && pkill java
+rm $logFile
 exit 0
