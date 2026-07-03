@@ -42,8 +42,8 @@ logging:
 spring:
   security:
     user:
-      name: ${CAS_INITIALIZR_USERNAME}
-      password: ${CAS_INITIALIZR_PASSWORD}
+      name: ${CAS_INITIALIZR_USERNAME:${random.uuid}}
+      password: ${CAS_INITIALIZR_PASSWORD:${random.uuid}}
       roles: ADMIN
   output:
     ansi:
