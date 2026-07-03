@@ -123,7 +123,8 @@ public class CasInitializrApplication {
             c.contentSecurityPolicy(s -> s.policyDirectives("frame-src https://apereo.github.io/cas"));
         });
         http.authorizeHttpRequests(authz -> authz
-                    .requestMatchers("/throttled").authenticated()
+                    .requestMatchers("/throttled").hasRole("ADMIN")
+                    .anyRequest().permitAll()
                 )
                 .httpBasic(Customizer.withDefaults());
         return http.build();

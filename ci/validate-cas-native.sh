@@ -9,7 +9,7 @@ while (( "$#" )); do
         FETCH_OVERLAY="true"
         shift 1
         ;;
-    --cas)
+    --cas|--cas-version|--version)
         CAS_VERSION="$2"
         shift 2
         ;;
@@ -21,9 +21,10 @@ CAS_MINOR_VERSION=`echo $CAS_VERSION | cut -d. -f2`
 
 if [[ "${FETCH_OVERLAY}" == "true" ]]; then
   parameters="casVersion=${CAS_VERSION}&nativeImageSupported=true"
-  java -jar app/build/libs/app.jar --cas-initializr.request-cache-size=0 &
+  java -Xdebug -Xrunjdwp:transport=dt_socket,address=5005,server=y,suspend=n \
+    -jar app/build/libs/app.jar --cas-initializr.request-cache-size=0 &
   pid=$!
-  sleep 25
+  sleep 10
   printgreen "Requesting CAS overlay for ${parameters}"
   mkdir tmp
   cd tmp || exit
@@ -43,7 +44,7 @@ fi
 cd tmp || exit
 printgreen "Working directory: ${PWD}"
 
-if [[ -d /tmp ]] ; then
+if [[ ! -d /tmp ]] ; then
   sudo mkdir /tmp
 fi
 
@@ -67,14 +68,18 @@ ls -al build/native/nativeCompile
 dname="${dname:-CN=cas.example.org,OU=Example,OU=Org,C=US}"
 subjectAltName="${subjectAltName:-dns:example.org,dns:localhost,ip:127.0.0.1}"
 keystore="/etc/cas/thekeystore"
-sudo mkdir -p /etc/cas
-printgreen "Generating keystore ${keystore} for CAS with DN=${dname}, SAN=${subjectAltName}"
-[ -f "${keystore}" ] && sudo rm "${keystore}"
-sudo keytool -genkey -noprompt -alias cas -keyalg RSA -keypass changeit -storepass changeit \
-  -keystore "${keystore}" -dname "${dname}" -ext SAN="${subjectAltName}"
-if [[ $? -ne 0 ]]; then
-  printred "Unable to create CAS keystore ${keystore}"
-  exit 1
+if [[ ! -f "$keystore" ]]; then
+  sudo mkdir -p /etc/cas
+  printgreen "Generating keystore ${keystore} for CAS with DN=${dname}, SAN=${subjectAltName}"
+  [ -f "${keystore}" ] && sudo rm "${keystore}"
+  sudo keytool -genkey -noprompt -alias cas -keyalg RSA -keypass changeit -storepass changeit \
+    -keystore "${keystore}" -dname "${dname}" -ext SAN="${subjectAltName}"
+  if [[ $? -ne 0 ]]; then
+    printred "Unable to create CAS keystore ${keystore}"
+    exit 1
+  fi
+else
+  printgreen "Using existing CAS keystore ${keystore}"
 fi
 
 printgreen "Launching CAS native image..."

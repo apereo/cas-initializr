@@ -251,12 +251,13 @@ graalvmNative {
 
             configurationFileDirectories.from(file('src/graal'))
 
+            buildArgs.add("-Djava.home=${System.getenv("JAVA_HOME")}")
             buildArgs.add('--allow-incomplete-classpath')
             buildArgs.add('-H:+ReportExceptionStackTraces')
             buildArgs.add('-H:+InlineBeforeAnalysis')
             buildArgs.add('-H:+TraceSecurityServices')
             buildArgs.add('-H:+UnlockExperimentalVMOptions')
-            buildArgs.add('-H:+RuntimeClassLoading')
+<!--            buildArgs.add('-H:+RuntimeClassLoading')-->
             buildArgs.add('-H:+AllowJRTFileSystem')
 
             buildArgs.add('-J-Xmx14G')
@@ -264,8 +265,9 @@ graalvmNative {
             buildArgs.add('--native-image-info')
             buildArgs.add('--enable-monitoring=jfr')
             buildArgs.add('-march=native')
-            buildArgs.add('--gc=G1')
-
+           
+            buildArgs.add("-R:StackSize=16m")
+            buildArgs.add("-H:+ReportExceptionStackTraces")
             buildArgs.add('--trace-class-initialization=true')
 
             buildArgs.add('--initialize-at-build-time=java.beans')
