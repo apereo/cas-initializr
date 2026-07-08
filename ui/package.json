@@ -43,7 +43,7 @@
         "remark-gfm": "^4.0.1",
         "sass": "^1.77.8",
         "semver": "^7.6.3",
-        "typescript": "^6.0.0",
+        "typescript": "^7.0.0",
         "util": "^0.12.5",
         "web-vitals": "^5.0.0"
     },
