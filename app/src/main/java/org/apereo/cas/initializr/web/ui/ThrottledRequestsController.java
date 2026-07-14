@@ -31,11 +31,11 @@ public class ThrottledRequestsController {
         var aggregation = newAggregation(
                 match(where("throttled").is(true)),
                 group("ip").count().as("count"),
+                match(where("count").gte(count)),
                 sort(Sort.by(
                         Sort.Order.desc("count"),
                         Sort.Order.asc("_id")
-                )),
-                limit(count)
+                ))
         );
 
         var results = mongoTemplate.aggregate(

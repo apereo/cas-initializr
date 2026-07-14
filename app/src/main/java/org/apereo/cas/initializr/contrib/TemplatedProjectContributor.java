@@ -15,6 +15,7 @@ import lombok.val;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Strings;
 import org.apereo.cas.initializr.config.CasInitializrProperties;
+import org.apereo.cas.initializr.metadata.CasDependency;
 import org.apereo.cas.initializr.metadata.InitializrMetadataFetcher;
 import org.apereo.cas.initializr.web.OverlayProjectDescription;
 import org.apereo.cas.initializr.web.UnsupportedVersionException;
@@ -84,7 +85,7 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         var type = project.getBuildSystem().id();
         defaults.put("deploymentTypeIsJar", project.getDeploymentType() == OverlayProjectDescription.DeploymentTypes.JAR);
         var deploymentTypeIsWar = (project.getDeploymentType() != OverlayProjectDescription.DeploymentTypes.JAR)
-                || type.equalsIgnoreCase(CasConfigServerOverlayBuildSystem.ID);
+                                  || type.equalsIgnoreCase(CasConfigServerOverlayBuildSystem.ID);
         defaults.put("deploymentTypeIsWar", deploymentTypeIsWar);
 
         if (type.equalsIgnoreCase(CasOverlayBuildSystem.ID)) {
@@ -111,7 +112,7 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
 
         var directory = OverlayProjectDescription.DeploymentTypes.JAR == project.getDeploymentType() ? "BOOT-INF" : "WEB-INF";
         defaults.put("archiveInfoDirectoryName", directory);
-        
+
         var extension = OverlayProjectDescription.DeploymentTypes.JAR == project.getDeploymentType() ? "jar" : "war";
         if (type.equalsIgnoreCase(CasOverlayBuildSystem.ID)) {
             defaults.put("archiveFileName", "cas." + extension);
@@ -138,7 +139,9 @@ public abstract class TemplatedProjectContributor implements ProjectContributor 
         var boms = configuration.getEnv().getBoms();
 
         var casVersion = project.resolveCasVersion(boms.get("cas-bom"));
-        var availableDependencies = fetcher.fetch(casVersion);
+        var parsedVersion = VersionUtils.parse(casVersion);
+        var availableDependencies = fetcher.fetch(parsedVersion.toString());
+        
         log.debug("Available overlay dependencies for {}: {}", project.getVersion(), availableDependencies.size());
 
         var dependencies = project.getRequestedDependencies()
