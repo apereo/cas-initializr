@@ -53,7 +53,6 @@ public class RequestCaptureFilter extends OncePerRequestFilter {
                     .parameters(parameters)
                     .build();
 
-            captureSerice.capture(capturedRequest);
 
             if (properties.getBlockedIps().contains(clientIp)) {
                 log.warn("Request from {} is blocked.", clientIp);
@@ -73,6 +72,7 @@ public class RequestCaptureFilter extends OncePerRequestFilter {
                 }
                 requestCaptureCache.put(clientIp, capturedRequest);
                 store(capturedRequest);
+                captureSerice.capture(capturedRequest);
             }
         }
         filterChain.doFilter(request, response);

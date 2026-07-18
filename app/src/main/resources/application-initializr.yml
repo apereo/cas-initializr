@@ -28,6 +28,24 @@ cas-initializr:
       plugins:
         jib-version: ${jibVersion}
         open-rewrite-version: ${openRewriteVersion}
+    - version: 8.0.0
+      platform-version: 8.0.0
+      boot-version: 4.1.0
+      sync: true
+      validate: true
+      branch: "8.0"
+      type: cas
+      tomcat-version: ${apacheTomcat11LatestVersion}
+      java-version: 25
+      graalvm-version: "latest-ea"
+      container-base-image: azul/zulu-openjdk:25
+      gradle-version: "9.6.1"
+      app-servers:
+        - tomcat
+        - jetty
+      plugins:
+        jib-version: ${jibVersion}
+        open-rewrite-version: ${openRewriteVersion}
     - version: ${casLatestVersion}
       platform-version: ${casLatestVersion}
       boot-version: ${springBootLatestVersion}
