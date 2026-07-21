@@ -46,7 +46,7 @@
         "typescript": "npm:@typescript/typescript6@^6.0.0",
         "typescript-7": "npm:typescript@^7.0.0",
         "util": "^0.12.5",
-        "web-vitals": "^5.0.0"
+        "web-vitals": "^6.0.0"
     },
     "scripts": {
         "start": "BROWSER=none react-scripts start",
