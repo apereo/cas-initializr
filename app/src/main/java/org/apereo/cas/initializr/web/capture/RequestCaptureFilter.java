@@ -23,6 +23,8 @@ import java.util.List;
 @Slf4j
 public class RequestCaptureFilter extends OncePerRequestFilter {
 
+    public static final String PREVIEW_REQUEST_HEADER = "X-CAS-Preview";
+
     private final MongoTemplate mongoTemplate;
     private final RequestCaptureSerice captureSerice;
     private final Cache<String, CapturedRequest> requestCaptureCache;
@@ -35,32 +37,32 @@ public class RequestCaptureFilter extends OncePerRequestFilter {
         var clientIp = ClientIpResolver.resolve(request);
         var requestURI = request.getRequestURI();
         if (requestURI.startsWith("/starter")) {
-            val parameters = new LinkedMultiValueMap<String, String>();
-            request.getParameterMap().forEach((key, value) -> {
-                if (value != null) {
-                    parameters.put(key, List.of(value));
-                }
-            });
-            val expiresAt = LocalDateTime.now().plus(properties.getRequestCacheDuration());
-            val capturedRequest = CapturedRequest
-                    .builder()
-                    .ip(clientIp)
-                    .method(request.getMethod())
-                    .path(requestURI)
-                    .userAgent(request.getHeader("User-Agent"))
-                    .referrer(request.getHeader("Referer"))
-                    .expiresAt(expiresAt)
-                    .parameters(parameters)
-                    .build();
-
-
             if (properties.getBlockedIps().contains(clientIp)) {
                 log.warn("Request from {} is blocked.", clientIp);
                 response.sendError(HttpStatus.TOO_MANY_REQUESTS.value());
                 return;
             }
 
-            if (!RequestCaptureSerice.isLocalhost(clientIp) && properties.getRequestCacheSize() > 0) {
+            if (!isPreviewRequest(request)
+                    && !RequestCaptureSerice.isLocalhost(clientIp)
+                    && properties.getRequestCacheSize() > 0) {
+                val parameters = new LinkedMultiValueMap<String, String>();
+                request.getParameterMap().forEach((key, value) -> {
+                    if (value != null) {
+                        parameters.put(key, List.of(value));
+                    }
+                });
+                val expiresAt = LocalDateTime.now().plus(properties.getRequestCacheDuration());
+                val capturedRequest = CapturedRequest
+                        .builder()
+                        .ip(clientIp)
+                        .method(request.getMethod())
+                        .path(requestURI)
+                        .userAgent(request.getHeader("User-Agent"))
+                        .referrer(request.getHeader("Referer"))
+                        .expiresAt(expiresAt)
+                        .parameters(parameters)
+                        .build();
                 var cachedRequest = requestCaptureCache.getIfPresent(clientIp);
                 if (cachedRequest != null) {
                     var seconds = Duration.between(LocalDateTime.now(), cachedRequest.getExpiresAt()).getSeconds();
@@ -76,6 +78,11 @@ public class RequestCaptureFilter extends OncePerRequestFilter {
             }
         }
         filterChain.doFilter(request, response);
+    }
+
+    public static boolean isPreviewRequest(final HttpServletRequest request) {
+        return request.getRequestURI().startsWith("/starter")
+                && Boolean.parseBoolean(request.getHeader(PREVIEW_REQUEST_HEADER));
     }
 
     private void store(final CapturedRequest request) {

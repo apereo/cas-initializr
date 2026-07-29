@@ -13,7 +13,7 @@ import JSZip from "jszip";
 import * as FileSaver from 'file-saver';
 
 import { useDefaultValues } from '../store/OptionReducer';
-import { API_PATH } from '../App.constant';
+import { API_PATH, PREVIEW_REQUEST_HEADER } from '../App.constant';
 import { Preview } from '../preview/Preview';
 import { useAppDispatch } from '../store/hooks';
 import { setPreviewSelected, setPreviewState, setPreviewTree } from '../store/PreviewReducer';
@@ -113,9 +113,12 @@ export default function Initializr() {
     const [loading, setLoading] = React.useState(false);
     const [requestError, setRequestError] = React.useState<ArchiveRequestError | null>(null);
 
-    const fetchArchive = async (overlay: Overlay, type: string = "tgz") => {
+    const fetchArchive = async (overlay: Overlay, type: string = "tgz", preview: boolean = false) => {
         const string = getOverlayQuery(overlay);
-        return await fetch(`${API_PATH}starter.${type}?${string}`);
+        const options = preview
+            ? { headers: { [PREVIEW_REQUEST_HEADER]: "true" } }
+            : undefined;
+        return await fetch(`${API_PATH}starter.${type}?${string}`, options);
     };
 
     const download = async (overlay: Overlay) => {
@@ -147,7 +150,7 @@ export default function Initializr() {
         setRequestError(null);
         setLoading(true);
         try {
-            const response = await fetchArchive(overlay, "zip");
+            const response = await fetchArchive(overlay, "zip", true);
             if (!response.ok) {
                 setRequestError(await getArchiveRequestError(response, "preview the overlay"));
                 return;
