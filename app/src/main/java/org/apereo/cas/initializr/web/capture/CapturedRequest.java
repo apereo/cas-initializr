@@ -1,5 +1,6 @@
 package org.apereo.cas.initializr.web.capture;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,13 +24,24 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class CapturedRequest {
     @Id
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private String id;
     private String ip;
     private String method;
     private String path;
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    private String securityFetchSite;
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    private String language;
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    private String origin;
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private String userAgent;
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private String referrer;
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private LocalDateTime expiresAt;
     private MultiValueMap<String, String> parameters;
     private boolean throttled;
+    private boolean preview;
 }

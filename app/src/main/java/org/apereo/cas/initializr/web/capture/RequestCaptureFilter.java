@@ -43,9 +43,7 @@ public class RequestCaptureFilter extends OncePerRequestFilter {
                 return;
             }
 
-            if (!isPreviewRequest(request)
-                    && !RequestCaptureSerice.isLocalhost(clientIp)
-                    && properties.getRequestCacheSize() > 0) {
+            if (!RequestCaptureSerice.isLocalhost(clientIp) && properties.getRequestCacheSize() > 0) {
                 val parameters = new LinkedMultiValueMap<String, String>();
                 request.getParameterMap().forEach((key, value) -> {
                     if (value != null) {
@@ -60,20 +58,27 @@ public class RequestCaptureFilter extends OncePerRequestFilter {
                         .path(requestURI)
                         .userAgent(request.getHeader("User-Agent"))
                         .referrer(request.getHeader("Referer"))
+                        .origin(request.getHeader("Origin"))
+                        .language(request.getHeader("Accept-Language"))
+                        .securityFetchSite(request.getHeader("Sec-Fetch-Site"))
                         .expiresAt(expiresAt)
                         .parameters(parameters)
+                        .preview(isPreviewRequest(request))
                         .build();
-                var cachedRequest = requestCaptureCache.getIfPresent(clientIp);
-                if (cachedRequest != null) {
-                    var seconds = Duration.between(LocalDateTime.now(), cachedRequest.getExpiresAt()).getSeconds();
-                    log.warn("Request from {} is throttled. Expiration: {}, Expires in {} seconds",
-                            clientIp, cachedRequest.getExpiresAt(), seconds);
-                    store(capturedRequest.withThrottled(true));
-                    response.sendError(HttpStatus.TOO_MANY_REQUESTS.value());
-                    return;
+
+                if (!capturedRequest.isPreview()) {
+                    var cachedRequest = requestCaptureCache.getIfPresent(clientIp);
+                    if (cachedRequest != null) {
+                        var seconds = Duration.between(LocalDateTime.now(), cachedRequest.getExpiresAt()).getSeconds();
+                        log.warn("Request from {} is throttled. Expiration: {}, Expires in {} seconds",
+                                clientIp, cachedRequest.getExpiresAt(), seconds);
+                        store(capturedRequest.withThrottled(true));
+                        response.sendError(HttpStatus.TOO_MANY_REQUESTS.value());
+                        return;
+                    }
+                    requestCaptureCache.put(clientIp, capturedRequest);
+                    store(capturedRequest);
                 }
-                requestCaptureCache.put(clientIp, capturedRequest);
-                store(capturedRequest);
                 captureSerice.capture(capturedRequest);
             }
         }
