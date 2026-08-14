@@ -90,7 +90,7 @@ abstract class GetJavaClassTask extends DefaultTask {
                 .filter { Files.isRegularFile(it) }
                 .map { it.toFile() }
                 .filter { it.name == "${requestedClassName}.java" }
-                .filter { normalize(it.absolutePath).contains("/src/main/java/") }
+                .filter { it.absolutePath.normalize().contains("/src/main/java/") }
                 .forEach { matches << it }
         }
 
