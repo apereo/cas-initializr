@@ -139,7 +139,7 @@ processResources {
                 apacheTomcat11LatestVersion: apacheTomcat11LatestVersion,
                 gradleLatestVersion: gradleLatestVersion,
                 casLatestVersion: casLatestVersion,
-                "openRewriteVersion"         : openRewriteVersion,
+                "openRewriteVersion" : openRewriteVersion,
                 jibVersion: jibVersion,
                 lombokVersion: lombokVersion,
         )
