@@ -8,5 +8,29 @@
     ],
     "labels": ["dependencies", "bot"],
     "rebaseWhen" : "never",
-    "automerge": false
+    "automerge": false,
+    "customManagers": [
+      {
+        "description": "Update supported CAS release versions",
+        "customType": "regex",
+        "managerFilePatterns": [
+          "/^app\\/src\\/main\\/resources\\/application-initializr\\.yml$/"
+        ],
+        "matchStrings": [
+          "(?:^|\\n)    - version: (?<currentValue>(?<major>\\d+)\\.(?<minor>\\d+)\\.\\d+(?:\\.\\d+)?)"
+        ],
+        "depNameTemplate": "CAS {{{major}}}.{{{minor}}} supported version",
+        "packageNameTemplate": "org.apereo.cas:cas-server-support-bom",
+        "datasourceTemplate": "maven",
+        "versioningTemplate": "regex:^(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)(?:\\.(?<build>\\d+))?$"
+      }
+    ],
+    "packageRules": [
+      {
+        "description": "Keep supported CAS releases on their existing minor line",
+        "matchManagers": ["custom.regex"],
+        "matchPackageNames": ["org.apereo.cas:cas-server-support-bom"],
+        "allowedVersions": "/^{{{major}}}\\.{{{minor}}}\\.\\d+(?:\\.\\d+)?$/"
+      }
+    ]
   }
