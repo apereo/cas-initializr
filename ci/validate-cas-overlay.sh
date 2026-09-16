@@ -49,6 +49,7 @@ done
 CAS_MAJOR_VERSION=`echo $CAS_VERSION | cut -d. -f1`
 CAS_MINOR_VERSION=`echo $CAS_VERSION | cut -d. -f2`
 CAS_PATCH_VERSION=`echo $CAS_VERSION | cut -d. -f3`
+CAS_SECURITY_VERSION=`echo $CAS_VERSION | cut -d. -f4`
 
 if [[ "${FETCH_OVERLAY}" == "true" ]]; then
   printgreen "Building CAS Initializr to fetch overlay ${CAS_VERSION}"
@@ -270,7 +271,7 @@ rm -Rf ./certs
 if [[ "$CAS_MAJOR_VERSION" -ge 7 ]]; then
   # targetVersion=${CAS_VERSION%-SNAPSHOT}
   targetVersion="${CAS_VERSION}"
-  
+
   printgreen "OpenRewrite to discover recipes for target version ${targetVersion}..."
   recipes=$(./gradlew --init-script openrewrite.gradle rewriteDiscover -PtargetVersion="${targetVersion}" | grep "org.apereo.cas")
   if [ -z "$recipes" ] ; then
@@ -279,7 +280,7 @@ if [[ "$CAS_MAJOR_VERSION" -ge 7 ]]; then
   fi
   printgreen "Discovered OpenRewrite recipes: ${recipes}"
 
-  recipeName="org.apereo.cas.cas${CAS_MAJOR_VERSION}${CAS_MINOR_VERSION}${CAS_PATCH_VERSION%-SNAPSHOT}"
+  recipeName="org.apereo.cas.cas${CAS_MAJOR_VERSION}${CAS_MINOR_VERSION}${CAS_PATCH_VERSION}${CAS_SECURITY_VERSION}"
   printgreen "OpenRewrite to dry-run recipe ${recipeName}..."
   ./gradlew --init-script openrewrite.gradle rewriteDryRun \
     -PtargetVersion="${targetVersion}" -DactiveRecipe="$recipeName"
@@ -288,7 +289,7 @@ if [[ "$CAS_MAJOR_VERSION" -ge 7 ]]; then
   if [[ "$CAS_MINOR_VERSION" -ge 1 ]]; then
     printgreen "Build CAS web application without executable mode..."
     ./gradlew clean build -Pexecutable=false --no-daemon
-    
+
     printgreen "Extracting Uber WAR from CAS to prepare CDS launch..."
     java -Djarmode=tools -jar build/libs/cas.war extract
     java -jar ./cas/cas.war --spring.profiles.active=none --server.ssl.enabled=false --server.port=8091 &
