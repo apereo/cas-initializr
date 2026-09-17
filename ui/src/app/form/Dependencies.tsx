@@ -23,6 +23,7 @@ import {
 } from "../store/OverlayReducer";
 import { Action, useCommand } from "../core/Keyboard";
 import { useIsPreviewing } from "../store/PreviewReducer";
+import ShortcutHint from "../component/ShortcutHint";
 
 export default function Dependencies() {
     const selectedDependencies = useMappedOverlayDependencies();
@@ -53,7 +54,7 @@ export default function Dependencies() {
                 spacing={1}
                 sx={{ justifyContent: "space-between", alignItems: "center" }}
             >
-                <Grid size={{ md:6 }}>
+                <Grid size={{ xs: 12, sm: 6 }}>
                     <DependencySelector
                         onSelectedChange={(sel: string[]) =>
                             dispatch(setDependencies(sel))
@@ -62,21 +63,28 @@ export default function Dependencies() {
                 </Grid>
 
                 {selected?.length > 0 && (
-                    <Grid size={{md:6 }}
+                    <Grid
+                        size={{ xs: 12, sm: 6 }}
                         sx={{
-                            textAlign: "end",
+                            textAlign: { xs: "start", sm: "end" },
                         }}
                     >
                         <Button
                             variant="outlined"
                             onClick={() => clear()}
                             startIcon={<DeleteForeverIcon />}
+                            fullWidth={false}
+                            sx={{
+                                width: { xs: "100%", sm: "auto" },
+                                whiteSpace: "nowrap",
+                                minHeight: 44,
+                            }}
                         >
-                            {label} (
-                            {React.createElement(modifierIcon, {
-                                fontSize: "small",
-                            })}
-                            +{keys})
+                            {label}
+                            <ShortcutHint
+                                modifierIcon={modifierIcon}
+                                keys={keys}
+                            />
                         </Button>
                     </Grid>
                 )}
@@ -87,6 +95,10 @@ export default function Dependencies() {
                         <Fragment key={idx}>
                             {s !== undefined ? (
                                 <ListItem
+                                    sx={{
+                                        px: { xs: 0, sm: 2 },
+                                        alignItems: "flex-start",
+                                    }}
                                     secondaryAction={
                                         <IconButton
                                             edge="end"
@@ -103,7 +115,7 @@ export default function Dependencies() {
                                     >
                                         <ListItemText
                                             primary={
-                                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
                                                     {s.type && (
                                                         <Chip
                                                             label={s.type}

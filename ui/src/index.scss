@@ -5,6 +5,9 @@ body {
         sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    /* Avoid iOS Safari auto-inflating text in rotated / narrow layouts. */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
 }
 
 code {
@@ -13,8 +16,38 @@ code {
     font-weight: bold;
 }
 
-body, #app-root {
-    width: 100vw;
-    height: 100vh;
+html {
+    box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: inherit;
+}
+
+/*
+ * `100vw` includes the scrollbar gutter on desktop and ignores the dynamic
+ * browser chrome on mobile, which produces a phantom horizontal scrollbar and
+ * a viewport taller than what is actually visible. Percentages + `dvh` track
+ * the real viewport on every device.
+ */
+html,
+body,
+#app-root {
+    width: 100%;
+    max-width: 100%;
     overflow-x: hidden;
+}
+
+body,
+#app-root {
+    min-height: 100vh;
+    /* stylelint-disable-next-line declaration-block-no-duplicate-properties */
+    min-height: 100dvh;
+}
+
+/* Long URLs / coordinates / file paths must never force the page to scroll. */
+#app-root {
+    overflow-wrap: break-word;
 }

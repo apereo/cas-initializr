@@ -18,6 +18,8 @@ import { Action, useCommand } from "../core/Keyboard";
 import { useHotkeys } from "react-hotkeys-hook";
 import { FileTreeItem } from "../file/tree";
 import Fuse from "fuse.js";
+import { useIsCompact, useIsMobile } from "../core/useBreakpoints";
+import ShortcutHint from "../component/ShortcutHint";
 
 /* ── VS Code colour tokens ─────────────────────────────────────── */
 const VS = {
@@ -108,8 +110,14 @@ export function Preview({ handleDownload, handlePreview, disabled }: PreviewProp
     const open = useIsPreviewing();
     const selected = usePreviewSelected();
 
+    /* ── Responsive ─────────────────────────────────────────────── */
+    const isMobile = useIsMobile();
+    const isCompact = useIsCompact();
+
     /* ── Local state ────────────────────────────────────────────── */
-    const [sidebarOpen, setSidebarOpen] = useState(true);
+    /* On a phone the explorer is an overlay, so it starts closed —
+       otherwise it would cover the editor the moment the preview opens. */
+    const [sidebarOpen, setSidebarOpen] = useState(!isMobile);
     const [sidebarWidth, setSidebarWidth] = useState(240);
     const [openTabs, setOpenTabs] = useState<FileTreeItem[]>([]);
     const [tabContextMenu, setTabContextMenu] = useState<{ path: string; x: number; y: number } | null>(null);
@@ -119,9 +127,17 @@ export function Preview({ handleDownload, handlePreview, disabled }: PreviewProp
         return isNaN(parsed) ? DEFAULT_FONT : Math.min(MAX_FONT, Math.max(MIN_FONT, parsed));
     });
     const [quickOpenVisible, setQuickOpenVisible] = useState(false);
-    const [minimapEnabled, setMinimapEnabled] = useState(true);
+    /* The minimap is pure overhead on a narrow editor. */
+    const [minimapEnabled, setMinimapEnabled] = useState(!isMobile);
     const [wordWrapEnabled, setWordWrapEnabled] = useState(true);
     const [markdownPreview, setMarkdownPreview] = useState(false);
+
+    /* Follow the breakpoint when the device is rotated or the window
+       resized across it. */
+    useEffect(() => {
+        setSidebarOpen(!isMobile);
+        setMinimapEnabled(!isMobile);
+    }, [isMobile]);
 
     /* ── Sidebar resize drag ─────────────────────────────────────── */
     const MIN_SIDEBAR = 140;
@@ -177,7 +193,11 @@ export function Preview({ handleDownload, handlePreview, disabled }: PreviewProp
             });
             // reset markdown preview when switching to a non-markdown file
             if (selected.type !== "markdown") setMarkdownPreview(false);
+            // On a phone the explorer covers the editor, so opening a file
+            // should reveal it. Expanding a folder leaves the drawer open.
+            if (isMobile) setSidebarOpen(false);
         }
+        /* eslint-disable-next-line react-hooks/exhaustive-deps */
     }, [selected]);
 
     /* Persist font size to localStorage ────────────────────────── */
@@ -307,8 +327,10 @@ export function Preview({ handleDownload, handlePreview, disabled }: PreviewProp
                 variant="contained"
                 startIcon={<VisibilitySharp />}
                 disabled={disabled}
+                sx={{ whiteSpace: "nowrap", minHeight: 44 }}
             >
-                {label} ({React.createElement(modifierIcon, { fontSize: "small" })}+{keys})
+                {label}
+                <ShortcutHint modifierIcon={modifierIcon} keys={keys} />
             </Button>
 
             <Dialog
@@ -328,7 +350,10 @@ export function Preview({ handleDownload, handlePreview, disabled }: PreviewProp
                     style={{
                     display: "flex",
                     flexDirection: "column",
-                    height: "100vh",
+                    /* `dvh` tracks the visible area as mobile browser chrome
+                       shows and hides; `100vh` would push the status bar off. */
+                    height: "100dvh",
+                    maxHeight: "100dvh",
                     fontFamily: EDITOR_FONT,
                     overflow: "hidden",
                     }}
@@ -336,6 +361,7 @@ export function Preview({ handleDownload, handlePreview, disabled }: PreviewProp
                     <GlobalStyles styles={{ ".vs-tabs-scroll::-webkit-scrollbar": { display: "none" } }} />
                     {/* ── Menu bar (replaces title bar) ─────────────── */}
                     <MenuBar
+                        compact={isCompact}
                         sidebarOpen={sidebarOpen}
                         minimapEnabled={minimapEnabled}
                         wordWrapEnabled={wordWrapEnabled}
@@ -366,25 +392,29 @@ export function Preview({ handleDownload, handlePreview, disabled }: PreviewProp
                         style={{
                             display: "flex",
                             flex: 1,
+                            minHeight: 0,
                             overflow: "hidden",
+                            position: "relative",
                         }}
                     >
                         {/* Activity bar */}
                         <div
                             style={{
-                                width: 48,
+                                width: isCompact ? 44 : 48,
                                 background: VS.activityBar,
                                 display: "flex",
                                 flexDirection: "column",
                                 alignItems: "center",
                                 paddingTop: 4,
                                 flexShrink: 0,
+                                zIndex: 21,
                                 borderRight: `1px solid ${VS.border}`,
                             }}
                         >
                             <ActivityBarIcon
                                 title="Explorer"
                                 active={sidebarOpen}
+                                compact={isCompact}
                                 onClick={() => setSidebarOpen((v) => !v)}
                             >
                                 {/* Files icon */}
@@ -399,18 +429,49 @@ export function Preview({ handleDownload, handlePreview, disabled }: PreviewProp
                             </ActivityBarIcon>
                         </div>
 
-                        {/* Sidebar — Explorer */}
+                        {/* Backdrop behind the overlay explorer (mobile only) */}
+                        {isMobile && sidebarOpen && (
+                            <div
+                                onClick={() => setSidebarOpen(false)}
+                                aria-hidden="true"
+                                style={{
+                                    position: "absolute",
+                                    inset: 0,
+                                    background: "rgba(0,0,0,0.5)",
+                                    zIndex: 19,
+                                }}
+                            />
+                        )}
+
+                        {/* Sidebar — Explorer.
+                            On mobile it floats over the editor instead of
+                            taking layout width, which would otherwise leave
+                            the editor a ~90px strip on a phone. */}
                         {sidebarOpen && (
                             <div
                                 style={{
-                                    width: sidebarWidth,
-                                    minWidth: sidebarWidth,
+                                    width: isMobile
+                                        ? "min(280px, calc(100vw - 72px))"
+                                        : sidebarWidth,
+                                    minWidth: isMobile ? undefined : sidebarWidth,
                                     background: VS.sidebar,
                                     display: "flex",
                                     flexDirection: "column",
                                     flexShrink: 0,
                                     overflow: "hidden",
-                                    position: "relative",
+                                    position: isMobile ? "absolute" : "relative",
+                                    ...(isMobile
+                                        ? {
+                                              top: 0,
+                                              bottom: 0,
+                                              /* Start where the activity bar
+                                                 ends, or it would sit on top of
+                                                 the tree's icons and header. */
+                                              left: isCompact ? 44 : 48,
+                                              zIndex: 20,
+                                              boxShadow: "4px 0 16px rgba(0,0,0,0.5)",
+                                          }
+                                        : {}),
                                 }}
                             >
                                 {/* Explorer header */}
@@ -424,36 +485,60 @@ export function Preview({ handleDownload, handlePreview, disabled }: PreviewProp
                                         letterSpacing: "0.1em",
                                         flexShrink: 0,
                                         fontFamily: EDITOR_FONT,
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "space-between",
                                     }}
                                 >
-                                    Explorer
+                                    <span>Explorer</span>
+                                    {isMobile && (
+                                        <button
+                                            onClick={() => setSidebarOpen(false)}
+                                            aria-label="Close explorer"
+                                            style={{
+                                                background: "transparent",
+                                                border: "none",
+                                                color: VS.sidebarHeaderFg,
+                                                cursor: "pointer",
+                                                fontSize: 16,
+                                                lineHeight: 1,
+                                                padding: "4px 8px",
+                                                minHeight: 32,
+                                            }}
+                                        >
+                                            ✕
+                                        </button>
+                                    )}
                                 </div>
                                 {/* File tree */}
                                 <div
                                     style={{
                                         flex: 1,
                                         overflowY: "auto",
-                                        overflowX: "hidden",
-                                    }}
+                                        overflowX: "auto",
+                                        WebkitOverflowScrolling: "touch",
+                                    } as React.CSSProperties}
                                 >
                                     <Tree />
                                 </div>
-                                {/* Drag handle */}
-                                <div
-                                    onMouseDown={onResizeMouseDown}
-                                    style={{
-                                        position: "absolute",
-                                        top: 0,
-                                        right: 0,
-                                        width: 4,
-                                        height: "100%",
-                                        cursor: "col-resize",
-                                        background: "transparent",
-                                        zIndex: 10,
-                                    }}
-                                    onMouseEnter={(e) => (e.currentTarget.style.background = VS.tabActiveBorder)}
-                                    onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
-                                />
+                                {/* Drag handle — pointer devices only */}
+                                {!isMobile && (
+                                    <div
+                                        onMouseDown={onResizeMouseDown}
+                                        style={{
+                                            position: "absolute",
+                                            top: 0,
+                                            right: 0,
+                                            width: 4,
+                                            height: "100%",
+                                            cursor: "col-resize",
+                                            background: "transparent",
+                                            zIndex: 10,
+                                        }}
+                                        onMouseEnter={(e) => (e.currentTarget.style.background = VS.tabActiveBorder)}
+                                        onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+                                    />
+                                )}
                             </div>
                         )}
 
@@ -461,6 +546,7 @@ export function Preview({ handleDownload, handlePreview, disabled }: PreviewProp
                         <div
                             style={{
                                 flex: 1,
+                                minWidth: 0,
                                 display: "flex",
                                 flexDirection: "column",
                                 overflow: "hidden",
@@ -470,7 +556,7 @@ export function Preview({ handleDownload, handlePreview, disabled }: PreviewProp
                             {/* Tab bar */}
                             <div
                                 style={{
-                                    height: 46,
+                                    height: isCompact ? 38 : 46,
                                     background: VS.tabBar,
                                     display: "flex",
                                     alignItems: "stretch",
@@ -493,6 +579,7 @@ export function Preview({ handleDownload, handlePreview, disabled }: PreviewProp
                                         overflowY: "hidden",
                                         scrollbarWidth: "none",
                                         msOverflowStyle: "none",
+                                        WebkitOverflowScrolling: "touch",
                                     } as React.CSSProperties}
                                 >
                                      {openTabs.map((tab) => (
@@ -501,6 +588,7 @@ export function Preview({ handleDownload, handlePreview, disabled }: PreviewProp
                                             tab={tab}
                                             isActive={tab.path === selected?.path}
                                             fontSize={fontSize}
+                                            compact={isCompact}
                                             onSelect={() =>
                                                 dispatch(setPreviewSelected(tab))
                                             }
@@ -530,9 +618,11 @@ export function Preview({ handleDownload, handlePreview, disabled }: PreviewProp
                                                 </svg>
                                             )}
                                         </VsIconBtn>
-                                        <span style={{ color: markdownPreview ? VS.tabActiveBorder : "#858585", fontSize: 11, paddingRight: 4 }}>
-                                            {markdownPreview ? "Preview" : "Source"}
-                                        </span>
+                                        {!isCompact && (
+                                            <span style={{ color: markdownPreview ? VS.tabActiveBorder : "#858585", fontSize: 11, paddingRight: 4 }}>
+                                                {markdownPreview ? "Preview" : "Source"}
+                                            </span>
+                                        )}
                                     </div>
                                 )}
                                 {/* Font size controls */}
@@ -547,38 +637,45 @@ export function Preview({ handleDownload, handlePreview, disabled }: PreviewProp
                                         paddingLeft: 8,
                                     }}
                                 >
-                                    <VsIconBtn
-                                        title="Increase font size"
-                                        onClick={() =>
-                                            setFontSize((f) =>
-                                                Math.min(f + 1, MAX_FONT)
-                                            )
-                                        }
-                                        disabled={fontSize >= MAX_FONT}
-                                    >
-                                        <span style={{ fontSize: 14, fontWeight: "bold" }}>A+</span>
-                                    </VsIconBtn>
-                                    <span
-                                        style={{
-                                            color: "#858585",
-                                            fontSize: 11,
-                                            minWidth: 28,
-                                            textAlign: "center",
-                                        }}
-                                    >
-                                        {fontSize}px
-                                    </span>
-                                    <VsIconBtn
-                                        title="Decrease font size"
-                                        onClick={() =>
-                                            setFontSize((f) =>
-                                                Math.max(f - 1, MIN_FONT)
-                                            )
-                                        }
-                                        disabled={fontSize <= MIN_FONT}
-                                    >
-                                        <span style={{ fontSize: 14, fontWeight: "bold" }}>A-</span>
-                                    </VsIconBtn>
+                                    {/* Font stepper: hidden on phones, where the
+                                        tab strip needs every pixel. The same
+                                        actions live in the View menu. */}
+                                    {!isCompact && (
+                                        <>
+                                            <VsIconBtn
+                                                title="Increase font size"
+                                                onClick={() =>
+                                                    setFontSize((f) =>
+                                                        Math.min(f + 1, MAX_FONT)
+                                                    )
+                                                }
+                                                disabled={fontSize >= MAX_FONT}
+                                            >
+                                                <span style={{ fontSize: 14, fontWeight: "bold" }}>A+</span>
+                                            </VsIconBtn>
+                                            <span
+                                                style={{
+                                                    color: "#858585",
+                                                    fontSize: 11,
+                                                    minWidth: 28,
+                                                    textAlign: "center",
+                                                }}
+                                            >
+                                                {fontSize}px
+                                            </span>
+                                            <VsIconBtn
+                                                title="Decrease font size"
+                                                onClick={() =>
+                                                    setFontSize((f) =>
+                                                        Math.max(f - 1, MIN_FONT)
+                                                    )
+                                                }
+                                                disabled={fontSize <= MIN_FONT}
+                                            >
+                                                <span style={{ fontSize: 14, fontWeight: "bold" }}>A-</span>
+                                            </VsIconBtn>
+                                        </>
+                                    )}
                                     <VsIconBtn
                                         title={
                                             selected && selected.type !== "dir" && selected.content
@@ -616,7 +713,7 @@ export function Preview({ handleDownload, handlePreview, disabled }: PreviewProp
                     {/* ── Status bar ──────────────────────────────────── */}
                     <div
                         style={{
-                            height: 22,
+                            minHeight: isCompact ? 28 : 22,
                             background: VS.statusBar,
                             color: VS.statusBarFg,
                             display: "flex",
@@ -624,17 +721,20 @@ export function Preview({ handleDownload, handlePreview, disabled }: PreviewProp
                             justifyContent: "space-between",
                             paddingLeft: 8,
                             paddingRight: 4,
+                            /* Clear the iOS home indicator in the full-screen
+                               preview dialog. */
+                            paddingBottom: "env(safe-area-inset-bottom)",
                             flexShrink: 0,
                             fontSize: 12,
                         }}
                     >
-                        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 0, overflow: "hidden" }}>
                             {selected && selected.type !== "dir" && (
-                                <span style={{ textTransform: "lowercase" }}>
+                                <span style={{ textTransform: "lowercase", whiteSpace: "nowrap" }}>
                                     {selected.type}
                                 </span>
                             )}
-                            <span>UTF-8</span>
+                            {!isCompact && <span>UTF-8</span>}
                         </div>
                         <div style={{ display: "flex", alignItems: "center", height: "100%" }}>
                             <VsIconBtn title="Download overlay" onClick={handleDownload}>
@@ -701,9 +801,12 @@ interface MenuItemDef {
     checked?: boolean;
     disabled?: boolean;
     separator?: boolean;
+    /** Non-interactive section label, used by the collapsed mobile menu. */
+    heading?: boolean;
 }
 
 interface MenuBarProps {
+    compact: boolean;
     sidebarOpen: boolean;
     minimapEnabled: boolean;
     wordWrapEnabled: boolean;
@@ -796,11 +899,29 @@ function MenuBar(props: MenuBarProps) {
         },
     ];
 
+    /* On a phone the four menus plus the title do not fit in a 30px bar, so
+       everything collapses behind a single ☰ trigger. The disabled "Edit"
+       group is dropped there — it offers nothing actionable. */
+    const compactItems: MenuItemDef[] = menus
+        .filter((m) => m.id !== "edit")
+        .flatMap((menu, idx) => [
+            ...(idx > 0 ? [{ label: "", separator: true } as MenuItemDef] : []),
+            { label: menu.label, heading: true } as MenuItemDef,
+            /* Keyboard shortcuts are unreachable on a touch device. */
+            ...menu.items
+                .filter((item) => !item.separator)
+                .map(({ shortcut, ...item }) => item),
+        ]);
+
+    const visibleMenus = props.compact
+        ? [{ id: "all", label: "☰", items: compactItems }]
+        : menus;
+
     return (
         <div
             ref={barRef}
             style={{
-                height: 30,
+                height: props.compact ? 38 : 30,
                 background: VS.titleBar,
                 display: "flex",
                 alignItems: "stretch",
@@ -811,11 +932,12 @@ function MenuBar(props: MenuBarProps) {
             }}
         >
             {/* Menu entries */}
-            {menus.map((menu) => (
+            {visibleMenus.map((menu) => (
                 <div key={menu.id} style={{ position: "relative" }}>
                     <MenuTrigger
                         label={menu.label}
                         active={activeMenu === menu.id}
+                        compact={props.compact}
                         onClick={() => toggle(menu.id)}
                         onMouseEnter={() => activeMenu && activeMenu !== menu.id && setActiveMenu(menu.id)}
                     />
@@ -825,33 +947,39 @@ function MenuBar(props: MenuBarProps) {
                 </div>
             ))}
 
-            {/* Title centred */}
-            <span style={{
-                position: "absolute",
-                left: "50%",
-                transform: "translateX(-50%)",
-                top: 0, bottom: 0,
-                display: "flex", alignItems: "center",
-                color: "#cccccc", fontSize: 12,
-                pointerEvents: "none",
-            }}>
-                CAS Initializr — Explorer
-            </span>
+            {/* Title centred — dropped on phones, where it would collide with
+                the menu trigger and the close button. */}
+            {!props.compact && (
+                <span style={{
+                    position: "absolute",
+                    left: "50%",
+                    transform: "translateX(-50%)",
+                    top: 0, bottom: 0,
+                    display: "flex", alignItems: "center",
+                    color: "#cccccc", fontSize: 12,
+                    pointerEvents: "none",
+                }}>
+                    CAS Initializr — Explorer
+                </span>
+            )}
 
             {/* Close button pushed to the right */}
             <button
                 onClick={props.onClose}
                 title="Close (Esc)"
+                aria-label="Close preview"
                 style={{
                     marginLeft: "auto",
                     background: "transparent",
                     border: "none",
                     color: "#cccccc",
                     cursor: "pointer",
-                    fontSize: 16,
-                    padding: "0 12px",
+                    fontSize: props.compact ? 18 : 16,
+                    padding: props.compact ? "0 16px" : "0 12px",
+                    minWidth: props.compact ? 48 : undefined,
                     display: "flex",
                     alignItems: "center",
+                    justifyContent: "center",
                 }}
                 onMouseEnter={(e) => (e.currentTarget.style.background = "#c42b1c")}
                 onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
@@ -862,22 +990,24 @@ function MenuBar(props: MenuBarProps) {
     );
 }
 
-function MenuTrigger({ label, active, onClick, onMouseEnter }: {
-    label: string; active: boolean;
+function MenuTrigger({ label, active, compact, onClick, onMouseEnter }: {
+    label: string; active: boolean; compact?: boolean;
     onClick: () => void; onMouseEnter: () => void;
 }) {
     return (
         <button
             onClick={onClick}
             onMouseEnter={onMouseEnter}
+            aria-label={compact ? "Preview menu" : undefined}
             style={{
                 background: active ? "#505050" : "transparent",
                 border: "none",
                 color: "#cccccc",
                 cursor: "pointer",
                 height: "100%",
-                padding: "0 10px",
-                fontSize: 13,
+                padding: compact ? "0 16px" : "0 10px",
+                minWidth: compact ? 48 : undefined,
+                fontSize: compact ? 18 : 13,
                 fontFamily: EDITOR_FONT,
             }}
         >
@@ -893,6 +1023,10 @@ function MenuDropdown({ items, onRun }: { items: MenuItemDef[]; onRun: (a?: () =
             top: "100%",
             left: 0,
             minWidth: 220,
+            /* Never wider or taller than the viewport on a phone. */
+            maxWidth: "calc(100vw - 16px)",
+            maxHeight: "70dvh",
+            overflowY: "auto",
             background: "#252526",
             border: "1px solid #474747",
             boxShadow: "0 4px 16px rgba(0,0,0,0.6)",
@@ -904,6 +1038,24 @@ function MenuDropdown({ items, onRun }: { items: MenuItemDef[]; onRun: (a?: () =
             {items.map((item, i) => {
                 if (item.separator) {
                     return <div key={i} style={{ height: 1, background: "#474747", margin: "4px 0" }} />;
+                }
+                if (item.heading) {
+                    return (
+                        <div
+                            key={i}
+                            style={{
+                                padding: "6px 20px 2px 12px",
+                                color: "#858585",
+                                fontSize: 11,
+                                fontWeight: 700,
+                                letterSpacing: "0.08em",
+                                textTransform: "uppercase",
+                                fontFamily: EDITOR_FONT,
+                            }}
+                        >
+                            {item.label}
+                        </div>
+                    );
                 }
                 return (
                     <MenuItemRow key={i} item={item} onRun={onRun} />
@@ -921,9 +1073,11 @@ function MenuItemRow({ item, onRun }: { item: MenuItemDef; onRun: (a?: () => voi
             onMouseEnter={() => setHov(true)}
             onMouseLeave={() => setHov(false)}
             style={{
+                position: "relative",
                 display: "flex",
                 alignItems: "center",
-                padding: "4px 20px 4px 28px",
+                minHeight: 34,
+                padding: "6px 20px 6px 28px",
                 background: hov && !item.disabled ? "#094771" : "transparent",
                 color: item.disabled ? "#555" : "#cccccc",
                 cursor: item.disabled ? "default" : "pointer",
@@ -933,7 +1087,7 @@ function MenuItemRow({ item, onRun }: { item: MenuItemDef; onRun: (a?: () => voi
             }}
         >
             {/* Checkmark for toggled items */}
-            <span style={{ position: "absolute", left: 8, color: "#007acc", fontSize: 12 }}>
+            <span style={{ position: "absolute", left: 10, color: "#007acc", fontSize: 12 }}>
                 {item.checked !== undefined ? (item.checked ? "✓" : "") : ""}
             </span>
             <span style={{ flex: 1 }}>{item.label}</span>
@@ -971,6 +1125,7 @@ function QuickOpen({
     const [activeIdx, setActiveIdx] = useState(0);
     const inputRef = useRef<HTMLInputElement>(null);
     const listRef = useRef<HTMLDivElement>(null);
+    const isCompact = useIsCompact();
 
     const results = useMemo<FileTreeItem[]>(() => {
         if (!query.trim()) return allFiles.slice(0, 50);
@@ -1011,15 +1166,19 @@ function QuickOpen({
                 background: "rgba(0,0,0,0.5)",
                 display: "flex",
                 justifyContent: "center",
-                alignItems: "center",
+                /* Anchor near the top on phones so the on-screen keyboard does
+                   not push the panel out of view. */
+                alignItems: isCompact ? "flex-start" : "center",
+                paddingTop: isCompact ? 12 : 0,
+                boxSizing: "border-box",
             }}
         >
             {/* Panel */}
             <div
                 onClick={(e) => e.stopPropagation()}
                 style={{
-                    width: "min(820px, 92vw)",
-                    maxHeight: "75vh",
+                    width: "min(820px, 94vw)",
+                    maxHeight: "75dvh",
                     background: "#252526",
                     border: "1px solid #474747",
                     borderRadius: 6,
@@ -1030,7 +1189,7 @@ function QuickOpen({
                 }}
             >
                 {/* Search input */}
-                <div style={{ display: "flex", alignItems: "center", padding: "12px 16px", borderBottom: "1px solid #474747" }}>
+                <div style={{ display: "flex", alignItems: "center", padding: isCompact ? "10px 12px" : "12px 16px", borderBottom: "1px solid #474747" }}>
                     {/* Magnifier icon */}
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#858585" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, marginRight: 10 }}>
                         <circle cx="11" cy="11" r="8" />
@@ -1048,18 +1207,40 @@ function QuickOpen({
                             border: "none",
                             outline: "none",
                             color: "#cccccc",
-                            fontSize: 19,
+                            /* Stay at 16px or above: iOS Safari zooms the page
+                               when a focused input is smaller. */
+                            fontSize: isCompact ? 16 : 19,
                             fontFamily: EDITOR_FONT,
                             lineHeight: "1.5",
+                            minWidth: 0,
                         }}
                     />
-                    <span style={{ color: "#858585", fontSize: 15, marginLeft: 10, flexShrink: 0, fontFamily: EDITOR_FONT }}>Esc to close</span>
+                    {isCompact ? (
+                        <button
+                            onClick={onClose}
+                            aria-label="Close file search"
+                            style={{
+                                background: "transparent",
+                                border: "none",
+                                color: "#858585",
+                                fontSize: 18,
+                                cursor: "pointer",
+                                padding: "4px 8px",
+                                marginLeft: 6,
+                                flexShrink: 0,
+                            }}
+                        >
+                            ✕
+                        </button>
+                    ) : (
+                        <span style={{ color: "#858585", fontSize: 15, marginLeft: 10, flexShrink: 0, fontFamily: EDITOR_FONT }}>Esc to close</span>
+                    )}
                 </div>
 
                 {/* Results list */}
                 <div ref={listRef} style={{ overflowY: "auto", flex: 1 }}>
                     {results.length === 0 && (
-                        <div style={{ padding: "16px 20px", color: "#858585", fontSize: 17, fontFamily: EDITOR_FONT }}>No files found</div>
+                        <div style={{ padding: "16px 20px", color: "#858585", fontSize: isCompact ? 14 : 17, fontFamily: EDITOR_FONT }}>No files found</div>
                     )}
                     {results.map((item, idx) => (
                         <QuickOpenRow
@@ -1095,6 +1276,7 @@ function QuickOpenRow({
 }) {
     /* Highlight matching chars in the filename */
     const highlighted = useMemo(() => highlightMatch(item.name, query), [item.name, query]);
+    const isCompact = useIsCompact();
 
     return (
         <div
@@ -1104,7 +1286,8 @@ function QuickOpenRow({
             style={{
                 display: "flex",
                 alignItems: "center",
-                padding: "6px 16px",
+                minHeight: isCompact ? 44 : undefined,
+                padding: isCompact ? "8px 12px" : "6px 16px",
                 cursor: "pointer",
                 background: active ? "#094771" : "transparent",
                 gap: 10,
@@ -1113,10 +1296,10 @@ function QuickOpenRow({
             <span style={{ color: "#75beff", display: "inline-flex", alignItems: "center", flexShrink: 0, fontSize: 20 }}>
                 <FileTypeIcon type={item.type} fontSize="small" />
             </span>
-            <span style={{ color: "#cccccc", fontSize: 17, fontFamily: EDITOR_FONT }}>
+            <span style={{ color: "#cccccc", fontSize: isCompact ? 14 : 17, fontFamily: EDITOR_FONT, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", flexShrink: 0, maxWidth: "55%" }}>
                 {highlighted}
             </span>
-            <span style={{ color: "#858585", fontSize: 15, marginLeft: "auto", paddingLeft: 12, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 320, fontFamily: EDITOR_FONT, flexShrink: 1 }}>
+            <span style={{ color: "#858585", fontSize: isCompact ? 12 : 15, marginLeft: "auto", paddingLeft: 12, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", direction: "rtl", textAlign: "right", maxWidth: isCompact ? "45%" : 320, fontFamily: EDITOR_FONT, flexShrink: 1 }}>
                 {item.path}
             </span>
         </div>
@@ -1149,11 +1332,13 @@ function highlightMatch(text: string, query: string): React.ReactNode {
 function ActivityBarIcon({
     title,
     active,
+    compact,
     onClick,
     children,
 }: {
     title: string;
     active: boolean;
+    compact?: boolean;
     onClick: () => void;
     children: React.ReactNode;
 }) {
@@ -1161,6 +1346,8 @@ function ActivityBarIcon({
     return (
         <button
             title={title}
+            aria-label={title}
+            aria-pressed={active}
             onClick={onClick}
             onMouseEnter={() => setHov(true)}
             onMouseLeave={() => setHov(false)}
@@ -1170,8 +1357,8 @@ function ActivityBarIcon({
                 borderLeft: active ? "2px solid #ffffff" : "2px solid transparent",
                 color: active || hov ? "#ffffff" : "#858585",
                 cursor: "pointer",
-                width: 48,
-                height: 52,
+                width: compact ? 44 : 48,
+                height: compact ? 48 : 52,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -1189,6 +1376,7 @@ function Tab({
     tab,
     isActive,
     fontSize,
+    compact,
     onSelect,
     onClose,
     onContextMenu,
@@ -1196,6 +1384,7 @@ function Tab({
     tab: FileTreeItem;
     isActive: boolean;
     fontSize: number;
+    compact?: boolean;
     onSelect: () => void;
     onClose: () => void;
     onContextMenu: (x: number, y: number) => void;
@@ -1213,14 +1402,17 @@ function Tab({
             style={{
                 display: "flex",
                 alignItems: "center",
-                padding: "0 10px 0 12px",
+                padding: compact ? "0 6px 0 10px" : "0 10px 0 12px",
                 height: "100%",
+                maxWidth: compact ? 180 : undefined,
                 background: isActive ? VS.tabActive : hov ? VS.tabHover : VS.tabInactive,
                 color: isActive ? VS.tabActiveFg : VS.tabInactiveFg,
                 borderRight: `1px solid ${VS.border}`,
                 borderTop: `2px solid ${isActive ? VS.tabActiveBorder : "transparent"}`,
                 cursor: "pointer",
-                fontSize: fontSize,
+                /* The editor font size is user-adjustable up to 32px; tabs must
+                   not grow with it on a narrow strip. */
+                fontSize: compact ? Math.min(fontSize, 13) : fontSize,
                 userSelect: "none",
                 whiteSpace: "nowrap",
                 flexShrink: 0,
@@ -1238,21 +1430,32 @@ function Tab({
             >
                 <FileTypeIcon type={tab.type} fontSize="inherit" />
             </span>
-            <span>{tab.name}</span>
+            <span
+                style={{
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                }}
+            >
+                {tab.name}
+            </span>
             <span
                 onClick={(e) => { e.stopPropagation(); onClose(); }}
                 onMouseEnter={() => setCloseHov(true)}
                 onMouseLeave={() => setCloseHov(false)}
+                aria-label={`Close ${tab.name}`}
+                role="button"
                 style={{
                     display: "inline-flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    width: 16,
-                    height: 16,
+                    width: compact ? 22 : 16,
+                    height: compact ? 22 : 16,
                     borderRadius: 3,
                     background: closeHov ? "rgba(255,255,255,0.2)" : "transparent",
-                    color: hov || isActive ? "#cccccc" : "transparent",
-                    fontSize: 14,
+                    /* There is no hover on touch, so the × must always show. */
+                    color: compact || hov || isActive ? "#cccccc" : "transparent",
+                    fontSize: compact ? 16 : 14,
                     lineHeight: 1,
                     cursor: "pointer",
                     marginLeft: 2,
@@ -1286,6 +1489,20 @@ function TabContextMenu({
     onDismiss: () => void;
 }) {
     const menuRef = useRef<HTMLDivElement>(null);
+    const [pos, setPos] = useState<{ top: number; left: number }>({ top: y, left: x });
+
+    /* Keep the menu inside the viewport — a long-press near the right or
+       bottom edge of a phone screen would otherwise open it off-screen. */
+    useEffect(() => {
+        const el = menuRef.current;
+        if (!el) return;
+        const { offsetWidth, offsetHeight } = el;
+        const margin = 8;
+        setPos({
+            left: Math.max(margin, Math.min(x, window.innerWidth - offsetWidth - margin)),
+            top: Math.max(margin, Math.min(y, window.innerHeight - offsetHeight - margin)),
+        });
+    }, [x, y]);
 
     /* Close on outside click or Escape */
     useEffect(() => {
@@ -1316,8 +1533,8 @@ function TabContextMenu({
             ref={menuRef}
             style={{
                 position: "fixed",
-                top: y,
-                left: x,
+                top: pos.top,
+                left: pos.left,
                 zIndex: 99999,
                 background: "#252526",
                 border: "1px solid #474747",
@@ -1326,6 +1543,7 @@ function TabContextMenu({
                 paddingTop: 4,
                 paddingBottom: 4,
                 minWidth: 200,
+                maxWidth: "calc(100vw - 16px)",
             }}
         >
             {items.map((item, i) => (
@@ -1349,7 +1567,8 @@ function TabContextMenuItem({
             style={{
                 display: "flex",
                 alignItems: "center",
-                padding: "5px 16px 5px 16px",
+                minHeight: 34,
+                padding: "6px 16px",
                 background: hov && !item.disabled ? "#094771" : "transparent",
                 color: item.disabled ? "#555" : "#cccccc",
                 cursor: item.disabled ? "default" : "pointer",

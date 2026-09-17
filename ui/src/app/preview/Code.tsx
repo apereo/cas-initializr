@@ -4,6 +4,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { usePreviewSelected } from "../store/PreviewReducer";
 import { ThemeContext } from "../App";
+import { useIsCompact } from "../core/useBreakpoints";
 
 const MONACO_LANGUAGE_MAP: Record<string, string> = {
     javascript: "javascript",
@@ -40,6 +41,7 @@ const MONACO_THEME_MAP: Record<string, string> = {
 export function Code({ fontSize = 14, minimap = true, wordWrap = true, markdownPreview = false }: { fontSize?: number; minimap?: boolean; wordWrap?: boolean; markdownPreview?: boolean }) {
     const selected = usePreviewSelected();
     const { currentTheme } = useContext(ThemeContext);
+    const isCompact = useIsCompact();
 
     const monacoLanguage =
         selected?.type ? (MONACO_LANGUAGE_MAP[selected.type] ?? "plaintext") : "plaintext";
@@ -48,8 +50,20 @@ export function Code({ fontSize = 14, minimap = true, wordWrap = true, markdownP
 
     if (selected?.type === "image" && selected.content) {
         return (
-            <div style={{ padding: "1.5rem", height: "100%", backgroundColor: "#1e1e1e", boxSizing: "border-box" }}>
-                <img src={selected.content} alt={selected.name} style={{ maxWidth: "100%" }} />
+            <div
+                style={{
+                    padding: isCompact ? "0.75rem" : "1.5rem",
+                    height: "100%",
+                    overflow: "auto",
+                    backgroundColor: "#1e1e1e",
+                    boxSizing: "border-box",
+                }}
+            >
+                <img
+                    src={selected.content}
+                    alt={selected.name}
+                    style={{ maxWidth: "100%", height: "auto" }}
+                />
             </div>
         );
     }
@@ -62,8 +76,9 @@ export function Code({ fontSize = 14, minimap = true, wordWrap = true, markdownP
                     height: "100%",
                     overflowY: "auto",
                     backgroundColor: isDark ? "#1e1e1e" : "#ffffff",
-                    padding: "24px 40px",
+                    padding: isCompact ? "16px 14px" : "24px 40px",
                     boxSizing: "border-box",
+                    overflowWrap: "break-word",
                     fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
                     fontSize: fontSize,
                     lineHeight: 1.7,
@@ -99,9 +114,9 @@ export function Code({ fontSize = 14, minimap = true, wordWrap = true, markdownP
                         background:${isDark?"#1a2740":"#f6f8fa"};
                         border-radius:0 4px 4px 0;
                     }
-                    .md-preview ul,.md-preview ol{padding-left:2em;margin:0.4em 0}
+                    .md-preview ul,.md-preview ol{padding-left:${isCompact ? "1.2em" : "2em"};margin:0.4em 0}
                     .md-preview li{margin:0.2em 0}
-                    .md-preview table{border-collapse:collapse;width:100%;margin:1em 0}
+                    .md-preview table{border-collapse:collapse;width:100%;margin:1em 0;display:block;overflow-x:auto}
                     .md-preview th,.md-preview td{
                         border:1px solid ${isDark?"#444":"#ddd"};
                         padding:6px 13px;text-align:left;
@@ -129,11 +144,17 @@ export function Code({ fontSize = 14, minimap = true, wordWrap = true, markdownP
                 minimap: { enabled: minimap },
                 scrollBeyondLastLine: false,
                 wordWrap: wordWrap ? "on" : "off",
-                lineNumbers: "on",
+                lineNumbers: isCompact ? "off" : "on",
+                lineDecorationsWidth: isCompact ? 4 : undefined,
+                folding: !isCompact,
+                overviewRulerLanes: isCompact ? 0 : 3,
                 renderLineHighlight: "all",
                 automaticLayout: true,
-                padding: { top: 16 },
-                scrollbar: { verticalScrollbarSize: 8, horizontalScrollbarSize: 8 },
+                padding: { top: isCompact ? 8 : 16 },
+                scrollbar: {
+                    verticalScrollbarSize: isCompact ? 6 : 8,
+                    horizontalScrollbarSize: isCompact ? 6 : 8,
+                },
             }}
         />
     );

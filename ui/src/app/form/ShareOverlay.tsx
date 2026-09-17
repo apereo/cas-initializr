@@ -9,6 +9,7 @@ import { getOverlayQuery } from "../data/Url";
 import { API_PATH, APP_ORIGIN, APP_PATH } from "../App.constant";
 import { Action, useCommand } from "../core/Keyboard";
 import { useHotkeys } from "react-hotkeys-hook";
+import ShortcutHint from "../component/ShortcutHint";
 
 export interface ShareOverlayProps {
     overlay: Overlay;
@@ -44,8 +45,6 @@ export default function ShareOverlay({ overlay, disabled }: ShareOverlayProps) {
 
     useHotkeys(`${modifier}+${keys}`, () => setOpen(true), {preventDefault: true}, [keys]);
 
-    React.useEffect(() => console.log(overlay), [overlay]);
-
     return (
         <>
             <Button
@@ -54,8 +53,10 @@ export default function ShareOverlay({ overlay, disabled }: ShareOverlayProps) {
                 variant="contained"
                 disabled={disabled}
                 startIcon={<LinkIcon />}
+                sx={{ whiteSpace: "nowrap", minHeight: 44 }}
             >
-                {label} ({React.createElement(modifierIcon, {fontSize: 'small'})}+{keys})
+                {label}
+                <ShortcutHint modifierIcon={modifierIcon} keys={keys} />
             </Button>
             <ShareOverlayDialog
                 uiUrl={ uiUrl }

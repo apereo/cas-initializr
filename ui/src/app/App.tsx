@@ -71,23 +71,28 @@ function App() {
                             sx={{
                                 display: "flex",
                                 flexDirection: "column",
-                                width: "100vw",
+                                width: "100%",
+                                maxWidth: "100%",
+                                overflowX: "hidden",
                                 height: "auto",
-                                minHeight: "100vh",
+                                minHeight: ["100vh", "100dvh"],
                                 bgcolor: theme.palette.background.default,
                                 color: theme.palette.text.primary,
                             }}
                         >
                             <Stack
                                 spacing={2}
-                                sx={{ width: "100%", alignItems: "center" }}
+                                sx={{
+                                    width: "100%",
+                                    maxWidth: "100%",
+                                    alignItems: "center",
+                                }}
                             >
-                                <Box sx={{ width: "100%" }}>
+                                <Box sx={{ width: "100%", maxWidth: "100%" }}>
                                     <MainAppBar />
                                     <Divider
-                                        style={{
-                                            marginRight: "1.5rem",
-                                            marginLeft: "1.5rem",
+                                        sx={{
+                                            mx: { xs: "0.75rem", sm: "1.5rem" },
                                         }}
                                     ></Divider>
                                     <Initializr />

@@ -25,6 +25,16 @@ const Accordion = styled((props: AccordionProps) => (
     "&:before": {
         display: "none",
     },
+    [theme.breakpoints.down("sm")]: {
+        "& .MuiAccordionSummary-root": {
+            paddingLeft: theme.spacing(1),
+            paddingRight: theme.spacing(1),
+        },
+        "& .MuiAccordionDetails-root": {
+            paddingLeft: theme.spacing(1),
+            paddingRight: theme.spacing(1),
+        },
+    },
 }));
 
 const PANEL_DESCRIPTION =
@@ -60,7 +70,7 @@ export default function CloudDeployments({ control }: CloudDeploymentsProps) {
                 <Divider sx={{ mb: 2 }} />
                 <Grid container spacing={2}>
                     {CLOUD_OPTIONS.map(({ title, fieldName }) => (
-                        <Grid key={fieldName} size={{ xs: 12, sm: 4 }}>
+                        <Grid key={fieldName} size={{ xs: 12, sm: 4, md: 6, xl: 4 }}>
                             <Paper
                                 variant="outlined"
                                 sx={{

@@ -25,6 +25,16 @@ const Accordion = styled((props: AccordionProps) => (
     "&:before": {
         display: "none",
     },
+    [theme.breakpoints.down("sm")]: {
+        "& .MuiAccordionSummary-root": {
+            paddingLeft: theme.spacing(1),
+            paddingRight: theme.spacing(1),
+        },
+        "& .MuiAccordionDetails-root": {
+            paddingLeft: theme.spacing(1),
+            paddingRight: theme.spacing(1),
+        },
+    },
 }));
 
 interface BuildFeatureCardProps {
@@ -160,7 +170,7 @@ export default function BuildFeatures({ control }: BuildFeaturesProps) {
                     {BUILD_FEATURES.map((feature) => (
                         <Grid
                             key={feature.fieldName}
-                            size={{ xs: 12, sm: 6, md: 4 }}
+                            size={{ xs: 12, sm: 6, md: 6, xl: 4 }}
                         >
                             <BuildFeatureCard
                                 title={feature.title}

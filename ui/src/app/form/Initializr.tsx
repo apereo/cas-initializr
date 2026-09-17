@@ -95,7 +95,7 @@ function TabPanel(props: TabPanelProps) {
         {...other}
       >
         {value === index && (
-          <Box sx={{ py: 3, px: 0 }}>
+          <Box sx={{ py: { xs: 2, sm: 3 }, px: 0 }}>
             {children}
           </Box>
         )}
@@ -215,30 +215,43 @@ export default function Initializr() {
                 rowSpacing={1}
                 columnSpacing={{ xs: 1, sm: 2, md: 3 }}
                 sx={{
-                    padding: "2rem",
-                    paddingBottom: "5rem",
+                    px: { xs: 1.5, sm: 3, md: 4 },
+                    pt: { xs: 2, sm: 3, md: 4 },
+                    // Clears the fixed footer, which wraps to two/three lines
+                    // on narrow viewports, plus any iOS home-indicator inset.
+                    pb: {
+                        xs: "calc(9rem + env(safe-area-inset-bottom))",
+                        sm: "calc(6rem + env(safe-area-inset-bottom))",
+                        md: "5rem",
+                    },
+                    width: "100%",
+                    maxWidth: "100%",
+                    margin: 0,
                 }}
             >
                 {apiLoaded && versionsLoaded ? (
                     <>
-                        <Grid size={{ xs: 6}} style={{ padding: "1rem" }}>
+                        <Grid
+                            size={{ xs: 12, md: 6 }}
+                            sx={{ p: { xs: 0, sm: 1, md: 2 }, minWidth: 0 }}
+                        >
                             <Customization />
                             <Divider style={{ margin: "1rem 0rem" }} />
                             <Grid container spacing={2}>
-                                <Grid size={{ xs: 12, xl: 4}}>
+                                <Grid size={{ xs: 12, sm: 4, md: 12, xl: 4 }}>
                                     <DownloadOverlay
                                         handleDownload={() => download(overlay)}
                                         disabled={!canDownload || loading}
                                     />
                                 </Grid>
-                                <Grid size={{ xs: 12, xl: 4}}>
+                                <Grid size={{ xs: 12, sm: 4, md: 12, xl: 4 }}>
                                     <Preview
                                         handlePreview={() => explore(overlay)}
                                         handleDownload={() => download(overlay)}
                                         disabled={!canDownload || loading}
                                     />
                                 </Grid>
-                                <Grid size={{ xs: 12, xl: 4}}>
+                                <Grid size={{ xs: 12, sm: 4, md: 12, xl: 4 }}>
                                     <ShareOverlay
                                         overlay={overlay}
                                         disabled={!canDownload || loading}
@@ -285,10 +298,17 @@ export default function Initializr() {
                                 </Alert>
                             )}
                         </Grid>
-                        <Grid size={{xs: 6}}>
+                        <Grid size={{ xs: 12, md: 6 }} sx={{ minWidth: 0 }}>
 
-                            <Box sx={{ borderBottom: 1, borderColor: 'divider', mt: 1 }}>
-                                <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+                            <Box sx={{ borderBottom: 1, borderColor: 'divider', mt: { xs: 2, md: 1 } }}>
+                                <Tabs
+                                    value={value}
+                                    onChange={handleChange}
+                                    variant="scrollable"
+                                    scrollButtons="auto"
+                                    allowScrollButtonsMobile
+                                    aria-label="overlay detail tabs"
+                                >
                                     <Tab label="Dependencies" {...a11yProps(0)} />
                                 </Tabs>
                             </Box>

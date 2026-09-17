@@ -41,6 +41,7 @@ import { Divider, Link } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Menu';
 import { ThemeContext } from '../../App';
 import { ThemeType } from '../../theme/CasTheme';
+import { useIsCompact } from '../useBreakpoints';
 
 const fetchProps = {
     headers: {
@@ -53,6 +54,7 @@ const ThemeSwitcher = () => {
     const { currentTheme, setTheme } = useContext(ThemeContext);
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
+    const isCompact = useIsCompact();
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
@@ -105,23 +107,38 @@ const ThemeSwitcher = () => {
 
     return (
         <div>
-            <Tooltip title="Change theme">
-                <Button
-                    id="theme-button"
-                    aria-controls={open ? 'theme-menu' : undefined}
-                    aria-haspopup="true"
-                    aria-expanded={open ? 'true' : undefined}
-                    onClick={handleClick}
-                    startIcon={getThemeIcon()}
-                    endIcon={<KeyboardArrowDownIcon />}
-                    sx={{
-                        color: 'inherit',
-                        textTransform: 'none',
-                        ml: 2
-                    }}
-                >
-                    {getThemeLabel()}
-                </Button>
+            <Tooltip title={isCompact ? `Theme: ${getThemeLabel()}` : 'Change theme'}>
+                {isCompact ? (
+                    <IconButton
+                        id="theme-button"
+                        aria-controls={open ? 'theme-menu' : undefined}
+                        aria-haspopup="true"
+                        aria-expanded={open ? 'true' : undefined}
+                        aria-label={`Change theme (current: ${getThemeLabel()})`}
+                        onClick={handleClick}
+                        color="inherit"
+                        sx={{ ml: 0.5 }}
+                    >
+                        {getThemeIcon()}
+                    </IconButton>
+                ) : (
+                    <Button
+                        id="theme-button"
+                        aria-controls={open ? 'theme-menu' : undefined}
+                        aria-haspopup="true"
+                        aria-expanded={open ? 'true' : undefined}
+                        onClick={handleClick}
+                        startIcon={getThemeIcon()}
+                        endIcon={<KeyboardArrowDownIcon />}
+                        sx={{
+                            color: 'inherit',
+                            textTransform: 'none',
+                            ml: { xs: 1, md: 2 },
+                        }}
+                    >
+                        {getThemeLabel()}
+                    </Button>
+                )}
             </Tooltip>
                 <Menu
                     id="theme-menu"
@@ -131,6 +148,12 @@ const ThemeSwitcher = () => {
                     slotProps={{
                         list: {
                             'aria-labelledby': 'theme-button',
+                        },
+                        paper: {
+                            sx: {
+                                maxHeight: '70dvh',
+                                maxWidth: 'calc(100vw - 32px)',
+                            },
                         },
                     }}
                 >
@@ -272,13 +295,20 @@ export default function MainAppBar() {
     return (
         <Fragment>
             <AppBar position="static" elevation={0} color="transparent">
-                <Toolbar>
+                <Toolbar
+                    disableGutters
+                    sx={{
+                        px: { xs: 1, sm: 2, md: 3 },
+                        minHeight: { xs: 56, sm: 64 },
+                        gap: 1,
+                    }}
+                >
                     <IconButton
                         size="large"
                         edge="start"
                         color="inherit"
                         aria-label="menu"
-                        sx={{ mr: 2 }}
+                        sx={{ mr: { xs: 0.5, md: 2 } }}
                         onClick={() => setOpen(!open)}
                     >
                         <MenuIcon />
@@ -288,14 +318,28 @@ export default function MainAppBar() {
                         noWrap
                         component="div"
                         sx={{
-                            mr: 2,
-                            display: { xs: "none", md: "flex" },
+                            mr: { xs: 0, md: 2 },
+                            display: "flex",
                             flexGrow: 1,
+                            minWidth: 0,
                             marginBottom: 0,
                             alignItems: "center",
+                            fontSize: {
+                                xs: "1.15rem",
+                                sm: "1.6rem",
+                                md: "2.125rem",
+                            },
                         }}
                     >
-                        <img src={logo} alt="CAS Logo" height="32px" />
+                        <Box
+                            component="img"
+                            src={logo}
+                            alt="CAS Logo"
+                            sx={{
+                                height: { xs: 24, sm: 28, md: 32 },
+                                flexShrink: 0,
+                            }}
+                        />
                         &nbsp;Initializr
                     </Typography>
                     <ThemeSwitcher />
@@ -304,7 +348,8 @@ export default function MainAppBar() {
             <Drawer anchor={"left"} open={open} onClose={() => setOpen(!open)}>
                 <Box
                     sx={{
-                        width: 300,
+                        width: { xs: "80vw", sm: 300 },
+                        maxWidth: 320,
                         padding: "1rem",
                     }}
                     role="presentation"
@@ -422,32 +467,66 @@ export default function MainAppBar() {
                 position="fixed"
                 elevation={1}
                 color="primary"
-                sx={{ top: "auto", bottom: 0 }}
+                sx={{
+                    top: "auto",
+                    bottom: 0,
+                    // Keep the bar clear of the iOS home indicator.
+                    pb: "env(safe-area-inset-bottom)",
+                }}
             >
-                <Toolbar>
-                    <Typography variant="body2" component="div" style={{display: 'block', width: '100%'}}>
-                        <div style={{ display: "flex", justifyContent: 'center' }}>
-                            <p>Copyright © 2005–2026 Apereo, Inc.</p>
-                            <p
-                                style={{
-                                    marginRight: "2rem",
-                                    marginLeft: "2rem",
-                                }}
+                <Toolbar
+                    disableGutters
+                    sx={{
+                        minHeight: "auto !important",
+                        px: { xs: 1.5, sm: 3 },
+                        py: { xs: 1, sm: 1.5 },
+                    }}
+                >
+                    <Box
+                        sx={{
+                            display: "flex",
+                            flexWrap: "wrap",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            rowGap: 0.25,
+                            columnGap: { xs: 1.5, md: 4 },
+                            width: "100%",
+                            textAlign: "center",
+                        }}
+                    >
+                        <Typography
+                            variant="body2"
+                            component="span"
+                            sx={{ fontSize: { xs: "0.7rem", sm: "0.8rem", md: "0.875rem" } }}
+                        >
+                            Copyright © 2005–2026 Apereo, Inc.
+                        </Typography>
+                        <Typography
+                            variant="body2"
+                            component="span"
+                            sx={{ fontSize: { xs: "0.7rem", sm: "0.8rem", md: "0.875rem" } }}
+                        >
+                            Powered by&nbsp;
+                            <Link
+                                href="https://github.com/apereo/cas"
+                                target="_blank"
+                                rel="noopener"
+                                color="inherit"
                             >
-                                Powered by&nbsp;
-                                <Link
-                                    href="https://github.com/apereo/cas"
-                                    target="_blank"
-                                    rel="noopener"
-                                >
-                                    Apereo CAS
-                                </Link>
-                            </p>
-                            <p>
-                                {version} {date}
-                            </p>
-                        </div>
-                    </Typography>
+                                Apereo CAS
+                            </Link>
+                        </Typography>
+                        <Typography
+                            variant="body2"
+                            component="span"
+                            sx={{
+                                fontSize: { xs: "0.7rem", sm: "0.8rem", md: "0.875rem" },
+                                opacity: { xs: 0.85, md: 1 },
+                            }}
+                        >
+                            {version} {date}
+                        </Typography>
+                    </Box>
                 </Toolbar>
             </AppBar>
         </Fragment>

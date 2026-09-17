@@ -52,7 +52,38 @@ const Accordion = styled((props: AccordionProps) => (
     "&:before": {
         display: "none",
     },
+    [theme.breakpoints.down("sm")]: {
+        "& .MuiAccordionSummary-root": {
+            paddingLeft: theme.spacing(1),
+            paddingRight: theme.spacing(1),
+        },
+        "& .MuiAccordionDetails-root": {
+            paddingLeft: theme.spacing(1),
+            paddingRight: theme.spacing(1),
+        },
+    },
 }));
+
+const DEPLOYMENT_TYPES: { value: string; label: string; description: string }[] = [
+    {
+        value: "executable",
+        label: "Executable",
+        description:
+            "Build the CAS server as an executable web application, also referred to as a Fat Jar, that ships with an embedded servlet container such as Apache Tomcat which is managed and auto-configured by CAS.",
+    },
+    {
+        value: "web",
+        label: "Web",
+        description:
+            "Build the CAS server as a traditional web application that is then deployed into an external servlet container of choice, such as Apache Tomcat, that is downloaded, configured and tuned by you.",
+    },
+    {
+        value: "jar",
+        label: "JAR",
+        description:
+            "Build the CAS server as a Spring Boot executable JAR using an Apache Tomcat starter module.",
+    },
+];
 
 export default function Customization() {
     const defaultValues = useDefaultValues();
@@ -93,12 +124,20 @@ export default function Customization() {
             <Typography
                 variant="h5"
                 component="h3"
-                style={{ marginBottom: "1rem" }}
+                sx={{
+                    mb: 2,
+                    fontSize: {
+                        xs: "1rem",
+                        sm: "1.15rem",
+                        md: "1.5rem",
+                    },
+                    lineHeight: 1.45,
+                }}
             >
                 Select your target CAS server version and add the required dependencies to your build.
                 Then download the generated project, and start your CAS deployment right away!
             </Typography>
-            <Divider style={{ marginBottom: "2rem" }} />
+            <Divider sx={{ mb: { xs: 2, sm: 4 } }} />
             <form>
                 <Stack spacing={2}>
                     <FormControl fullWidth>
@@ -215,7 +254,7 @@ export default function Customization() {
                                 <AccordionDetails>
                                     <FormControl
                                         fullWidth
-                                        style={{ marginBottom: "2rem" }}
+                                        sx={{ mb: { xs: 2, sm: 4 } }}
                                     >
                                         <FormLabel id="deployment-select-label">
                                             Deployment Type
@@ -232,30 +271,42 @@ export default function Customization() {
                                                 },
                                             }) => (
                                                 <RadioGroup
-                                                    aria-labelledby="demo-radio-buttons-group-label"
-                                                    defaultValue="female"
+                                                    aria-labelledby="deployment-select-label"
                                                     name="radio-buttons-group"
                                                     onChange={onChange}
                                                     ref={ref}
                                                     value={value}
                                                     row
+                                                    sx={{ flexWrap: "wrap" }}
                                                 >
-                                                    <Tooltip arrow placement="top" title="Build the CAS server as an executable web application, also referred to as a Fat Jar, that ships with an embedded servlet container such as Apache Tomcat which is managed and auto-configured by CAS.">
-                                                        <FormControlLabel value="executable" control={<Radio />} label="Executable" />
-                                                    </Tooltip>
-                                                    <Tooltip arrow placement="top" title="Build the CAS server as a traditional web application that is then deployed into an external servlet container of choice, such as Apache Tomcat, that is downloaded, configured and tuned by you.">
-                                                        <FormControlLabel value="web" control={<Radio />} label="Web" />
-                                                    </Tooltip>
-                                                    <Tooltip arrow placement="top" title="Build the CAS server as a Spring Boot executable JAR using an Apache Tomcat starter module.">
-                                                        <FormControlLabel value="jar" control={<Radio />} label="JAR" />
-                                                    </Tooltip>
+                                                    {DEPLOYMENT_TYPES.map(({ value: v, label, description }) => (
+                                                        <Tooltip
+                                                            key={v}
+                                                            arrow
+                                                            placement="top"
+                                                            title={description}
+                                                            enterTouchDelay={0}
+                                                            leaveTouchDelay={6000}
+                                                            slotProps={{
+                                                                tooltip: {
+                                                                    sx: { maxWidth: { xs: 260, sm: 360 } },
+                                                                },
+                                                            }}
+                                                        >
+                                                            <FormControlLabel
+                                                                value={v}
+                                                                control={<Radio />}
+                                                                label={label}
+                                                            />
+                                                        </Tooltip>
+                                                    ))}
                                                 </RadioGroup>
                                             )}
                                         />
                                     </FormControl>
                                     <FormControl
                                         fullWidth
-                                        style={{ marginBottom: "2rem" }}
+                                        sx={{ mb: { xs: 2, sm: 4 } }}
                                     >
                                         <TextField
                                             id="group-input"
@@ -266,7 +317,7 @@ export default function Customization() {
                                     </FormControl>
                                     <FormControl
                                         fullWidth
-                                        style={{ marginBottom: "2rem" }}
+                                        sx={{ mb: { xs: 2, sm: 4 } }}
                                     >
                                         <TextField
                                             id="artifact-input"
@@ -277,7 +328,7 @@ export default function Customization() {
                                     </FormControl>
                                     <FormControl
                                         fullWidth
-                                        style={{ marginBottom: "2rem" }}
+                                        sx={{ mb: { xs: 2, sm: 4 } }}
                                     >
                                         <TextField
                                             id="name-input"
@@ -288,7 +339,7 @@ export default function Customization() {
                                     </FormControl>
                                     <FormControl
                                         fullWidth
-                                        style={{ marginBottom: "2rem" }}
+                                        sx={{ mb: { xs: 2, sm: 4 } }}
                                     >
                                         <TextField
                                             id="description-input"

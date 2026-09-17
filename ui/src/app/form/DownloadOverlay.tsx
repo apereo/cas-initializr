@@ -4,6 +4,7 @@ import { Button } from "@mui/material";
 import { Action, useCommand } from "../core/Keyboard";
 import DownloadIcon from '@mui/icons-material/Download';
 import { useHotkeys } from "react-hotkeys-hook";
+import ShortcutHint from "../component/ShortcutHint";
 
 export interface PreviewProps {
     handleDownload: () => void;
@@ -31,10 +32,10 @@ export default function DownloadOverlay({ handleDownload, disabled }: PreviewPro
                 onClick={() => handleDownload()}
                 disabled={disabled}
                 startIcon={<DownloadIcon />}
+                sx={{ whiteSpace: "nowrap", minHeight: 44 }}
             >
-                {label} (
-                {React.createElement(modifierIcon, { fontSize: "small" })}+
-                {keys})
+                {label}
+                <ShortcutHint modifierIcon={modifierIcon} keys={keys} />
             </Button>
         </>
     );

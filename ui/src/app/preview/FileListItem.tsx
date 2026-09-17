@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { FileTreeItem } from "../file/tree";
 import { FileTypeIcon } from "./FileTypeIcon";
+import { useIsCompact } from "../core/useBreakpoints";
 
 const EDITOR_FONT = "'Comic Mono', 'Ubuntu', Consolas, 'Courier New', monospace";
 const ITEM_HEIGHT = 28;
+/* A 28px row is below the ~44px comfortable tap target on touch screens. */
+const ITEM_HEIGHT_COMPACT = 38;
 
 export function FileListItem({
     item,
@@ -21,6 +24,8 @@ export function FileListItem({
     const [open, setOpen] = useState(false);
     const [expandChildren, setExpandChildren] = useState(false);
     const [hovered, setHovered] = useState(false);
+    const isCompact = useIsCompact();
+    const rowHeight = isCompact ? ITEM_HEIGHT_COMPACT : ITEM_HEIGHT;
 
     const isDir = item.type === "dir";
     const isSelected = !isDir && selectedPath === item.path;
@@ -59,12 +64,13 @@ export function FileListItem({
                 style={{
                     display: "flex",
                     alignItems: "center",
-                    height: ITEM_HEIGHT,
+                    height: rowHeight,
                     paddingLeft: depth * 12 + 8,
+                    paddingRight: 8,
                     cursor: "pointer",
                     backgroundColor: rowBg,
                     color: "#cccccc",
-                    fontSize: 18,
+                    fontSize: isCompact ? 15 : 18,
                     fontFamily: EDITOR_FONT,
                     userSelect: "none",
                     whiteSpace: "nowrap",
@@ -126,12 +132,12 @@ export function FileListItem({
                         <div
                             style={{
                                 paddingLeft: (depth + 1) * 12 + 24,
-                                height: ITEM_HEIGHT,
-                                lineHeight: `${ITEM_HEIGHT}px`,
-                        color: "#858585",
-                        fontSize: 16,
-                        fontStyle: "italic",
-                        fontFamily: EDITOR_FONT,
+                                height: rowHeight,
+                                lineHeight: `${rowHeight}px`,
+                                color: "#858585",
+                                fontSize: isCompact ? 13 : 16,
+                                fontStyle: "italic",
+                                fontFamily: EDITOR_FONT,
                             }}
                         >
                             (empty)
