@@ -6,13 +6,14 @@ import ShareOverlay from "./ShareOverlay";
 
 import { useApiLoaded, useVersionsLoaded } from '../store/AppReducer';
 import { Overlay } from '../data/Overlay';
-import { preselected, useCanDownload, useOverlay } from '../store/OverlayReducer';
+import { preselected, useCanDownload, useOverlay, useOverlayDependencies } from '../store/OverlayReducer';
+import { resolveDependencies } from '../data/Dependency';
 import { getOverlayFromQs, getOverlayQuery } from '../data/Url';
 import JSZip from "jszip";
 
 import * as FileSaver from 'file-saver';
 
-import { useDefaultValues } from '../store/OptionReducer';
+import { useDefaultValues, useDependencyList } from '../store/OptionReducer';
 import { API_PATH, PREVIEW_REQUEST_HEADER } from '../App.constant';
 import { Preview } from '../preview/Preview';
 import { useAppDispatch } from '../store/hooks';
@@ -109,6 +110,9 @@ export default function Initializr() {
     const canDownload = useCanDownload();
     const overlay = useOverlay();
     const defaultValues = useDefaultValues();
+    const availableDependencies = useDependencyList();
+    const selectedDependencies = useOverlayDependencies();
+    const dependenciesInitialized = React.useRef(false);
     const dispatch = useAppDispatch();
     const [loading, setLoading] = React.useState(false);
     const [requestError, setRequestError] = React.useState<ArchiveRequestError | null>(null);
@@ -185,12 +189,16 @@ export default function Initializr() {
 
     /*eslint-disable react-hooks/exhaustive-deps*/
     React.useEffect(() => {
-        let { dependencies = [...preselected] } = getOverlayFromQs();
-        if (!Array.isArray(dependencies) && typeof dependencies === 'string') {
-            dependencies = [dependencies];
+        const requested = dependenciesInitialized.current
+            ? selectedDependencies
+            : getOverlayFromQs().dependencies ?? [...preselected];
+        dependenciesInitialized.current = true;
+        const resolved = resolveDependencies(requested, availableDependencies);
+        if (resolved.length !== selectedDependencies.length
+            || resolved.some((id, index) => id !== selectedDependencies[index])) {
+            dispatch(setDependencies(resolved));
         }
-        dispatch(setDependencies(dependencies));
-    }, [defaultValues]);
+    }, [availableDependencies, selectedDependencies, dispatch]);
 
     const [value, setValue] = React.useState(0);
 
