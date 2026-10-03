@@ -39,6 +39,10 @@ The service will be available on `http://localhost:8080`.
 
 CAS Initializr also presents a user interface, available at `$INITIALIZR_URL/ui`.
 
+Preselect dependencies by passing their identifiers or aliases in the URL, for example:
+`$INITIALIZR_URL/ui?dependencies=webapp-tomcat,core-notifications`.
+The selected modules appear once dependency metadata loads and can be added or removed on the screen.
+
 ## Dependency Metadata & Ownership
 
 The metadata lists the capabilities of the CAS Initializr, that is the available options for all request parameters 
