@@ -53,8 +53,11 @@ CAS_SECURITY_VERSION=`echo $CAS_VERSION | cut -d. -f4`
 
 if [[ "${FETCH_OVERLAY}" == "true" ]]; then
   printgreen "Building CAS Initializr to fetch overlay ${CAS_VERSION}"
-  ./gradlew --configure-on-demand --no-daemon -DskipUI=true \
-    clean build -x test -x javadoc -x check --parallel -q
+  if ! ./gradlew --configure-on-demand --no-daemon -DskipUI=true \
+    clean build -x test -x javadoc -x check --parallel -q; then
+    printred "Failed to build CAS Initializr."
+    exit 1
+  fi
 fi
 
 mkdir -p tmp
@@ -77,10 +80,14 @@ if [[ "${FETCH_OVERLAY}" == "true" ]]; then
   
   java -Xdebug -Xrunjdwp:transport=dt_socket,address=5005,server=y,suspend=n -jar ../app/build/libs/app.jar &
   pid=$!
-  sleep 10
+  if ! waitForInitializr "$pid"; then
+    kill -9 "$pid" 2>/dev/null || true
+    wait "$pid" 2>/dev/null || true
+    exit 1
+  fi
   printgreen "Requesting CAS overlay for ${parameters}"
-  curl http://localhost:8080/starter.tgz --connect-timeout 30 -d "${parameters}" | tar -xzvf -
-  if [[ $? -ne 0 ]]; then
+  if ! (set -o pipefail; curl --fail --show-error --connect-timeout 30 --max-time 120 \
+    http://localhost:8080/starter.tgz -d "${parameters}" | tar -xzvf -); then
     printred "Failed to fetch CAS overlay ${CAS_VERSION} with parameters ${parameters}"
     kill -9 $pid
     exit 1

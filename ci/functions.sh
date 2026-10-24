@@ -73,14 +73,23 @@ function stopInitializr() {
 }
 
 function waitForInitializr() {
-  local ctr=0
-  until $(curl --output /dev/null --silent --head --fail http://localhost:8080/actuator/health); do
-    ((ctr=ctr + 1))
-    sleep 3
-    if [[ $ctr -gt 30 ]] ; then
-      echo "Initializr didn't start up before timeout"
-      break
+  local initializrPid="${1:-}"
+  local deadline=$((SECONDS + 120))
+  echo "Waiting for CAS Initializr to become healthy..."
+  while true; do
+    if [[ -n "$initializrPid" ]] && ! kill -0 "$initializrPid" 2>/dev/null; then
+      printred "CAS Initializr process ${initializrPid} exited before becoming ready."
+      return 1
     fi
+    if curl --output /dev/null --silent --fail --connect-timeout 5 --max-time 5 \
+      http://localhost:8080/actuator/health; then
+      return 0
+    fi
+    if (( SECONDS >= deadline )); then
+      printred "CAS Initializr did not become healthy within 120 seconds."
+      return 1
+    fi
+    sleep 3
   done
 }
 
