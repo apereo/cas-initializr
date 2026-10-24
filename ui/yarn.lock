@@ -5454,6 +5454,11 @@ filter-obj@^5.1.0:
   resolved "https://registry.npmjs.org/filter-obj/-/filter-obj-5.1.0.tgz"
   integrity sha512-qWeTREPoT7I0bifpPUXtxkZJ1XJzxWtfoWWkdVGqa+eCr3SHW/Ocp89o8vLvbUuQnadybJpjOKu4V+RwO6sGng==
 
+filter-obj@^6.1.0:
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/filter-obj/-/filter-obj-6.1.0.tgz#58725ceed8f0de54b432d74b6a3eb149453d7ed0"
+  integrity sha512-xdMtCAODmPloU9qtmPcdBV9Kd27NtMse+4ayThxqIHUES5Z2S6bGpap5PpdmNM56ub7y3i1eyr+vJJIIgWGKmA==
+
 finalhandler@~1.3.1:
   version "1.3.2"
   resolved "https://registry.yarnpkg.com/finalhandler/-/finalhandler-1.3.2.tgz#1ebc2228fc7673aac4a472c310cc05b77d852b88"
@@ -9297,7 +9302,7 @@ qs@~6.16.0:
     es-define-property "^1.0.1"
     side-channel "^1.1.1"
 
-query-string@*, query-string@^9.5.1:
+query-string@*:
   version "9.5.1"
   resolved "https://registry.yarnpkg.com/query-string/-/query-string-9.5.1.tgz#aecdc091d3dc7ce293eed83957e220d523a3d0f7"
   integrity sha512-/zO3RwuRCMTIcEgq6YMv4OrtEE1XzBG7w5N6zc6ydYnkWYOWsnLI/5894hYEzfESfMOT4cHCsRTIdxsSl1KjGg==
@@ -9305,6 +9310,14 @@ query-string@*, query-string@^9.5.1:
     decode-uri-component "^0.5.0"
     filter-obj "^5.1.0"
     split-on-first "^3.0.0"
+
+query-string@^10.0.0:
+  version "10.0.0"
+  resolved "https://registry.yarnpkg.com/query-string/-/query-string-10.0.0.tgz#fbc0743e6a0e0c1a600f2d1d399ce42521e17b0d"
+  integrity sha512-QYodx/Ywk8lCcOmsyupXVN91yWPAdjq0xVqE2FE2BHFYnma71C8txR8JCBptjzoUpkfAK7Qjua9VjYRTru4LYg==
+  dependencies:
+    filter-obj "^6.1.0"
+    split-on-first "^4.0.0"
 
 querystringify@^2.1.1:
   version "2.2.0"
@@ -10319,6 +10332,11 @@ split-on-first@^3.0.0:
   version "3.0.0"
   resolved "https://registry.npmjs.org/split-on-first/-/split-on-first-3.0.0.tgz"
   integrity sha512-qxQJTx2ryR0Dw0ITYyekNQWpz6f8dGd7vffGNflQQ3Iqj9NJ6qiZ7ELpZsJ/QBhIVAiDfXdag3+Gp8RvWa62AA==
+
+split-on-first@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/split-on-first/-/split-on-first-4.0.0.tgz#f49436d62be0d529cef522e2fd4bd08725de2ff3"
+  integrity sha512-pyrgNqiEBHA9KlEtg9quYGagtrlTyukL3ryQ+RmjRn9SYmcNQmfa+sWIsI+hlcL4WrmFdrt7IfM6o8ktBAooDQ==
 
 sprintf-js@~1.0.2:
   version "1.0.3"
