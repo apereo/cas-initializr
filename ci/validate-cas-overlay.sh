@@ -301,16 +301,17 @@ if [[ "$CAS_MAJOR_VERSION" -ge 7 ]]; then
     fi
 
     printgreen "Extracting Uber WAR from CAS to prepare CDS launch..."
+    # Keep extracted files under build so clean removes the previous application server's output.
     # Spring Boot 4.2 defaults to cas.jar when extracting a WAR. Keep the launch filename explicit.
-    if ! java -Djarmode=tools -jar build/libs/cas.war extract --application-filename cas.war; then
+    if ! java -Djarmode=tools -jar build/libs/cas.war extract --destination build/cds --application-filename cas.war; then
       printred "Failed to extract CAS for the CDS launch."
       exit 1
     fi
-    if [[ ! -s ./cas/cas.war ]]; then
-      printred "Extracted CAS archive ./cas/cas.war is missing or empty."
+    if [[ ! -s build/cds/cas.war ]]; then
+      printred "Extracted CAS archive build/cds/cas.war is missing or empty."
       exit 1
     fi
-    java -jar ./cas/cas.war --spring.profiles.active=none --server.ssl.enabled=false --server.port=8091 &
+    java -jar build/cds/cas.war --spring.profiles.active=none --server.ssl.enabled=false --server.port=8091 &
     pid=$!
     echo "Launched executable CAS with pid ${pid}. Waiting for CAS server to come online..."
     deadline=$((SECONDS + 300))
