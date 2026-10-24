@@ -148,7 +148,7 @@ with the help of the `tools` jarmode:
 
 ```bash
 {{#executable}}# Note: You must first build the web application with "executable" turned off{{/executable}}
-java -Djarmode=tools -jar build/libs/{{archiveFileName}} extract
+java -Djarmode=tools -jar build/libs/{{archiveFileName}} extract --application-filename {{archiveFileName}}
 
 # Perform a training run once
 java -XX:ArchiveClassesAtExit=cas.jsa -Dspring.context.exit=onRefresh -jar {{appName}}/{{archiveFileName}}
@@ -172,7 +172,7 @@ it via a JVM flag.
 
 ```bash
 {{#executable}}# Note: You must first build the web application with "executable" turned off{{/executable}}
-java -Djarmode=tools -jar build/libs/{{archiveFileName}} extract
+java -Djarmode=tools -jar build/libs/{{archiveFileName}} extract --application-filename {{archiveFileName}}
 
 # Perform a training run once
 java -XX:AOTCacheOutput=${PWD}/cas/cas.aot -Dspring.context.exit=onRefresh -jar {{appName}}/{{archiveFileName}}

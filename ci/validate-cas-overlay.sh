@@ -288,17 +288,41 @@ if [[ "$CAS_MAJOR_VERSION" -ge 7 ]]; then
 
   if [[ "$CAS_MINOR_VERSION" -ge 1 ]]; then
     printgreen "Build CAS web application without executable mode..."
-    ./gradlew clean build -Pexecutable=false --no-daemon
+    if ! ./gradlew clean build -Pexecutable=false --no-daemon; then
+      printred "Failed to build CAS for the extracted archive launch."
+      exit 1
+    fi
 
     printgreen "Extracting Uber WAR from CAS to prepare CDS launch..."
-    java -Djarmode=tools -jar build/libs/cas.war extract
+    # Spring Boot 4.2 defaults to cas.jar when extracting a WAR. Keep the launch filename explicit.
+    if ! java -Djarmode=tools -jar build/libs/cas.war extract --application-filename cas.war; then
+      printred "Failed to extract CAS for the CDS launch."
+      exit 1
+    fi
+    if [[ ! -s ./cas/cas.war ]]; then
+      printred "Extracted CAS archive ./cas/cas.war is missing or empty."
+      exit 1
+    fi
     java -jar ./cas/cas.war --spring.profiles.active=none --server.ssl.enabled=false --server.port=8091 &
     pid=$!
-    sleep 15
     echo "Launched executable CAS with pid ${pid}. Waiting for CAS server to come online..."
-    until curl -k -L --output /dev/null --silent --fail http://localhost:8091/cas/login; do
-       echo -n '.'
-       sleep 5
+    deadline=$((SECONDS + 300))
+    while true; do
+      if ! kill -0 "$pid" 2>/dev/null; then
+        printred "Extracted CAS process ${pid} exited before becoming ready."
+        wait "$pid" || true
+        exit 1
+      fi
+      if curl -k -L --output /dev/null --silent --fail --connect-timeout 5 --max-time 5 http://localhost:8091/cas/login; then
+        break
+      fi
+      if (( SECONDS >= deadline )); then
+        printred "Extracted CAS did not become ready within 300 seconds."
+        kill -9 "$pid"
+        exit 1
+      fi
+      echo -n '.'
+      sleep 5
     done
     echo -e "\n\nReady!"
     echo "Killing process $pid"
