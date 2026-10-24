@@ -19,6 +19,11 @@ Generate a Docker image from the build:
 ./gradlew bootBuildImage
 ```
 
+The Paketo builder is pinned by `paketoBuilderVersion` in `gradle.properties` to a release
+that supports both `linux/amd64` and `linux/arm64`. When updating it, verify that the
+builder image manifest includes both platforms; an ARM64-only builder fails on x86 runners
+with `exec /cnb/lifecycle/creator: exec format error`.
+
 ## Run
 
 CAS Initializr is a Spring Boot application and can be run locally using the following command:

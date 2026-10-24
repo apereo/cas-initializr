@@ -75,6 +75,8 @@ dependencies {
 }
 
 bootBuildImage {
+    // Pin a multi-architecture release; the floating latest tag may resolve to an ARM64-only image.
+    builder = "paketobuildpacks/builder-noble-java-tiny:${paketoBuilderVersion}"
     imageName = "apereo/cas-initializr:${project.version}"
     docker {
         publishRegistry {

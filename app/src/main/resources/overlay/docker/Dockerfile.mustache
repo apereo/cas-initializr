@@ -21,7 +21,7 @@ RUN mkdir -p ~/.gradle \
 
 RUN ./gradlew clean build $EXT_BUILD_COMMANDS --parallel --no-daemon -Pexecutable=false $EXT_BUILD_OPTIONS;
 
-RUN java -Djarmode=tools -jar build/libs/{{archiveFileName}} extract \
+RUN java -Djarmode=tools -jar build/libs/{{archiveFileName}} extract --application-filename {{archiveFileName}} \
     && java -XX:ArchiveClassesAtExit=./cas/cas.jsa -Dspring.context.exit=onRefresh -jar cas/{{archiveFileName}}
 
 FROM $BASE_IMAGE AS cas
