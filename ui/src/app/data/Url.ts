@@ -1,23 +1,32 @@
 import { isNil, pickBy } from "lodash";
 import { Overlay } from "./Overlay";
-import qs from "query-string";
+
+// Matches query-string's strict encoding, which also escapes !'()*
+const encode = (value: unknown) => encodeURIComponent(String(value))
+    .replace(/[!'()*]/g, c => `%${c.charCodeAt(0).toString(16).toUpperCase()}`);
 
 /*eslint-disable no-restricted-globals*/
 export const getOverlayFromQs = (): Partial<Overlay> => {
-    const overlay = qs.parse(location.search, { arrayFormat: "comma" });
-    if (Object.prototype.hasOwnProperty.call(overlay, "dependencies")) {
-        const values = [overlay.dependencies].flat();
-        overlay.dependencies = Array.from(new Set(values.flatMap(value =>
-            (value ?? "").split(",").map(id => id.trim()).filter(Boolean)
+    const params = new URLSearchParams(location.search);
+    const overlay: Record<string, unknown> = Object.fromEntries(params);
+    if (params.has("dependencies")) {
+        overlay.dependencies = Array.from(new Set(params.getAll("dependencies").flatMap(value =>
+            value.split(",").map(id => id.trim()).filter(Boolean)
         )));
     }
     return overlay as Partial<Overlay>;
 };
 
 export const getOverlayQuery = (overlay: Overlay, type: string = "tgz") => {
-
-    // console.log(overlay);
-
     const used = pickBy(overlay, (value: any) => value !== "" && !isNil(value));
-    return qs.stringify(used, { arrayFormat: "comma" });
+    return Object.keys(used)
+        .sort()
+        .map(key => {
+            const value = (used as Record<string, unknown>)[key];
+            const encoded = Array.isArray(value)
+                ? value.map(encode).join(",")
+                : encode(value);
+            return `${encode(key)}=${encoded}`;
+        })
+        .join("&");
 };
