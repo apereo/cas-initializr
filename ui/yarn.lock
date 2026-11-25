@@ -6025,9 +6025,9 @@ http-proxy-agent@^4.0.1:
     debug "4"
 
 http-proxy-middleware@^2.0.3:
-  version "2.0.9"
-  resolved "https://registry.npmjs.org/http-proxy-middleware/-/http-proxy-middleware-2.0.9.tgz"
-  integrity sha512-c1IyJYLYppU574+YI7R4QyX2ystMtVXZwIdzazUIPIJsHuWNd+mho2j+bKoHftndicGj9yh+xjd+l0yj7VeT1Q==
+  version "2.0.12"
+  resolved "https://registry.yarnpkg.com/http-proxy-middleware/-/http-proxy-middleware-2.0.12.tgz#8701838e1495d854fa1f77e368697da32349402d"
+  integrity sha512-XlshaD1JTph+1Itj2B+m+zrVaMKmdYkE+452U+scHCsQgL2eXpjGliTmHLZi8Ly5/w86IC9ZGrOYTuzTyUMxAg==
   dependencies:
     "@types/http-proxy" "^1.17.8"
     http-proxy "^1.18.1"
@@ -6036,12 +6036,12 @@ http-proxy-middleware@^2.0.3:
     micromatch "^4.0.2"
 
 http-proxy-middleware@^4.1.1:
-  version "4.1.1"
-  resolved "https://registry.yarnpkg.com/http-proxy-middleware/-/http-proxy-middleware-4.1.1.tgz#d1155140b540fc47fce16a6c98a75a643e992b90"
-  integrity sha512-KX5ZofGXLFXqFAkQoOWZ+rTtaLTut7m0gyL+QzJrdejtIZ+F4bPPDoe7reISg2+v0CAz5OfVwEJEhty7X+e57g==
+  version "4.2.2"
+  resolved "https://registry.yarnpkg.com/http-proxy-middleware/-/http-proxy-middleware-4.2.2.tgz#5218c29cef50ee4b5e8db63e481a285d50ecd6d7"
+  integrity sha512-GHP6tbjWsdSZbWSyqYvwPwoR76ozJ2IccVYoBR702N9vfqO0KBIwJ9vkDRErxwbb5Z6ej2Wn+9D/YitlUTseSQ==
   dependencies:
     debug "^4.4.3"
-    httpxy "^0.5.3"
+    httpxy "^0.5.6"
     is-glob "^4.0.3"
     is-plain-obj "^4.1.0"
     micromatch "^4.0.8"
@@ -6063,10 +6063,10 @@ https-proxy-agent@^5.0.0:
     agent-base "6"
     debug "4"
 
-httpxy@^0.5.3:
-  version "0.5.3"
-  resolved "https://registry.yarnpkg.com/httpxy/-/httpxy-0.5.3.tgz#e9d4d9b584ec3a2c5d46d7d87635419e780353aa"
-  integrity sha512-SMS9V6Sn7VWaS11lYhoAr0ceoaiolTWf4jYdJn0NJhCdKMu9R2H9Fh0LBDWBHQF6HRLI1PmaePYsjanSpE5PEw==
+httpxy@^0.5.6:
+  version "0.5.6"
+  resolved "https://registry.yarnpkg.com/httpxy/-/httpxy-0.5.6.tgz#954e0cb1a815c98df6f14be385ed946cd1080451"
+  integrity sha512-iqc3nOxvNb5FxbhJozt8wNmHgjlmk4zzba512jMEXVwHCEBCbGAj49eGfy5PI8ts3/LFSFq8siiSNqwfY1AlfQ==
 
 human-signals@^2.1.0:
   version "2.1.0"
